@@ -23,6 +23,7 @@ from libero_experiment_core import (
     create_libero_env,
     draw_overlay,
     execute_policy_step,
+    extract_episode_status,
     frame_from_obs,
     get_benchmark_suite,
     get_device_summary,
@@ -823,9 +824,10 @@ class ExperimentController:
                 result = self.backend.execute_policy_step(ctx, current_prompt or ctx.task_description)
                 done = bool(result.done)
                 reward = float(result.reward)
-                success = bool(done)
                 total_policy_steps += 1
                 phase_policy_step += 1
+                episode_status = extract_episode_status(reward, done, result.info, total_policy_steps, cfg.max_steps)
+                success = episode_status.success
                 annotated = draw_overlay(
                     result.raw_frame.copy(),
                     {
