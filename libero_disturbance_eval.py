@@ -54,6 +54,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--dy", type=float, default=0.05)
     parser.add_argument("--out-dir", default="/home/lijingsu/vla/disturbance_outputs")
     parser.add_argument("--seed", type=int, default=7)
+    parser.add_argument(
+        "--seed-rule",
+        choices=["fixed", "base_plus_initial_state"],
+        default="fixed",
+        help="fixed uses --seed for every episode; base_plus_initial_state uses --seed + initial_state_id.",
+    )
     return parser.parse_args()
 
 
@@ -125,6 +131,119 @@ def robot_state_from_obs(obs: dict) -> dict:
     }
 
 
+def target_body_pose_from_joint(env, joint_name: str) -> dict | None:
+    body_name = re.sub(r"_joint\d+$", "", joint_name)
+    try:
+        return body_pose(sim_from_env(env), body_name)
+    except Exception:
+        return None
+
+
+def write_json(path: Path, payload: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(json_safe(payload), indent=2) + "\n", encoding="utf-8")
+
+
+def write_jsonl(path: Path, records: list[dict]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8") as f:
+        for record in records:
+            f.write(json.dumps(json_safe(record)) + "\n")
+
+
+def episode_dir_name(*, task_id: int, trial_id: int, seed: int, mode: str) -> str:
+    return f"task{task_id}_initial_state{trial_id}_seed{seed}_{mode}"
+
+
+def event_records(record: dict) -> list[dict]:
+    events = [
+        {
+            "event": "episode_start",
+            "task_id": record["task_id"],
+            "initial_state_id": record["initial_state_id"],
+            "seed": record["seed"],
+            "mode": record["mode"],
+            "manual_intervention": record["manual_intervention"],
+        }
+    ]
+    disturbance = record.get("disturbance")
+    if disturbance is not None:
+        events.append(
+            {
+                "event": "disturbance_applied",
+                "policy_step": record["pair_key"]["disturbance_step"],
+                "target_joint": disturbance["joint"],
+                "before_qpos": disturbance["before_qpos"],
+                "after_qpos": disturbance["after_qpos"],
+                "delta_xyz_actual": disturbance["delta_xyz_actual"],
+                "refresh": disturbance.get("refresh"),
+            }
+        )
+    for action in record["actions"]:
+        events.append(
+            {
+                "event": "policy_step",
+                "policy_step": action["t"],
+                "video_frame_index": action["video_frame_index"],
+                "reward": action["reward"],
+                "done": action["done"],
+                "uses_post_disturbance_fresh_observation": action[
+                    "uses_post_disturbance_fresh_observation"
+                ],
+            }
+        )
+    events.append(
+        {
+            "event": "episode_end",
+            "status": record["status"],
+            "success": record["success"],
+            "timeout": record["timeout"],
+            "num_policy_steps": record["num_policy_steps"],
+        }
+    )
+    return events
+
+
+def write_episode_artifacts(record: dict, episode_dir: Path) -> dict:
+    paths = {
+        "episode_dir": str(episode_dir),
+        "run_config": str(episode_dir / "run_config.json"),
+        "events": str(episode_dir / "events.jsonl"),
+        "episode_summary": str(episode_dir / "episode_summary.json"),
+        "actions": str(episode_dir / "actions.jsonl"),
+        "raw_video": str(episode_dir / "raw.mp4"),
+    }
+    run_config = {
+        "checkpoint": record["checkpoint"],
+        "task_suite": record["task_suite"],
+        "task_id": record["task_id"],
+        "initial_state_id": record["initial_state_id"],
+        "seed": record["seed"],
+        "seed_rule": record["seed_rule"],
+        "mode": record["mode"],
+        "target_joint": record["target_joint"],
+        "disturbance_step": record["pair_key"]["disturbance_step"],
+        "disturbance_delta_xyz": record["pair_key"]["disturbance_delta_xyz"],
+        "warmup_env_steps": record["warmup_simulator_steps"],
+        "max_policy_steps": record["policy_step_budget"],
+        "manual_intervention": record["manual_intervention"],
+        "disabled_modes": [
+            "structured_recovery",
+            "stage_backtrack",
+            "verifier_stop",
+            "full_reset",
+            "oracle_rollback",
+        ],
+    }
+    summary = {k: v for k, v in record.items() if k != "actions"}
+    summary["artifact_paths"] = paths
+    write_json(Path(paths["run_config"]), run_config)
+    write_jsonl(Path(paths["events"]), event_records(record))
+    write_json(Path(paths["episode_summary"]), summary)
+    write_jsonl(Path(paths["actions"]), record["actions"])
+    return paths
+
+
 def canary_pair_key(
     *,
     checkpoint: str,
@@ -165,6 +284,7 @@ def rollout(
     condition: str,
     checkpoint: str,
     seed: int,
+    seed_rule: str,
     disturbance_step: int,
     target_joint: str,
     dx: float,
@@ -175,6 +295,9 @@ def rollout(
 ) -> dict:
     task = task_suite.get_task(task_id)
     initial_states = task_suite.get_task_init_states(task_id)
+    if trial_id >= len(initial_states):
+        raise ValueError(f"initial state {trial_id} is unavailable; only {len(initial_states)} states found")
+    set_seed_everywhere(seed)
     env, task_description = get_libero_env(task, cfg.model_family, resolution=256)
     resize_size = get_image_resize_size(cfg)
 
@@ -199,8 +322,10 @@ def rollout(
     )
     initial_robot_state = robot_state_from_obs(obs)
     initial_target_qpos = get_joint_qpos(env, resolved_target_joint)
+    initial_target_body_pose = target_body_pose_from_joint(env, resolved_target_joint)
     policy_start_robot_state = None
     policy_start_target_qpos = None
+    policy_start_target_body_pose = None
 
     replay_images: list[np.ndarray] = []
     action_trace = []
@@ -219,8 +344,12 @@ def rollout(
         if policy_t == 0:
             policy_start_robot_state = robot_state_from_obs(obs)
             policy_start_target_qpos = get_joint_qpos(env, resolved_target_joint)
+            policy_start_target_body_pose = target_body_pose_from_joint(env, resolved_target_joint)
         if condition == "disturbed" and policy_t == disturbance_step:
+            target_body_pose_before = target_body_pose_from_joint(env, resolved_target_joint)
             disturbance_record = audited_move_free_joint_xy(env, resolved_target_joint, dx, dy)
+            disturbance_record["target_body_pose_before"] = target_body_pose_before
+            disturbance_record["target_body_pose_after"] = target_body_pose_from_joint(env, resolved_target_joint)
             disturbance_record["delta_xyz_actual"] = [
                 float(disturbance_record["after_qpos"][i] - disturbance_record["before_qpos"][i])
                 for i in range(3)
@@ -277,17 +406,20 @@ def rollout(
         success=episode_status.success,
     )
 
-    video_path = out_dir / f"{condition}_task{task_id}_trial{trial_id}_success{episode_status.success}.mp4"
+    mode = "reactive_disturbed" if condition == "disturbed" else "clean"
+    episode_dir = out_dir / episode_dir_name(task_id=task_id, trial_id=trial_id, seed=seed, mode=mode)
+    video_path = episode_dir / "raw.mp4"
     save_video(replay_images, video_path)
     env.close()
 
-    return {
+    record = {
         "condition": condition,
-        "mode": "reactive_disturbed" if condition == "disturbed" else "clean",
+        "mode": mode,
         "pair_key": pair_key,
         "manual_intervention": False,
         "checkpoint": checkpoint,
         "seed": int(seed),
+        "seed_rule": seed_rule,
         "task_suite": task_suite_name,
         "unnorm_key": cfg.unnorm_key,
         "task_id": task_id,
@@ -298,8 +430,10 @@ def rollout(
         "target_selection": json_safe(target_selection),
         "initial_robot_state": initial_robot_state,
         "initial_target_qpos": initial_target_qpos,
+        "initial_target_body_pose": initial_target_body_pose,
         "policy_start_robot_state": policy_start_robot_state,
         "policy_start_target_qpos": policy_start_target_qpos,
+        "policy_start_target_body_pose": policy_start_target_body_pose,
         "status": episode_status.status,
         "episode_status": json_safe(episode_status),
         "success": episode_status.success,
@@ -324,6 +458,8 @@ def rollout(
         "video_path": str(video_path),
         "actions": action_trace,
     }
+    record["artifact_paths"] = write_episode_artifacts(record, episode_dir)
+    return record
 
 
 def main() -> None:
@@ -348,6 +484,7 @@ def main() -> None:
     task_ids = range(task_suite.n_tasks) if args.task_id < 0 else [args.task_id]
     jsonl_path = out_dir / "episodes.jsonl"
     for trial_id in range(args.trials):
+        episode_seed = args.seed + trial_id if args.seed_rule == "base_plus_initial_state" else args.seed
         for task_id in task_ids:
             for condition in ["clean", "disturbed"]:
                 record = rollout(
@@ -360,7 +497,8 @@ def main() -> None:
                     trial_id=trial_id,
                     condition=condition,
                     checkpoint=args.checkpoint,
-                    seed=args.seed,
+                    seed=episode_seed,
+                    seed_rule=args.seed_rule,
                     disturbance_step=args.disturbance_step,
                     target_joint=args.target_joint,
                     dx=args.dx,
