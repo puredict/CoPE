@@ -1,4 +1,4 @@
-"""Thread-safe controller for the CPU-only LIBERO mock dashboard."""
+"""Thread-safe single-worker controller for LIBERO dashboard backends."""
 
 from __future__ import annotations
 
@@ -17,16 +17,7 @@ import uuid
 
 import numpy as np
 
-from libero_mock_backend import (
-    MOCK_EXPERIMENT_MODES,
-    MockBackend,
-    MockRunConfig,
-    SimpleVideoRecorder,
-    draw_text_panel,
-    json_safe,
-    utc_now_iso,
-    write_json,
-)
+from libero_mock_backend import MockBackend, MockRunConfig, SimpleVideoRecorder, json_safe, utc_now_iso, write_json
 
 
 class ControllerState(str, Enum):
@@ -44,6 +35,7 @@ class ControllerState(str, Enum):
 
 class CommandType(str, Enum):
     LOAD = "LOAD"
+    LOAD_TASK = "LOAD_TASK"
     START = "START"
     PAUSE = "PAUSE"
     RESUME = "RESUME"
@@ -78,12 +70,43 @@ def _state_value(state: ControllerState | str) -> str:
     return state.value if isinstance(state, ControllerState) else str(state)
 
 
+def _config_dict(config: Any) -> dict[str, Any]:
+    try:
+        return asdict(config)
+    except TypeError:
+        if isinstance(config, dict):
+            return dict(config)
+        return dict(getattr(config, "__dict__", {}))
+
+
+def _cfg(config: Any, name: str, default: Any = None) -> Any:
+    if isinstance(config, dict):
+        return config.get(name, default)
+    return getattr(config, name, default)
+
+
+def _cfg_output_dir(config: Any) -> str:
+    return str(_cfg(config, "output_dir", None) or _cfg(config, "out_dir", None) or "/tmp/libero_dashboard")
+
+
+def _backend_snapshot(backend: Any) -> dict[str, Any]:
+    if not hasattr(backend, "get_snapshot"):
+        return {}
+    try:
+        snap = backend.get_snapshot()
+    except Exception as exc:
+        return {"backend_snapshot_error": f"{type(exc).__name__}: {exc}"}
+    return json_safe(snap or {})
+
+
 def _initial_snapshot() -> dict[str, Any]:
     return {
         "state": ControllerState.IDLE.value,
-        "message": "Mock dashboard controller is idle.",
+        "message": "Dashboard controller is idle.",
         "run_id": None,
         "policy_step": 0,
+        "environment_step": 0,
+        "policy_budget_remaining": 0,
         "total_policy_steps": 0,
         "phase_policy_step": 0,
         "max_steps": 0,
@@ -95,7 +118,13 @@ def _initial_snapshot() -> dict[str, Any]:
         "original_prompt": "",
         "current_prompt": "",
         "resolved_target_joint": "",
+        "target_joint": "",
+        "target_position": None,
+        "target_selection": {},
         "available_target_joints": [],
+        "fresh_observation": None,
+        "episode_status": None,
+        "disturbance_state": {},
         "paused": False,
         "stop_requested": False,
         "disturbance_applied": False,
@@ -105,12 +134,14 @@ def _initial_snapshot() -> dict[str, Any]:
         "interactive": True,
         "formal_run": False,
         "eligible_for_official_metrics": False,
+        "exclude_from_formal_success_summaries": True,
         "reward": 0.0,
         "done": False,
         "success": False,
         "termination_reason": None,
         "raw_action": [],
         "env_action": [],
+        "latest_action": {"raw_action": [], "env_action": []},
         "latest_frame": None,
         "latest_frame_shape": None,
         "events_tail": [],
@@ -120,6 +151,7 @@ def _initial_snapshot() -> dict[str, Any]:
         "run_dir": None,
         "run_config_path": None,
         "events_jsonl_path": None,
+        "actions_jsonl_path": None,
         "episode_summary_path": None,
         "raw_video_path": None,
         "annotated_video_path": None,
@@ -146,7 +178,7 @@ class ExperimentController:
     start, step, disturbance, or save methods.
     """
 
-    def __init__(self, backend_factory: Callable[[], MockBackend] | None = None) -> None:
+    def __init__(self, backend_factory: Callable[[], Any] | None = None) -> None:
         self._backend_factory = backend_factory or (lambda: MockBackend())
         self._backend = self._backend_factory()
         self._lock = threading.RLock()
@@ -156,7 +188,7 @@ class ExperimentController:
         self._latest_frame: np.ndarray | None = None
         self._events_tail: list[dict[str, Any]] = []
         self._shutdown = False
-        self._worker_thread = threading.Thread(target=self._worker_main, name="libero-mock-dashboard-worker", daemon=True)
+        self._worker_thread = threading.Thread(target=self._worker_main, name="libero-dashboard-worker", daemon=True)
         self._worker_thread.start()
         with self._lock:
             self._snapshot["worker_alive"] = True
@@ -177,20 +209,31 @@ class ExperimentController:
             snap["latest_frame"] = frame.copy() if include_frame and frame is not None else None
             return frame, snap
 
-    def request_load(self, checkpoint: str = "mock://libero-dashboard") -> CommandResult:
+    def request_load(self, checkpoint: str = "mock://libero-dashboard", config: Any | None = None) -> CommandResult:
         with self._lock:
             if self._state != ControllerState.IDLE:
                 return CommandResult(False, f"Cannot load backend from state {self._state.value}.")
-            self._set_state_locked(ControllerState.LOADING, "Mock backend load queued.")
-        self._enqueue(CommandType.LOAD, {"checkpoint": checkpoint})
-        return CommandResult(True, "Mock backend load queued.")
+            self._set_state_locked(ControllerState.LOADING, "Backend load queued.")
+        self._enqueue(CommandType.LOAD, {"checkpoint": checkpoint, "config": config})
+        return CommandResult(True, "Backend load queued.")
 
-    def start_episode(self, config: MockRunConfig | None = None, **overrides: Any) -> CommandResult:
+    def load_task(self, config: Any) -> CommandResult:
+        cfg = self._validated_config(config)
+        if cfg is None:
+            return CommandResult(False, "Invalid task config.")
+        with self._lock:
+            if self._state != ControllerState.READY:
+                return CommandResult(False, f"Cannot load task from state {self._state.value}.")
+        self._enqueue(CommandType.LOAD_TASK, {"config": cfg})
+        return CommandResult(True, "Task load queued.")
+
+    def start_episode(self, config: Any | None = None, **overrides: Any) -> CommandResult:
         try:
-            cfg = config or MockRunConfig(**overrides)
-            cfg = cfg.validated()
+            cfg = self._validated_config(config or MockRunConfig(**overrides))
         except Exception as exc:
             return CommandResult(False, f"Invalid episode config: {exc}")
+        if cfg is None:
+            return CommandResult(False, "Invalid episode config.")
         with self._lock:
             if self._state != ControllerState.READY:
                 return CommandResult(False, f"Cannot start episode from state {self._state.value}.")
@@ -252,6 +295,10 @@ class ExperimentController:
     def _enqueue(self, command_type: CommandType, payload: dict[str, Any]) -> None:
         self._commands.put(ControlCommand(command_type, time.time(), payload))
 
+    @staticmethod
+    def _validated_config(config: Any) -> Any:
+        return config.validated() if hasattr(config, "validated") else config
+
     def _worker_main(self) -> None:
         while not self._shutdown:
             try:
@@ -261,6 +308,8 @@ class ExperimentController:
             try:
                 if command.type == CommandType.LOAD:
                     self._handle_load(command)
+                elif command.type == CommandType.LOAD_TASK:
+                    self._handle_load_task(command)
                 elif command.type == CommandType.START:
                     self._run_episode(command.payload["config"])
                 elif command.type == CommandType.RESET:
@@ -276,9 +325,13 @@ class ExperimentController:
 
     def _handle_load(self, command: ControlCommand) -> None:
         with self._lock:
-            self._set_state_locked(ControllerState.LOADING, "Loading mock backend.")
+            self._set_state_locked(ControllerState.LOADING, "Loading backend.")
         try:
-            info = self._backend.load_model(command.payload.get("checkpoint", "mock://libero-dashboard"))
+            config = command.payload.get("config")
+            if hasattr(self._backend, "load"):
+                info = self._backend.load(config or command.payload.get("checkpoint", "mock://libero-dashboard"))
+            else:
+                info = self._backend.load_model(command.payload.get("checkpoint", "mock://libero-dashboard"))
         except Exception as exc:
             self._set_error(exc)
             return
@@ -290,9 +343,40 @@ class ExperimentController:
                     "resolved_unnorm_key": info.get("resolved_unnorm_key"),
                     "device": info.get("device", "cpu"),
                     "backend": info.get("backend", "mock"),
+                    "device_summary": info.get("device_summary"),
                 }
             )
-            self._set_state_locked(ControllerState.READY, "Mock backend loaded.")
+            self._set_state_locked(ControllerState.READY, "Backend loaded.")
+
+    def _handle_load_task(self, command: ControlCommand) -> None:
+        with self._lock:
+            if self._state != ControllerState.READY:
+                self._update_message(f"Cannot load task from state {self._state.value}.")
+                return
+            self._set_state_locked(ControllerState.READY, "Loading task on worker.")
+        try:
+            info = self._backend.inspect_task(command.payload["config"])
+        except Exception as exc:
+            self._set_error(exc)
+            return
+        frame = info.get("preview_frame")
+        with self._lock:
+            if frame is not None:
+                self._latest_frame = np.asarray(frame, dtype=np.uint8).copy()
+            target_joint = info.get("resolved_target_joint") or ""
+            self._snapshot.update(
+                {
+                    "task_text": info.get("task_text", ""),
+                    "current_prompt": info.get("task_text", ""),
+                    "original_prompt": info.get("task_text", ""),
+                    "available_target_joints": list(info.get("available_target_joints", [])),
+                    "resolved_target_joint": target_joint,
+                    "target_joint": target_joint,
+                    "target_position": info.get("target_position"),
+                    "target_selection": info.get("target_selection", {}),
+                    "message": "Task loaded.",
+                }
+            )
 
     def _handle_reset(self) -> None:
         with self._lock:
@@ -302,6 +386,7 @@ class ExperimentController:
                 "checkpoint": self._snapshot.get("checkpoint"),
                 "resolved_unnorm_key": self._snapshot.get("resolved_unnorm_key"),
                 "device": self._snapshot.get("device"),
+                "device_summary": self._snapshot.get("device_summary"),
                 "backend": self._snapshot.get("backend", "mock"),
             }
             self._snapshot = _initial_snapshot()
@@ -312,25 +397,30 @@ class ExperimentController:
             self._snapshot["state"] = self._state.value
             self._snapshot["message"] = "Controller reset."
 
-    def _run_episode(self, config: MockRunConfig) -> None:
-        cfg = config.validated()
+    def _run_episode(self, config: Any) -> None:
+        cfg = self._validated_config(config)
         run_id = self._make_run_id(cfg)
-        run_dir = Path(cfg.output_dir).expanduser() / run_id
+        run_dir = Path(_cfg_output_dir(cfg)).expanduser() / run_id
         run_dir.mkdir(parents=True, exist_ok=True)
         events_path = run_dir / "events.jsonl"
+        actions_path = run_dir / "actions.jsonl"
         summary_path = run_dir / "episode_summary.json"
         config_path = run_dir / "run_config.json"
         raw_video_path = run_dir / "raw.mp4"
         annotated_video_path = run_dir / "annotated.mp4"
-        event_file = events_path.open("a", buffering=1)
+        worker_log_path = run_dir / "worker_error.log"
+        event_file = events_path.open("a", encoding="utf-8", buffering=1)
+        actions_file = actions_path.open("a", encoding="utf-8", buffering=1)
         recorder: SimpleVideoRecorder | None = None
         event_count = 0
         start_time = time.time()
         policy_step = 0
+        environment_step = 0
         reward = 0.0
         done = False
         success = False
         termination_reason: str | None = None
+        episode_status: dict[str, Any] | None = None
         raw_action: list[float] = []
         env_action: list[float] = []
         manual_intervention = False
@@ -342,6 +432,9 @@ class ExperimentController:
         traceback_tail = ""
         video_info: dict[str, Any] = {}
         recovery_state: dict[str, Any] = {}
+        terminal_state = ControllerState.FAILED
+        cfg_payload = _config_dict(cfg)
+        mode = str(_cfg(cfg, "mode", "reactive_disturbed"))
 
         def record(event: str, payload: dict[str, Any] | None = None) -> None:
             nonlocal event_count
@@ -351,12 +444,17 @@ class ExperimentController:
                 "wall_time": round(time.time() - start_time, 6),
                 "step": policy_step,
                 "policy_step": policy_step,
+                "environment_step": environment_step,
                 "event": event,
                 "state": _state_value(self._state),
-                "mode": cfg.mode,
+                "mode": mode,
                 "reward": reward,
                 "paused": paused,
-                "disturbance_count": self._backend.disturbance_count,
+                "disturbance_count": getattr(self._backend, "disturbance_count", 0),
+                "interactive": True,
+                "formal_run": False,
+                "eligible_for_official_metrics": False,
+                "exclude_from_formal_success_summaries": True,
                 "payload": json_safe(payload or {}),
             }
             event_file.write(json.dumps(json_safe(record_payload), sort_keys=True) + "\n")
@@ -373,43 +471,67 @@ class ExperimentController:
             *,
             force_active: bool = True,
         ) -> None:
+            backend_snap = _backend_snapshot(self._backend)
+            target_joint = (
+                backend_snap.get("target_joint")
+                or backend_snap.get("resolved_target_joint")
+                or getattr(self._backend, "resolved_target_joint", "")
+            )
+            target_position = backend_snap.get("target_position")
+            latest_action = backend_snap.get("latest_action") or {"raw_action": raw_action, "env_action": env_action}
             with self._lock:
                 self._state = state
                 if frame is not None:
-                    self._latest_frame = frame.copy()
+                    self._latest_frame = np.asarray(frame, dtype=np.uint8).copy()
                 self._snapshot.update(
                     {
                         "state": state.value,
                         "message": message,
                         "run_id": run_id,
                         "policy_step": policy_step,
+                        "environment_step": environment_step,
+                        "policy_budget_remaining": backend_snap.get(
+                            "policy_budget_remaining", max(0, int(_cfg(cfg, "max_steps", 0)) - policy_step)
+                        ),
                         "total_policy_steps": policy_step,
                         "phase_policy_step": policy_step,
-                        "max_steps": cfg.max_steps,
-                        "mode": cfg.mode,
-                        "task_suite": cfg.task_suite,
-                        "task_id": cfg.task_id,
-                        "trial_id": cfg.trial_id,
-                        "task_text": self._backend.task_text,
-                        "original_prompt": self._backend.original_prompt,
-                        "current_prompt": self._backend.current_prompt,
-                        "resolved_target_joint": self._backend.resolved_target_joint,
+                        "max_steps": int(_cfg(cfg, "max_steps", 0)),
+                        "mode": mode,
+                        "task_suite": _cfg(cfg, "task_suite", "libero_spatial"),
+                        "task_id": int(_cfg(cfg, "task_id", 0)),
+                        "trial_id": int(_cfg(cfg, "trial_id", 0)),
+                        "task_text": backend_snap.get("task_text", getattr(self._backend, "task_text", "")),
+                        "original_prompt": backend_snap.get("original_prompt", getattr(self._backend, "original_prompt", "")),
+                        "current_prompt": backend_snap.get("current_prompt", getattr(self._backend, "current_prompt", "")),
+                        "resolved_target_joint": target_joint,
+                        "target_joint": target_joint,
+                        "target_position": target_position,
+                        "target_selection": backend_snap.get("target_selection", self._snapshot.get("target_selection", {})),
                         "available_target_joints": self._snapshot.get("available_target_joints", []),
+                        "fresh_observation": backend_snap.get("fresh_observation"),
+                        "episode_status": episode_status or backend_snap.get("episode_status"),
+                        "disturbance_state": {
+                            "applied": getattr(self._backend, "disturbance_count", 0) > 0,
+                            "count": getattr(self._backend, "disturbance_count", 0),
+                            "last": getattr(self._backend, "last_disturbance", None),
+                        },
                         "paused": paused,
                         "stop_requested": stop_requested,
-                        "disturbance_applied": self._backend.disturbance_count > 0,
-                        "disturbance_count": self._backend.disturbance_count,
+                        "disturbance_applied": getattr(self._backend, "disturbance_count", 0) > 0,
+                        "disturbance_count": getattr(self._backend, "disturbance_count", 0),
                         "manual_intervention": manual_intervention,
                         "human_intervention": manual_intervention,
                         "interactive": True,
                         "formal_run": False,
                         "eligible_for_official_metrics": False,
+                        "exclude_from_formal_success_summaries": True,
                         "reward": float(reward),
                         "done": done,
                         "success": success,
                         "termination_reason": termination_reason,
                         "raw_action": list(raw_action),
                         "env_action": list(env_action),
+                        "latest_action": latest_action,
                         "latest_frame_shape": list(self._latest_frame.shape) if self._latest_frame is not None else None,
                         "latest_frame": None,
                         "events_tail": copy.deepcopy(self._events_tail),
@@ -419,15 +541,22 @@ class ExperimentController:
                         "run_dir": str(run_dir),
                         "run_config_path": str(config_path),
                         "events_jsonl_path": str(events_path),
+                        "actions_jsonl_path": str(actions_path),
                         "episode_summary_path": str(summary_path),
                         "raw_video_path": str(raw_video_path),
                         "annotated_video_path": str(annotated_video_path),
-                        "last_disturbance": self._backend.last_disturbance,
-                        "recovery_state": copy.deepcopy(recovery_state),
+                        "last_disturbance": getattr(self._backend, "last_disturbance", None),
+                        "recovery_state": backend_snap.get("recovery_state", copy.deepcopy(recovery_state)),
                         "elapsed_seconds": round(time.time() - start_time, 6),
                         "active_episode": force_active,
                     }
                 )
+
+        def latest_backend_frame() -> np.ndarray | None:
+            frame = getattr(self._backend, "latest_frame", None)
+            if frame is not None:
+                return np.asarray(frame, dtype=np.uint8)
+            return self._latest_frame
 
         def apply_disturbance_from_command(payload: dict[str, Any], source: str) -> dict[str, Any]:
             nonlocal manual_intervention, recovery_state
@@ -445,29 +574,36 @@ class ExperimentController:
                 record("disturbance_applied", disturbance)
                 if source == "manual_ui":
                     record("manual_disturbance", disturbance)
+                backend_snap = _backend_snapshot(self._backend)
+                recovery_state = backend_snap.get("recovery_state", recovery_state)
                 if disturbance.get("prompt_changed"):
-                    recovery_state = {
-                        "affected_joint": disturbance.get("joint"),
-                        "object": self._backend.object_phrase_from_joint(disturbance.get("joint")),
-                        "failure_state": "object moved during execution",
-                        "recovery_prompt": self._backend.current_prompt,
-                    }
+                    if not recovery_state:
+                        recovery_state = {
+                            "affected_joint": disturbance.get("joint"),
+                            "failure_state": "object moved during execution",
+                            "recovery_prompt": getattr(self._backend, "current_prompt", ""),
+                        }
                     record("prompt_changed", recovery_state)
             else:
                 record("disturbance_skipped", disturbance)
-            fresh_frame = self._backend.render_frame(
-                cfg,
-                policy_step=policy_step,
-                paused=paused,
-                state_label=ControllerState.PAUSED.value if paused else ControllerState.RUNNING.value,
-                task_text=self._backend.task_text,
-                prompt=self._backend.current_prompt,
-                object_position=self._backend.object_position,
-                disturbed=self._backend.disturbance_count > 0,
-                disturbance_count=self._backend.disturbance_count,
-            )
-            record("observation_refreshed", {"method": "mock_backend.render_frame", "consumed_noop_env_step": False})
-            update_snapshot(ControllerState.PAUSED if paused else ControllerState.RUNNING, "Disturbance processed.", fresh_frame)
+            refresh = disturbance.get("refresh") or {"method": "mock_backend.render_frame", "consumed_noop_env_step": False}
+            record("observation_refreshed", refresh)
+            frame = None
+            if hasattr(self._backend, "render_frame"):
+                frame = self._backend.render_frame(
+                    cfg,
+                    policy_step=policy_step,
+                    paused=paused,
+                    state_label=ControllerState.PAUSED.value if paused else ControllerState.RUNNING.value,
+                    task_text=getattr(self._backend, "task_text", ""),
+                    prompt=getattr(self._backend, "current_prompt", ""),
+                    object_position=getattr(self._backend, "object_position", None),
+                    disturbed=getattr(self._backend, "disturbance_count", 0) > 0,
+                    disturbance_count=getattr(self._backend, "disturbance_count", 0),
+                )
+            if frame is None:
+                frame = latest_backend_frame()
+            update_snapshot(ControllerState.PAUSED if paused else ControllerState.RUNNING, "Disturbance processed.", frame)
             return disturbance
 
         def process_episode_command(command: ControlCommand) -> None:
@@ -507,6 +643,8 @@ class ExperimentController:
                 record("reset_rejected", {"reason": "episode_active"})
             elif command.type == CommandType.LOAD:
                 record("load_rejected", {"reason": "episode_active"})
+            elif command.type == CommandType.LOAD_TASK:
+                record("load_task_rejected", {"reason": "episode_active"})
 
         def drain_commands() -> None:
             while True:
@@ -536,12 +674,14 @@ class ExperimentController:
             write_json(
                 config_path,
                 {
-                    "config": asdict(cfg),
+                    "config": cfg_payload,
                     "run_id": run_id,
                     "created_at": utc_now_iso(),
                     "interactive": True,
                     "formal_run": False,
-                    "backend": "mock",
+                    "eligible_for_official_metrics": False,
+                    "exclude_from_formal_success_summaries": True,
+                    "backend": self._snapshot.get("backend", "mock"),
                 },
             )
             start_info = self._backend.start_episode(cfg)
@@ -549,9 +689,10 @@ class ExperimentController:
             with self._lock:
                 self._events_tail = []
                 self._snapshot["available_target_joints"] = list(start_info.get("available_target_joints", []))
+                self._snapshot["target_selection"] = start_info.get("target_selection", self._snapshot.get("target_selection", {}))
             initial_frame = start_info["frame"]
             recorder.append(initial_frame, initial_frame)
-            record("episode_started", {"config": asdict(cfg), "run_dir": str(run_dir)})
+            record("episode_started", {"config": cfg_payload, "run_dir": str(run_dir)})
             update_snapshot(ControllerState.RUNNING, "Episode running.", initial_frame)
 
             while True:
@@ -563,12 +704,17 @@ class ExperimentController:
                     break
 
                 if self._backend.should_auto_disturb(cfg, policy_step):
-                    if self._backend.disturbance_count > 0 and not cfg.allow_multiple_disturbances:
+                    if getattr(self._backend, "disturbance_count", 0) > 0 and not bool(
+                        _cfg(cfg, "allow_multiple_disturbances", False)
+                    ):
                         record("disturbance_skipped", {"reason": "manual_disturbance_already_applied", "source": "auto"})
                     else:
-                        apply_disturbance_from_command({"target_joint": cfg.target_joint, "dx": cfg.dx, "dy": cfg.dy}, "auto")
+                        apply_disturbance_from_command(
+                            {"target_joint": _cfg(cfg, "target_joint", "auto"), "dx": _cfg(cfg, "dx", 0.10), "dy": _cfg(cfg, "dy", 0.05)},
+                            "auto",
+                        )
 
-                if cfg.mode == "verifier_stop" and self._backend.disturbance_count > 0:
+                if mode == "verifier_stop" and getattr(self._backend, "disturbance_count", 0) > 0:
                     termination_reason = "verifier_stop"
                     done = True
                     success = False
@@ -581,16 +727,17 @@ class ExperimentController:
                     success = False
                     break
 
-                state_during_step = ControllerState.RUNNING
-                update_snapshot(state_during_step, "Executing mock policy step.")
+                update_snapshot(ControllerState.RUNNING, "Executing policy step.")
                 result = self._backend.step(cfg, policy_step=policy_step, paused=False)
-                policy_step = result.policy_step
-                reward = result.reward
-                done = result.done
-                success = result.success
+                policy_step = int(result.policy_step)
+                environment_step = int(getattr(result, "environment_step", environment_step + 1))
+                reward = float(result.reward)
+                done = bool(result.done)
+                success = bool(result.success)
                 termination_reason = result.termination_reason
-                raw_action = result.raw_action
-                env_action = result.env_action
+                raw_action = list(result.raw_action)
+                env_action = list(result.env_action)
+                episode_status = json_safe(getattr(result, "episode_status", None))
                 recorder.append(result.raw_frame, result.annotated_frame)
                 record(
                     "policy_step_completed",
@@ -602,8 +749,30 @@ class ExperimentController:
                         "done": done,
                         "success": success,
                         "termination_reason": termination_reason,
+                        "episode_status": episode_status,
                     },
                 )
+                action_record = {
+                    "timestamp": utc_now_iso(),
+                    "wall_time": round(time.time() - start_time, 6),
+                    "policy_step": policy_step,
+                    "environment_step": environment_step,
+                    "mode": mode,
+                    "reward": reward,
+                    "raw_action": raw_action,
+                    "env_action": env_action,
+                    "inference_seconds": result.inference_seconds,
+                    "env_step_seconds": result.env_step_seconds,
+                    "done": done,
+                    "success": success,
+                    "termination_reason": termination_reason,
+                    "episode_status": episode_status,
+                    "interactive": True,
+                    "formal_run": False,
+                    "eligible_for_official_metrics": False,
+                    "exclude_from_formal_success_summaries": True,
+                }
+                actions_file.write(json.dumps(json_safe(action_record), sort_keys=True) + "\n")
                 with self._lock:
                     self._snapshot["inference_seconds"] = result.inference_seconds
                     self._snapshot["env_step_seconds"] = result.env_step_seconds
@@ -625,10 +794,12 @@ class ExperimentController:
             success = False
             termination_reason = "worker_exception"
             error_text = f"{type(exc).__name__}: {exc}"
-            traceback_tail = "".join(traceback.format_exception(type(exc), exc, exc.__traceback__)[-8:])
+            traceback_full = "".join(traceback.format_exception(type(exc), exc, exc.__traceback__))
+            traceback_tail = "".join(traceback_full.splitlines(keepends=True)[-12:])
             terminal_state = ControllerState.ERROR
+            worker_log_path.write_text(traceback_full, encoding="utf-8")
             try:
-                record("worker_exception", {"error": error_text, "traceback_tail": traceback_tail})
+                record("worker_exception", {"error": error_text, "traceback_tail": traceback_tail, "worker_log_path": str(worker_log_path)})
             except Exception:
                 pass
         finally:
@@ -638,34 +809,55 @@ class ExperimentController:
             except Exception as exc:  # pragma: no cover - defensive finalization.
                 video_info = {"warnings": [f"video finalization failed: {type(exc).__name__}: {exc}"]}
 
+            if termination_reason == "manual_stop" and hasattr(self._backend, "stop"):
+                try:
+                    self._backend.stop()
+                except Exception as exc:
+                    error_text = error_text or f"Backend stop failed: {type(exc).__name__}: {exc}"
+                    terminal_state = ControllerState.ERROR
+
+            backend_final_snapshot = _backend_snapshot(self._backend)
             summary = {
                 "run_id": run_id,
                 "state": terminal_state.value,
                 "success": success,
                 "done": done,
                 "termination_reason": termination_reason,
+                "episode_status": episode_status or backend_final_snapshot.get("episode_status"),
                 "error": error_text,
                 "traceback_tail": traceback_tail,
-                "config": asdict(cfg),
+                "config": cfg_payload,
                 "policy_step": policy_step,
+                "environment_step": environment_step,
+                "policy_budget_remaining": backend_final_snapshot.get(
+                    "policy_budget_remaining", max(0, int(_cfg(cfg, "max_steps", 0)) - policy_step)
+                ),
                 "reward": reward,
-                "disturbance_count": self._backend.disturbance_count,
-                "last_disturbance": self._backend.last_disturbance,
+                "disturbance_count": getattr(self._backend, "disturbance_count", 0),
+                "last_disturbance": getattr(self._backend, "last_disturbance", None),
                 "manual_intervention": manual_intervention,
                 "human_intervention": manual_intervention,
                 "interactive": True,
                 "formal_run": False,
                 "eligible_for_official_metrics": False,
-                "current_prompt": self._backend.current_prompt,
-                "original_prompt": self._backend.original_prompt,
-                "recovery_state": recovery_state,
+                "exclude_from_formal_success_summaries": True,
+                "current_prompt": backend_final_snapshot.get("current_prompt", getattr(self._backend, "current_prompt", "")),
+                "original_prompt": backend_final_snapshot.get("original_prompt", getattr(self._backend, "original_prompt", "")),
+                "target_joint": backend_final_snapshot.get("target_joint", getattr(self._backend, "resolved_target_joint", "")),
+                "target_position": backend_final_snapshot.get("target_position"),
+                "fresh_observation": backend_final_snapshot.get("fresh_observation"),
+                "latest_action": backend_final_snapshot.get("latest_action", {"raw_action": raw_action, "env_action": env_action}),
+                "recovery_state": backend_final_snapshot.get("recovery_state", recovery_state),
+                "backend_snapshot": backend_final_snapshot,
                 "paths": {
                     "run_dir": str(run_dir),
                     "run_config": str(config_path),
                     "events_jsonl": str(events_path),
+                    "actions_jsonl": str(actions_path),
                     "episode_summary": str(summary_path),
                     "raw_video": str(raw_video_path),
                     "annotated_video": str(annotated_video_path),
+                    "worker_log": str(worker_log_path),
                 },
                 "video": video_info,
                 "event_count": event_count,
@@ -682,6 +874,11 @@ class ExperimentController:
                 event_file.close()
             except Exception:
                 pass
+            try:
+                actions_file.flush()
+                actions_file.close()
+            except Exception:
+                pass
             stop_requested = False
             paused = False
             update_snapshot(
@@ -696,21 +893,24 @@ class ExperimentController:
                         "done": True,
                         "success": success,
                         "termination_reason": termination_reason,
+                        "episode_status": episode_status or backend_final_snapshot.get("episode_status"),
                         "error": error_text,
                         "traceback_tail": traceback_tail,
                         "active_episode": False,
+                        "actions_jsonl_path": str(actions_path),
                         "episode_summary_path": str(summary_path),
                         "raw_video_path": str(raw_video_path),
                         "annotated_video_path": str(annotated_video_path),
+                        "model_loaded": bool(getattr(self._backend, "loaded", self._snapshot.get("model_loaded", False))),
                     }
                 )
             if shutdown_after_save:
                 self._shutdown = True
 
-    def _make_run_id(self, cfg: MockRunConfig) -> str:
+    def _make_run_id(self, cfg: Any) -> str:
         stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
         short = uuid.uuid4().hex[:8]
-        return f"{stamp}_task{cfg.task_id}_trial{cfg.trial_id}_{cfg.mode}_{short}"
+        return f"{stamp}_task{_cfg(cfg, 'task_id', 0)}_trial{_cfg(cfg, 'trial_id', 0)}_{_cfg(cfg, 'mode', 'unknown')}_{short}"
 
     def _set_state_locked(self, state: ControllerState, message: str) -> None:
         self._state = state
@@ -754,7 +954,9 @@ def wait_for_state(
     raise TimeoutError(f"Timed out waiting for states {sorted(wanted)}; last snapshot={last_snapshot}")
 
 
-def snapshot_for_json(snapshot: dict[str, Any]) -> dict[str, Any]:
+def snapshot_for_json(snapshot: Any) -> Any:
+    if not isinstance(snapshot, dict):
+        return json_safe(snapshot)
     cleaned = copy.deepcopy(snapshot)
     cleaned["latest_frame"] = None
     return json_safe(cleaned)

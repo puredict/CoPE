@@ -4,6 +4,7 @@ import argparse
 import csv
 import json
 from pathlib import Path
+import sys
 
 
 def read_rows(path: Path) -> list[dict]:
@@ -18,9 +19,13 @@ def read_rows(path: Path) -> list[dict]:
 
 def summarize_run(label: str, run_dir: Path) -> list[dict]:
     summary_path = run_dir / "summary.json"
+    if not summary_path.exists() and (run_dir / "episode_summary.json").exists():
+        summary_path = run_dir / "episode_summary.json"
     if summary_path.exists():
         summary = json.loads(summary_path.read_text(encoding="utf-8"))
-        if summary.get("not_empirical_model_measurement") or summary.get("exclude_from_formal_success_summaries"):
+        reasons = formal_skip_reasons(summary)
+        if reasons:
+            warn_skipped(label, run_dir, summary_path.name, 1, reasons)
             return [
                 {
                     "label": label,
@@ -33,7 +38,17 @@ def summarize_run(label: str, run_dir: Path) -> list[dict]:
                 }
             ]
     rows = read_rows(run_dir / "episodes.jsonl")
-    rows = [r for r in rows if not r.get("not_empirical_model_measurement")]
+    filtered_rows = []
+    skipped: dict[tuple[str, ...], int] = {}
+    for row in rows:
+        reasons = formal_skip_reasons(row)
+        if reasons:
+            skipped[tuple(reasons)] = skipped.get(tuple(reasons), 0) + 1
+        else:
+            filtered_rows.append(row)
+    for reasons, count in sorted(skipped.items()):
+        warn_skipped(label, run_dir, "episodes.jsonl", count, list(reasons))
+    rows = filtered_rows
     out = []
     for condition in ("clean", "disturbed"):
         xs = [r for r in rows if r.get("condition") == condition]
@@ -51,6 +66,38 @@ def summarize_run(label: str, run_dir: Path) -> list[dict]:
             }
         )
     return out
+
+
+def should_skip_formal(row: dict) -> bool:
+    return bool(formal_skip_reasons(row))
+
+
+def formal_skip_reasons(row: dict) -> list[str]:
+    reasons = []
+    if row.get("not_empirical_model_measurement"):
+        reasons.append("not_empirical_model_measurement")
+    if row.get("exclude_from_formal_success_summaries"):
+        reasons.append("exclude_from_formal_success_summaries")
+    if row.get("interactive"):
+        reasons.append("interactive")
+    if row.get("manual_intervention"):
+        reasons.append("manual_intervention")
+    if row.get("human_intervention"):
+        reasons.append("human_intervention")
+    if row.get("formal_run") is False:
+        reasons.append("formal_run=false")
+    if row.get("eligible_for_official_metrics") is False:
+        reasons.append("eligible_for_official_metrics=false")
+    return reasons
+
+
+def warn_skipped(label: str, run_dir: Path, source: str, count: int, reasons: list[str]) -> None:
+    reason_text = ", ".join(reasons)
+    print(
+        f"WARNING: excluding {count} interactive/non-formal record(s) from formal summary "
+        f"for {label} at {run_dir} ({source}; reasons: {reason_text})",
+        file=sys.stderr,
+    )
 
 
 def main() -> None:
