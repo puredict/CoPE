@@ -8,7 +8,7 @@
 ## 输入材料状态
 
 - 已确认 `/home/lijingsu/vla` 是 Git 仓库；开始时该仓库无 commit，因此先用阶段 1.5 准备的 `audit_outputs/20260713_211615/baseline_commit_file_list.txt` 创建 baseline commit `88afdea6b571454958fac57abd19c038d149f069`。
-- 指定路径 `docs/audit/STATIC_AUDIT_REPORT.md`、`EXPERIMENT_MODE_MATRIX.md`、`BUG_AND_RISK_REGISTER.md`、`DUPLICATION_MAP.md` 在远端仓库开始时不存在；读取了本地副本 `/Users/lijingsu/Documents/Codex/2026-07-13/files-mentioned-by-the-user-b/outputs/` 下四个同名文件。
+- 指定路径 docs/audit/STATIC_AUDIT_REPORT.md、EXPERIMENT_MODE_MATRIX.md、BUG_AND_RISK_REGISTER.md、DUPLICATION_MAP.md 在远端仓库开始时不存在；读取了 Codex 本地 outputs 副本下四个同名文件（原始机器绝对路径已省略）。
 - 未找到独立的阶段 1.5 Markdown 报告；读取了远端 `audit_outputs/20260713_211615/commands.tsv`、`baseline_commit_file_list.txt` 和 git 状态日志作为阶段 1.5 证据。
 
 ## 修改文件清单
