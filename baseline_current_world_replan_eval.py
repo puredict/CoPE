@@ -4,6 +4,15 @@ from pathlib import Path
 from types import SimpleNamespace
 import imageio, numpy as np
 
+from libero_experiment_core import (
+    extract_episode_status,
+    json_safe,
+    make_budget_report,
+    move_free_joint_xy as audited_move_free_joint_xy,
+    refresh_observation_after_sim_change,
+    select_target_joint,
+)
+
 sys.path.insert(0, "/home/lijingsu/vla/src/openvla")
 sys.path.insert(0, "/home/lijingsu/vla/src/LIBERO")
 os.environ.setdefault("MUJOCO_GL", "osmesa")
@@ -23,6 +32,7 @@ def parse_args():
     p.add_argument("--max-steps", type=int, default=220)
     p.add_argument("--num-steps-wait", type=int, default=10)
     p.add_argument("--disturbance-step", type=int, default=70)
+    p.add_argument("--target-joint", default="auto")
     p.add_argument("--dx", type=float, default=0.10)
     p.add_argument("--dy", type=float, default=0.05)
     p.add_argument("--out-dir", default="/home/lijingsu/vla/baseline_outputs/current_world_replan")
@@ -43,17 +53,10 @@ def toks(text):
 
 
 def choose_target_joint(env, task_description):
-    sim = sim_from_env(env); task_tokens = toks(task_description); cands = []
-    for jid in range(sim.model.njnt):
-        name = sim.model.joint_id2name(jid)
-        if not name or name.startswith("robot") or name.startswith("gripper"):
-            continue
-        if int(sim.model.jnt_type[jid]) != 0:
-            continue
-        obj = name.replace("_joint0", "")
-        cands.append((len(task_tokens & toks(obj)), -jid, name))
-    cands.sort(reverse=True)
-    return cands[0][2]
+    selection = select_target_joint(env, task_description, "auto")
+    if selection.selected_joint is None:
+        raise ValueError(f"target selection did not produce a joint: {selection.reason}")
+    return selection.selected_joint
 
 
 def move_free_joint_xy(env, joint_name, dx, dy):
@@ -94,28 +97,42 @@ def rollout(cfg, model, processor, task_suite, task_id, mode, args, out_dir):
     env.reset(); obs = env.set_init_state(init_states[0])
     for _ in range(args.num_steps_wait):
         obs, reward, done, info = env.step(get_libero_dummy_action(cfg.model_family))
-    target_joint = choose_target_joint(env, task_desc)
+    target_selection = select_target_joint(env, task_desc, args.target_joint)
+    target_joint = target_selection.selected_joint
+    if target_joint is None:
+        raise ValueError(f"target selection did not produce a joint: {target_selection.reason}")
     replay, actions = [], []
-    disturbance = None; recovery = None; done = False; reward = 0.0
+    disturbance = None; recovery = None; done = False; reward = 0.0; info = {}
     policy_t = 0
+    total_policy_steps = 0
     phase = "pre_disturbance"
     post_disturbance_budget = None
     prompt = task_desc
+    reset_count = 0
+    warmup_steps = args.num_steps_wait
+    extra_env_steps = 0
 
-    while policy_t < args.max_steps:
+    while total_policy_steps < args.max_steps:
         if disturbance is None and policy_t == args.disturbance_step:
-            disturbance = move_free_joint_xy(env, target_joint, args.dx, args.dy)
+            disturbance = audited_move_free_joint_xy(env, target_joint, args.dx, args.dy)
+            obs, refresh = refresh_observation_after_sim_change(env, cfg)
+            disturbance["refresh"] = refresh
+            extra_env_steps += int(bool(refresh.get("consumed_noop_env_step")))
             disturbed_qpos = get_joint_qpos(env, target_joint)
             if mode == "full_reset_replan":
                 env.reset(); obs = env.set_init_state(init_states[0])
                 for _ in range(args.num_steps_wait):
                     obs, reward, done, info = env.step(get_libero_dummy_action(cfg.model_family))
+                warmup_steps += args.num_steps_wait
+                reset_count += 1
                 recovery = {
                     "type": "full_reset_replan",
+                    "baseline_property": "restart_baseline_not_current_world_recovery",
                     "current_world_preserved": False,
                     "disturbance_preserved": False,
                     "progress_preserved": False,
                     "extra_wait_steps": args.num_steps_wait,
+                    "policy_step_budget_after_reset": "remaining_original_budget_only",
                     "post_reset_target_qpos": get_joint_qpos(env, target_joint),
                 }
                 policy_t = 0
@@ -129,13 +146,16 @@ def rollout(cfg, model, processor, task_suite, task_id, mode, args, out_dir):
                     "disturbance_preserved": True,
                     "progress_preserved": True,
                     "disturbed_target_qpos": disturbed_qpos,
-                    "budget_after_disturbance": args.max_steps,
+                    "budget_after_disturbance": args.max_steps - total_policy_steps,
+                    "policy_step_budget_rule": "remaining_original_budget_only",
                 }
                 policy_t = 0
                 phase = "post_disturbance_replan"
-                post_disturbance_budget = args.max_steps
+                post_disturbance_budget = args.max_steps - total_policy_steps
                 prompt = task_desc
-                obs, reward, done, info = env.step(get_libero_dummy_action(cfg.model_family))
+                obs, refresh = refresh_observation_after_sim_change(env, cfg)
+                extra_env_steps += int(bool(refresh.get("consumed_noop_env_step")))
+                recovery["refresh"] = refresh
                 continue
             if mode == "current_world_replan_disturbance_prompt":
                 recovery = {
@@ -144,13 +164,16 @@ def rollout(cfg, model, processor, task_suite, task_id, mode, args, out_dir):
                     "disturbance_preserved": True,
                     "progress_preserved": True,
                     "disturbed_target_qpos": disturbed_qpos,
-                    "budget_after_disturbance": args.max_steps,
+                    "budget_after_disturbance": args.max_steps - total_policy_steps,
+                    "policy_step_budget_rule": "remaining_original_budget_only",
                 }
                 policy_t = 0
                 phase = "post_disturbance_replan"
-                post_disturbance_budget = args.max_steps
+                post_disturbance_budget = args.max_steps - total_policy_steps
                 prompt = "The scene has changed because the object may have been moved. From the current observation, complete the original task: " + task_desc
-                obs, reward, done, info = env.step(get_libero_dummy_action(cfg.model_family))
+                obs, refresh = refresh_observation_after_sim_change(env, cfg)
+                extra_env_steps += int(bool(refresh.get("consumed_noop_env_step")))
+                recovery["refresh"] = refresh
                 continue
             recovery = {
                 "type": "reactive_continue",
@@ -167,16 +190,60 @@ def rollout(cfg, model, processor, task_suite, task_id, mode, args, out_dir):
         img, raw, action = policy_step(cfg, model, processor, obs, prompt, resize_size)
         replay.append(img)
         obs, reward, done, info = env.step(action.tolist())
-        actions.append({"t": policy_t, "phase": phase, "prompt": prompt, "raw_action": raw, "env_action": action.tolist(), "reward": float(reward), "done": bool(done)})
+        actions.append({"t": policy_t, "total_policy_step": total_policy_steps, "phase": phase, "prompt": prompt, "raw_action": raw, "env_action": action.tolist(), "reward": float(reward), "done": bool(done)})
+        total_policy_steps += 1
         if done:
             break
         policy_t += 1
 
     final_qpos = get_joint_qpos(env, target_joint)
-    video = out_dir / f"{mode}_task{task_id}_success{bool(done)}.mp4"
+    episode_status = extract_episode_status(reward, done, info, total_policy_steps, args.max_steps)
+    pre_steps = min(total_policy_steps, args.disturbance_step) if disturbance else total_policy_steps
+    budget = make_budget_report(
+        policy_step_budget=args.max_steps,
+        warmup_simulator_steps=warmup_steps,
+        policy_inference_steps=total_policy_steps,
+        extra_environment_steps=extra_env_steps,
+        pre_disturbance_policy_steps=pre_steps,
+        reset_count=reset_count,
+        rollback_count=0,
+        success=episode_status.success,
+    )
+    video = out_dir / f"{mode}_task{task_id}_success{episode_status.success}.mp4"
     save_video(replay, video)
     env.close()
-    return {"mode": mode, "task_id": task_id, "task_description": task_desc, "target_joint": target_joint, "success": bool(done), "final_reward": float(reward), "num_policy_steps": len(actions), "disturbance": disturbance, "recovery": recovery, "final_target_qpos": final_qpos, "video_path": str(video), "actions": actions}
+    return {
+        "mode": mode,
+        "task_id": task_id,
+        "task_description": task_desc,
+        "target_joint": target_joint,
+        "target_selection": json_safe(target_selection),
+        "status": episode_status.status,
+        "episode_status": json_safe(episode_status),
+        "success": episode_status.success,
+        "timeout": episode_status.timeout,
+        "stopped": episode_status.stopped,
+        "simulator_error": episode_status.simulator_error,
+        "success_source": episode_status.source if episode_status.success else None,
+        "final_reward": float(reward),
+        "num_policy_steps": len(actions),
+        "policy_step_budget": budget.policy_step_budget,
+        "warmup_simulator_steps": budget.warmup_simulator_steps,
+        "policy_inference_steps": budget.policy_inference_steps,
+        "environment_control_steps": budget.environment_control_steps,
+        "pre_disturbance_policy_steps": budget.pre_disturbance_policy_steps,
+        "recovery_policy_steps": budget.recovery_policy_steps,
+        "success_within_original_budget": budget.success_within_original_budget,
+        "total_policy_steps_consumed": budget.total_policy_steps_consumed,
+        "reset_count": budget.reset_count,
+        "rollback_count": budget.rollback_count,
+        "budget": json_safe(budget),
+        "disturbance": disturbance,
+        "recovery": recovery,
+        "final_target_qpos": final_qpos,
+        "video_path": str(video),
+        "actions": actions,
+    }
 
 
 def main():

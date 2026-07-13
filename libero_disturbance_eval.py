@@ -12,6 +12,14 @@ import imageio
 import numpy as np
 
 from libero.libero import benchmark, get_libero_path
+from libero_experiment_core import (
+    extract_episode_status,
+    json_safe,
+    make_budget_report,
+    move_free_joint_xy as audited_move_free_joint_xy,
+    refresh_observation_after_sim_change,
+    select_target_joint,
+)
 
 from experiments.robot.libero.libero_utils import (
     get_libero_dummy_action,
@@ -94,24 +102,10 @@ def tokenize(text: str) -> set[str]:
 
 
 def choose_target_joint(env, task_description: str) -> str:
-    sim = sim_from_env(env)
-    task_tokens = tokenize(task_description)
-    candidates = []
-    for joint_id in range(sim.model.njnt):
-        name = sim.model.joint_id2name(joint_id)
-        if not name or name.startswith("robot") or name.startswith("gripper"):
-            continue
-        if int(sim.model.jnt_type[joint_id]) != 0:
-            continue
-        object_name = name.replace("_joint0", "")
-        object_tokens = tokenize(object_name)
-        score = len(task_tokens & object_tokens)
-        qpos_addr = int(sim.model.jnt_qposadr[joint_id])
-        candidates.append((score, -joint_id, name, qpos_addr))
-    if not candidates:
-        raise ValueError("No movable free-joint object found for disturbance.")
-    candidates.sort(reverse=True)
-    return candidates[0][2]
+    selection = select_target_joint(env, task_description, "auto")
+    if selection.selected_joint is None:
+        raise ValueError(f"target selection did not produce a joint: {selection.reason}")
+    return selection.selected_joint
 
 
 def save_video(images: list[np.ndarray], path: Path) -> None:
@@ -146,13 +140,18 @@ def rollout(
 
     env.reset()
     obs = env.set_init_state(initial_states[trial_id])
-    resolved_target_joint = choose_target_joint(env, task_description) if target_joint == "auto" else target_joint
+    target_selection = select_target_joint(env, task_description, target_joint)
+    resolved_target_joint = target_selection.selected_joint
+    if resolved_target_joint is None:
+        raise ValueError(f"target selection did not produce a joint: {target_selection.reason}")
 
     replay_images: list[np.ndarray] = []
     action_trace = []
     disturbance_record = None
     done = False
     reward = 0.0
+    info = {}
+    extra_env_steps = 0
 
     for t in range(max_steps + num_steps_wait):
         if t < num_steps_wait:
@@ -161,7 +160,10 @@ def rollout(
 
         policy_t = t - num_steps_wait
         if condition == "disturbed" and policy_t == disturbance_step:
-            disturbance_record = move_free_joint_xy(env, resolved_target_joint, dx, dy)
+            disturbance_record = audited_move_free_joint_xy(env, resolved_target_joint, dx, dy)
+            obs, refresh = refresh_observation_after_sim_change(env, cfg)
+            disturbance_record["refresh"] = refresh
+            extra_env_steps += int(bool(refresh.get("consumed_noop_env_step")))
 
         img = get_libero_image(obs, resize_size)
         replay_images.append(img)
@@ -194,7 +196,20 @@ def rollout(
         if done:
             break
 
-    video_path = out_dir / f"{condition}_task{task_id}_trial{trial_id}_success{bool(done)}.mp4"
+    episode_status = extract_episode_status(reward, done, info, len(action_trace), max_steps)
+    pre_steps = min(len(action_trace), disturbance_step) if disturbance_record else len(action_trace)
+    budget = make_budget_report(
+        policy_step_budget=max_steps,
+        warmup_simulator_steps=num_steps_wait,
+        policy_inference_steps=len(action_trace),
+        extra_environment_steps=extra_env_steps,
+        pre_disturbance_policy_steps=pre_steps,
+        reset_count=0,
+        rollback_count=0,
+        success=episode_status.success,
+    )
+
+    video_path = out_dir / f"{condition}_task{task_id}_trial{trial_id}_success{episode_status.success}.mp4"
     save_video(replay_images, video_path)
     env.close()
 
@@ -205,9 +220,27 @@ def rollout(
         "trial_id": trial_id,
         "task_description": task_description,
         "target_joint": resolved_target_joint,
-        "success": bool(done),
+        "target_selection": json_safe(target_selection),
+        "status": episode_status.status,
+        "episode_status": json_safe(episode_status),
+        "success": episode_status.success,
+        "timeout": episode_status.timeout,
+        "stopped": episode_status.stopped,
+        "simulator_error": episode_status.simulator_error,
+        "success_source": episode_status.source if episode_status.success else None,
         "final_reward": float(reward),
         "num_policy_steps": len(action_trace),
+        "policy_step_budget": budget.policy_step_budget,
+        "warmup_simulator_steps": budget.warmup_simulator_steps,
+        "policy_inference_steps": budget.policy_inference_steps,
+        "environment_control_steps": budget.environment_control_steps,
+        "pre_disturbance_policy_steps": budget.pre_disturbance_policy_steps,
+        "recovery_policy_steps": budget.recovery_policy_steps,
+        "success_within_original_budget": budget.success_within_original_budget,
+        "total_policy_steps_consumed": budget.total_policy_steps_consumed,
+        "reset_count": budget.reset_count,
+        "rollback_count": budget.rollback_count,
+        "budget": json_safe(budget),
         "disturbance": disturbance_record,
         "video_path": str(video_path),
         "actions": action_trace,
