@@ -14,6 +14,7 @@ import numpy as np
 from libero.libero import benchmark, get_libero_path
 from libero_experiment_core import (
     extract_episode_status,
+    get_joint_qpos,
     json_safe,
     make_budget_report,
     move_free_joint_xy as audited_move_free_joint_xy,
@@ -116,15 +117,54 @@ def save_video(images: list[np.ndarray], path: Path) -> None:
     writer.close()
 
 
+def robot_state_from_obs(obs: dict) -> dict:
+    return {
+        "eef_pos": np.asarray(obs["robot0_eef_pos"], dtype=float).tolist(),
+        "eef_quat": np.asarray(obs["robot0_eef_quat"], dtype=float).tolist(),
+        "gripper_qpos": np.asarray(obs["robot0_gripper_qpos"], dtype=float).tolist(),
+    }
+
+
+def canary_pair_key(
+    *,
+    checkpoint: str,
+    task_suite_name: str,
+    task_id: int,
+    trial_id: int,
+    seed: int,
+    target_joint: str,
+    disturbance_step: int,
+    dx: float,
+    dy: float,
+    max_steps: int,
+    num_steps_wait: int,
+) -> dict:
+    return {
+        "checkpoint": checkpoint,
+        "suite": task_suite_name,
+        "task_id": int(task_id),
+        "initial_state_id": int(trial_id),
+        "seed": int(seed),
+        "target_joint": target_joint,
+        "disturbance_step": int(disturbance_step),
+        "disturbance_delta_xyz": [float(dx), float(dy), 0.0],
+        "max_policy_steps": int(max_steps),
+        "warmup_env_steps": int(num_steps_wait),
+    }
+
+
 def rollout(
     *,
     cfg: SimpleNamespace,
     model,
     processor,
     task_suite,
+    task_suite_name: str,
     task_id: int,
     trial_id: int,
     condition: str,
+    checkpoint: str,
+    seed: int,
     disturbance_step: int,
     target_joint: str,
     dx: float,
@@ -144,6 +184,23 @@ def rollout(
     resolved_target_joint = target_selection.selected_joint
     if resolved_target_joint is None:
         raise ValueError(f"target selection did not produce a joint: {target_selection.reason}")
+    pair_key = canary_pair_key(
+        checkpoint=checkpoint,
+        task_suite_name=task_suite_name,
+        task_id=task_id,
+        trial_id=trial_id,
+        seed=seed,
+        target_joint=resolved_target_joint,
+        disturbance_step=disturbance_step,
+        dx=dx,
+        dy=dy,
+        max_steps=max_steps,
+        num_steps_wait=num_steps_wait,
+    )
+    initial_robot_state = robot_state_from_obs(obs)
+    initial_target_qpos = get_joint_qpos(env, resolved_target_joint)
+    policy_start_robot_state = None
+    policy_start_target_qpos = None
 
     replay_images: list[np.ndarray] = []
     action_trace = []
@@ -159,8 +216,15 @@ def rollout(
             continue
 
         policy_t = t - num_steps_wait
+        if policy_t == 0:
+            policy_start_robot_state = robot_state_from_obs(obs)
+            policy_start_target_qpos = get_joint_qpos(env, resolved_target_joint)
         if condition == "disturbed" and policy_t == disturbance_step:
             disturbance_record = audited_move_free_joint_xy(env, resolved_target_joint, dx, dy)
+            disturbance_record["delta_xyz_actual"] = [
+                float(disturbance_record["after_qpos"][i] - disturbance_record["before_qpos"][i])
+                for i in range(3)
+            ]
             obs, refresh = refresh_observation_after_sim_change(env, cfg)
             disturbance_record["refresh"] = refresh
             extra_env_steps += int(bool(refresh.get("consumed_noop_env_step")))
@@ -191,6 +255,10 @@ def rollout(
                 "env_action": np.asarray(action, dtype=float).tolist(),
                 "reward": float(reward),
                 "done": bool(done),
+                "video_frame_index": len(replay_images) - 1,
+                "uses_post_disturbance_fresh_observation": bool(
+                    condition == "disturbed" and policy_t == disturbance_step and disturbance_record is not None
+                ),
             }
         )
         if done:
@@ -215,12 +283,23 @@ def rollout(
 
     return {
         "condition": condition,
-        "task_suite": cfg.unnorm_key,
+        "mode": "reactive_disturbed" if condition == "disturbed" else "clean",
+        "pair_key": pair_key,
+        "manual_intervention": False,
+        "checkpoint": checkpoint,
+        "seed": int(seed),
+        "task_suite": task_suite_name,
+        "unnorm_key": cfg.unnorm_key,
         "task_id": task_id,
         "trial_id": trial_id,
+        "initial_state_id": trial_id,
         "task_description": task_description,
         "target_joint": resolved_target_joint,
         "target_selection": json_safe(target_selection),
+        "initial_robot_state": initial_robot_state,
+        "initial_target_qpos": initial_target_qpos,
+        "policy_start_robot_state": policy_start_robot_state,
+        "policy_start_target_qpos": policy_start_target_qpos,
         "status": episode_status.status,
         "episode_status": json_safe(episode_status),
         "success": episode_status.success,
@@ -276,9 +355,12 @@ def main() -> None:
                     model=model,
                     processor=processor,
                     task_suite=task_suite,
+                    task_suite_name=args.task_suite,
                     task_id=task_id,
                     trial_id=trial_id,
                     condition=condition,
+                    checkpoint=args.checkpoint,
+                    seed=args.seed,
                     disturbance_step=args.disturbance_step,
                     target_joint=args.target_joint,
                     dx=args.dx,
