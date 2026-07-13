@@ -8,7 +8,8 @@ import time
 
 import numpy as np
 
-from libero_dashboard_controller import ControllerState, ExperimentController, wait_for_state
+from libero_dashboard_controller import ControllerState, ExperimentController, snapshot_for_json, wait_for_state
+from summarize_disturbance_results import summarize_run
 
 
 @dataclass(frozen=True)
@@ -206,10 +207,22 @@ def test_manual_events_mark_run_interactive_and_non_formal(tmp_path) -> None:
         assert snap["model_loaded"] is False
 
         run_dir = Path(snap["run_dir"])
+        run_config = json.loads((run_dir / "run_config.json").read_text())
         summary = json.loads((run_dir / "episode_summary.json").read_text())
         events = [json.loads(line) for line in (run_dir / "events.jsonl").read_text().splitlines() if line.strip()]
+        actions = [json.loads(line) for line in (run_dir / "actions.jsonl").read_text().splitlines() if line.strip()]
         names = {event["event"] for event in events}
         assert {"manual_pause", "manual_resume", "manual_step", "manual_disturbance", "manual_stop"}.issubset(names)
+        assert run_config["interactive"] is True
+        assert run_config["formal_run"] is False
+        assert run_config["eligible_for_official_metrics"] is False
+        assert run_config["exclude_from_formal_success_summaries"] is True
+        assert all(event["exclude_from_formal_success_summaries"] is True for event in events)
+        assert actions
+        assert all(action["interactive"] is True for action in actions)
+        assert all(action["formal_run"] is False for action in actions)
+        assert all(action["eligible_for_official_metrics"] is False for action in actions)
+        assert all(action["exclude_from_formal_success_summaries"] is True for action in actions)
         assert summary["interactive"] is True
         assert summary["formal_run"] is False
         assert summary["eligible_for_official_metrics"] is False
@@ -217,3 +230,42 @@ def test_manual_events_mark_run_interactive_and_non_formal(tmp_path) -> None:
         assert summary["manual_intervention"] is True
     finally:
         ctrl.shutdown()
+
+
+def test_summary_warns_and_excludes_interactive_runs(tmp_path, capsys) -> None:
+    (tmp_path / "episode_summary.json").write_text(
+        json.dumps(
+            {
+                "interactive": True,
+                "formal_run": False,
+                "eligible_for_official_metrics": False,
+                "exclude_from_formal_success_summaries": True,
+                "success": True,
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    rows = summarize_run("interactive-smoke", tmp_path)
+    captured = capsys.readouterr()
+
+    assert rows == [
+        {
+            "label": "interactive-smoke",
+            "run_dir": str(tmp_path),
+            "condition": "diagnostic_skipped",
+            "n": 0,
+            "successes": 0,
+            "success_rate": "",
+            "disturbance_applied": 0,
+        }
+    ]
+    assert "WARNING: excluding 1 interactive/non-formal record(s)" in captured.err
+
+
+def test_snapshot_for_json_accepts_empty_nested_payloads() -> None:
+    assert snapshot_for_json(None) is None
+    assert snapshot_for_json({"latest_frame": np.zeros((2, 2, 3), dtype=np.uint8), "episode_status": None}) == {
+        "latest_frame": None,
+        "episode_status": None,
+    }

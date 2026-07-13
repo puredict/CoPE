@@ -134,6 +134,7 @@ def _initial_snapshot() -> dict[str, Any]:
         "interactive": True,
         "formal_run": False,
         "eligible_for_official_metrics": False,
+        "exclude_from_formal_success_summaries": True,
         "reward": 0.0,
         "done": False,
         "success": False,
@@ -150,6 +151,7 @@ def _initial_snapshot() -> dict[str, Any]:
         "run_dir": None,
         "run_config_path": None,
         "events_jsonl_path": None,
+        "actions_jsonl_path": None,
         "episode_summary_path": None,
         "raw_video_path": None,
         "annotated_video_path": None,
@@ -401,12 +403,14 @@ class ExperimentController:
         run_dir = Path(_cfg_output_dir(cfg)).expanduser() / run_id
         run_dir.mkdir(parents=True, exist_ok=True)
         events_path = run_dir / "events.jsonl"
+        actions_path = run_dir / "actions.jsonl"
         summary_path = run_dir / "episode_summary.json"
         config_path = run_dir / "run_config.json"
         raw_video_path = run_dir / "raw.mp4"
         annotated_video_path = run_dir / "annotated.mp4"
         worker_log_path = run_dir / "worker_error.log"
         event_file = events_path.open("a", encoding="utf-8", buffering=1)
+        actions_file = actions_path.open("a", encoding="utf-8", buffering=1)
         recorder: SimpleVideoRecorder | None = None
         event_count = 0
         start_time = time.time()
@@ -450,6 +454,7 @@ class ExperimentController:
                 "interactive": True,
                 "formal_run": False,
                 "eligible_for_official_metrics": False,
+                "exclude_from_formal_success_summaries": True,
                 "payload": json_safe(payload or {}),
             }
             event_file.write(json.dumps(json_safe(record_payload), sort_keys=True) + "\n")
@@ -519,6 +524,7 @@ class ExperimentController:
                         "interactive": True,
                         "formal_run": False,
                         "eligible_for_official_metrics": False,
+                        "exclude_from_formal_success_summaries": True,
                         "reward": float(reward),
                         "done": done,
                         "success": success,
@@ -535,6 +541,7 @@ class ExperimentController:
                         "run_dir": str(run_dir),
                         "run_config_path": str(config_path),
                         "events_jsonl_path": str(events_path),
+                        "actions_jsonl_path": str(actions_path),
                         "episode_summary_path": str(summary_path),
                         "raw_video_path": str(raw_video_path),
                         "annotated_video_path": str(annotated_video_path),
@@ -673,6 +680,7 @@ class ExperimentController:
                     "interactive": True,
                     "formal_run": False,
                     "eligible_for_official_metrics": False,
+                    "exclude_from_formal_success_summaries": True,
                     "backend": self._snapshot.get("backend", "mock"),
                 },
             )
@@ -744,6 +752,27 @@ class ExperimentController:
                         "episode_status": episode_status,
                     },
                 )
+                action_record = {
+                    "timestamp": utc_now_iso(),
+                    "wall_time": round(time.time() - start_time, 6),
+                    "policy_step": policy_step,
+                    "environment_step": environment_step,
+                    "mode": mode,
+                    "reward": reward,
+                    "raw_action": raw_action,
+                    "env_action": env_action,
+                    "inference_seconds": result.inference_seconds,
+                    "env_step_seconds": result.env_step_seconds,
+                    "done": done,
+                    "success": success,
+                    "termination_reason": termination_reason,
+                    "episode_status": episode_status,
+                    "interactive": True,
+                    "formal_run": False,
+                    "eligible_for_official_metrics": False,
+                    "exclude_from_formal_success_summaries": True,
+                }
+                actions_file.write(json.dumps(json_safe(action_record), sort_keys=True) + "\n")
                 with self._lock:
                     self._snapshot["inference_seconds"] = result.inference_seconds
                     self._snapshot["env_step_seconds"] = result.env_step_seconds
@@ -824,6 +853,7 @@ class ExperimentController:
                     "run_dir": str(run_dir),
                     "run_config": str(config_path),
                     "events_jsonl": str(events_path),
+                    "actions_jsonl": str(actions_path),
                     "episode_summary": str(summary_path),
                     "raw_video": str(raw_video_path),
                     "annotated_video": str(annotated_video_path),
@@ -844,6 +874,11 @@ class ExperimentController:
                 event_file.close()
             except Exception:
                 pass
+            try:
+                actions_file.flush()
+                actions_file.close()
+            except Exception:
+                pass
             stop_requested = False
             paused = False
             update_snapshot(
@@ -862,6 +897,7 @@ class ExperimentController:
                         "error": error_text,
                         "traceback_tail": traceback_tail,
                         "active_episode": False,
+                        "actions_jsonl_path": str(actions_path),
                         "episode_summary_path": str(summary_path),
                         "raw_video_path": str(raw_video_path),
                         "annotated_video_path": str(annotated_video_path),
@@ -918,7 +954,9 @@ def wait_for_state(
     raise TimeoutError(f"Timed out waiting for states {sorted(wanted)}; last snapshot={last_snapshot}")
 
 
-def snapshot_for_json(snapshot: dict[str, Any]) -> dict[str, Any]:
+def snapshot_for_json(snapshot: Any) -> Any:
+    if not isinstance(snapshot, dict):
+        return json_safe(snapshot)
     cleaned = copy.deepcopy(snapshot)
     cleaned["latest_frame"] = None
     return json_safe(cleaned)

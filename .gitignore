@@ -16,6 +16,7 @@ __pycache__/
 # Local caches and generated experiment outputs
 cache/
 dashboard_outputs/
+interactive_outputs/
 baseline_outputs/
 second_necessity_outputs/
 disturbance_probe_out/
