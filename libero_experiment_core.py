@@ -25,46 +25,6 @@ ExperimentMode = Literal[
     "oracle_rollback",
 ]
 
-
-@dataclass(frozen=True)
-class EpisodeStatus:
-    status: Literal["success", "failure", "timeout", "stopped", "simulator_error"]
-    success: bool
-    failure: bool
-    timeout: bool
-    stopped: bool
-    simulator_error: bool
-    reward: float
-    done: bool
-    policy_step: int
-    max_steps: int
-    source: str
-    detail: dict[str, Any] = field(default_factory=dict)
-
-
-@dataclass(frozen=True)
-class TargetSelection:
-    selected_joint: str | None
-    candidates: list[dict[str, Any]]
-    reason: str
-    requested_joint: str = "auto"
-    ambiguous: bool = False
-
-
-@dataclass(frozen=True)
-class BudgetReport:
-    policy_step_budget: int
-    warmup_simulator_steps: int
-    policy_inference_steps: int
-    environment_control_steps: int
-    pre_disturbance_policy_steps: int
-    recovery_policy_steps: int
-    total_policy_steps_consumed: int
-    reset_count: int
-    rollback_count: int
-    success_within_original_budget: bool
-
-
 CANONICAL_MODES: tuple[str, ...] = (
     "clean",
     "reactive_disturbed",
@@ -165,146 +125,6 @@ def json_safe(value: Any) -> Any:
     if hasattr(value, "__dataclass_fields__"):
         return json_safe(asdict(value))
     return value
-
-
-def _truthy_info_value(info: dict[str, Any], keys: tuple[str, ...]) -> tuple[bool, str | None]:
-    for key in keys:
-        if key in info and bool(info[key]):
-            return True, key
-    return False, None
-
-
-def extract_episode_status(
-    reward: float,
-    done: bool,
-    info: dict[str, Any] | None,
-    policy_step: int,
-    max_steps: int,
-) -> EpisodeStatus:
-    info = json_safe(info or {})
-    detail: dict[str, Any] = {"info_keys": sorted(info.keys())}
-    simulator_error, error_key = _truthy_info_value(info, ("simulator_error", "exception", "env_error"))
-    if simulator_error:
-        detail["error_key"] = error_key
-        return EpisodeStatus(
-            status="simulator_error",
-            success=False,
-            failure=False,
-            timeout=False,
-            stopped=False,
-            simulator_error=True,
-            reward=float(reward),
-            done=bool(done),
-            policy_step=int(policy_step),
-            max_steps=int(max_steps),
-            source=f"info.{error_key}",
-            detail=detail,
-        )
-
-    stopped, stopped_key = _truthy_info_value(info, ("stopped", "stop_requested", "stopped_by_verifier"))
-    if stopped:
-        detail["stopped_key"] = stopped_key
-        return EpisodeStatus(
-            status="stopped",
-            success=False,
-            failure=False,
-            timeout=False,
-            stopped=True,
-            simulator_error=False,
-            reward=float(reward),
-            done=bool(done),
-            policy_step=int(policy_step),
-            max_steps=int(max_steps),
-            source=f"info.{stopped_key}",
-            detail=detail,
-        )
-
-    info_success, success_key = _truthy_info_value(info, ("success", "is_success", "task_success", "successful"))
-    reward_success = float(reward) >= 1.0
-    success = bool(info_success or done or reward_success)
-    if success:
-        if info_success:
-            source = f"info.{success_key}"
-        elif done:
-            source = "done_current_libero_bddl_success"
-        else:
-            source = "sparse_reward_ge_1"
-        return EpisodeStatus(
-            status="success",
-            success=True,
-            failure=False,
-            timeout=False,
-            stopped=False,
-            simulator_error=False,
-            reward=float(reward),
-            done=bool(done),
-            policy_step=int(policy_step),
-            max_steps=int(max_steps),
-            source=source,
-            detail=detail,
-        )
-
-    info_timeout, timeout_key = _truthy_info_value(info, ("timeout", "truncated", "TimeLimit.truncated"))
-    timed_out = bool(info_timeout or int(policy_step) >= int(max_steps))
-    if timed_out:
-        source = f"info.{timeout_key}" if info_timeout else "policy_step_budget_exhausted"
-        return EpisodeStatus(
-            status="timeout",
-            success=False,
-            failure=False,
-            timeout=True,
-            stopped=False,
-            simulator_error=False,
-            reward=float(reward),
-            done=bool(done),
-            policy_step=int(policy_step),
-            max_steps=int(max_steps),
-            source=source,
-            detail=detail,
-        )
-
-    return EpisodeStatus(
-        status="failure",
-        success=False,
-        failure=True,
-        timeout=False,
-        stopped=False,
-        simulator_error=False,
-        reward=float(reward),
-        done=bool(done),
-        policy_step=int(policy_step),
-        max_steps=int(max_steps),
-        source="episode_ended_without_success_or_timeout",
-        detail=detail,
-    )
-
-
-def make_budget_report(
-    *,
-    policy_step_budget: int,
-    warmup_simulator_steps: int,
-    policy_inference_steps: int,
-    extra_environment_steps: int = 0,
-    pre_disturbance_policy_steps: int = 0,
-    reset_count: int = 0,
-    rollback_count: int = 0,
-    success: bool = False,
-) -> BudgetReport:
-    total_policy_steps = int(policy_inference_steps)
-    pre_steps = max(0, min(int(pre_disturbance_policy_steps), total_policy_steps))
-    recovery_steps = max(0, total_policy_steps - pre_steps)
-    return BudgetReport(
-        policy_step_budget=int(policy_step_budget),
-        warmup_simulator_steps=int(warmup_simulator_steps),
-        policy_inference_steps=total_policy_steps,
-        environment_control_steps=int(warmup_simulator_steps) + total_policy_steps + int(extra_environment_steps),
-        pre_disturbance_policy_steps=pre_steps,
-        recovery_policy_steps=recovery_steps,
-        total_policy_steps_consumed=total_policy_steps,
-        reset_count=int(reset_count),
-        rollback_count=int(rollback_count),
-        success_within_original_budget=bool(success and total_policy_steps <= int(policy_step_budget)),
-    )
 
 
 def short_traceback(limit: int = 12) -> str:
@@ -445,9 +265,7 @@ def list_free_joints(env: Any, task_description: str | None = None) -> list[dict
         if int(sim.model.jnt_type[joint_id]) != 0:
             continue
         object_name = name.replace("_joint0", "")
-        object_tokens = tokenize(object_name)
-        matched_tokens = sorted(task_tokens & object_tokens)
-        score = len(matched_tokens)
+        score = len(task_tokens & tokenize(object_name))
         joints.append(
             {
                 "name": name,
@@ -455,55 +273,20 @@ def list_free_joints(env: Any, task_description: str | None = None) -> list[dict
                 "qpos_addr": int(sim.model.jnt_qposadr[joint_id]),
                 "object_name": object_name,
                 "score": int(score),
-                "candidate_tokens": sorted(object_tokens),
-                "matched_task_tokens": matched_tokens,
-                "score_reason": f"{score} overlapping task/object tokens",
             }
         )
     joints.sort(key=lambda x: (x["score"], -x["joint_id"], x["name"]), reverse=True)
     return joints
 
 
-def select_target_joint(env: Any, task_description: str, requested: str = "auto") -> TargetSelection:
-    joints = list_free_joints(env, task_description)
+def choose_target_joint(env: Any, task_description: str, requested: str = "auto") -> str:
     if requested != "auto":
         validate_free_joint(env, requested)
-        return TargetSelection(
-            selected_joint=requested,
-            candidates=joints,
-            reason="explicit_target_joint",
-            requested_joint=requested,
-            ambiguous=False,
-        )
+        return requested
+    joints = list_free_joints(env, task_description)
     if not joints:
         raise ValueError("No movable non-robot free-joint object found for disturbance.")
-    top_score = int(joints[0]["score"])
-    if top_score <= 0:
-        raise ValueError(
-            "Auto target joint is ambiguous: all movable candidates scored 0. "
-            "Pass --target-joint explicitly."
-        )
-    tied = [joint for joint in joints if int(joint["score"]) == top_score]
-    if len(tied) > 1:
-        names = ", ".join(str(joint["name"]) for joint in tied)
-        raise ValueError(
-            f"Auto target joint is ambiguous: {len(tied)} candidates tie at score {top_score}: {names}. "
-            "Pass --target-joint explicitly."
-        )
-    return TargetSelection(
-        selected_joint=str(joints[0]["name"]),
-        candidates=joints,
-        reason=f"unique_highest_token_overlap_score_{top_score}",
-        requested_joint=requested,
-        ambiguous=False,
-    )
-
-
-def choose_target_joint(env: Any, task_description: str, requested: str = "auto") -> str:
-    selection = select_target_joint(env, task_description, requested)
-    if selection.selected_joint is None:
-        raise ValueError(f"target selection did not produce a joint: {selection.reason}")
-    return selection.selected_joint
+    return str(joints[0]["name"])
 
 
 def validate_free_joint(env: Any, joint_name: str) -> tuple[Any, int, int]:
@@ -598,27 +381,6 @@ def verifier_stop_state() -> dict[str, Any]:
 
 
 def refresh_observation_after_sim_change(env: Any, cfg: Any) -> tuple[dict[str, Any], dict[str, Any]]:
-    sim = sim_from_env(env)
-    sim.forward()
-    operations = ["sim.forward"]
-    for label, obj, name in (
-        ("env", env, "check_success"),
-        ("env", env, "_post_process"),
-        ("env", env, "_update_observables"),
-        ("env.env", getattr(env, "env", None), "_post_process"),
-        ("env.env", getattr(env, "env", None), "_update_observables"),
-    ):
-        if obj is None or not hasattr(obj, name):
-            continue
-        try:
-            if name == "_update_observables":
-                getattr(obj, name)(force=True)
-            else:
-                getattr(obj, name)()
-            operations.append(f"{label}.{name}")
-        except Exception as exc:
-            operations.append(f"{label}.{name}_failed:{type(exc).__name__}")
-
     candidates: list[tuple[str, Any]] = []
     for label, obj in (("env", env), ("env.env", getattr(env, "env", None))):
         if obj is not None and hasattr(obj, "_get_observations"):
@@ -630,30 +392,18 @@ def refresh_observation_after_sim_change(env: Any, cfg: Any) -> tuple[dict[str, 
             sig = inspect.signature(getter)
             if "force_update" in sig.parameters:
                 obs = getter(force_update=True)
-                return obs, {
-                    "method": f"{label}(force_update=True)",
-                    "operations": operations,
-                    "consumed_noop_env_step": False,
-                }
+                return obs, {"method": f"{label}(force_update=True)", "consumed_noop_env_step": False}
         except (TypeError, ValueError):
             try:
                 obs = getter(force_update=True)
-                return obs, {
-                    "method": f"{label}(force_update=True)",
-                    "operations": operations,
-                    "consumed_noop_env_step": False,
-                }
+                return obs, {"method": f"{label}(force_update=True)", "consumed_noop_env_step": False}
             except TypeError as exc:
                 errors.append(f"{label}(force_update=True): {exc}")
         except Exception as exc:
             errors.append(f"{label}(force_update=True): {exc!r}")
         try:
             obs = getter()
-            return obs, {
-                "method": f"{label}()",
-                "operations": operations,
-                "consumed_noop_env_step": False,
-            }
+            return obs, {"method": f"{label}()", "consumed_noop_env_step": False}
         except Exception as exc:
             errors.append(f"{label}(): {exc!r}")
 
@@ -661,7 +411,6 @@ def refresh_observation_after_sim_change(env: Any, cfg: Any) -> tuple[dict[str, 
     obs, reward, done, info = env.step(get_dummy_action(model_family))
     return obs, {
         "method": "env.step(dummy_noop)",
-        "operations": operations,
         "consumed_noop_env_step": True,
         "fallback_errors": errors,
         "reward": float(reward),

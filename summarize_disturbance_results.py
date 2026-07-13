@@ -17,27 +17,11 @@ def read_rows(path: Path) -> list[dict]:
 
 
 def summarize_run(label: str, run_dir: Path) -> list[dict]:
-    summary_path = run_dir / "summary.json"
-    if summary_path.exists():
-        summary = json.loads(summary_path.read_text(encoding="utf-8"))
-        if summary.get("not_empirical_model_measurement") or summary.get("exclude_from_formal_success_summaries"):
-            return [
-                {
-                    "label": label,
-                    "run_dir": str(run_dir),
-                    "condition": "diagnostic_skipped",
-                    "n": 0,
-                    "successes": 0,
-                    "success_rate": "",
-                    "disturbance_applied": 0,
-                }
-            ]
     rows = read_rows(run_dir / "episodes.jsonl")
-    rows = [r for r in rows if not r.get("not_empirical_model_measurement")]
     out = []
     for condition in ("clean", "disturbed"):
         xs = [r for r in rows if r.get("condition") == condition]
-        successes = sum(bool(r.get("success_within_original_budget", r.get("success"))) for r in xs)
+        successes = sum(bool(r.get("success")) for r in xs)
         disturbed_applied = sum(1 for r in xs if r.get("disturbance") is not None)
         out.append(
             {

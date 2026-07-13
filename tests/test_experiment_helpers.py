@@ -6,20 +6,15 @@ import numpy as np
 import pytest
 
 from libero_experiment_core import (
-    BudgetReport,
-    EpisodeStatus,
     ExperimentConfig,
     build_recovery_prompt,
     choose_target_joint,
-    extract_episode_status,
     infer_goal_phrase,
     json_safe,
     list_free_joints,
-    make_budget_report,
     move_free_joint_xy,
     object_phrase_from_joint,
     refresh_observation_after_sim_change,
-    select_target_joint,
 )
 
 
@@ -64,19 +59,7 @@ class FakeEnv:
 
 class ObservationEnv:
     def __init__(self):
-        self.sim = FakeSim(["object_joint0"], [0])
         self.called = False
-        self.post_processed = False
-        self.update_force = None
-
-    def check_success(self):
-        return False
-
-    def _post_process(self):
-        self.post_processed = True
-
-    def _update_observables(self, force=False):
-        self.update_force = force
 
     def _get_observations(self, force_update=False):
         self.called = force_update
@@ -111,31 +94,8 @@ def test_object_and_goal_helpers() -> None:
 def test_choose_target_joint_scores_task_tokens() -> None:
     env = FakeEnv(["plate_1_joint0", "akita_black_bowl_1_joint0", "robot_joint0"], [0, 0, 0])
     assert choose_target_joint(env, "put the black bowl on the plate") == "akita_black_bowl_1_joint0"
-    selection = select_target_joint(env, "put the black bowl on the plate")
-    assert selection.selected_joint == "akita_black_bowl_1_joint0"
-    assert selection.reason == "unique_highest_token_overlap_score_2"
     joints = list_free_joints(env, "put the black bowl on the plate")
     assert joints[0]["name"] == "akita_black_bowl_1_joint0"
-    assert joints[0]["matched_task_tokens"] == ["black", "bowl"]
-
-
-def test_choose_target_joint_rejects_zero_score_auto() -> None:
-    env = FakeEnv(["plate_1_joint0", "cup_1_joint0"], [0, 0])
-    with pytest.raises(ValueError, match="scored 0"):
-        choose_target_joint(env, "open the drawer")
-
-
-def test_choose_target_joint_rejects_tied_auto() -> None:
-    env = FakeEnv(["red_mug_joint0", "blue_mug_joint0"], [0, 0])
-    with pytest.raises(ValueError, match="tie"):
-        choose_target_joint(env, "pick up the mug")
-
-
-def test_explicit_target_joint_overrides_auto_ambiguity() -> None:
-    env = FakeEnv(["red_mug_joint0", "blue_mug_joint0"], [0, 0])
-    selection = select_target_joint(env, "pick up the mug", requested="blue_mug_joint0")
-    assert selection.selected_joint == "blue_mug_joint0"
-    assert selection.reason == "explicit_target_joint"
 
 
 def test_choose_target_joint_errors_without_candidates() -> None:
@@ -165,45 +125,6 @@ def test_refresh_observation_uses_force_update() -> None:
     assert obs == {"fresh": True}
     assert meta["consumed_noop_env_step"] is False
     assert "force_update=True" in meta["method"]
-    assert env.post_processed is True
-    assert env.update_force is True
-    assert "sim.forward" in meta["operations"]
-
-
-def test_extract_episode_status_distinguishes_terminal_reasons() -> None:
-    success = extract_episode_status(1.0, True, {}, 3, 10)
-    assert isinstance(success, EpisodeStatus)
-    assert success.status == "success"
-    assert success.success is True
-
-    timeout = extract_episode_status(0.0, False, {}, 10, 10)
-    assert timeout.status == "timeout"
-
-    stopped = extract_episode_status(0.0, False, {"stopped_by_verifier": True}, 4, 10)
-    assert stopped.status == "stopped"
-
-    error = extract_episode_status(0.0, False, {"simulator_error": True}, 4, 10)
-    assert error.status == "simulator_error"
-
-    failure = extract_episode_status(0.0, False, {}, 4, 10)
-    assert failure.status == "failure"
-
-
-def test_make_budget_report_counts_original_policy_budget() -> None:
-    budget = make_budget_report(
-        policy_step_budget=10,
-        warmup_simulator_steps=2,
-        policy_inference_steps=12,
-        extra_environment_steps=1,
-        pre_disturbance_policy_steps=5,
-        reset_count=1,
-        rollback_count=0,
-        success=True,
-    )
-    assert isinstance(budget, BudgetReport)
-    assert budget.environment_control_steps == 15
-    assert budget.recovery_policy_steps == 7
-    assert budget.success_within_original_budget is False
 
 
 def test_json_safe_removes_numpy_values() -> None:
