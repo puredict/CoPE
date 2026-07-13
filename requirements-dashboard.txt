@@ -1,0 +1,7 @@
+gradio>=4.44,<5
+huggingface-hub<1.0
+fastapi>=0.115.2,<0.116
+imageio>=2.31
+imageio-ffmpeg>=0.4
+pillow>=10.0
+pytest>=7.0

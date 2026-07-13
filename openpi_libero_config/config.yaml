@@ -1,0 +1,5 @@
+benchmark_root: /home/lijingsu/vla/src/openpi/third_party/libero/libero/libero
+bddl_files: /home/lijingsu/vla/src/openpi/third_party/libero/libero/libero/bddl_files
+init_states: /home/lijingsu/vla/src/openpi/third_party/libero/libero/libero/init_files
+datasets: /home/lijingsu/vla/src/openpi/third_party/libero/libero/datasets
+assets: /home/lijingsu/vla/src/openpi/third_party/libero/libero/libero/assets
