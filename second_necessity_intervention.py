@@ -4,6 +4,15 @@ from pathlib import Path
 from types import SimpleNamespace
 import imageio, numpy as np
 
+from libero_experiment_core import (
+    extract_episode_status,
+    json_safe,
+    make_budget_report,
+    move_free_joint_xy as audited_move_free_joint_xy,
+    refresh_observation_after_sim_change,
+    select_target_joint,
+)
+
 sys.path.insert(0, "/home/lijingsu/vla/src/openvla")
 sys.path.insert(0, "/home/lijingsu/vla/src/LIBERO")
 os.environ.setdefault("MUJOCO_GL", "osmesa")
@@ -23,6 +32,7 @@ def parse_args():
     p.add_argument("--max-steps", type=int, default=220)
     p.add_argument("--num-steps-wait", type=int, default=10)
     p.add_argument("--disturbance-step", type=int, default=70)
+    p.add_argument("--target-joint", default="auto")
     p.add_argument("--dx", type=float, default=0.10)
     p.add_argument("--dy", type=float, default=0.05)
     p.add_argument("--out-dir", default="/home/lijingsu/vla/second_necessity_outputs/intervention")
@@ -39,16 +49,10 @@ def sim_from_env(env): return env.env.sim if hasattr(env, "env") else env.sim
 def toks(text): return {t for t in re.split(r"[^a-z0-9]+", text.lower()) if len(t)>1}
 
 def choose_target_joint(env, task_description):
-    sim=sim_from_env(env); task_tokens=toks(task_description); cands=[]
-    for jid in range(sim.model.njnt):
-        name=sim.model.joint_id2name(jid)
-        if not name or name.startswith("robot") or name.startswith("gripper"): continue
-        if int(sim.model.jnt_type[jid]) != 0: continue
-        obj=name.replace("_joint0", "")
-        score=len(task_tokens & toks(obj))
-        cands.append((score, -jid, name))
-    cands.sort(reverse=True)
-    return cands[0][2]
+    selection=select_target_joint(env, task_description, "auto")
+    if selection.selected_joint is None:
+        raise ValueError(f"target selection did not produce a joint: {selection.reason}")
+    return selection.selected_joint
 
 def object_phrase_from_joint(joint):
     s=joint.replace("_joint0", "")
@@ -80,8 +84,13 @@ def rollout(cfg, model, processor, task_suite, task_id, mode, args, out_dir):
     env, task_desc=get_libero_env(task, cfg.model_family, resolution=256)
     resize_size=get_image_resize_size(cfg)
     env.reset(); obs=env.set_init_state(init_states[0])
-    target_joint=choose_target_joint(env, task_desc)
+    target_selection=select_target_joint(env, task_desc, args.target_joint)
+    target_joint=target_selection.selected_joint
+    if target_joint is None:
+        raise ValueError(f"target selection did not produce a joint: {target_selection.reason}")
     replay=[]; actions=[]; disturbance=None; recovery_state=None; done=False; reward=0.0
+    info={}
+    extra_env_steps=0
     current_task_desc=task_desc
     stopped_by_verifier=False
     for t in range(args.max_steps + args.num_steps_wait):
@@ -89,10 +98,18 @@ def rollout(cfg, model, processor, task_suite, task_id, mode, args, out_dir):
             obs,reward,done,info=env.step(get_libero_dummy_action(cfg.model_family)); continue
         pt=t-args.num_steps_wait
         if pt == args.disturbance_step:
-            disturbance=move_free_joint_xy(env, target_joint, args.dx, args.dy)
+            disturbance=audited_move_free_joint_xy(env, target_joint, args.dx, args.dy)
+            obs,refresh=refresh_observation_after_sim_change(env,cfg)
+            disturbance["refresh"]=refresh
+            extra_env_steps += int(bool(refresh.get("consumed_noop_env_step")))
             if mode == "verifier_stop":
                 stopped_by_verifier=True
-                recovery_state={"verifier":"invalid_continuation", "decision":"stop_or_full_replan", "has_selective_recovery_state":False}
+                recovery_state={
+                    "verifier":"invalid_continuation",
+                    "decision":"stop_or_full_replan",
+                    "has_selective_recovery_state":False,
+                    "baseline_property":"programmed_oracle_event_stop",
+                }
                 break
             if mode == "structured_reprompt_recovery":
                 current_task_desc=structured_prompt(task_desc, target_joint)
@@ -113,10 +130,58 @@ def rollout(cfg, model, processor, task_suite, task_id, mode, args, out_dir):
         obs,reward,done,info=env.step(action.tolist())
         actions.append({"t":pt,"task_prompt":current_task_desc,"raw_action":raw,"env_action":np.asarray(action,dtype=float).tolist(),"reward":float(reward),"done":bool(done)})
         if done: break
-    video=out_dir / f"{mode}_task{task_id}_success{bool(done)}.mp4"
+    status_info=dict(info)
+    if stopped_by_verifier:
+        status_info["stopped_by_verifier"]=True
+    episode_status=extract_episode_status(reward,done,status_info,len(actions),args.max_steps)
+    pre_steps=min(len(actions),args.disturbance_step) if disturbance else len(actions)
+    budget=make_budget_report(
+        policy_step_budget=args.max_steps,
+        warmup_simulator_steps=args.num_steps_wait,
+        policy_inference_steps=len(actions),
+        extra_environment_steps=extra_env_steps,
+        pre_disturbance_policy_steps=pre_steps,
+        reset_count=0,
+        rollback_count=0,
+        success=episode_status.success,
+    )
+    video=out_dir / f"{mode}_task{task_id}_success{episode_status.success}.mp4"
     save_video(replay, video)
     env.close()
-    return {"mode":mode,"task_id":task_id,"task_description":task_desc,"target_joint":target_joint,"success":bool(done),"stopped_by_verifier":stopped_by_verifier,"final_reward":float(reward),"num_policy_steps":len(actions),"disturbance":disturbance,"recovery_state":recovery_state,"video_path":str(video),"actions":actions}
+    return {
+        "mode":mode,
+        "task_id":task_id,
+        "task_description":task_desc,
+        "target_joint":target_joint,
+        "target_selection":json_safe(target_selection),
+        "status":episode_status.status,
+        "episode_status":json_safe(episode_status),
+        "success":episode_status.success,
+        "timeout":episode_status.timeout,
+        "stopped":episode_status.stopped,
+        "stopped_by_verifier":stopped_by_verifier,
+        "simulator_error":episode_status.simulator_error,
+        "success_source":episode_status.source if episode_status.success else None,
+        "final_reward":float(reward),
+        "num_policy_steps":len(actions),
+        "policy_step_budget":budget.policy_step_budget,
+        "warmup_simulator_steps":budget.warmup_simulator_steps,
+        "policy_inference_steps":budget.policy_inference_steps,
+        "environment_control_steps":budget.environment_control_steps,
+        "pre_disturbance_policy_steps":budget.pre_disturbance_policy_steps,
+        "recovery_policy_steps":budget.recovery_policy_steps,
+        "success_within_original_budget":budget.success_within_original_budget,
+        "total_policy_steps_consumed":budget.total_policy_steps_consumed,
+        "reset_count":budget.reset_count,
+        "rollback_count":budget.rollback_count,
+        "budget":json_safe(budget),
+        "diagnostic_assumption": "oracle affected object and invalid-state labels are injected by code",
+        "not_empirical_model_measurement": True,
+        "disturbance":disturbance,
+        "recovery_state":recovery_state,
+        "video_path":str(video),
+        "actions":actions,
+    }
 
 def main():
     args=parse_args(); set_seed_everywhere(args.seed)
@@ -132,7 +197,16 @@ def main():
             rec=rollout(cfg,model,processor,suite,tid,mode,args,out_dir)
             rows.append(rec); jsonl.open("a",encoding="utf-8").write(json.dumps(rec)+"\n")
             print(mode,"task",tid,"success",rec["success"],"steps",rec["num_policy_steps"],"video",rec["video_path"],flush=True)
-    summary={"args":vars(args),"records":rows,"success_by_mode":{m:float(np.mean([r["success"] for r in rows if r["mode"]==m])) for m in modes},"selective_recovery_state_rate":{m:float(np.mean([bool((r.get("recovery_state") or {}).get("has_selective_recovery_state")) for r in rows if r["mode"]==m])) for m in modes},"jsonl_path":str(jsonl)}
+    summary={
+        "args":vars(args),
+        "records":rows,
+        "diagnostic_assumption":"structured/verifier fields are programmed intervention labels",
+        "not_empirical_model_measurement":True,
+        "exclude_from_formal_success_summaries":True,
+        "success_by_mode":{m:float(np.mean([r["success"] for r in rows if r["mode"]==m])) for m in modes},
+        "selective_recovery_state_rate":{m:float(np.mean([bool((r.get("recovery_state") or {}).get("has_selective_recovery_state")) for r in rows if r["mode"]==m])) for m in modes},
+        "jsonl_path":str(jsonl),
+    }
     (out_dir/"summary.json").write_text(json.dumps(summary,indent=2),encoding="utf-8")
     print(json.dumps({k:v for k,v in summary.items() if k!="records"},indent=2),flush=True)
     print("summary",out_dir/"summary.json",flush=True)
