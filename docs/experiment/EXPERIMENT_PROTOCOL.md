@@ -1,5 +1,5 @@
 Status: Draft v0.1
-Pending canary-run validation
+Pending correctness-gate validation
 
 # Experiment Protocol: LIBERO / OpenVLA Disturbance Recovery
 

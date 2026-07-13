@@ -1,5 +1,5 @@
 Status: Draft v0.1
-Pending canary-run validation
+Pending correctness-gate validation
 
 # Paper Evidence Checklist
 
