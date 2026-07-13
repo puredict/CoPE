@@ -1,4 +1,4 @@
-"""Gradio entrypoint for the CPU-only mock LIBERO dashboard."""
+"""Gradio entrypoint for the LIBERO/OpenVLA dashboard."""
 
 from __future__ import annotations
 
@@ -9,36 +9,93 @@ import sys
 import time
 from typing import Any
 
-from libero_dashboard_controller import (
-    ControllerState,
-    ExperimentController,
-    snapshot_for_json,
-    wait_for_state,
-)
-from libero_mock_backend import MOCK_EXPERIMENT_MODES, MockRunConfig
+from libero_dashboard_controller import ControllerState, ExperimentController, snapshot_for_json, wait_for_state
+from libero_experiment_core import CANONICAL_MODES, ExperimentConfig
+from libero_mock_backend import MockBackend, MockRunConfig
 
 
-DEFAULT_CHECKPOINT = "mock://libero-dashboard"
-DEFAULT_OUT_DIR = "/tmp/libero_mock_dashboard"
+DEFAULT_MOCK_CHECKPOINT = "mock://libero-dashboard"
+DEFAULT_REAL_CHECKPOINT = "/home/lijingsu/vla/models/openvla-7b-finetuned-libero-spatial"
+DEFAULT_MOCK_OUT_DIR = "/tmp/libero_mock_dashboard"
+DEFAULT_REAL_OUT_DIR = "/home/lijingsu/vla/dashboard_outputs/interactive"
 
 
-def make_controller() -> ExperimentController:
-    return ExperimentController()
+def make_controller(*, real: bool = False) -> ExperimentController:
+    if real:
+        from libero_real_backend import RealExperimentBackend
+
+        return ExperimentController(lambda: RealExperimentBackend())
+    return ExperimentController(lambda: MockBackend())
 
 
 def _json_text(payload: Any) -> str:
     return json.dumps(snapshot_for_json(payload), indent=2, sort_keys=True)
 
 
-def build_dashboard(controller: ExperimentController):
+def _as_bool(value: Any) -> bool:
+    return bool(value)
+
+
+def make_config(
+    *,
+    real: bool,
+    checkpoint: str,
+    task_suite: str,
+    task_id: Any,
+    trial_id: Any,
+    mode: str,
+    max_steps: Any,
+    auto_disturbance: Any,
+    disturbance_step: Any,
+    target_joint: str,
+    dx: Any,
+    dy: Any,
+    allow_multiple: Any,
+    output_dir: str,
+    seed: Any,
+    resolution: Any,
+) -> ExperimentConfig | MockRunConfig:
+    if real:
+        return ExperimentConfig(
+            checkpoint=str(checkpoint or DEFAULT_REAL_CHECKPOINT),
+            task_suite=str(task_suite or "libero_spatial"),
+            task_id=int(task_id),
+            trial_id=int(trial_id),
+            mode=str(mode),
+            max_steps=int(max_steps),
+            disturbance_step=int(disturbance_step),
+            target_joint=str(target_joint or "auto"),
+            dx=float(dx),
+            dy=float(dy),
+            seed=int(seed),
+            resolution=int(resolution),
+            out_dir=str(output_dir or DEFAULT_REAL_OUT_DIR),
+            enable_auto_disturbance=_as_bool(auto_disturbance),
+            allow_multiple_disturbances=_as_bool(allow_multiple),
+        )
+    return MockRunConfig(
+        task_id=int(task_id),
+        trial_id=int(trial_id),
+        task_suite=str(task_suite or "libero_spatial"),
+        mode=str(mode),
+        max_steps=int(max_steps),
+        enable_auto_disturbance=_as_bool(auto_disturbance),
+        disturbance_step=int(disturbance_step),
+        target_joint=str(target_joint or "auto"),
+        dx=float(dx),
+        dy=float(dy),
+        allow_multiple_disturbances=_as_bool(allow_multiple),
+        output_dir=str(output_dir or DEFAULT_MOCK_OUT_DIR),
+        seed=int(seed),
+        frame_size=int(resolution),
+    )
+
+
+def build_dashboard(controller: ExperimentController, *, real: bool = False, defaults: argparse.Namespace | None = None):
     try:
         import gradio as gr
     except Exception as exc:  # pragma: no cover - depends on local environment.
-        raise RuntimeError(
-            "Gradio is required to launch the browser dashboard, but it is not installed "
-            "in the current environment. Do not install it from this workflow; run "
-            "--mock-smoke to validate the controller/backend without the web UI."
-        ) from exc
+        raise RuntimeError("Gradio is required to launch the browser dashboard.") from exc
 
     try:
         from gradio_client import utils as gradio_client_utils
@@ -54,35 +111,15 @@ def build_dashboard(controller: ExperimentController):
     except Exception:
         pass
 
-    def refresh():
-        frame, snapshot = controller.snapshot()
-        state_line = (
-            f"{snapshot['state']} | step {snapshot['policy_step']}/{snapshot['max_steps']} | "
-            f"reward {snapshot['reward']:.3f} | run {snapshot.get('run_id') or '-'}"
-        )
-        events = snapshot.get("events_tail", [])[-12:]
-        event_lines = [
-            f"{item.get('step', 0):04d} {item.get('event')} {item.get('payload', {})}" for item in events
-        ]
-        return (
-            frame,
-            state_line,
-            _json_text(snapshot),
-            snapshot.get("task_text", ""),
-            snapshot.get("current_prompt", ""),
-            _json_text(snapshot.get("raw_action", [])),
-            _json_text(snapshot.get("env_action", [])),
-            snapshot.get("reward", 0.0),
-            snapshot.get("policy_step", 0),
-            "\n".join(event_lines),
-            snapshot.get("error") or "",
-            snapshot.get("annotated_video_path") if snapshot.get("done") else None,
-        )
+    default_checkpoint = getattr(defaults, "default_checkpoint", None) or (
+        DEFAULT_REAL_CHECKPOINT if real else DEFAULT_MOCK_CHECKPOINT
+    )
+    default_out_dir = getattr(defaults, "default_out_dir", None) or (DEFAULT_REAL_OUT_DIR if real else DEFAULT_MOCK_OUT_DIR)
+    title = "LIBERO / OpenVLA Real Dashboard" if real else "LIBERO Mock Dashboard"
 
-    def on_load(checkpoint: str):
-        return controller.request_load(checkpoint or DEFAULT_CHECKPOINT).message
-
-    def on_start(
+    def cfg_from_inputs(
+        checkpoint,
+        task_suite,
         task_id,
         trial_id,
         mode,
@@ -95,28 +132,94 @@ def build_dashboard(controller: ExperimentController):
         allow_multiple,
         output_dir,
         seed,
+        resolution,
     ):
-        cfg = MockRunConfig(
-            task_id=int(task_id),
-            trial_id=int(trial_id),
-            mode=str(mode),
-            max_steps=int(max_steps),
-            enable_auto_disturbance=bool(auto_disturbance),
-            disturbance_step=int(disturbance_step),
-            target_joint=str(target_joint or "auto"),
-            dx=float(dx),
-            dy=float(dy),
-            allow_multiple_disturbances=bool(allow_multiple),
-            output_dir=str(output_dir or DEFAULT_OUT_DIR),
-            seed=int(seed),
+        return make_config(
+            real=real,
+            checkpoint=checkpoint,
+            task_suite=task_suite,
+            task_id=task_id,
+            trial_id=trial_id,
+            mode=mode,
+            max_steps=max_steps,
+            auto_disturbance=auto_disturbance,
+            disturbance_step=disturbance_step,
+            target_joint=target_joint,
+            dx=dx,
+            dy=dy,
+            allow_multiple=allow_multiple,
+            output_dir=output_dir,
+            seed=seed,
+            resolution=resolution,
         )
-        return controller.start_episode(cfg).message
 
-    def on_pause():
+    def refresh():
+        frame, snapshot = controller.snapshot()
+        state_line = (
+            f"{snapshot['state']} | policy {snapshot['policy_step']}/{snapshot['max_steps']} | "
+            f"env {snapshot.get('environment_step', 0)} | reward {snapshot['reward']:.3f} | "
+            f"run {snapshot.get('run_id') or '-'}"
+        )
+        events = snapshot.get("events_tail", [])[-16:]
+        event_lines = [
+            f"{item.get('policy_step', item.get('step', 0)):04d} {item.get('event')} {item.get('payload', {})}"
+            for item in events
+        ]
+        return (
+            frame,
+            state_line,
+            snapshot.get("task_text", ""),
+            snapshot.get("current_prompt", ""),
+            snapshot.get("mode") or "",
+            int(snapshot.get("policy_step", 0)),
+            int(snapshot.get("environment_step", 0)),
+            int(snapshot.get("policy_budget_remaining", 0)),
+            float(snapshot.get("reward", 0.0)),
+            _json_text(snapshot.get("episode_status")),
+            snapshot.get("target_joint") or snapshot.get("resolved_target_joint") or "",
+            _json_text(snapshot.get("target_position")),
+            _json_text(snapshot.get("disturbance_state")),
+            _json_text(snapshot.get("fresh_observation")),
+            _json_text(snapshot.get("latest_action")),
+            "\n".join(event_lines),
+            snapshot.get("error") or "",
+            _json_text(snapshot),
+            snapshot.get("annotated_video_path") if snapshot.get("done") else None,
+        )
+
+    def on_load(checkpoint, task_suite, task_id, trial_id, mode, max_steps, auto_disturbance, disturbance_step, target_joint, dx, dy, allow_multiple, output_dir, seed, resolution):
+        cfg = cfg_from_inputs(
+            checkpoint,
+            task_suite,
+            task_id,
+            trial_id,
+            mode,
+            max_steps,
+            auto_disturbance,
+            disturbance_step,
+            target_joint,
+            dx,
+            dy,
+            allow_multiple,
+            output_dir,
+            seed,
+            resolution,
+        )
+        if real:
+            return controller.request_load(str(checkpoint or DEFAULT_REAL_CHECKPOINT), config=cfg).message
+        return controller.request_load(str(checkpoint or DEFAULT_MOCK_CHECKPOINT)).message
+
+    def on_load_task(*values):
+        return controller.load_task(cfg_from_inputs(*values)).message
+
+    def on_start(*values):
+        return controller.start_episode(cfg_from_inputs(*values)).message
+
+    def on_pause_resume():
+        _, snapshot = controller.snapshot()
+        if snapshot["state"] == ControllerState.PAUSED.value:
+            return controller.resume().message
         return controller.pause().message
-
-    def on_resume():
-        return controller.resume().message
 
     def on_step():
         return controller.step_once().message
@@ -130,51 +233,78 @@ def build_dashboard(controller: ExperimentController):
     def on_reset():
         return controller.reset().message
 
-    with gr.Blocks(title="LIBERO Mock Dashboard") as demo:
-        gr.Markdown("# LIBERO Mock Dashboard")
+    with gr.Blocks(title=title) as demo:
+        gr.Markdown(f"# {title}")
         status_message = gr.Textbox(label="Command status", interactive=False)
         with gr.Row():
-            checkpoint = gr.Textbox(value=DEFAULT_CHECKPOINT, label="Checkpoint")
-            load_button = gr.Button("Load Mock Backend")
+            checkpoint = gr.Textbox(value=default_checkpoint, label="Checkpoint")
+            load_button = gr.Button("Load model")
+            load_task_button = gr.Button("Load task")
             reset_button = gr.Button("Reset")
 
         with gr.Row():
             with gr.Column(scale=1):
+                task_suite = gr.Textbox(value=getattr(defaults, "default_task_suite", "libero_spatial"), label="Task suite")
                 task_id = gr.Number(value=0, precision=0, label="Task")
                 trial_id = gr.Number(value=0, precision=0, label="Trial")
-                mode = gr.Dropdown(choices=list(MOCK_EXPERIMENT_MODES), value="reactive_disturbed", label="Mode")
-                max_steps = gr.Number(value=30, precision=0, label="Max steps")
+                mode = gr.Dropdown(choices=list(CANONICAL_MODES), value="reactive_disturbed", label="Mode")
+                max_steps = gr.Number(value=12 if not real else 220, precision=0, label="Policy budget")
                 auto_disturbance = gr.Checkbox(value=True, label="Auto disturbance")
-                disturbance_step = gr.Number(value=5, precision=0, label="Disturbance step")
+                disturbance_step = gr.Number(value=4 if not real else 70, precision=0, label="Disturbance step")
                 target_joint = gr.Textbox(value="auto", label="Target joint")
                 dx = gr.Number(value=0.10, label="dx")
                 dy = gr.Number(value=0.05, label="dy")
                 allow_multiple = gr.Checkbox(value=False, label="Allow multiple disturbances")
-                output_dir = gr.Textbox(value=DEFAULT_OUT_DIR, label="Output directory")
+                output_dir = gr.Textbox(value=default_out_dir, label="Output directory")
                 seed = gr.Number(value=7, precision=0, label="Seed")
+                resolution = gr.Number(value=256, precision=0, label="Camera resolution")
+                config_inputs = [
+                    checkpoint,
+                    task_suite,
+                    task_id,
+                    trial_id,
+                    mode,
+                    max_steps,
+                    auto_disturbance,
+                    disturbance_step,
+                    target_joint,
+                    dx,
+                    dy,
+                    allow_multiple,
+                    output_dir,
+                    seed,
+                    resolution,
+                ]
                 with gr.Row():
                     start_button = gr.Button("Start")
-                    stop_button = gr.Button("Stop and save")
+                    pause_resume_button = gr.Button("Pause / resume")
                 with gr.Row():
-                    pause_button = gr.Button("Pause")
-                    resume_button = gr.Button("Resume")
-                    step_button = gr.Button("Step once")
-                disturb_button = gr.Button("Disturb now")
+                    step_button = gr.Button("Strict single-step")
+                    disturb_button = gr.Button("Manual disturbance")
+                    stop_button = gr.Button("Safe stop")
             with gr.Column(scale=2):
-                image = gr.Image(label="Latest mock camera frame", type="numpy")
+                image = gr.Image(label="Policy camera", type="numpy")
                 state_text = gr.Textbox(label="State", interactive=False)
                 with gr.Row():
+                    mode_text = gr.Textbox(label="Mode", interactive=False)
                     reward = gr.Number(label="Reward", interactive=False)
-                    step = gr.Number(label="Step", interactive=False)
-                video = gr.Video(label="Annotated video")
-            with gr.Column(scale=2):
+                with gr.Row():
+                    policy_step = gr.Number(label="Policy step", interactive=False)
+                    env_step = gr.Number(label="Environment step", interactive=False)
+                    budget_remaining = gr.Number(label="Policy budget remaining", interactive=False)
                 task_text = gr.Textbox(label="Task", interactive=False)
                 prompt = gr.Textbox(label="Current prompt", interactive=False, lines=4)
-                raw_action = gr.Textbox(label="Raw action JSON", interactive=False, lines=3)
-                env_action = gr.Textbox(label="Env action JSON", interactive=False, lines=3)
-                snapshot_json = gr.Textbox(label="Snapshot JSON", interactive=False, lines=16)
-                events = gr.Textbox(label="Recent events", interactive=False, lines=12)
+                video = gr.Video(label="Annotated video")
+            with gr.Column(scale=2):
+                episode_status = gr.Textbox(label="Episode status", interactive=False, lines=4)
+                target_joint_view = gr.Textbox(label="Target joint", interactive=False)
+                target_position = gr.Textbox(label="Target position", interactive=False, lines=3)
+                disturbance_state = gr.Textbox(label="Disturbance state", interactive=False, lines=4)
+                fresh_observation = gr.Textbox(label="Fresh observation", interactive=False, lines=4)
+                latest_action = gr.Textbox(label="Latest action", interactive=False, lines=5)
+                events = gr.Textbox(label="Event tail", interactive=False, lines=12)
                 error_text = gr.Textbox(label="Error", interactive=False, lines=3)
+                snapshot_json = gr.Textbox(label="Snapshot JSON", interactive=False, lines=12)
 
         timer = gr.Timer(0.5)
         timer.tick(
@@ -182,41 +312,30 @@ def build_dashboard(controller: ExperimentController):
             outputs=[
                 image,
                 state_text,
-                snapshot_json,
                 task_text,
                 prompt,
-                raw_action,
-                env_action,
+                mode_text,
+                policy_step,
+                env_step,
+                budget_remaining,
                 reward,
-                step,
+                episode_status,
+                target_joint_view,
+                target_position,
+                disturbance_state,
+                fresh_observation,
+                latest_action,
                 events,
                 error_text,
+                snapshot_json,
                 video,
             ],
             queue=False,
         )
-        load_button.click(on_load, inputs=[checkpoint], outputs=[status_message], queue=False)
-        start_button.click(
-            on_start,
-            inputs=[
-                task_id,
-                trial_id,
-                mode,
-                max_steps,
-                auto_disturbance,
-                disturbance_step,
-                target_joint,
-                dx,
-                dy,
-                allow_multiple,
-                output_dir,
-                seed,
-            ],
-            outputs=[status_message],
-            queue=False,
-        )
-        pause_button.click(on_pause, outputs=[status_message], queue=False)
-        resume_button.click(on_resume, outputs=[status_message], queue=False)
+        load_button.click(on_load, inputs=config_inputs, outputs=[status_message], queue=False)
+        load_task_button.click(on_load_task, inputs=config_inputs, outputs=[status_message], queue=False)
+        start_button.click(on_start, inputs=config_inputs, outputs=[status_message], queue=False)
+        pause_resume_button.click(on_pause_resume, outputs=[status_message], queue=False)
         step_button.click(on_step, outputs=[status_message], queue=False)
         disturb_button.click(on_disturb, inputs=[target_joint, dx, dy], outputs=[status_message], queue=False)
         stop_button.click(on_stop, outputs=[status_message], queue=False)
@@ -227,9 +346,9 @@ def build_dashboard(controller: ExperimentController):
 def run_mock_smoke(output_dir: str) -> dict[str, Any]:
     out_dir = Path(output_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-    controller = make_controller()
+    controller = make_controller(real=False)
     try:
-        load = controller.request_load(DEFAULT_CHECKPOINT)
+        load = controller.request_load(DEFAULT_MOCK_CHECKPOINT)
         if not load.ok:
             raise RuntimeError(load.message)
         wait_for_state(controller, {ControllerState.READY}, timeout=5)
@@ -320,14 +439,16 @@ def _wait_until(predicate, controller: ExperimentController, timeout: float) -> 
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="CPU-only mock LIBERO dashboard")
-    parser.add_argument("--mock", action="store_true", help="Launch the mock backend dashboard.")
+    parser = argparse.ArgumentParser(description="LIBERO/OpenVLA dashboard")
+    backend = parser.add_mutually_exclusive_group()
+    backend.add_argument("--mock", action="store_true", help="Launch the mock backend dashboard.")
+    backend.add_argument("--real", action="store_true", help="Launch the real LIBERO/OpenVLA dashboard.")
     parser.add_argument("--mock-smoke", action="store_true", help="Run a non-web mock smoke test and exit.")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=7860)
-    parser.add_argument("--default-checkpoint", default=DEFAULT_CHECKPOINT)
+    parser.add_argument("--default-checkpoint", default=None)
     parser.add_argument("--default-task-suite", default="libero_spatial")
-    parser.add_argument("--default-out-dir", default=DEFAULT_OUT_DIR)
+    parser.add_argument("--default-out-dir", default=None)
     parser.add_argument("--output-dir", default=None, help="Output directory for --mock-smoke.")
     return parser.parse_args(argv)
 
@@ -335,14 +456,18 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     if args.mock_smoke:
-        result = run_mock_smoke(args.output_dir or args.default_out_dir)
+        result = run_mock_smoke(args.output_dir or args.default_out_dir or DEFAULT_MOCK_OUT_DIR)
         print(json.dumps(result, indent=2, sort_keys=True))
         return 0
-    if not args.mock:
-        print("Only --mock is implemented in this workflow; real OpenVLA/LIBERO is intentionally not imported.", file=sys.stderr)
+    if args.host == "0.0.0.0":
+        print("Refusing to bind the dashboard to 0.0.0.0; use 127.0.0.1 and SSH forwarding.", file=sys.stderr)
         return 2
-    controller = make_controller()
-    demo = build_dashboard(controller)
+    real = bool(args.real)
+    if not real and not args.mock:
+        print("Choose --mock or --real.", file=sys.stderr)
+        return 2
+    controller = make_controller(real=real)
+    demo = build_dashboard(controller, real=real, defaults=args)
     demo.launch(
         server_name=args.host,
         server_port=args.port,

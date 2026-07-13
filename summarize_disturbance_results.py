@@ -20,7 +20,7 @@ def summarize_run(label: str, run_dir: Path) -> list[dict]:
     summary_path = run_dir / "summary.json"
     if summary_path.exists():
         summary = json.loads(summary_path.read_text(encoding="utf-8"))
-        if summary.get("not_empirical_model_measurement") or summary.get("exclude_from_formal_success_summaries"):
+        if should_skip_formal(summary):
             return [
                 {
                     "label": label,
@@ -33,7 +33,7 @@ def summarize_run(label: str, run_dir: Path) -> list[dict]:
                 }
             ]
     rows = read_rows(run_dir / "episodes.jsonl")
-    rows = [r for r in rows if not r.get("not_empirical_model_measurement")]
+    rows = [r for r in rows if not should_skip_formal(r)]
     out = []
     for condition in ("clean", "disturbed"):
         xs = [r for r in rows if r.get("condition") == condition]
@@ -51,6 +51,18 @@ def summarize_run(label: str, run_dir: Path) -> list[dict]:
             }
         )
     return out
+
+
+def should_skip_formal(row: dict) -> bool:
+    return bool(
+        row.get("not_empirical_model_measurement")
+        or row.get("exclude_from_formal_success_summaries")
+        or row.get("interactive")
+        or row.get("manual_intervention")
+        or row.get("human_intervention")
+        or row.get("formal_run") is False
+        or row.get("eligible_for_official_metrics") is False
+    )
 
 
 def main() -> None:
