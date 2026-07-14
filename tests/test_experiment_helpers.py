@@ -13,6 +13,7 @@ from libero_experiment_core import (
     choose_target_joint,
     extract_episode_status,
     infer_goal_phrase,
+    inspect_target_joint_candidates,
     json_safe,
     list_free_joints,
     make_budget_report,
@@ -129,6 +130,33 @@ def test_choose_target_joint_rejects_tied_auto() -> None:
     env = FakeEnv(["red_mug_joint0", "blue_mug_joint0"], [0, 0])
     with pytest.raises(ValueError, match="tie"):
         choose_target_joint(env, "pick up the mug")
+
+
+def test_inspect_target_joint_candidates_reports_tie_without_selecting() -> None:
+    env = FakeEnv(["red_mug_joint0", "blue_mug_joint0"], [0, 0])
+    inspection = inspect_target_joint_candidates(env, "pick up the mug")
+    assert inspection.ambiguous is True
+    assert inspection.top_score == 1
+    assert inspection.recommended_joint is None
+    assert [item["joint"] for item in inspection.candidates] == ["red_mug_joint0", "blue_mug_joint0"]
+    with pytest.raises(ValueError, match="tie"):
+        select_target_joint(env, "pick up the mug")
+
+
+def test_inspect_target_joint_candidates_recommends_unique_top_candidate() -> None:
+    env = FakeEnv(["plate_1_joint0", "akita_black_bowl_1_joint0"], [0, 0])
+    inspection = inspect_target_joint_candidates(env, "put the black bowl on the plate")
+    assert inspection.ambiguous is False
+    assert inspection.top_score == 2
+    assert inspection.recommended_joint == "akita_black_bowl_1_joint0"
+
+
+def test_inspect_target_joint_candidates_reports_zero_score_without_error() -> None:
+    env = FakeEnv(["plate_1_joint0", "cup_1_joint0"], [0, 0])
+    inspection = inspect_target_joint_candidates(env, "open the drawer")
+    assert inspection.top_score == 0
+    assert inspection.recommended_joint is None
+    assert inspection.candidates
 
 
 def test_explicit_target_joint_overrides_auto_ambiguity() -> None:

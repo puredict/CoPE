@@ -33,7 +33,7 @@ class FakeRealConfig:
 class FakeRealBackend:
     backend_name = "fake_real"
 
-    def __init__(self) -> None:
+    def __init__(self, *, candidates=None, ambiguous=False, recommended_joint="fake_object_joint0") -> None:
         self.loaded = False
         self.policy_step = 0
         self.environment_step = 0
@@ -46,6 +46,12 @@ class FakeRealBackend:
         self.last_disturbance = None
         self.latest_frame = self._frame(0)
         self.stopped = False
+        self.candidates = candidates or [
+            {"joint": "fake_object_joint0", "name": "fake_object_joint0", "score": 2, "reason": "fake unique candidate"}
+        ]
+        self.ambiguous = ambiguous
+        self.recommended_joint = recommended_joint
+        self.start_configs = []
 
     @property
     def object_position(self):
@@ -64,13 +70,23 @@ class FakeRealBackend:
         return {
             "task_text": self.task_text,
             "available_trials": 1,
-            "available_target_joints": [self.resolved_target_joint],
-            "resolved_target_joint": self.resolved_target_joint,
-            "target_position": self.object_position,
+            "available_target_joints": [item["joint"] for item in self.candidates],
+            "target_joint_candidates": list(self.candidates),
+            "target_joint_top_score": max(item["score"] for item in self.candidates) if self.candidates else None,
+            "target_joint_ambiguous": self.ambiguous,
+            "recommended_target_joint": self.recommended_joint,
+            "target_selection": {
+                "candidates": list(self.candidates),
+                "ambiguous": self.ambiguous,
+                "recommended_joint": self.recommended_joint,
+            },
+            "resolved_target_joint": self.recommended_joint if not self.ambiguous else None,
+            "target_position": self.object_position if self.recommended_joint else None,
             "preview_frame": self.latest_frame,
         }
 
     def start_episode(self, config):
+        self.start_configs.append(config)
         self.policy_step = 0
         self.environment_step = 0
         self.disturbance_count = 0
@@ -228,6 +244,130 @@ def test_manual_events_mark_run_interactive_and_non_formal(tmp_path) -> None:
         assert summary["eligible_for_official_metrics"] is False
         assert summary["exclude_from_formal_success_summaries"] is True
         assert summary["manual_intervention"] is True
+    finally:
+        ctrl.shutdown()
+
+
+def test_clean_mode_allows_empty_target_joint_after_task_load(tmp_path) -> None:
+    tied = [
+        {"joint": "akita_black_bowl_1_joint0", "name": "akita_black_bowl_1_joint0", "score": 2, "reason": "tie"},
+        {"joint": "akita_black_bowl_2_joint0", "name": "akita_black_bowl_2_joint0", "score": 2, "reason": "tie"},
+    ]
+    backend = FakeRealBackend(candidates=tied, ambiguous=True, recommended_joint=None)
+    cfg = FakeRealConfig(out_dir=str(tmp_path), mode="clean", enable_auto_disturbance=False, target_joint="")
+    ctrl = ExperimentController(lambda: backend)
+    try:
+        assert ctrl.request_load(cfg.checkpoint, config=cfg).ok
+        wait_for_state(ctrl, {ControllerState.READY}, timeout=5)
+        assert ctrl.load_task(cfg).ok
+        snap = wait_until(ctrl, lambda s: s["task_text"] == "move the fake object")
+        assert snap["state"] == "READY"
+        assert snap["target_joint_ambiguous"] is True
+        assert ctrl.start_episode(cfg).ok
+        wait_until(ctrl, lambda s: bool(backend.start_configs) and s["state"] == "RUNNING")
+        assert ctrl.stop().ok
+        wait_for_state(ctrl, {ControllerState.FAILED}, timeout=5)
+    finally:
+        ctrl.shutdown()
+
+
+def test_disturbed_tied_candidates_require_user_target_without_error(tmp_path) -> None:
+    tied = [
+        {"joint": "akita_black_bowl_1_joint0", "name": "akita_black_bowl_1_joint0", "score": 2, "reason": "tie"},
+        {"joint": "akita_black_bowl_2_joint0", "name": "akita_black_bowl_2_joint0", "score": 2, "reason": "tie"},
+    ]
+    backend = FakeRealBackend(candidates=tied, ambiguous=True, recommended_joint=None)
+    cfg = FakeRealConfig(out_dir=str(tmp_path), mode="reactive_disturbed", enable_auto_disturbance=False, target_joint="")
+    ctrl = ExperimentController(lambda: backend)
+    try:
+        assert ctrl.request_load(cfg.checkpoint, config=cfg).ok
+        wait_for_state(ctrl, {ControllerState.READY}, timeout=5)
+        queued = ctrl.load_task(cfg)
+        assert queued.ok
+        assert queued.message == "Task load queued."
+        snap = wait_until(ctrl, lambda s: len(s["available_target_joints"]) == 2)
+        assert snap["state"] == "READY"
+        assert snap["target_joint_ambiguous"] is True
+        assert snap["message"] == "Task loaded. Select a target joint before starting disturbed mode."
+        start = ctrl.start_episode(cfg)
+        assert not start.ok
+        assert start.message == "Please select a target joint before starting a disturbed run."
+        _, after = ctrl.snapshot()
+        assert after["state"] == "READY"
+        assert after["message"] == start.message
+        assert not backend.start_configs
+    finally:
+        ctrl.shutdown()
+
+
+def test_disturbed_selected_candidate_can_start(tmp_path) -> None:
+    tied = [
+        {"joint": "akita_black_bowl_1_joint0", "name": "akita_black_bowl_1_joint0", "score": 2, "reason": "tie"},
+        {"joint": "akita_black_bowl_2_joint0", "name": "akita_black_bowl_2_joint0", "score": 2, "reason": "tie"},
+    ]
+    backend = FakeRealBackend(candidates=tied, ambiguous=True, recommended_joint=None)
+    cfg = FakeRealConfig(
+        out_dir=str(tmp_path),
+        mode="reactive_disturbed",
+        enable_auto_disturbance=False,
+        target_joint="akita_black_bowl_1_joint0",
+    )
+    ctrl = ExperimentController(lambda: backend)
+    try:
+        assert ctrl.request_load(cfg.checkpoint, config=cfg).ok
+        wait_for_state(ctrl, {ControllerState.READY}, timeout=5)
+        assert ctrl.load_task(cfg).ok
+        wait_until(ctrl, lambda s: len(s["available_target_joints"]) == 2)
+        assert ctrl.start_episode(cfg).ok
+        wait_until(ctrl, lambda s: bool(backend.start_configs) and s["state"] == "RUNNING")
+        assert backend.start_configs[-1].target_joint == "akita_black_bowl_1_joint0"
+        assert ctrl.stop().ok
+        wait_for_state(ctrl, {ControllerState.FAILED}, timeout=5)
+    finally:
+        ctrl.shutdown()
+
+
+def test_disturbed_rejects_unknown_target_without_error(tmp_path) -> None:
+    backend = FakeRealBackend()
+    cfg = FakeRealConfig(
+        out_dir=str(tmp_path),
+        mode="reactive_disturbed",
+        enable_auto_disturbance=False,
+        target_joint="missing_joint0",
+    )
+    ctrl = ExperimentController(lambda: backend)
+    try:
+        assert ctrl.request_load(cfg.checkpoint, config=cfg).ok
+        wait_for_state(ctrl, {ControllerState.READY}, timeout=5)
+        assert ctrl.load_task(cfg).ok
+        wait_until(ctrl, lambda s: s["available_target_joints"])
+        start = ctrl.start_episode(cfg)
+        assert not start.ok
+        assert "not in the loaded task candidates" in start.message
+        _, snap = ctrl.snapshot()
+        assert snap["state"] == "READY"
+        assert not backend.start_configs
+    finally:
+        ctrl.shutdown()
+
+
+def test_unique_candidate_is_used_as_recommendation(tmp_path) -> None:
+    backend = FakeRealBackend()
+    cfg = FakeRealConfig(out_dir=str(tmp_path), mode="reactive_disturbed", enable_auto_disturbance=False, target_joint="")
+    ctrl = ExperimentController(lambda: backend)
+    try:
+        assert ctrl.request_load(cfg.checkpoint, config=cfg).ok
+        wait_for_state(ctrl, {ControllerState.READY}, timeout=5)
+        assert ctrl.load_task(cfg).ok
+        snap = wait_until(ctrl, lambda s: s["recommended_target_joint"] == "fake_object_joint0")
+        assert snap["target_joint_ambiguous"] is False
+        start = ctrl.start_episode(cfg)
+        assert start.ok
+        assert start.message == "Using recommended target joint fake_object_joint0."
+        wait_until(ctrl, lambda s: bool(backend.start_configs) and s["state"] == "RUNNING")
+        assert backend.start_configs[-1].target_joint == "fake_object_joint0"
+        assert ctrl.stop().ok
+        wait_for_state(ctrl, {ControllerState.FAILED}, timeout=5)
     finally:
         ctrl.shutdown()
 

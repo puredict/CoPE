@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from datetime import datetime, timezone
 from enum import Enum
 import copy
@@ -18,6 +18,7 @@ import uuid
 import numpy as np
 
 from libero_mock_backend import MockBackend, MockRunConfig, SimpleVideoRecorder, json_safe, utc_now_iso, write_json
+from libero_experiment_core import requires_target_joint
 
 
 class ControllerState(str, Enum):
@@ -89,6 +90,31 @@ def _cfg_output_dir(config: Any) -> str:
     return str(_cfg(config, "output_dir", None) or _cfg(config, "out_dir", None) or "/tmp/libero_dashboard")
 
 
+def _target_joint_value(config: Any) -> str:
+    return str(_cfg(config, "target_joint", "") or "").strip()
+
+
+def _is_missing_target_joint(value: str) -> bool:
+    return value == "" or value.lower() in {"auto", "none", "null"}
+
+
+def _config_with(config: Any, **updates: Any) -> Any:
+    if hasattr(config, "__dataclass_fields__"):
+        return replace(config, **updates)
+    if isinstance(config, dict):
+        out = dict(config)
+        out.update(updates)
+        return out
+    data = dict(getattr(config, "__dict__", {}))
+    data.update(updates)
+    try:
+        return type(config)(**data)
+    except Exception:
+        for key, value in updates.items():
+            setattr(config, key, value)
+        return config
+
+
 def _backend_snapshot(backend: Any) -> dict[str, Any]:
     if not hasattr(backend, "get_snapshot"):
         return {}
@@ -122,6 +148,11 @@ def _initial_snapshot() -> dict[str, Any]:
         "target_position": None,
         "target_selection": {},
         "available_target_joints": [],
+        "target_joint_candidates": [],
+        "target_joint_top_score": None,
+        "target_joint_ambiguous": False,
+        "recommended_target_joint": None,
+        "target_joint_validation_error": None,
         "fresh_observation": None,
         "episode_status": None,
         "disturbance_state": {},
@@ -224,6 +255,23 @@ class ExperimentController:
         with self._lock:
             if self._state != ControllerState.READY:
                 return CommandResult(False, f"Cannot load task from state {self._state.value}.")
+            self._snapshot.update(
+                {
+                    "message": "Task load queued.",
+                    "target_joint": "",
+                    "resolved_target_joint": "",
+                    "target_position": None,
+                    "target_selection": {},
+                    "target_joint_candidates": [],
+                    "available_target_joints": [],
+                    "target_joint_top_score": None,
+                    "target_joint_ambiguous": False,
+                    "recommended_target_joint": None,
+                    "target_joint_validation_error": None,
+                    "error": None,
+                    "traceback_tail": "",
+                }
+            )
         self._enqueue(CommandType.LOAD_TASK, {"config": cfg})
         return CommandResult(True, "Task load queued.")
 
@@ -237,10 +285,18 @@ class ExperimentController:
         with self._lock:
             if self._state != ControllerState.READY:
                 return CommandResult(False, f"Cannot start episode from state {self._state.value}.")
-            self._set_state_locked(ControllerState.RUNNING, "Episode start queued.")
+        cfg, validation_error, validation_note = self._validate_start_target_joint(cfg)
+        if validation_error:
+            with self._lock:
+                self._snapshot["target_joint_validation_error"] = validation_error
+                self._snapshot["message"] = validation_error
+            return CommandResult(False, validation_error)
+        with self._lock:
+            self._set_state_locked(ControllerState.RUNNING, validation_note or "Episode start queued.")
             self._snapshot["active_episode"] = True
+            self._snapshot["target_joint_validation_error"] = None
         self._enqueue(CommandType.START, {"config": cfg})
-        return CommandResult(True, "Episode start queued.")
+        return CommandResult(True, validation_note or "Episode start queued.")
 
     def pause(self) -> CommandResult:
         with self._lock:
@@ -298,6 +354,34 @@ class ExperimentController:
     @staticmethod
     def _validated_config(config: Any) -> Any:
         return config.validated() if hasattr(config, "validated") else config
+
+    def _validate_start_target_joint(self, cfg: Any) -> tuple[Any, str | None, str | None]:
+        with self._lock:
+            backend_name = str(self._snapshot.get("backend", "mock"))
+        if backend_name == "mock":
+            return cfg, None, None
+
+        mode = str(_cfg(cfg, "mode", "reactive_disturbed"))
+        auto_disturbance = bool(_cfg(cfg, "enable_auto_disturbance", False))
+        if not requires_target_joint(mode, auto_disturbance):
+            return cfg, None, None
+
+        requested = _target_joint_value(cfg)
+        with self._lock:
+            available = list(self._snapshot.get("available_target_joints", []))
+            recommended = self._snapshot.get("recommended_target_joint")
+            ambiguous = bool(self._snapshot.get("target_joint_ambiguous"))
+
+        if not _is_missing_target_joint(requested):
+            if available and requested not in available:
+                return cfg, f"Target joint {requested!r} is not in the loaded task candidates.", None
+            return cfg, None, None
+
+        if recommended and not ambiguous:
+            cfg = _config_with(cfg, target_joint=str(recommended))
+            return cfg, None, f"Using recommended target joint {recommended}."
+
+        return cfg, "Please select a target joint before starting a disturbed run.", None
 
     def _worker_main(self) -> None:
         while not self._shutdown:
@@ -363,18 +447,43 @@ class ExperimentController:
         with self._lock:
             if frame is not None:
                 self._latest_frame = np.asarray(frame, dtype=np.uint8).copy()
-            target_joint = info.get("resolved_target_joint") or ""
+            target_joint = info.get("resolved_target_joint") or info.get("recommended_target_joint") or ""
+            candidates = list(info.get("target_joint_candidates", []))
+            candidate_names = list(
+                info.get("available_target_joints", [])
+                or [item.get("joint", item.get("name")) for item in candidates if isinstance(item, dict)]
+            )
+            target_selection = info.get("target_selection", {})
+            target_required = requires_target_joint(
+                str(_cfg(command.payload["config"], "mode", "reactive_disturbed")),
+                bool(_cfg(command.payload["config"], "enable_auto_disturbance", False)),
+            )
+            ambiguous = bool(info.get("target_joint_ambiguous"))
+            recommended = info.get("recommended_target_joint")
+            if target_required and ambiguous:
+                message = "Task loaded. Select a target joint before starting disturbed mode."
+            elif target_required and recommended:
+                message = f"Task loaded. Recommended target joint: {recommended}."
+            else:
+                message = "Task loaded."
             self._snapshot.update(
                 {
                     "task_text": info.get("task_text", ""),
                     "current_prompt": info.get("task_text", ""),
                     "original_prompt": info.get("task_text", ""),
-                    "available_target_joints": list(info.get("available_target_joints", [])),
+                    "available_target_joints": candidate_names,
+                    "target_joint_candidates": candidates,
+                    "target_joint_top_score": info.get("target_joint_top_score"),
+                    "target_joint_ambiguous": ambiguous,
+                    "recommended_target_joint": recommended,
                     "resolved_target_joint": target_joint,
                     "target_joint": target_joint,
                     "target_position": info.get("target_position"),
-                    "target_selection": info.get("target_selection", {}),
-                    "message": "Task loaded.",
+                    "target_selection": target_selection,
+                    "target_joint_validation_error": None,
+                    "error": None,
+                    "traceback_tail": "",
+                    "message": message,
                 }
             )
 
