@@ -4,6 +4,13 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
+SOURCE_PROJECT_ROOT="${PROJECT_ROOT}"
+if [[ ! -d "${SOURCE_PROJECT_ROOT}/src/openvla" || ! -d "${SOURCE_PROJECT_ROOT}/src/LIBERO" ]]; then
+  if [[ -d "/home/lijingsu/vla/src/openvla" && -d "/home/lijingsu/vla/src/LIBERO" ]]; then
+    SOURCE_PROJECT_ROOT="/home/lijingsu/vla"
+  fi
+fi
+
 cd "${PROJECT_ROOT}"
 
 echo "[run_project_env] Using project-isolated LIBERO/OpenVLA environment for this subprocess only." >&2
@@ -16,7 +23,7 @@ if [[ -x "${PROJECT_ROOT}/.venv/bin/python" ]]; then
   export PATH="${VIRTUAL_ENV}/bin:${PATH}"
 fi
 
-export PYTHONPATH="${PROJECT_ROOT}/src/openvla:${PROJECT_ROOT}/src/LIBERO:${PYTHONPATH:-}"
+export PYTHONPATH="${SOURCE_PROJECT_ROOT}/src/openvla:${SOURCE_PROJECT_ROOT}/src/LIBERO:${PYTHONPATH:-}"
 export MUJOCO_GL="${MUJOCO_GL:-osmesa}"
 export PYOPENGL_PLATFORM="${PYOPENGL_PLATFORM:-osmesa}"
 export HF_HOME="${HF_HOME:-${PROJECT_ROOT}/cache/huggingface}"
