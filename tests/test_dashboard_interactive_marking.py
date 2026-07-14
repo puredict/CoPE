@@ -33,7 +33,14 @@ class FakeRealConfig:
 class FakeRealBackend:
     backend_name = "fake_real"
 
-    def __init__(self, *, candidates=None, ambiguous=False, recommended_joint="fake_object_joint0") -> None:
+    def __init__(
+        self,
+        *,
+        candidates=None,
+        ambiguous=False,
+        recommended_joint="fake_object_joint0",
+        clear_disturbance_on_stop=False,
+    ) -> None:
         self.loaded = False
         self.policy_step = 0
         self.environment_step = 0
@@ -52,6 +59,7 @@ class FakeRealBackend:
         self.ambiguous = ambiguous
         self.recommended_joint = recommended_joint
         self.start_configs = []
+        self.clear_disturbance_on_stop = clear_disturbance_on_stop
 
     @property
     def object_position(self):
@@ -171,6 +179,9 @@ class FakeRealBackend:
     def stop(self):
         self.stopped = True
         self.loaded = False
+        if self.clear_disturbance_on_stop:
+            self.disturbance_count = 0
+            self.last_disturbance = None
 
     def close(self):
         self.stop()
@@ -244,6 +255,38 @@ def test_manual_events_mark_run_interactive_and_non_formal(tmp_path) -> None:
         assert summary["eligible_for_official_metrics"] is False
         assert summary["exclude_from_formal_success_summaries"] is True
         assert summary["manual_intervention"] is True
+    finally:
+        ctrl.shutdown()
+
+
+def test_manual_stop_summary_preserves_disturbance_after_backend_release(tmp_path) -> None:
+    cfg = FakeRealConfig(out_dir=str(tmp_path))
+    backend = FakeRealBackend(clear_disturbance_on_stop=True)
+    ctrl = ExperimentController(lambda: backend)
+    try:
+        assert ctrl.request_load(cfg.checkpoint, config=cfg).ok
+        wait_for_state(ctrl, {ControllerState.READY}, timeout=5)
+        assert ctrl.load_task(cfg).ok
+        wait_until(ctrl, lambda s: s["task_text"] == "move the fake object")
+        assert ctrl.start_episode(cfg).ok
+        wait_until(ctrl, lambda s: s["policy_step"] >= 1 and s["state"] == "RUNNING")
+        assert ctrl.pause().ok
+        wait_for_state(ctrl, {ControllerState.PAUSED}, timeout=5)
+        assert ctrl.apply_disturbance(target_joint="auto", dx=0.02, dy=0.03).ok
+        wait_until(ctrl, lambda s: s["disturbance_count"] == 1)
+        assert ctrl.stop().ok
+        snap = wait_for_state(ctrl, {ControllerState.FAILED, ControllerState.ERROR}, timeout=5)
+
+        run_dir = Path(snap["run_dir"])
+        summary = json.loads((run_dir / "episode_summary.json").read_text())
+
+        assert backend.disturbance_count == 0
+        assert backend.last_disturbance is None
+        assert summary["disturbance_count"] == 1
+        assert summary["last_disturbance"]["applied"] is True
+        assert summary["last_disturbance"]["source"] == "manual_ui"
+        assert snap["disturbance_count"] == 1
+        assert snap["last_disturbance"]["source"] == "manual_ui"
     finally:
         ctrl.shutdown()
 
