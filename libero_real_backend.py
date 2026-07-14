@@ -325,24 +325,36 @@ class RealExperimentBackend:
             raise ValueError("No target joint selected for disturbance.")
         delta_x = float(cfg.dx if dx is None else dx)
         delta_y = float(cfg.dy if dy is None else dy)
-        step = runtime.policy_step if policy_step is None else int(policy_step)
+        policy_step_before = int(runtime.policy_step)
+        step = policy_step_before if policy_step is None else int(policy_step)
         disturbance = move_free_joint_xy(runtime.env, joint, delta_x, delta_y)
+        actual_delta = [
+            float(disturbance["after_qpos"][i] - disturbance["before_qpos"][i]) for i in range(3)
+        ]
         disturbance.update(
             {
+                "applied": True,
                 "timestamp": disturbance.get("applied_at"),
                 "source": source,
                 "policy_step": step,
+                "policy_step_before_disturbance": policy_step_before,
                 "requested_target_joint": requested,
-                "delta_xyz_actual": [
-                    float(disturbance["after_qpos"][i] - disturbance["before_qpos"][i]) for i in range(3)
-                ],
+                "target_joint": joint,
+                "before_position": [float(value) for value in disturbance["before_qpos"][:3]],
+                "after_position": [float(value) for value in disturbance["after_qpos"][:3]],
+                "actual_delta": actual_delta,
+                "delta_xyz_actual": actual_delta,
                 "disturbance_count": runtime.disturbance_count + 1,
             }
         )
         runtime.obs, refresh = refresh_observation_after_sim_change(runtime.env, self.model_cfg)
+        refresh = dict(refresh)
+        refresh["fresh_observation"] = True
+        refresh["observation_refresh_method"] = refresh.get("method")
         runtime.extra_environment_steps += int(bool(refresh.get("consumed_noop_env_step")))
         runtime.last_fresh_observation = refresh
         runtime.latest_frame = frame_from_obs(runtime.obs, runtime.resize_size)
+        policy_step_after = int(runtime.policy_step)
         runtime.disturbance_count += 1
         if source == "manual_ui":
             runtime.manual_disturbance_count += 1
@@ -353,6 +365,11 @@ class RealExperimentBackend:
         prompt_changed = new_prompt != runtime.current_prompt
         runtime.current_prompt = new_prompt
         runtime.recovery_state = recovery_state
+        disturbance["policy_step_after_disturbance"] = policy_step_after
+        disturbance["policy_step_unchanged_by_disturbance"] = policy_step_after == policy_step_before
+        disturbance["fresh_observation"] = True
+        disturbance["observation_refresh_method"] = refresh.get("method")
+        disturbance["consumed_noop_env_step"] = bool(refresh.get("consumed_noop_env_step"))
         disturbance["refresh"] = refresh
         disturbance["prompt_changed"] = prompt_changed
         disturbance["current_prompt"] = runtime.current_prompt

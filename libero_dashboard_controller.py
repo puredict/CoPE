@@ -918,6 +918,13 @@ class ExperimentController:
             except Exception as exc:  # pragma: no cover - defensive finalization.
                 video_info = {"warnings": [f"video finalization failed: {type(exc).__name__}: {exc}"]}
 
+            backend_final_snapshot = _backend_snapshot(self._backend)
+            final_disturbance_count = backend_final_snapshot.get(
+                "disturbance_count", getattr(self._backend, "disturbance_count", 0)
+            )
+            final_last_disturbance = backend_final_snapshot.get(
+                "last_disturbance", getattr(self._backend, "last_disturbance", None)
+            )
             if termination_reason == "manual_stop" and hasattr(self._backend, "stop"):
                 try:
                     self._backend.stop()
@@ -925,7 +932,6 @@ class ExperimentController:
                     error_text = error_text or f"Backend stop failed: {type(exc).__name__}: {exc}"
                     terminal_state = ControllerState.ERROR
 
-            backend_final_snapshot = _backend_snapshot(self._backend)
             summary = {
                 "run_id": run_id,
                 "state": terminal_state.value,
@@ -942,8 +948,8 @@ class ExperimentController:
                     "policy_budget_remaining", max(0, int(_cfg(cfg, "max_steps", 0)) - policy_step)
                 ),
                 "reward": reward,
-                "disturbance_count": getattr(self._backend, "disturbance_count", 0),
-                "last_disturbance": getattr(self._backend, "last_disturbance", None),
+                "disturbance_count": final_disturbance_count,
+                "last_disturbance": final_last_disturbance,
                 "manual_intervention": manual_intervention,
                 "human_intervention": manual_intervention,
                 "interactive": True,
@@ -1010,6 +1016,16 @@ class ExperimentController:
                         "episode_summary_path": str(summary_path),
                         "raw_video_path": str(raw_video_path),
                         "annotated_video_path": str(annotated_video_path),
+                        "disturbance_count": summary["disturbance_count"],
+                        "last_disturbance": summary["last_disturbance"],
+                        "disturbance_state": {
+                            "applied": summary["disturbance_count"] > 0,
+                            "count": summary["disturbance_count"],
+                            "last": summary["last_disturbance"],
+                        },
+                        "target_joint": summary["target_joint"],
+                        "target_position": summary["target_position"],
+                        "fresh_observation": summary["fresh_observation"],
                         "model_loaded": bool(getattr(self._backend, "loaded", self._snapshot.get("model_loaded", False))),
                     }
                 )
