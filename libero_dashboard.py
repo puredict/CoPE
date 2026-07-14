@@ -36,6 +36,40 @@ def _as_bool(value: Any) -> bool:
     return bool(value)
 
 
+def _target_candidate_lines(snapshot: dict[str, Any]) -> str:
+    candidates = snapshot.get("target_joint_candidates") or []
+    if not candidates:
+        return ""
+    lines = []
+    for item in candidates:
+        if not isinstance(item, dict):
+            lines.append(str(item))
+            continue
+        joint = item.get("joint") or item.get("name") or ""
+        score = item.get("score")
+        reason = item.get("reason") or item.get("score_reason") or ""
+        lines.append(f"{joint} | score={score} | {reason}")
+    if snapshot.get("target_joint_ambiguous"):
+        lines.append("ambiguous=true")
+    recommended = snapshot.get("recommended_target_joint")
+    if recommended:
+        lines.append(f"recommended={recommended}")
+    return "\n".join(lines)
+
+
+def _target_dropdown_update(gr, snapshot: dict[str, Any]):
+    choices = []
+    for item in snapshot.get("target_joint_candidates") or []:
+        if isinstance(item, dict):
+            joint = item.get("joint") or item.get("name")
+            if joint:
+                choices.append(str(joint))
+    value = snapshot.get("target_joint") or snapshot.get("recommended_target_joint") or None
+    if value and value not in choices:
+        choices.append(str(value))
+    return gr.update(choices=choices, value=value)
+
+
 def make_config(
     *,
     real: bool,
@@ -177,6 +211,7 @@ def build_dashboard(controller: ExperimentController, *, real: bool = False, def
             float(snapshot.get("reward", 0.0)),
             _json_text(snapshot.get("episode_status")),
             snapshot.get("target_joint") or snapshot.get("resolved_target_joint") or "",
+            _target_candidate_lines(snapshot),
             _json_text(snapshot.get("target_position")),
             _json_text(snapshot.get("disturbance_state")),
             _json_text(snapshot.get("fresh_observation")),
@@ -210,7 +245,20 @@ def build_dashboard(controller: ExperimentController, *, real: bool = False, def
         return controller.request_load(str(checkpoint or DEFAULT_MOCK_CHECKPOINT)).message
 
     def on_load_task(*values):
-        return controller.load_task(cfg_from_inputs(*values)).message
+        result = controller.load_task(cfg_from_inputs(*values))
+        if not result.ok:
+            return result.message, gr.update(), ""
+        deadline = time.time() + 240
+        last = {}
+        while time.time() < deadline:
+            _, snapshot = controller.snapshot()
+            last = snapshot
+            if snapshot.get("state") == ControllerState.ERROR.value:
+                return snapshot.get("error") or "Task load failed.", gr.update(), _target_candidate_lines(snapshot)
+            if snapshot.get("task_text") and str(snapshot.get("message", "")).startswith("Task loaded."):
+                return snapshot.get("message") or "Task loaded.", _target_dropdown_update(gr, snapshot), _target_candidate_lines(snapshot)
+            time.sleep(0.2)
+        return "Task load queued.", _target_dropdown_update(gr, last), _target_candidate_lines(last)
 
     def on_start(*values):
         return controller.start_episode(cfg_from_inputs(*values)).message
@@ -251,7 +299,16 @@ def build_dashboard(controller: ExperimentController, *, real: bool = False, def
                 max_steps = gr.Number(value=12 if not real else 220, precision=0, label="Policy budget")
                 auto_disturbance = gr.Checkbox(value=True, label="Auto disturbance")
                 disturbance_step = gr.Number(value=4 if not real else 70, precision=0, label="Disturbance step")
-                target_joint = gr.Textbox(value="auto", label="Target joint")
+                try:
+                    target_joint = gr.Dropdown(
+                        choices=[],
+                        value=None,
+                        allow_custom_value=True,
+                        interactive=True,
+                        label="Target joint",
+                    )
+                except TypeError:
+                    target_joint = gr.Textbox(value="", label="Target joint")
                 dx = gr.Number(value=0.10, label="dx")
                 dy = gr.Number(value=0.05, label="dy")
                 allow_multiple = gr.Checkbox(value=False, label="Allow multiple disturbances")
@@ -298,6 +355,7 @@ def build_dashboard(controller: ExperimentController, *, real: bool = False, def
             with gr.Column(scale=2):
                 episode_status = gr.Textbox(label="Episode status", interactive=False, lines=4)
                 target_joint_view = gr.Textbox(label="Target joint", interactive=False)
+                target_candidates = gr.Textbox(label="Target candidates", interactive=False, lines=6)
                 target_position = gr.Textbox(label="Target position", interactive=False, lines=3)
                 disturbance_state = gr.Textbox(label="Disturbance state", interactive=False, lines=4)
                 fresh_observation = gr.Textbox(label="Fresh observation", interactive=False, lines=4)
@@ -321,6 +379,7 @@ def build_dashboard(controller: ExperimentController, *, real: bool = False, def
                 reward,
                 episode_status,
                 target_joint_view,
+                target_candidates,
                 target_position,
                 disturbance_state,
                 fresh_observation,
@@ -333,7 +392,7 @@ def build_dashboard(controller: ExperimentController, *, real: bool = False, def
             queue=False,
         )
         load_button.click(on_load, inputs=config_inputs, outputs=[status_message], queue=False)
-        load_task_button.click(on_load_task, inputs=config_inputs, outputs=[status_message], queue=False)
+        load_task_button.click(on_load_task, inputs=config_inputs, outputs=[status_message, target_joint, target_candidates], queue=False)
         start_button.click(on_start, inputs=config_inputs, outputs=[status_message], queue=False)
         pause_resume_button.click(on_pause_resume, outputs=[status_message], queue=False)
         step_button.click(on_step, outputs=[status_message], queue=False)

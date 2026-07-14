@@ -27,13 +27,16 @@ from libero_experiment_core import (
     get_dummy_action,
     get_image_resize_size,
     get_joint_qpos,
+    inspect_target_joint_candidates,
     json_safe,
     load_model_and_processor,
     make_budget_report,
     move_free_joint_xy,
     refresh_observation_after_sim_change,
+    requires_target_joint,
     select_target_joint,
     set_seed,
+    TargetSelection,
     unload_torch_model_refs,
     validate_task_and_trial,
 )
@@ -181,16 +184,21 @@ class RealExperimentBackend:
         try:
             env.reset()
             obs = env.set_init_state(initial_states[cfg.trial_id])
-            target_selection = select_target_joint(env, task_description, cfg.target_joint)
+            inspection = inspect_target_joint_candidates(env, task_description)
             frame = frame_from_obs(obs, cfg.resolution)
+            recommended_joint = inspection.recommended_joint
             return {
                 "task_text": task_description,
                 "available_trials": len(initial_states),
-                "available_target_joints": [item["name"] for item in target_selection.candidates],
-                "target_selection": json_safe(target_selection),
-                "resolved_target_joint": target_selection.selected_joint,
-                "target_position": get_joint_qpos(env, target_selection.selected_joint)
-                if target_selection.selected_joint
+                "available_target_joints": [item["joint"] for item in inspection.candidates],
+                "target_joint_candidates": json_safe(inspection.candidates),
+                "target_joint_top_score": inspection.top_score,
+                "target_joint_ambiguous": inspection.ambiguous,
+                "recommended_target_joint": recommended_joint,
+                "target_selection": json_safe(inspection),
+                "resolved_target_joint": recommended_joint if not inspection.ambiguous else None,
+                "target_position": get_joint_qpos(env, recommended_joint)
+                if recommended_joint
                 else None,
                 "preview_frame": frame,
             }
@@ -216,10 +224,21 @@ class RealExperimentBackend:
         resize_size = get_image_resize_size(self.model_cfg)
         env.reset()
         obs = env.set_init_state(selected_initial_state)
-        target_selection = select_target_joint(env, task_description, cfg.target_joint)
-        if target_selection.selected_joint is None:
-            raise ValueError(f"target selection did not produce a joint: {target_selection.reason}")
-        initial_target_qpos = get_joint_qpos(env, target_selection.selected_joint)
+        inspection = inspect_target_joint_candidates(env, task_description)
+        if requires_target_joint(cfg.mode, cfg.enable_auto_disturbance):
+            target_selection = select_target_joint(env, task_description, cfg.target_joint)
+            if target_selection.selected_joint is None:
+                raise ValueError(f"target selection did not produce a joint: {target_selection.reason}")
+            initial_target_qpos = get_joint_qpos(env, target_selection.selected_joint)
+        else:
+            target_selection = TargetSelection(
+                selected_joint=None,
+                candidates=inspection.candidates,
+                reason="target_joint_not_required",
+                requested_joint=cfg.target_joint,
+                ambiguous=inspection.ambiguous,
+            )
+            initial_target_qpos = None
         reward = 0.0
         done = False
         info: dict[str, Any] = {}
@@ -243,16 +262,24 @@ class RealExperimentBackend:
             info=json_safe(info),
             latest_frame=frame,
             initial_target_qpos=initial_target_qpos,
-            policy_start_target_qpos=get_joint_qpos(env, target_selection.selected_joint),
+            policy_start_target_qpos=get_joint_qpos(env, target_selection.selected_joint)
+            if target_selection.selected_joint
+            else None,
         )
         return {
             "task_text": task_description,
             "original_prompt": task_description,
             "current_prompt": task_description,
             "resolved_target_joint": target_selection.selected_joint,
-            "available_target_joints": [item["name"] for item in target_selection.candidates],
+            "available_target_joints": [item.get("joint", item.get("name")) for item in inspection.candidates],
+            "target_joint_candidates": json_safe(inspection.candidates),
+            "target_joint_top_score": inspection.top_score,
+            "target_joint_ambiguous": inspection.ambiguous,
+            "recommended_target_joint": inspection.recommended_joint,
             "target_selection": json_safe(target_selection),
-            "target_position": get_joint_qpos(env, target_selection.selected_joint),
+            "target_position": get_joint_qpos(env, target_selection.selected_joint)
+            if target_selection.selected_joint
+            else None,
             "initial_target_qpos": initial_target_qpos,
             "frame": frame,
             "fresh_observation": None,
@@ -436,6 +463,7 @@ class RealExperimentBackend:
             "target_joint": self.resolved_target_joint,
             "target_position": self.object_position,
             "target_selection": json_safe(runtime.target_selection),
+            "target_joint_candidates": json_safe(getattr(runtime.target_selection, "candidates", [])),
             "disturbance_count": runtime.disturbance_count,
             "last_disturbance": self.last_disturbance,
             "fresh_observation": runtime.last_fresh_observation,

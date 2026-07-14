@@ -52,6 +52,15 @@ class TargetSelection:
 
 
 @dataclass(frozen=True)
+class TargetJointInspection:
+    candidates: list[dict[str, Any]]
+    top_score: int | None
+    ambiguous: bool
+    recommended_joint: str | None
+    reason: str
+
+
+@dataclass(frozen=True)
 class BudgetReport:
     policy_step_budget: int
     warmup_simulator_steps: int
@@ -73,6 +82,12 @@ CANONICAL_MODES: tuple[str, ...] = (
     "stage_backtrack_subgoal",
     "full_reset_replan",
     "oracle_rollback",
+)
+
+DISTURBANCE_TARGET_MODES: tuple[str, ...] = (
+    "reactive_disturbed",
+    "structured_relocalize_prompt",
+    "stage_backtrack_subgoal",
 )
 
 MODE_ALIASES = {
@@ -145,6 +160,13 @@ def canonicalize_mode(mode: str) -> str:
     if canonical not in CANONICAL_MODES:
         raise ValueError(f"unknown mode {mode!r}; expected one of {list(CANONICAL_MODES)}")
     return canonical
+
+
+def requires_target_joint(mode: str, enable_auto_disturbance: bool = False) -> bool:
+    canonical = canonicalize_mode(mode)
+    if canonical == "clean":
+        return False
+    return canonical in DISTURBANCE_TARGET_MODES or bool(enable_auto_disturbance)
 
 
 def iso_now() -> str:
@@ -462,6 +484,51 @@ def list_free_joints(env: Any, task_description: str | None = None) -> list[dict
         )
     joints.sort(key=lambda x: (x["score"], -x["joint_id"], x["name"]), reverse=True)
     return joints
+
+
+def inspect_target_joint_candidates(env: Any, task_description: str | None = None) -> TargetJointInspection:
+    joints = list_free_joints(env, task_description)
+    candidates: list[dict[str, Any]] = []
+    for joint in joints:
+        candidate = dict(joint)
+        candidate["joint"] = str(joint["name"])
+        candidate["reason"] = str(joint.get("score_reason", ""))
+        candidates.append(candidate)
+
+    if not candidates:
+        return TargetJointInspection(
+            candidates=[],
+            top_score=None,
+            ambiguous=False,
+            recommended_joint=None,
+            reason="no_movable_free_joint_candidates",
+        )
+
+    top_score = int(candidates[0]["score"])
+    tied = [candidate for candidate in candidates if int(candidate["score"]) == top_score]
+    if top_score <= 0:
+        return TargetJointInspection(
+            candidates=candidates,
+            top_score=top_score,
+            ambiguous=len(tied) > 1,
+            recommended_joint=None,
+            reason="top_score_zero_requires_explicit_target_joint",
+        )
+    if len(tied) > 1:
+        return TargetJointInspection(
+            candidates=candidates,
+            top_score=top_score,
+            ambiguous=True,
+            recommended_joint=None,
+            reason=f"{len(tied)}_candidates_tie_at_score_{top_score}",
+        )
+    return TargetJointInspection(
+        candidates=candidates,
+        top_score=top_score,
+        ambiguous=False,
+        recommended_joint=str(candidates[0]["joint"]),
+        reason=f"unique_highest_token_overlap_score_{top_score}",
+    )
 
 
 def select_target_joint(env: Any, task_description: str, requested: str = "auto") -> TargetSelection:
