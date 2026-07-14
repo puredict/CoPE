@@ -1,0 +1,4627 @@
+suite: libero_spatial
+generated_at: 2026-07-14 17:28:09 +0800
+disturbance_request:
+  dx: 0.1
+  dy: 0.05
+  dz: 0.0
+tasks:
+  '0':
+    task_id: 0
+    description: pick up the black bowl between the plate and the ramekin and place
+      it on the plate
+    initial_states: 50
+    movable_free_joint_count: 5
+    direct_object_phrase: black bowl
+    direct_object_tokens:
+    - black
+    - bowl
+    auto_reliable: false
+    ambiguous: true
+    manual_review_required: true
+    recommended_target_joint: akita_black_bowl_1_joint0
+    selection_reason: 'Auto token matching tied among same-named manipulated objects;
+      manual spatial semantics select akita_black_bowl_1_joint0: closest to midpoint
+      between plate_1 and glazed_rim_porcelain_ramekin_1 (midpoint_distance=0.0098,
+      balance=0.0176)'
+    alternate_candidates:
+    - akita_black_bowl_2_joint0
+    - glazed_rim_porcelain_ramekin_1_joint0
+    - plate_1_joint0
+    - cookies_1_joint0
+    reference_positions:
+    - name: akita_black_bowl_1
+      source: free_joint
+      position:
+      - -0.06348281771240429
+      - 0.20206256199913958
+      - 0.97
+    - name: akita_black_bowl_2
+      source: free_joint
+      position:
+      - -0.1887304942403383
+      - 0.32038450296164156
+      - 0.97
+    - name: glazed_rim_porcelain_ramekin_1
+      source: free_joint
+      position:
+      - -0.1973841700047281
+      - 0.1891352613576224
+      - 0.97
+    - name: plate_1
+      source: free_joint
+      position:
+      - 0.053409166801723335
+      - 0.2051823366186246
+      - 0.97
+    - name: cookies_1
+      source: free_joint
+      position:
+      - 0.057859587539025564
+      - 0.0264329413431314
+      - 0.97
+    - name: world
+      source: body
+      position:
+      - 0.0
+      - 0.0
+      - 0.0
+    - name: table
+      source: body
+      position:
+      - 0.0
+      - 0.0
+      - 0.875
+    - name: robot0_base
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.912
+    - name: robot0_link0
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.912
+    - name: robot0_link1
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 1.245
+    - name: robot0_link2
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 1.245
+    - name: robot0_link3
+      source: body
+      position:
+      - -0.7155578108081155
+      - 7.692197929419238e-06
+      - 1.55607769061609
+    - name: robot0_link4
+      source: body
+      position:
+      - -0.6343975897729042
+      - -0.0030188748263043066
+      - 1.5705728075029404
+    - name: robot0_link5
+      source: body
+      position:
+      - -0.28953522288623823
+      - -0.014276647110364093
+      - 1.3829416254767992
+    - name: robot0_link6
+      source: body
+      position:
+      - -0.28953522288623823
+      - -0.014276647110364093
+      - 1.3829416254767992
+    - name: robot0_link7
+      source: body
+      position:
+      - -0.20169408813048767
+      - -0.01774810255701256
+      - 1.378956146596664
+    - name: robot0_right_hand
+      source: body
+      position:
+      - -0.20646736802707014
+      - -0.01639354758374169
+      - 1.2725717916385535
+    - name: gripper0_eef
+      source: body
+      position:
+      - -0.21081486239297154
+      - -0.015159821457851788
+      - 1.1756771209255326
+    - name: gripper0_leftfinger
+      source: body
+      position:
+      - -0.20992934763557639
+      - -0.03652919549135364
+      - 1.2200137830239668
+    - name: gripper0_finger_joint1_tip
+      source: body
+      position:
+      - -0.21289353055295968
+      - -0.04430433970346567
+      - 1.1639869077575988
+    - name: gripper0_rightfinger
+      source: body
+      position:
+      - -0.2077024751149192
+      - 0.005075033292872958
+      - 1.2204435993178353
+    - name: gripper0_finger_joint2_tip
+      source: body
+      position:
+      - -0.20975807950661796
+      - 0.014274686021476423
+      - 1.1645920919052513
+    - name: mount0_base
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_controller_box
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_pedestal_feet
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_torso
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_pedestal
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: akita_black_bowl_1_main
+      source: body
+      position:
+      - -0.06348281771240429
+      - 0.20206256199913958
+      - 0.97
+    - name: akita_black_bowl_2_main
+      source: body
+      position:
+      - -0.1887304942403383
+      - 0.32038450296164156
+      - 0.97
+    - name: cookies_1_main
+      source: body
+      position:
+      - 0.057859587539025564
+      - 0.0264329413431314
+      - 0.97
+    - name: glazed_rim_porcelain_ramekin_1_main
+      source: body
+      position:
+      - -0.1973841700047281
+      - 0.1891352613576224
+      - 0.97
+    - name: plate_1_main
+      source: body
+      position:
+      - 0.053409166801723335
+      - 0.2051823366186246
+      - 0.97
+    - name: wooden_cabinet_1_main
+      source: body
+      position:
+      - 0.035610583525729114
+      - -0.27763451148262136
+      - 0.905
+    - name: wooden_cabinet_1_base
+      source: body
+      position:
+      - 0.035610583525729114
+      - -0.27763451148262136
+      - 0.905
+    - name: wooden_cabinet_1_cabinet_top
+      source: body
+      position:
+      - 0.035610583525729114
+      - -0.27763451148262136
+      - 0.905
+    - name: wooden_cabinet_1_cabinet_middle
+      source: body
+      position:
+      - 0.035610583525729114
+      - -0.27763451148262136
+      - 0.905
+    - name: wooden_cabinet_1_cabinet_bottom
+      source: body
+      position:
+      - 0.035610583525729114
+      - -0.27763451148262136
+      - 0.905
+    - name: flat_stove_1_main
+      source: body
+      position:
+      - -0.4171329342518191
+      - -0.13110662165900833
+      - 0.905
+    - name: flat_stove_1_base
+      source: body
+      position:
+      - -0.4171329342518191
+      - -0.13110662165900833
+      - 0.905
+    - name: flat_stove_1_burner
+      source: body
+      position:
+      - -0.26713293425181905
+      - -0.13110662165900833
+      - 0.905
+    - name: flat_stove_1_burner_plate
+      source: body
+      position:
+      - -0.26713293425181905
+      - -0.13110662165900833
+      - 0.905
+    - name: flat_stove_1_button
+      source: body
+      position:
+      - -0.4171329342518191
+      - -0.13110662165900833
+      - 0.905
+    candidates:
+    - joint: akita_black_bowl_1_joint0
+      object_name: akita_black_bowl_1
+      initial_position:
+      - -0.06348281771240429
+      - 0.20206256199913958
+      - 0.97
+      score: 2
+      semantic_score: 2
+      spatial_metric: 0.014214735036207148
+      spatial_reason: closest to midpoint between plate_1 and glazed_rim_porcelain_ramekin_1
+        (midpoint_distance=0.0098, balance=0.0176)
+      text_match_tokens:
+      - black
+      - bowl
+      direct_object_match_tokens:
+      - black
+      - bowl
+      tied: true
+      qpos_addr: 9
+      reason: 2 overlapping task/object tokens
+    - joint: akita_black_bowl_2_joint0
+      object_name: akita_black_bowl_2
+      initial_position:
+      - -0.1887304942403383
+      - 0.32038450296164156
+      - 0.97
+      score: 2
+      semantic_score: 2
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens:
+      - black
+      - bowl
+      direct_object_match_tokens:
+      - black
+      - bowl
+      tied: true
+      qpos_addr: 16
+      reason: 2 overlapping task/object tokens
+    - joint: glazed_rim_porcelain_ramekin_1_joint0
+      object_name: glazed_rim_porcelain_ramekin_1
+      initial_position:
+      - -0.1973841700047281
+      - 0.1891352613576224
+      - 0.97
+      score: 1
+      semantic_score: 0
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens:
+      - ramekin
+      direct_object_match_tokens: []
+      tied: false
+      qpos_addr: 30
+      reason: 1 overlapping task/object tokens
+    - joint: plate_1_joint0
+      object_name: plate_1
+      initial_position:
+      - 0.053409166801723335
+      - 0.2051823366186246
+      - 0.97
+      score: 1
+      semantic_score: 0
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens:
+      - plate
+      direct_object_match_tokens: []
+      tied: false
+      qpos_addr: 37
+      reason: 1 overlapping task/object tokens
+    - joint: cookies_1_joint0
+      object_name: cookies_1
+      initial_position:
+      - 0.057859587539025564
+      - 0.0264329413431314
+      - 0.97
+      score: 0
+      semantic_score: 0
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens: []
+      direct_object_match_tokens: []
+      tied: false
+      qpos_addr: 23
+      reason: 0 overlapping task/object tokens
+    disturbance:
+      dx: 0.1
+      dy: 0.05
+      dz: 0.0
+      state_id: 0
+      target_joint: akita_black_bowl_1_joint0
+      before_position:
+      - -0.06348281771240429
+      - 0.20206256199913958
+      - 0.97
+      after_position:
+      - 0.03651718228759572
+      - 0.25206256199913957
+      - 0.97
+      actual_delta:
+      - 0.1
+      - 0.04999999999999999
+      - 0.0
+      requested_delta:
+      - 0.1
+      - 0.05
+      - 0.0
+      fresh_observation_pixel_delta:
+        shape_changed: false
+        before_shape:
+        - 128
+        - 128
+        - 3
+        after_shape:
+        - 128
+        - 128
+        - 3
+        changed_pixels: 1675
+        mean_abs: 1.7271931966145833
+        max_abs: 170
+      fresh_observation_changed_pixels: 1675
+      consumed_noop_env_step: false
+      fresh_observation_method: env.env._get_observations(force_update=True)
+      fresh_observation_operations:
+      - sim.forward
+      - env.check_success
+      - env._post_process
+      - env._update_observables
+      - env.env._post_process
+      - env.env._update_observables
+      simulator_stable: true
+      simulator_error: null
+      has_nan_or_inf: false
+      obvious_table_or_object_penetration_proxy: true
+      workspace_bound_proxy: true
+      camera_visibility_proxy: true
+      geometric_sanity: false
+      state_0_geometric_sanity: false
+      state_0_camera_visibility_proxy: true
+      state_0_workspace_bound_proxy: true
+      qpos_delta_matches_request: true
+      restore_successful: true
+      before_contact_summary:
+        ncon: 0
+        sample: []
+      after_contact_summary:
+        ncon: 91
+        sample:
+        - - akita_black_bowl_1_g1
+          - plate_1_g4
+        - - akita_black_bowl_1_g2
+          - plate_1_g2
+        - - akita_black_bowl_1_g2
+          - plate_1_g3
+        - - akita_black_bowl_1_g2
+          - plate_1_g4
+        - - akita_black_bowl_1_g2
+          - plate_1_g4
+        - - akita_black_bowl_1_g2
+          - plate_1_g4
+        - - akita_black_bowl_1_g2
+          - plate_1_g4
+        - - akita_black_bowl_1_g3
+          - plate_1_g1
+        - - akita_black_bowl_1_g3
+          - plate_1_g1
+        - - akita_black_bowl_1_g3
+          - plate_1_g2
+      mutation:
+        joint: akita_black_bowl_1_joint0
+        joint_id: 9
+        qpos_addr: 9
+        before_qpos:
+        - -0.06348281771240429
+        - 0.20206256199913958
+        - 0.97
+        - 0.7071067811865475
+        - 0.0
+        - 0.0
+        - 0.7071067811865476
+        after_qpos:
+        - 0.03651718228759572
+        - 0.25206256199913957
+        - 0.97
+        - 0.7071067811865475
+        - 0.0
+        - 0.0
+        - 0.7071067811865476
+        requested_delta_xyz:
+        - 0.1
+        - 0.05
+        - 0.0
+        actual_delta_xyz:
+        - 0.1
+        - 0.04999999999999999
+        - 0.0
+    disturbance_error: null
+    relation_cues:
+    - between
+    - 'on'
+    - in
+  '1':
+    task_id: 1
+    description: pick up the black bowl next to the ramekin and place it on the plate
+    initial_states: 50
+    movable_free_joint_count: 5
+    direct_object_phrase: black bowl
+    direct_object_tokens:
+    - black
+    - bowl
+    auto_reliable: false
+    ambiguous: true
+    manual_review_required: true
+    recommended_target_joint: akita_black_bowl_1_joint0
+    selection_reason: 'Auto token matching tied among same-named manipulated objects;
+      manual spatial semantics select akita_black_bowl_1_joint0: spatial rule nearest
+      uses reference glazed_rim_porcelain_ramekin_1 (xy_distance=0.1218, candidate_z=0.9700,
+      reference_z=0.9700)'
+    alternate_candidates:
+    - akita_black_bowl_2_joint0
+    - glazed_rim_porcelain_ramekin_1_joint0
+    - plate_1_joint0
+    - cookies_1_joint0
+    reference_positions:
+    - name: akita_black_bowl_1
+      source: free_joint
+      position:
+      - -0.19485644198162994
+      - 0.31525765332242334
+      - 0.97
+    - name: akita_black_bowl_2
+      source: free_joint
+      position:
+      - 0.1381842936365544
+      - -0.08494594969759002
+      - 0.97
+    - name: glazed_rim_porcelain_ramekin_1
+      source: free_joint
+      position:
+      - -0.1857810556196215
+      - 0.19377194917599047
+      - 0.97
+    - name: plate_1
+      source: free_joint
+      position:
+      - 0.06977007762496036
+      - 0.1881749872765843
+      - 0.97
+    - name: cookies_1
+      source: free_joint
+      position:
+      - 0.06434455534203182
+      - 0.031479971897618364
+      - 0.97
+    - name: world
+      source: body
+      position:
+      - 0.0
+      - 0.0
+      - 0.0
+    - name: table
+      source: body
+      position:
+      - 0.0
+      - 0.0
+      - 0.875
+    - name: robot0_base
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.912
+    - name: robot0_link0
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.912
+    - name: robot0_link1
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 1.245
+    - name: robot0_link2
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 1.245
+    - name: robot0_link3
+      source: body
+      position:
+      - -0.7229434803165922
+      - -0.0008144630937041134
+      - 1.5546666836059442
+    - name: robot0_link4
+      source: body
+      position:
+      - -0.642105982153287
+      - 0.0003939593414560022
+      - 1.5711010563020902
+    - name: robot0_link5
+      source: body
+      position:
+      - -0.29071231249178686
+      - 0.005550069139091722
+      - 1.3957210304907701
+    - name: robot0_link6
+      source: body
+      position:
+      - -0.29071231249178686
+      - 0.005550069139091722
+      - 1.3957210304907701
+    - name: robot0_link7
+      source: body
+      position:
+      - -0.20273478069379625
+      - 0.006419741171759309
+      - 1.3939328556421757
+    - name: robot0_right_hand
+      source: body
+      position:
+      - -0.20490504313764013
+      - 0.007036585878717364
+      - 1.287456757556585
+    - name: gripper0_eef
+      source: body
+      position:
+      - -0.20688171409588293
+      - 0.007598406879420946
+      - 1.1904785273753427
+    - name: gripper0_leftfinger
+      source: body
+      position:
+      - -0.20528600672825478
+      - -0.01348115428707459
+      - 1.2349338949705486
+    - name: gripper0_finger_joint1_tip
+      source: body
+      position:
+      - -0.20614693982149476
+      - -0.021652005594838205
+      - 1.1788915361415755
+    - name: gripper0_rightfinger
+      source: body
+      position:
+      - -0.20665969930397235
+      - 0.028161324404032365
+      - 1.2352031405241246
+    - name: gripper0_finger_joint2_tip
+      source: body
+      position:
+      - -0.20808110793571374
+      - 0.036980876248690835
+      - 1.1792706356386737
+    - name: mount0_base
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_controller_box
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_pedestal_feet
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_torso
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_pedestal
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: akita_black_bowl_1_main
+      source: body
+      position:
+      - -0.19485644198162994
+      - 0.31525765332242334
+      - 0.97
+    - name: akita_black_bowl_2_main
+      source: body
+      position:
+      - 0.1381842936365544
+      - -0.08494594969759002
+      - 0.97
+    - name: cookies_1_main
+      source: body
+      position:
+      - 0.06434455534203182
+      - 0.031479971897618364
+      - 0.97
+    - name: glazed_rim_porcelain_ramekin_1_main
+      source: body
+      position:
+      - -0.1857810556196215
+      - 0.19377194917599047
+      - 0.97
+    - name: plate_1_main
+      source: body
+      position:
+      - 0.06977007762496036
+      - 0.1881749872765843
+      - 0.97
+    - name: wooden_cabinet_1_main
+      source: body
+      position:
+      - 0.035610583525729114
+      - -0.27763451148262136
+      - 0.905
+    - name: wooden_cabinet_1_base
+      source: body
+      position:
+      - 0.035610583525729114
+      - -0.27763451148262136
+      - 0.905
+    - name: wooden_cabinet_1_cabinet_top
+      source: body
+      position:
+      - 0.035610583525729114
+      - -0.27763451148262136
+      - 0.905
+    - name: wooden_cabinet_1_cabinet_middle
+      source: body
+      position:
+      - 0.035610583525729114
+      - -0.27763451148262136
+      - 0.905
+    - name: wooden_cabinet_1_cabinet_bottom
+      source: body
+      position:
+      - 0.035610583525729114
+      - -0.27763451148262136
+      - 0.905
+    - name: flat_stove_1_main
+      source: body
+      position:
+      - -0.4171329342518191
+      - -0.13110662165900833
+      - 0.905
+    - name: flat_stove_1_base
+      source: body
+      position:
+      - -0.4171329342518191
+      - -0.13110662165900833
+      - 0.905
+    - name: flat_stove_1_burner
+      source: body
+      position:
+      - -0.26713293425181905
+      - -0.13110662165900833
+      - 0.905
+    - name: flat_stove_1_burner_plate
+      source: body
+      position:
+      - -0.26713293425181905
+      - -0.13110662165900833
+      - 0.905
+    - name: flat_stove_1_button
+      source: body
+      position:
+      - -0.4171329342518191
+      - -0.13110662165900833
+      - 0.905
+    candidates:
+    - joint: akita_black_bowl_1_joint0
+      object_name: akita_black_bowl_1
+      initial_position:
+      - -0.19485644198162994
+      - 0.31525765332242334
+      - 0.97
+      score: 2
+      semantic_score: 2
+      spatial_metric: 0.12182421331399741
+      spatial_reason: spatial rule nearest uses reference glazed_rim_porcelain_ramekin_1
+        (xy_distance=0.1218, candidate_z=0.9700, reference_z=0.9700)
+      text_match_tokens:
+      - black
+      - bowl
+      direct_object_match_tokens:
+      - black
+      - bowl
+      tied: true
+      qpos_addr: 9
+      reason: 2 overlapping task/object tokens
+    - joint: akita_black_bowl_2_joint0
+      object_name: akita_black_bowl_2
+      initial_position:
+      - 0.1381842936365544
+      - -0.08494594969759002
+      - 0.97
+      score: 2
+      semantic_score: 2
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens:
+      - black
+      - bowl
+      direct_object_match_tokens:
+      - black
+      - bowl
+      tied: true
+      qpos_addr: 16
+      reason: 2 overlapping task/object tokens
+    - joint: glazed_rim_porcelain_ramekin_1_joint0
+      object_name: glazed_rim_porcelain_ramekin_1
+      initial_position:
+      - -0.1857810556196215
+      - 0.19377194917599047
+      - 0.97
+      score: 1
+      semantic_score: 0
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens:
+      - ramekin
+      direct_object_match_tokens: []
+      tied: false
+      qpos_addr: 30
+      reason: 1 overlapping task/object tokens
+    - joint: plate_1_joint0
+      object_name: plate_1
+      initial_position:
+      - 0.06977007762496036
+      - 0.1881749872765843
+      - 0.97
+      score: 1
+      semantic_score: 0
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens:
+      - plate
+      direct_object_match_tokens: []
+      tied: false
+      qpos_addr: 37
+      reason: 1 overlapping task/object tokens
+    - joint: cookies_1_joint0
+      object_name: cookies_1
+      initial_position:
+      - 0.06434455534203182
+      - 0.031479971897618364
+      - 0.97
+      score: 0
+      semantic_score: 0
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens: []
+      direct_object_match_tokens: []
+      tied: false
+      qpos_addr: 23
+      reason: 0 overlapping task/object tokens
+    disturbance:
+      dx: 0.1
+      dy: 0.05
+      dz: 0.0
+      state_id: 0
+      target_joint: akita_black_bowl_1_joint0
+      before_position:
+      - -0.19485644198162994
+      - 0.31525765332242334
+      - 0.97
+      after_position:
+      - -0.09485644198162993
+      - 0.3652576533224233
+      - 0.97
+      actual_delta:
+      - 0.1
+      - 0.04999999999999999
+      - 0.0
+      requested_delta:
+      - 0.1
+      - 0.05
+      - 0.0
+      fresh_observation_pixel_delta:
+        shape_changed: false
+        before_shape:
+        - 128
+        - 128
+        - 3
+        after_shape:
+        - 128
+        - 128
+        - 3
+        changed_pixels: 857
+        mean_abs: 1.1139119466145833
+        max_abs: 142
+      fresh_observation_changed_pixels: 857
+      consumed_noop_env_step: false
+      fresh_observation_method: env.env._get_observations(force_update=True)
+      fresh_observation_operations:
+      - sim.forward
+      - env.check_success
+      - env._post_process
+      - env._update_observables
+      - env.env._post_process
+      - env.env._update_observables
+      simulator_stable: true
+      simulator_error: null
+      has_nan_or_inf: false
+      obvious_table_or_object_penetration_proxy: false
+      workspace_bound_proxy: true
+      camera_visibility_proxy: true
+      geometric_sanity: true
+      state_0_geometric_sanity: true
+      state_0_camera_visibility_proxy: true
+      state_0_workspace_bound_proxy: true
+      qpos_delta_matches_request: true
+      restore_successful: true
+      before_contact_summary:
+        ncon: 0
+        sample: []
+      after_contact_summary:
+        ncon: 0
+        sample: []
+      mutation:
+        joint: akita_black_bowl_1_joint0
+        joint_id: 9
+        qpos_addr: 9
+        before_qpos:
+        - -0.19485644198162994
+        - 0.31525765332242334
+        - 0.97
+        - 0.7071067811865475
+        - 0.0
+        - 0.0
+        - 0.7071067811865476
+        after_qpos:
+        - -0.09485644198162993
+        - 0.3652576533224233
+        - 0.97
+        - 0.7071067811865475
+        - 0.0
+        - 0.0
+        - 0.7071067811865476
+        requested_delta_xyz:
+        - 0.1
+        - 0.05
+        - 0.0
+        actual_delta_xyz:
+        - 0.1
+        - 0.04999999999999999
+        - 0.0
+    disturbance_error: null
+    relation_cues:
+    - next to
+    - 'on'
+    - in
+  '2':
+    task_id: 2
+    description: pick up the black bowl from table center and place it on the plate
+    initial_states: 50
+    movable_free_joint_count: 5
+    direct_object_phrase: black bowl
+    direct_object_tokens:
+    - black
+    - bowl
+    auto_reliable: false
+    ambiguous: true
+    manual_review_required: true
+    recommended_target_joint: akita_black_bowl_1_joint0
+    selection_reason: 'Auto token matching tied among same-named manipulated objects;
+      manual spatial semantics select akita_black_bowl_1_joint0: closest to table-center
+      proxy at xy=(0, 0) (distance=0.0765)'
+    alternate_candidates:
+    - akita_black_bowl_2_joint0
+    - plate_1_joint0
+    - cookies_1_joint0
+    - glazed_rim_porcelain_ramekin_1_joint0
+    reference_positions:
+    - name: akita_black_bowl_1
+      source: free_joint
+      position:
+      - -0.07500000000000001
+      - 0.014998007260810334
+      - 0.97
+    - name: akita_black_bowl_2
+      source: free_joint
+      position:
+      - -0.002351721896208643
+      - 0.3068892375372861
+      - 0.97
+    - name: plate_1
+      source: free_joint
+      position:
+      - 0.07159545509386209
+      - 0.2003926940191166
+      - 0.97
+    - name: cookies_1
+      source: free_joint
+      position:
+      - 0.07668303942933519
+      - 0.03753319957690388
+      - 0.97
+    - name: glazed_rim_porcelain_ramekin_1
+      source: free_joint
+      position:
+      - -0.20139241383137313
+      - 0.18698477058544463
+      - 0.97
+    - name: world
+      source: body
+      position:
+      - 0.0
+      - 0.0
+      - 0.0
+    - name: table
+      source: body
+      position:
+      - 0.0
+      - 0.0
+      - 0.875
+    - name: robot0_base
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.912
+    - name: robot0_link0
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.912
+    - name: robot0_link1
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 1.245
+    - name: robot0_link2
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 1.245
+    - name: robot0_link3
+      source: body
+      position:
+      - -0.7202628132782829
+      - -0.0004045586667884862
+      - 1.5552003057188566
+    - name: robot0_link4
+      source: body
+      position:
+      - -0.6392772966588326
+      - -0.0006816233308586273
+      - 1.5709330528741585
+    - name: robot0_link5
+      source: body
+      position:
+      - -0.28703977174163897
+      - -0.0014272144027865114
+      - 1.3971791460571812
+    - name: robot0_link6
+      source: body
+      position:
+      - -0.28703977174163897
+      - -0.0014272144027865114
+      - 1.3971791460571812
+    - name: robot0_link7
+      source: body
+      position:
+      - -0.19915712856374954
+      - 0.0003603439525749015
+      - 1.3930023454641507
+    - name: robot0_right_hand
+      source: body
+      position:
+      - -0.20414506932580576
+      - -0.0028743757180156506
+      - 1.2866684043371195
+    - name: gripper0_eef
+      source: body
+      position:
+      - -0.20868807640486167
+      - -0.005820552319398596
+      - 1.189819650446772
+    - name: gripper0_leftfinger
+      source: body
+      position:
+      - -0.2064687866907775
+      - -0.025289062675206475
+      - 1.2349774376677016
+    - name: gripper0_finger_joint1_tip
+      source: body
+      position:
+      - -0.20903833200334124
+      - -0.03548592687786577
+      - 1.1793207094372422
+    - name: gripper0_rightfinger
+      source: body
+      position:
+      - -0.20672967301119544
+      - 0.016357225591495453
+      - 1.2337227791744916
+    - name: gripper0_finger_joint2_tip
+      source: body
+      position:
+      - -0.20940566164558283
+      - 0.02315231887297031
+      - 1.177554142088261
+    - name: mount0_base
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_controller_box
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_pedestal_feet
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_torso
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_pedestal
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: akita_black_bowl_1_main
+      source: body
+      position:
+      - -0.07500000000000001
+      - 0.014998007260810334
+      - 0.97
+    - name: akita_black_bowl_2_main
+      source: body
+      position:
+      - -0.002351721896208643
+      - 0.3068892375372861
+      - 0.97
+    - name: cookies_1_main
+      source: body
+      position:
+      - 0.07668303942933519
+      - 0.03753319957690388
+      - 0.97
+    - name: glazed_rim_porcelain_ramekin_1_main
+      source: body
+      position:
+      - -0.20139241383137313
+      - 0.18698477058544463
+      - 0.97
+    - name: plate_1_main
+      source: body
+      position:
+      - 0.07159545509386209
+      - 0.2003926940191166
+      - 0.97
+    - name: wooden_cabinet_1_main
+      source: body
+      position:
+      - 0.035610583525729114
+      - -0.27763451148262136
+      - 0.905
+    - name: wooden_cabinet_1_base
+      source: body
+      position:
+      - 0.035610583525729114
+      - -0.27763451148262136
+      - 0.905
+    - name: wooden_cabinet_1_cabinet_top
+      source: body
+      position:
+      - 0.035610583525729114
+      - -0.27763451148262136
+      - 0.905
+    - name: wooden_cabinet_1_cabinet_middle
+      source: body
+      position:
+      - 0.035610583525729114
+      - -0.27763451148262136
+      - 0.905
+    - name: wooden_cabinet_1_cabinet_bottom
+      source: body
+      position:
+      - 0.035610583525729114
+      - -0.27763451148262136
+      - 0.905
+    - name: flat_stove_1_main
+      source: body
+      position:
+      - -0.4171329342518191
+      - -0.13110662165900833
+      - 0.905
+    - name: flat_stove_1_base
+      source: body
+      position:
+      - -0.4171329342518191
+      - -0.13110662165900833
+      - 0.905
+    - name: flat_stove_1_burner
+      source: body
+      position:
+      - -0.26713293425181905
+      - -0.13110662165900833
+      - 0.905
+    - name: flat_stove_1_burner_plate
+      source: body
+      position:
+      - -0.26713293425181905
+      - -0.13110662165900833
+      - 0.905
+    - name: flat_stove_1_button
+      source: body
+      position:
+      - -0.4171329342518191
+      - -0.13110662165900833
+      - 0.905
+    candidates:
+    - joint: akita_black_bowl_1_joint0
+      object_name: akita_black_bowl_1
+      initial_position:
+      - -0.07500000000000001
+      - 0.014998007260810334
+      - 0.97
+      score: 2
+      semantic_score: 2
+      spatial_metric: 0.07648490192054457
+      spatial_reason: closest to table-center proxy at xy=(0, 0) (distance=0.0765)
+      text_match_tokens:
+      - black
+      - bowl
+      direct_object_match_tokens:
+      - black
+      - bowl
+      tied: true
+      qpos_addr: 9
+      reason: 2 overlapping task/object tokens
+    - joint: akita_black_bowl_2_joint0
+      object_name: akita_black_bowl_2
+      initial_position:
+      - -0.002351721896208643
+      - 0.3068892375372861
+      - 0.97
+      score: 2
+      semantic_score: 2
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens:
+      - black
+      - bowl
+      direct_object_match_tokens:
+      - black
+      - bowl
+      tied: true
+      qpos_addr: 16
+      reason: 2 overlapping task/object tokens
+    - joint: plate_1_joint0
+      object_name: plate_1
+      initial_position:
+      - 0.07159545509386209
+      - 0.2003926940191166
+      - 0.97
+      score: 1
+      semantic_score: 0
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens:
+      - plate
+      direct_object_match_tokens: []
+      tied: false
+      qpos_addr: 37
+      reason: 1 overlapping task/object tokens
+    - joint: cookies_1_joint0
+      object_name: cookies_1
+      initial_position:
+      - 0.07668303942933519
+      - 0.03753319957690388
+      - 0.97
+      score: 0
+      semantic_score: 0
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens: []
+      direct_object_match_tokens: []
+      tied: false
+      qpos_addr: 23
+      reason: 0 overlapping task/object tokens
+    - joint: glazed_rim_porcelain_ramekin_1_joint0
+      object_name: glazed_rim_porcelain_ramekin_1
+      initial_position:
+      - -0.20139241383137313
+      - 0.18698477058544463
+      - 0.97
+      score: 0
+      semantic_score: 0
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens: []
+      direct_object_match_tokens: []
+      tied: false
+      qpos_addr: 30
+      reason: 0 overlapping task/object tokens
+    disturbance:
+      dx: 0.1
+      dy: 0.05
+      dz: 0.0
+      state_id: 0
+      target_joint: akita_black_bowl_1_joint0
+      before_position:
+      - -0.07500000000000001
+      - 0.014998007260810334
+      - 0.97
+      after_position:
+      - 0.024999999999999994
+      - 0.06499800726081034
+      - 0.97
+      actual_delta:
+      - 0.1
+      - 0.05000000000000001
+      - 0.0
+      requested_delta:
+      - 0.1
+      - 0.05
+      - 0.0
+      fresh_observation_pixel_delta:
+        shape_changed: false
+        before_shape:
+        - 128
+        - 128
+        - 3
+        after_shape:
+        - 128
+        - 128
+        - 3
+        changed_pixels: 1630
+        mean_abs: 1.37567138671875
+        max_abs: 164
+      fresh_observation_changed_pixels: 1630
+      consumed_noop_env_step: false
+      fresh_observation_method: env.env._get_observations(force_update=True)
+      fresh_observation_operations:
+      - sim.forward
+      - env.check_success
+      - env._post_process
+      - env._update_observables
+      - env.env._post_process
+      - env.env._update_observables
+      simulator_stable: true
+      simulator_error: null
+      has_nan_or_inf: false
+      obvious_table_or_object_penetration_proxy: true
+      workspace_bound_proxy: true
+      camera_visibility_proxy: true
+      geometric_sanity: false
+      state_0_geometric_sanity: false
+      state_0_camera_visibility_proxy: true
+      state_0_workspace_bound_proxy: true
+      qpos_delta_matches_request: true
+      restore_successful: true
+      before_contact_summary:
+        ncon: 0
+        sample: []
+      after_contact_summary:
+        ncon: 27
+        sample:
+        - - akita_black_bowl_1_g5
+          - cookies_1_g1
+        - - akita_black_bowl_1_g5
+          - cookies_1_g1
+        - - akita_black_bowl_1_g5
+          - cookies_1_g1
+        - - akita_black_bowl_1_g6
+          - cookies_1_g1
+        - - akita_black_bowl_1_g6
+          - cookies_1_g1
+        - - akita_black_bowl_1_g6
+          - cookies_1_g1
+        - - akita_black_bowl_1_g7
+          - cookies_1_g1
+        - - akita_black_bowl_1_g7
+          - cookies_1_g1
+        - - akita_black_bowl_1_g8
+          - cookies_1_g1
+        - - akita_black_bowl_1_g9
+          - cookies_1_g1
+      mutation:
+        joint: akita_black_bowl_1_joint0
+        joint_id: 9
+        qpos_addr: 9
+        before_qpos:
+        - -0.07500000000000001
+        - 0.014998007260810334
+        - 0.97
+        - 0.7071067811865475
+        - 0.0
+        - 0.0
+        - 0.7071067811865476
+        after_qpos:
+        - 0.024999999999999994
+        - 0.06499800726081034
+        - 0.97
+        - 0.7071067811865475
+        - 0.0
+        - 0.0
+        - 0.7071067811865476
+        requested_delta_xyz:
+        - 0.1
+        - 0.05
+        - 0.0
+        actual_delta_xyz:
+        - 0.1
+        - 0.05000000000000001
+        - 0.0
+    disturbance_error: null
+    relation_cues:
+    - 'on'
+  '3':
+    task_id: 3
+    description: pick up the black bowl on the cookie box and place it on the plate
+    initial_states: 50
+    movable_free_joint_count: 5
+    direct_object_phrase: black bowl
+    direct_object_tokens:
+    - black
+    - bowl
+    auto_reliable: false
+    ambiguous: true
+    manual_review_required: true
+    recommended_target_joint: akita_black_bowl_1_joint0
+    selection_reason: 'Auto token matching tied among same-named manipulated objects;
+      manual spatial semantics select akita_black_bowl_1_joint0: spatial rule on_top_or_near
+      uses reference cookies_1 (xy_distance=0.0000, candidate_z=1.0800, reference_z=0.9700)'
+    alternate_candidates:
+    - akita_black_bowl_2_joint0
+    - plate_1_joint0
+    - cookies_1_joint0
+    - glazed_rim_porcelain_ramekin_1_joint0
+    reference_positions:
+    - name: akita_black_bowl_1
+      source: free_joint
+      position:
+      - 0.06784034305025467
+      - 0.023905893540960326
+      - 1.08
+    - name: akita_black_bowl_2
+      source: free_joint
+      position:
+      - 0.02247647122004687
+      - -0.284100844023198
+      - 1.2315200000000002
+    - name: plate_1
+      source: free_joint
+      position:
+      - 0.06976083146295943
+      - 0.19004703438271336
+      - 0.97
+    - name: cookies_1
+      source: free_joint
+      position:
+      - 0.06784034305025467
+      - 0.023905893540960326
+      - 0.97
+    - name: glazed_rim_porcelain_ramekin_1
+      source: free_joint
+      position:
+      - -0.21386147234997907
+      - 0.2108978598041229
+      - 0.97
+    - name: world
+      source: body
+      position:
+      - 0.0
+      - 0.0
+      - 0.0
+    - name: table
+      source: body
+      position:
+      - 0.0
+      - 0.0
+      - 0.875
+    - name: robot0_base
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.912
+    - name: robot0_link0
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.912
+    - name: robot0_link1
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 1.245
+    - name: robot0_link2
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 1.245
+    - name: robot0_link3
+      source: body
+      position:
+      - -0.712226096932413
+      - 0.00034003062442383876
+      - 1.5566541659891309
+    - name: robot0_link4
+      source: body
+      position:
+      - -0.6308877636855309
+      - -0.0017750843881165351
+      - 1.5702869145418943
+    - name: robot0_link5
+      source: body
+      position:
+      - -0.28658521007622256
+      - -0.009945006297343963
+      - 1.381471518045458
+    - name: robot0_link6
+      source: body
+      position:
+      - -0.28658521007622256
+      - -0.009945006297343963
+      - 1.381471518045458
+    - name: robot0_link7
+      source: body
+      position:
+      - -0.19864380008232002
+      - -0.012495232697405729
+      - 1.379520940286749
+    - name: robot0_right_hand
+      source: body
+      position:
+      - -0.20098040416956234
+      - -0.011634336486576321
+      - 1.273050056289979
+    - name: gripper0_eef
+      source: body
+      position:
+      - -0.20310857878423375
+      - -0.010850233834459395
+      - 1.176076575091043
+    - name: gripper0_leftfinger
+      source: body
+      position:
+      - -0.20243243292011834
+      - -0.03204093656636191
+      - 1.2205025903692397
+    - name: gripper0_finger_joint1_tip
+      source: body
+      position:
+      - -0.20378444105417803
+      - -0.04008710701864751
+      - 1.1644518881875703
+    - name: gripper0_rightfinger
+      source: body
+      position:
+      - -0.20182768160063072
+      - 0.009619417798795387
+      - 1.2208261734514554
+    - name: gripper0_finger_joint2_tip
+      source: body
+      position:
+      - -0.20293294724845967
+      - 0.01857094389063868
+      - 1.164907495279714
+    - name: mount0_base
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_controller_box
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_pedestal_feet
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_torso
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_pedestal
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: akita_black_bowl_1_main
+      source: body
+      position:
+      - 0.06784034305025467
+      - 0.023905893540960326
+      - 1.08
+    - name: akita_black_bowl_2_main
+      source: body
+      position:
+      - 0.02247647122004687
+      - -0.284100844023198
+      - 1.2315200000000002
+    - name: cookies_1_main
+      source: body
+      position:
+      - 0.06784034305025467
+      - 0.023905893540960326
+      - 0.97
+    - name: glazed_rim_porcelain_ramekin_1_main
+      source: body
+      position:
+      - -0.21386147234997907
+      - 0.2108978598041229
+      - 0.97
+    - name: plate_1_main
+      source: body
+      position:
+      - 0.06976083146295943
+      - 0.19004703438271336
+      - 0.97
+    - name: wooden_cabinet_1_main
+      source: body
+      position:
+      - 0.03665239691095876
+      - -0.264436864981003
+      - 0.905
+    - name: wooden_cabinet_1_base
+      source: body
+      position:
+      - 0.03665239691095876
+      - -0.264436864981003
+      - 0.905
+    - name: wooden_cabinet_1_cabinet_top
+      source: body
+      position:
+      - 0.03665239691095876
+      - -0.264436864981003
+      - 0.905
+    - name: wooden_cabinet_1_cabinet_middle
+      source: body
+      position:
+      - 0.03665239691095876
+      - -0.264436864981003
+      - 0.905
+    - name: wooden_cabinet_1_cabinet_bottom
+      source: body
+      position:
+      - 0.03665239691095876
+      - -0.264436864981003
+      - 0.905
+    - name: flat_stove_1_main
+      source: body
+      position:
+      - -0.40042763315534474
+      - -0.13401682871566553
+      - 0.905
+    - name: flat_stove_1_base
+      source: body
+      position:
+      - -0.40042763315534474
+      - -0.13401682871566553
+      - 0.905
+    - name: flat_stove_1_burner
+      source: body
+      position:
+      - -0.2504276331553448
+      - -0.13401682871566553
+      - 0.905
+    - name: flat_stove_1_burner_plate
+      source: body
+      position:
+      - -0.2504276331553448
+      - -0.13401682871566553
+      - 0.905
+    - name: flat_stove_1_button
+      source: body
+      position:
+      - -0.40042763315534474
+      - -0.13401682871566553
+      - 0.905
+    candidates:
+    - joint: akita_black_bowl_1_joint0
+      object_name: akita_black_bowl_1
+      initial_position:
+      - 0.06784034305025467
+      - 0.023905893540960326
+      - 1.08
+      score: 2
+      semantic_score: 2
+      spatial_metric: -0.005500000000000005
+      spatial_reason: spatial rule on_top_or_near uses reference cookies_1 (xy_distance=0.0000,
+        candidate_z=1.0800, reference_z=0.9700)
+      text_match_tokens:
+      - black
+      - bowl
+      direct_object_match_tokens:
+      - black
+      - bowl
+      tied: true
+      qpos_addr: 9
+      reason: 2 overlapping task/object tokens
+    - joint: akita_black_bowl_2_joint0
+      object_name: akita_black_bowl_2
+      initial_position:
+      - 0.02247647122004687
+      - -0.284100844023198
+      - 1.2315200000000002
+      score: 2
+      semantic_score: 2
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens:
+      - black
+      - bowl
+      direct_object_match_tokens:
+      - black
+      - bowl
+      tied: true
+      qpos_addr: 16
+      reason: 2 overlapping task/object tokens
+    - joint: plate_1_joint0
+      object_name: plate_1
+      initial_position:
+      - 0.06976083146295943
+      - 0.19004703438271336
+      - 0.97
+      score: 1
+      semantic_score: 0
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens:
+      - plate
+      direct_object_match_tokens: []
+      tied: false
+      qpos_addr: 37
+      reason: 1 overlapping task/object tokens
+    - joint: cookies_1_joint0
+      object_name: cookies_1
+      initial_position:
+      - 0.06784034305025467
+      - 0.023905893540960326
+      - 0.97
+      score: 0
+      semantic_score: 0
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens: []
+      direct_object_match_tokens: []
+      tied: false
+      qpos_addr: 23
+      reason: 0 overlapping task/object tokens
+    - joint: glazed_rim_porcelain_ramekin_1_joint0
+      object_name: glazed_rim_porcelain_ramekin_1
+      initial_position:
+      - -0.21386147234997907
+      - 0.2108978598041229
+      - 0.97
+      score: 0
+      semantic_score: 0
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens: []
+      direct_object_match_tokens: []
+      tied: false
+      qpos_addr: 30
+      reason: 0 overlapping task/object tokens
+    disturbance:
+      dx: 0.1
+      dy: 0.05
+      dz: 0.0
+      state_id: 0
+      target_joint: akita_black_bowl_1_joint0
+      before_position:
+      - 0.06784034305025467
+      - 0.023905893540960326
+      - 1.08
+      after_position:
+      - 0.1678403430502547
+      - 0.07390589354096033
+      - 1.08
+      actual_delta:
+      - 0.10000000000000002
+      - 0.05
+      - 0.0
+      requested_delta:
+      - 0.1
+      - 0.05
+      - 0.0
+      fresh_observation_pixel_delta:
+        shape_changed: false
+        before_shape:
+        - 128
+        - 128
+        - 3
+        after_shape:
+        - 128
+        - 128
+        - 3
+        changed_pixels: 1747
+        mean_abs: 2.11944580078125
+        max_abs: 176
+      fresh_observation_changed_pixels: 1747
+      consumed_noop_env_step: false
+      fresh_observation_method: env.env._get_observations(force_update=True)
+      fresh_observation_operations:
+      - sim.forward
+      - env.check_success
+      - env._post_process
+      - env._update_observables
+      - env.env._post_process
+      - env.env._update_observables
+      simulator_stable: true
+      simulator_error: null
+      has_nan_or_inf: false
+      obvious_table_or_object_penetration_proxy: false
+      workspace_bound_proxy: true
+      camera_visibility_proxy: true
+      geometric_sanity: true
+      state_0_geometric_sanity: true
+      state_0_camera_visibility_proxy: true
+      state_0_workspace_bound_proxy: true
+      qpos_delta_matches_request: true
+      restore_successful: true
+      before_contact_summary:
+        ncon: 0
+        sample: []
+      after_contact_summary:
+        ncon: 0
+        sample: []
+      mutation:
+        joint: akita_black_bowl_1_joint0
+        joint_id: 9
+        qpos_addr: 9
+        before_qpos:
+        - 0.06784034305025467
+        - 0.023905893540960326
+        - 1.08
+        - 0.7071067811865475
+        - 0.0
+        - 0.0
+        - 0.7071067811865476
+        after_qpos:
+        - 0.1678403430502547
+        - 0.07390589354096033
+        - 1.08
+        - 0.7071067811865475
+        - 0.0
+        - 0.0
+        - 0.7071067811865476
+        requested_delta_xyz:
+        - 0.1
+        - 0.05
+        - 0.0
+        actual_delta_xyz:
+        - 0.10000000000000002
+        - 0.05
+        - 0.0
+    disturbance_error: null
+    relation_cues:
+    - 'on'
+  '4':
+    task_id: 4
+    description: pick up the black bowl in the top drawer of the wooden cabinet and
+      place it on the plate
+    initial_states: 50
+    movable_free_joint_count: 5
+    direct_object_phrase: black bowl
+    direct_object_tokens:
+    - black
+    - bowl
+    auto_reliable: false
+    ambiguous: true
+    manual_review_required: true
+    recommended_target_joint: akita_black_bowl_2_joint0
+    selection_reason: 'Auto token matching tied among same-named manipulated objects;
+      manual spatial semantics select akita_black_bowl_2_joint0: spatial rule inside_or_on_furniture
+      uses reference wooden_cabinet_1_main (xy_distance=0.0262, candidate_z=1.2315,
+      reference_z=0.9050)'
+    alternate_candidates:
+    - akita_black_bowl_1_joint0
+    - plate_1_joint0
+    - cookies_1_joint0
+    - glazed_rim_porcelain_ramekin_1_joint0
+    reference_positions:
+    - name: akita_black_bowl_1
+      source: free_joint
+      position:
+      - 0.0851332502478196
+      - -0.12994511970492176
+      - 1.15063
+    - name: akita_black_bowl_2
+      source: free_joint
+      position:
+      - 0.017517315725231596
+      - -0.2774597937798483
+      - 1.2315200000000002
+    - name: plate_1
+      source: free_joint
+      position:
+      - 0.05506639663695308
+      - 0.20966968744965908
+      - 0.97
+    - name: cookies_1
+      source: free_joint
+      position:
+      - 0.07277030707755008
+      - 0.0407976769849453
+      - 0.97
+    - name: glazed_rim_porcelain_ramekin_1
+      source: free_joint
+      position:
+      - -0.20235947518173747
+      - 0.19182370012223274
+      - 0.97
+    - name: world
+      source: body
+      position:
+      - 0.0
+      - 0.0
+      - 0.0
+    - name: table
+      source: body
+      position:
+      - 0.0
+      - 0.0
+      - 0.875
+    - name: robot0_base
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.912
+    - name: robot0_link0
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.912
+    - name: robot0_link1
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 1.245
+    - name: robot0_link2
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 1.245
+    - name: robot0_link3
+      source: body
+      position:
+      - -0.7057026600207389
+      - 0.001190692979810159
+      - 1.5576753094141855
+    - name: robot0_link4
+      source: body
+      position:
+      - -0.6240715814766545
+      - 0.0007332464662574388
+      - 1.5696087816002997
+    - name: robot0_link5
+      source: body
+      position:
+      - -0.27981665527295985
+      - -0.0018964530124980354
+      - 1.3805482609590507
+    - name: robot0_link6
+      source: body
+      position:
+      - -0.27981665527295985
+      - -0.0018964530124980354
+      - 1.3805482609590507
+    - name: robot0_link7
+      source: body
+      position:
+      - -0.19197493406460447
+      - -0.003970892086363793
+      - 1.375697620003219
+    - name: robot0_right_hand
+      source: body
+      position:
+      - -0.19779595917362155
+      - -0.0018546468387102225
+      - 1.2693778797254511
+    - name: gripper0_eef
+      source: body
+      position:
+      - -0.20309773791141175
+      - 7.282535868316986e-05
+      - 1.1725420599419445
+    - name: gripper0_leftfinger
+      source: body
+      position:
+      - -0.20096467489857392
+      - -0.02164038658053956
+      - 1.216668699950738
+    - name: gripper0_finger_joint1_tip
+      source: body
+      position:
+      - -0.20414979972100666
+      - -0.029025159722334676
+      - 1.1606011504634477
+    - name: gripper0_rightfinger
+      source: body
+      position:
+      - -0.20035535078599306
+      - 0.02001355771019981
+      - 1.2174644418371592
+    - name: gripper0_finger_joint2_tip
+      source: body
+      position:
+      - -0.20329186739276137
+      - 0.02962386576032544
+      - 1.1617215602342148
+    - name: mount0_base
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_controller_box
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_pedestal_feet
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_torso
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_pedestal
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: akita_black_bowl_1_main
+      source: body
+      position:
+      - 0.0851332502478196
+      - -0.12994511970492176
+      - 1.15063
+    - name: akita_black_bowl_2_main
+      source: body
+      position:
+      - 0.017517315725231596
+      - -0.2774597937798483
+      - 1.2315200000000002
+    - name: cookies_1_main
+      source: body
+      position:
+      - 0.07277030707755008
+      - 0.0407976769849453
+      - 0.97
+    - name: glazed_rim_porcelain_ramekin_1_main
+      source: body
+      position:
+      - -0.20235947518173747
+      - 0.19182370012223274
+      - 0.97
+    - name: plate_1_main
+      source: body
+      position:
+      - 0.05506639663695308
+      - 0.20966968744965908
+      - 0.97
+    - name: wooden_cabinet_1_main
+      source: body
+      position:
+      - 0.03740024296493638
+      - -0.26042763315534473
+      - 0.905
+    - name: wooden_cabinet_1_base
+      source: body
+      position:
+      - 0.03740024296493638
+      - -0.26042763315534473
+      - 0.905
+    - name: wooden_cabinet_1_cabinet_top
+      source: body
+      position:
+      - 0.10227789769302786
+      - -0.11896602575343648
+      - 0.905
+    - name: wooden_cabinet_1_cabinet_middle
+      source: body
+      position:
+      - 0.03740024296493638
+      - -0.26042763315534473
+      - 0.905
+    - name: wooden_cabinet_1_cabinet_bottom
+      source: body
+      position:
+      - 0.03740024296493638
+      - -0.26042763315534473
+      - 0.905
+    - name: flat_stove_1_main
+      source: body
+      position:
+      - -0.41077041275494136
+      - -0.13438941647427088
+      - 0.905
+    - name: flat_stove_1_base
+      source: body
+      position:
+      - -0.41077041275494136
+      - -0.13438941647427088
+      - 0.905
+    - name: flat_stove_1_burner
+      source: body
+      position:
+      - -0.2607704127549414
+      - -0.13438941647427088
+      - 0.905
+    - name: flat_stove_1_burner_plate
+      source: body
+      position:
+      - -0.2607704127549414
+      - -0.13438941647427088
+      - 0.905
+    - name: flat_stove_1_button
+      source: body
+      position:
+      - -0.41077041275494136
+      - -0.13438941647427088
+      - 0.905
+    candidates:
+    - joint: akita_black_bowl_1_joint0
+      object_name: akita_black_bowl_1
+      initial_position:
+      - 0.0851332502478196
+      - -0.12994511970492176
+      - 1.15063
+      score: 2
+      semantic_score: 2
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens:
+      - black
+      - bowl
+      direct_object_match_tokens:
+      - black
+      - bowl
+      tied: true
+      qpos_addr: 9
+      reason: 2 overlapping task/object tokens
+    - joint: akita_black_bowl_2_joint0
+      object_name: akita_black_bowl_2
+      initial_position:
+      - 0.017517315725231596
+      - -0.2774597937798483
+      - 1.2315200000000002
+      score: 2
+      semantic_score: 2
+      spatial_metric: 0.01965022816584592
+      spatial_reason: spatial rule inside_or_on_furniture uses reference wooden_cabinet_1_main
+        (xy_distance=0.0262, candidate_z=1.2315, reference_z=0.9050)
+      text_match_tokens:
+      - black
+      - bowl
+      direct_object_match_tokens:
+      - black
+      - bowl
+      tied: true
+      qpos_addr: 16
+      reason: 2 overlapping task/object tokens
+    - joint: plate_1_joint0
+      object_name: plate_1
+      initial_position:
+      - 0.05506639663695308
+      - 0.20966968744965908
+      - 0.97
+      score: 1
+      semantic_score: 0
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens:
+      - plate
+      direct_object_match_tokens: []
+      tied: false
+      qpos_addr: 37
+      reason: 1 overlapping task/object tokens
+    - joint: cookies_1_joint0
+      object_name: cookies_1
+      initial_position:
+      - 0.07277030707755008
+      - 0.0407976769849453
+      - 0.97
+      score: 0
+      semantic_score: 0
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens: []
+      direct_object_match_tokens: []
+      tied: false
+      qpos_addr: 23
+      reason: 0 overlapping task/object tokens
+    - joint: glazed_rim_porcelain_ramekin_1_joint0
+      object_name: glazed_rim_porcelain_ramekin_1
+      initial_position:
+      - -0.20235947518173747
+      - 0.19182370012223274
+      - 0.97
+      score: 0
+      semantic_score: 0
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens: []
+      direct_object_match_tokens: []
+      tied: false
+      qpos_addr: 30
+      reason: 0 overlapping task/object tokens
+    disturbance:
+      dx: 0.1
+      dy: 0.05
+      dz: 0.0
+      state_id: 0
+      target_joint: akita_black_bowl_2_joint0
+      before_position:
+      - 0.017517315725231596
+      - -0.2774597937798483
+      - 1.2315200000000002
+      after_position:
+      - 0.11751731572523161
+      - -0.22745979377984832
+      - 1.2315200000000002
+      actual_delta:
+      - 0.1
+      - 0.04999999999999999
+      - 0.0
+      requested_delta:
+      - 0.1
+      - 0.05
+      - 0.0
+      fresh_observation_pixel_delta:
+        shape_changed: false
+        before_shape:
+        - 128
+        - 128
+        - 3
+        after_shape:
+        - 128
+        - 128
+        - 3
+        changed_pixels: 1086
+        mean_abs: 1.47760009765625
+        max_abs: 168
+      fresh_observation_changed_pixels: 1086
+      consumed_noop_env_step: false
+      fresh_observation_method: env.env._get_observations(force_update=True)
+      fresh_observation_operations:
+      - sim.forward
+      - env.check_success
+      - env._post_process
+      - env._update_observables
+      - env.env._post_process
+      - env.env._update_observables
+      simulator_stable: true
+      simulator_error: null
+      has_nan_or_inf: false
+      obvious_table_or_object_penetration_proxy: false
+      workspace_bound_proxy: true
+      camera_visibility_proxy: true
+      geometric_sanity: true
+      state_0_geometric_sanity: true
+      state_0_camera_visibility_proxy: true
+      state_0_workspace_bound_proxy: true
+      qpos_delta_matches_request: true
+      restore_successful: true
+      before_contact_summary:
+        ncon: 0
+        sample: []
+      after_contact_summary:
+        ncon: 0
+        sample: []
+      mutation:
+        joint: akita_black_bowl_2_joint0
+        joint_id: 10
+        qpos_addr: 16
+        before_qpos:
+        - 0.017517315725231596
+        - -0.2774597937798483
+        - 1.2315200000000002
+        - 0.7071067811865475
+        - 0.0
+        - 0.0
+        - 0.7071067811865476
+        after_qpos:
+        - 0.11751731572523161
+        - -0.22745979377984832
+        - 1.2315200000000002
+        - 0.7071067811865475
+        - 0.0
+        - 0.0
+        - 0.7071067811865476
+        requested_delta_xyz:
+        - 0.1
+        - 0.05
+        - 0.0
+        actual_delta_xyz:
+        - 0.1
+        - 0.04999999999999999
+        - 0.0
+    disturbance_error: null
+    relation_cues:
+    - 'on'
+    - in
+  '5':
+    task_id: 5
+    description: pick up the black bowl on the ramekin and place it on the plate
+    initial_states: 50
+    movable_free_joint_count: 5
+    direct_object_phrase: black bowl
+    direct_object_tokens:
+    - black
+    - bowl
+    auto_reliable: false
+    ambiguous: true
+    manual_review_required: true
+    recommended_target_joint: akita_black_bowl_1_joint0
+    selection_reason: 'Auto token matching tied among same-named manipulated objects;
+      manual spatial semantics select akita_black_bowl_1_joint0: spatial rule on_top_or_near
+      uses reference glazed_rim_porcelain_ramekin_1 (xy_distance=0.0000, candidate_z=1.0800,
+      reference_z=0.9700)'
+    alternate_candidates:
+    - akita_black_bowl_2_joint0
+    - glazed_rim_porcelain_ramekin_1_joint0
+    - plate_1_joint0
+    - cookies_1_joint0
+    reference_positions:
+    - name: akita_black_bowl_1
+      source: free_joint
+      position:
+      - -0.19682435662356162
+      - 0.20173353583306847
+      - 1.08
+    - name: akita_black_bowl_2
+      source: free_joint
+      position:
+      - 0.05681204483545177
+      - 0.042538288814406265
+      - 1.08
+    - name: glazed_rim_porcelain_ramekin_1
+      source: free_joint
+      position:
+      - -0.19682435662356162
+      - 0.20173353583306847
+      - 0.97
+    - name: plate_1
+      source: free_joint
+      position:
+      - 0.07346006601438027
+      - 0.18547703940102553
+      - 0.97
+    - name: cookies_1
+      source: free_joint
+      position:
+      - 0.05681204483545177
+      - 0.042538288814406265
+      - 0.97
+    - name: world
+      source: body
+      position:
+      - 0.0
+      - 0.0
+      - 0.0
+    - name: table
+      source: body
+      position:
+      - 0.0
+      - 0.0
+      - 0.875
+    - name: robot0_base
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.912
+    - name: robot0_link0
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.912
+    - name: robot0_link1
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 1.245
+    - name: robot0_link2
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 1.245
+    - name: robot0_link3
+      source: body
+      position:
+      - -0.7075037564824977
+      - -0.00019625446854423234
+      - 1.557408954103808
+    - name: robot0_link4
+      source: body
+      position:
+      - -0.6259430539089015
+      - 0.00034066198562950436
+      - 1.5698111118363405
+    - name: robot0_link5
+      source: body
+      position:
+      - -0.28554654268004653
+      - 0.002491251836580526
+      - 1.3738829614686174
+    - name: robot0_link6
+      source: body
+      position:
+      - -0.28554654268004653
+      - 0.002491251836580526
+      - 1.3738829614686174
+    - name: robot0_link7
+      source: body
+      position:
+      - -0.19788270175554193
+      - 0.0008674715401243384
+      - 1.3663720139976259
+    - name: robot0_right_hand
+      source: body
+      position:
+      - -0.20690699139384935
+      - 0.004270185873613475
+      - 1.2603096091046166
+    - name: gripper0_eef
+      source: body
+      position:
+      - -0.21512629744939696
+      - 0.007369371698481515
+      - 1.163708169906289
+    - name: gripper0_leftfinger
+      source: body
+      position:
+      - -0.21181417087885168
+      - -0.014873903934010052
+      - 1.2074967574116846
+    - name: gripper0_finger_joint1_tip
+      source: body
+      position:
+      - -0.21674990059164181
+      - -0.02157868113303716
+      - 1.151470562333724
+    - name: gripper0_rightfinger
+      source: body
+      position:
+      - -0.21088005185339742
+      - 0.02676267438686763
+      - 1.2087530708183245
+    - name: gripper0_finger_joint2_tip
+      source: body
+      position:
+      - -0.21543465490577565
+      - 0.03704589295069083
+      - 1.1532394598116182
+    - name: mount0_base
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_controller_box
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_pedestal_feet
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_torso
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_pedestal
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: akita_black_bowl_1_main
+      source: body
+      position:
+      - -0.19682435662356162
+      - 0.20173353583306847
+      - 1.08
+    - name: akita_black_bowl_2_main
+      source: body
+      position:
+      - 0.05681204483545177
+      - 0.042538288814406265
+      - 1.08
+    - name: cookies_1_main
+      source: body
+      position:
+      - 0.05681204483545177
+      - 0.042538288814406265
+      - 0.97
+    - name: glazed_rim_porcelain_ramekin_1_main
+      source: body
+      position:
+      - -0.19682435662356162
+      - 0.20173353583306847
+      - 0.97
+    - name: plate_1_main
+      source: body
+      position:
+      - 0.07346006601438027
+      - 0.18547703940102553
+      - 0.97
+    - name: wooden_cabinet_1_main
+      source: body
+      position:
+      - 0.03665239691095876
+      - -0.264436864981003
+      - 0.905
+    - name: wooden_cabinet_1_base
+      source: body
+      position:
+      - 0.03665239691095876
+      - -0.264436864981003
+      - 0.905
+    - name: wooden_cabinet_1_cabinet_top
+      source: body
+      position:
+      - 0.03665239691095876
+      - -0.264436864981003
+      - 0.905
+    - name: wooden_cabinet_1_cabinet_middle
+      source: body
+      position:
+      - 0.03665239691095876
+      - -0.264436864981003
+      - 0.905
+    - name: wooden_cabinet_1_cabinet_bottom
+      source: body
+      position:
+      - 0.03665239691095876
+      - -0.264436864981003
+      - 0.905
+    - name: flat_stove_1_main
+      source: body
+      position:
+      - -0.40042763315534474
+      - -0.13401682871566553
+      - 0.905
+    - name: flat_stove_1_base
+      source: body
+      position:
+      - -0.40042763315534474
+      - -0.13401682871566553
+      - 0.905
+    - name: flat_stove_1_burner
+      source: body
+      position:
+      - -0.2504276331553448
+      - -0.13401682871566553
+      - 0.905
+    - name: flat_stove_1_burner_plate
+      source: body
+      position:
+      - -0.2504276331553448
+      - -0.13401682871566553
+      - 0.905
+    - name: flat_stove_1_button
+      source: body
+      position:
+      - -0.40042763315534474
+      - -0.13401682871566553
+      - 0.905
+    candidates:
+    - joint: akita_black_bowl_1_joint0
+      object_name: akita_black_bowl_1
+      initial_position:
+      - -0.19682435662356162
+      - 0.20173353583306847
+      - 1.08
+      score: 2
+      semantic_score: 2
+      spatial_metric: -0.005500000000000005
+      spatial_reason: spatial rule on_top_or_near uses reference glazed_rim_porcelain_ramekin_1
+        (xy_distance=0.0000, candidate_z=1.0800, reference_z=0.9700)
+      text_match_tokens:
+      - black
+      - bowl
+      direct_object_match_tokens:
+      - black
+      - bowl
+      tied: true
+      qpos_addr: 9
+      reason: 2 overlapping task/object tokens
+    - joint: akita_black_bowl_2_joint0
+      object_name: akita_black_bowl_2
+      initial_position:
+      - 0.05681204483545177
+      - 0.042538288814406265
+      - 1.08
+      score: 2
+      semantic_score: 2
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens:
+      - black
+      - bowl
+      direct_object_match_tokens:
+      - black
+      - bowl
+      tied: true
+      qpos_addr: 16
+      reason: 2 overlapping task/object tokens
+    - joint: glazed_rim_porcelain_ramekin_1_joint0
+      object_name: glazed_rim_porcelain_ramekin_1
+      initial_position:
+      - -0.19682435662356162
+      - 0.20173353583306847
+      - 0.97
+      score: 1
+      semantic_score: 0
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens:
+      - ramekin
+      direct_object_match_tokens: []
+      tied: false
+      qpos_addr: 30
+      reason: 1 overlapping task/object tokens
+    - joint: plate_1_joint0
+      object_name: plate_1
+      initial_position:
+      - 0.07346006601438027
+      - 0.18547703940102553
+      - 0.97
+      score: 1
+      semantic_score: 0
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens:
+      - plate
+      direct_object_match_tokens: []
+      tied: false
+      qpos_addr: 37
+      reason: 1 overlapping task/object tokens
+    - joint: cookies_1_joint0
+      object_name: cookies_1
+      initial_position:
+      - 0.05681204483545177
+      - 0.042538288814406265
+      - 0.97
+      score: 0
+      semantic_score: 0
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens: []
+      direct_object_match_tokens: []
+      tied: false
+      qpos_addr: 23
+      reason: 0 overlapping task/object tokens
+    disturbance:
+      dx: 0.1
+      dy: 0.05
+      dz: 0.0
+      state_id: 0
+      target_joint: akita_black_bowl_1_joint0
+      before_position:
+      - -0.19682435662356162
+      - 0.20173353583306847
+      - 1.08
+      after_position:
+      - -0.09682435662356162
+      - 0.25173353583306846
+      - 1.08
+      actual_delta:
+      - 0.1
+      - 0.04999999999999999
+      - 0.0
+      requested_delta:
+      - 0.1
+      - 0.05
+      - 0.0
+      fresh_observation_pixel_delta:
+        shape_changed: false
+        before_shape:
+        - 128
+        - 128
+        - 3
+        after_shape:
+        - 128
+        - 128
+        - 3
+        changed_pixels: 1163
+        mean_abs: 1.21331787109375
+        max_abs: 137
+      fresh_observation_changed_pixels: 1163
+      consumed_noop_env_step: false
+      fresh_observation_method: env.env._get_observations(force_update=True)
+      fresh_observation_operations:
+      - sim.forward
+      - env.check_success
+      - env._post_process
+      - env._update_observables
+      - env.env._post_process
+      - env.env._update_observables
+      simulator_stable: true
+      simulator_error: null
+      has_nan_or_inf: false
+      obvious_table_or_object_penetration_proxy: false
+      workspace_bound_proxy: true
+      camera_visibility_proxy: true
+      geometric_sanity: true
+      state_0_geometric_sanity: true
+      state_0_camera_visibility_proxy: true
+      state_0_workspace_bound_proxy: true
+      qpos_delta_matches_request: true
+      restore_successful: true
+      before_contact_summary:
+        ncon: 0
+        sample: []
+      after_contact_summary:
+        ncon: 0
+        sample: []
+      mutation:
+        joint: akita_black_bowl_1_joint0
+        joint_id: 9
+        qpos_addr: 9
+        before_qpos:
+        - -0.19682435662356162
+        - 0.20173353583306847
+        - 1.08
+        - 0.7071067811865475
+        - 0.0
+        - 0.0
+        - 0.7071067811865476
+        after_qpos:
+        - -0.09682435662356162
+        - 0.25173353583306846
+        - 1.08
+        - 0.7071067811865475
+        - 0.0
+        - 0.0
+        - 0.7071067811865476
+        requested_delta_xyz:
+        - 0.1
+        - 0.05
+        - 0.0
+        actual_delta_xyz:
+        - 0.1
+        - 0.04999999999999999
+        - 0.0
+    disturbance_error: null
+    relation_cues:
+    - 'on'
+    - in
+  '6':
+    task_id: 6
+    description: pick up the black bowl next to the cookie box and place it on the
+      plate
+    initial_states: 50
+    movable_free_joint_count: 5
+    direct_object_phrase: black bowl
+    direct_object_tokens:
+    - black
+    - bowl
+    auto_reliable: false
+    ambiguous: true
+    manual_review_required: true
+    recommended_target_joint: akita_black_bowl_1_joint0
+    selection_reason: 'Auto token matching tied among same-named manipulated objects;
+      manual spatial semantics select akita_black_bowl_1_joint0: spatial rule nearest
+      uses reference cookies_1 (xy_distance=0.1217, candidate_z=0.9700, reference_z=0.9700)'
+    alternate_candidates:
+    - akita_black_bowl_2_joint0
+    - plate_1_joint0
+    - cookies_1_joint0
+    - glazed_rim_porcelain_ramekin_1_joint0
+    reference_positions:
+    - name: akita_black_bowl_1
+      source: free_joint
+      position:
+      - 0.13733616561092005
+      - -0.07043152905820577
+      - 0.97
+    - name: akita_black_bowl_2
+      source: free_joint
+      position:
+      - -0.26254132223015614
+      - -0.13541186011159
+      - 1.01
+    - name: plate_1
+      source: free_joint
+      position:
+      - 0.06889841023405889
+      - 0.19442333859141608
+      - 0.97
+    - name: cookies_1
+      source: free_joint
+      position:
+      - 0.07341313846842597
+      - 0.03312639987921978
+      - 0.97
+    - name: glazed_rim_porcelain_ramekin_1
+      source: free_joint
+      position:
+      - -0.21327251119735047
+      - 0.18949124419433638
+      - 0.97
+    - name: world
+      source: body
+      position:
+      - 0.0
+      - 0.0
+      - 0.0
+    - name: table
+      source: body
+      position:
+      - 0.0
+      - 0.0
+      - 0.875
+    - name: robot0_base
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.912
+    - name: robot0_link0
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.912
+    - name: robot0_link1
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 1.245
+    - name: robot0_link2
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 1.245
+    - name: robot0_link3
+      source: body
+      position:
+      - -0.7117548906569416
+      - 0.0017157457354159283
+      - 1.556728227001758
+    - name: robot0_link4
+      source: body
+      position:
+      - -0.6303897195047865
+      - -7.515529367928286e-05
+      - 1.5702467918991312
+    - name: robot0_link5
+      source: body
+      position:
+      - -0.2815274089140758
+      - -0.008182632833950203
+      - 1.389992507463935
+    - name: robot0_link6
+      source: body
+      position:
+      - -0.2815274089140758
+      - -0.008182632833950203
+      - 1.389992507463935
+    - name: robot0_link7
+      source: body
+      position:
+      - -0.19370956572655382
+      - -0.009834275805191143
+      - 1.3845796991921275
+    - name: robot0_right_hand
+      source: body
+      position:
+      - -0.20027212649946854
+      - -0.010409306889705053
+      - 1.278283640303034
+    - name: gripper0_eef
+      source: body
+      position:
+      - -0.2062492945273815
+      - -0.010933044121609739
+      - 1.1814693894838595
+    - name: gripper0_leftfinger
+      source: body
+      position:
+      - -0.20333236893080547
+      - -0.03152429915005634
+      - 1.226086265779915
+    - name: gripper0_finger_joint1_tip
+      source: body
+      position:
+      - -0.20671429044135176
+      - -0.04032628190327965
+      - 1.1702352343972406
+    - name: gripper0_rightfinger
+      source: body
+      position:
+      - -0.2036696903498355
+      - 0.010139833186072924
+      - 1.2258817005390448
+    - name: gripper0_finger_joint2_tip
+      source: body
+      position:
+      - -0.20718924120141552
+      - 0.018337088413798046
+      - 1.1699472052026723
+    - name: mount0_base
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_controller_box
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_pedestal_feet
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_torso
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_pedestal
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: akita_black_bowl_1_main
+      source: body
+      position:
+      - 0.13733616561092005
+      - -0.07043152905820577
+      - 0.97
+    - name: akita_black_bowl_2_main
+      source: body
+      position:
+      - -0.26254132223015614
+      - -0.13541186011159
+      - 1.01
+    - name: cookies_1_main
+      source: body
+      position:
+      - 0.07341313846842597
+      - 0.03312639987921978
+      - 0.97
+    - name: glazed_rim_porcelain_ramekin_1_main
+      source: body
+      position:
+      - -0.21327251119735047
+      - 0.18949124419433638
+      - 0.97
+    - name: plate_1_main
+      source: body
+      position:
+      - 0.06889841023405889
+      - 0.19442333859141608
+      - 0.97
+    - name: wooden_cabinet_1_main
+      source: body
+      position:
+      - 0.03957236684465528
+      - -0.26401682871566556
+      - 0.905
+    - name: wooden_cabinet_1_base
+      source: body
+      position:
+      - 0.03957236684465528
+      - -0.26401682871566556
+      - 0.905
+    - name: wooden_cabinet_1_cabinet_top
+      source: body
+      position:
+      - 0.03957236684465528
+      - -0.26401682871566556
+      - 0.905
+    - name: wooden_cabinet_1_cabinet_middle
+      source: body
+      position:
+      - 0.03957236684465528
+      - -0.26401682871566556
+      - 0.905
+    - name: wooden_cabinet_1_cabinet_bottom
+      source: body
+      position:
+      - 0.03957236684465528
+      - -0.26401682871566556
+      - 0.905
+    - name: flat_stove_1_main
+      source: body
+      position:
+      - -0.4043894164742709
+      - -0.14763451148262133
+      - 0.905
+    - name: flat_stove_1_base
+      source: body
+      position:
+      - -0.4043894164742709
+      - -0.14763451148262133
+      - 0.905
+    - name: flat_stove_1_burner
+      source: body
+      position:
+      - -0.25438941647427094
+      - -0.14763451148262133
+      - 0.905
+    - name: flat_stove_1_burner_plate
+      source: body
+      position:
+      - -0.25438941647427094
+      - -0.14763451148262133
+      - 0.905
+    - name: flat_stove_1_button
+      source: body
+      position:
+      - -0.4043894164742709
+      - -0.14763451148262133
+      - 0.905
+    candidates:
+    - joint: akita_black_bowl_1_joint0
+      object_name: akita_black_bowl_1
+      initial_position:
+      - 0.13733616561092005
+      - -0.07043152905820577
+      - 0.97
+      score: 2
+      semantic_score: 2
+      spatial_metric: 0.12169797880354839
+      spatial_reason: spatial rule nearest uses reference cookies_1 (xy_distance=0.1217,
+        candidate_z=0.9700, reference_z=0.9700)
+      text_match_tokens:
+      - black
+      - bowl
+      direct_object_match_tokens:
+      - black
+      - bowl
+      tied: true
+      qpos_addr: 9
+      reason: 2 overlapping task/object tokens
+    - joint: akita_black_bowl_2_joint0
+      object_name: akita_black_bowl_2
+      initial_position:
+      - -0.26254132223015614
+      - -0.13541186011159
+      - 1.01
+      score: 2
+      semantic_score: 2
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens:
+      - black
+      - bowl
+      direct_object_match_tokens:
+      - black
+      - bowl
+      tied: true
+      qpos_addr: 16
+      reason: 2 overlapping task/object tokens
+    - joint: plate_1_joint0
+      object_name: plate_1
+      initial_position:
+      - 0.06889841023405889
+      - 0.19442333859141608
+      - 0.97
+      score: 1
+      semantic_score: 0
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens:
+      - plate
+      direct_object_match_tokens: []
+      tied: false
+      qpos_addr: 37
+      reason: 1 overlapping task/object tokens
+    - joint: cookies_1_joint0
+      object_name: cookies_1
+      initial_position:
+      - 0.07341313846842597
+      - 0.03312639987921978
+      - 0.97
+      score: 0
+      semantic_score: 0
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens: []
+      direct_object_match_tokens: []
+      tied: false
+      qpos_addr: 23
+      reason: 0 overlapping task/object tokens
+    - joint: glazed_rim_porcelain_ramekin_1_joint0
+      object_name: glazed_rim_porcelain_ramekin_1
+      initial_position:
+      - -0.21327251119735047
+      - 0.18949124419433638
+      - 0.97
+      score: 0
+      semantic_score: 0
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens: []
+      direct_object_match_tokens: []
+      tied: false
+      qpos_addr: 30
+      reason: 0 overlapping task/object tokens
+    disturbance:
+      dx: 0.1
+      dy: 0.05
+      dz: 0.0
+      state_id: 0
+      target_joint: akita_black_bowl_1_joint0
+      before_position:
+      - 0.13733616561092005
+      - -0.07043152905820577
+      - 0.97
+      after_position:
+      - 0.23733616561092005
+      - -0.020431529058205763
+      - 0.97
+      actual_delta:
+      - 0.1
+      - 0.05
+      - 0.0
+      requested_delta:
+      - 0.1
+      - 0.05
+      - 0.0
+      fresh_observation_pixel_delta:
+        shape_changed: false
+        before_shape:
+        - 128
+        - 128
+        - 3
+        after_shape:
+        - 128
+        - 128
+        - 3
+        changed_pixels: 1731
+        mean_abs: 2.4579671223958335
+        max_abs: 172
+      fresh_observation_changed_pixels: 1731
+      consumed_noop_env_step: false
+      fresh_observation_method: env.env._get_observations(force_update=True)
+      fresh_observation_operations:
+      - sim.forward
+      - env.check_success
+      - env._post_process
+      - env._update_observables
+      - env.env._post_process
+      - env.env._update_observables
+      simulator_stable: true
+      simulator_error: null
+      has_nan_or_inf: false
+      obvious_table_or_object_penetration_proxy: false
+      workspace_bound_proxy: true
+      camera_visibility_proxy: true
+      geometric_sanity: true
+      state_0_geometric_sanity: true
+      state_0_camera_visibility_proxy: true
+      state_0_workspace_bound_proxy: true
+      qpos_delta_matches_request: true
+      restore_successful: true
+      before_contact_summary:
+        ncon: 0
+        sample: []
+      after_contact_summary:
+        ncon: 0
+        sample: []
+      mutation:
+        joint: akita_black_bowl_1_joint0
+        joint_id: 9
+        qpos_addr: 9
+        before_qpos:
+        - 0.13733616561092005
+        - -0.07043152905820577
+        - 0.97
+        - 0.7071067811865475
+        - 0.0
+        - 0.0
+        - 0.7071067811865476
+        after_qpos:
+        - 0.23733616561092005
+        - -0.020431529058205763
+        - 0.97
+        - 0.7071067811865475
+        - 0.0
+        - 0.0
+        - 0.7071067811865476
+        requested_delta_xyz:
+        - 0.1
+        - 0.05
+        - 0.0
+        actual_delta_xyz:
+        - 0.1
+        - 0.05
+        - 0.0
+    disturbance_error: null
+    relation_cues:
+    - next to
+    - 'on'
+  '7':
+    task_id: 7
+    description: pick up the black bowl on the stove and place it on the plate
+    initial_states: 50
+    movable_free_joint_count: 5
+    direct_object_phrase: black bowl
+    direct_object_tokens:
+    - black
+    - bowl
+    auto_reliable: false
+    ambiguous: true
+    manual_review_required: true
+    recommended_target_joint: akita_black_bowl_1_joint0
+    selection_reason: 'Auto token matching tied among same-named manipulated objects;
+      manual spatial semantics select akita_black_bowl_1_joint0: spatial rule on_top_or_near
+      uses reference flat_stove_1_main (xy_distance=0.1383, candidate_z=1.0100, reference_z=0.9050)'
+    alternate_candidates:
+    - akita_black_bowl_2_joint0
+    - plate_1_joint0
+    - cookies_1_joint0
+    - glazed_rim_porcelain_ramekin_1_joint0
+    reference_positions:
+    - name: akita_black_bowl_1
+      source: free_joint
+      position:
+      - -0.2621465774637912
+      - -0.13139198629843865
+      - 1.01
+    - name: akita_black_bowl_2
+      source: free_joint
+      position:
+      - 0.03896240134330575
+      - -0.2823638562218253
+      - 1.2315200000000002
+    - name: plate_1
+      source: free_joint
+      position:
+      - 0.06007411385131641
+      - 0.20497603375866488
+      - 0.97
+    - name: cookies_1
+      source: free_joint
+      position:
+      - 0.056841395147385065
+      - 0.02341409336003745
+      - 0.97
+    - name: glazed_rim_porcelain_ramekin_1
+      source: free_joint
+      position:
+      - -0.193181463804805
+      - 0.2088010629884112
+      - 0.97
+    - name: world
+      source: body
+      position:
+      - 0.0
+      - 0.0
+      - 0.0
+    - name: table
+      source: body
+      position:
+      - 0.0
+      - 0.0
+      - 0.875
+    - name: robot0_base
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.912
+    - name: robot0_link0
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.912
+    - name: robot0_link1
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 1.245
+    - name: robot0_link2
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 1.245
+    - name: robot0_link3
+      source: body
+      position:
+      - -0.7051431667299183
+      - -0.00142617148259737
+      - 1.5577555923280944
+    - name: robot0_link4
+      source: body
+      position:
+      - -0.6235932739714676
+      - 0.002681043767437516
+      - 1.5695452392259062
+    - name: robot0_link5
+      source: body
+      position:
+      - -0.2906307600935032
+      - 0.01877147493963879
+      - 1.3618451853579328
+    - name: robot0_link6
+      source: body
+      position:
+      - -0.2906307600935032
+      - 0.01877147493963879
+      - 1.3618451853579328
+    - name: robot0_link7
+      source: body
+      position:
+      - -0.2031229730828146
+      - 0.023383541867448294
+      - 1.3537757336327307
+    - name: robot0_right_hand
+      source: body
+      position:
+      - -0.2128411674858514
+      - 0.022225181745949146
+      - 1.2477263823882572
+    - name: gripper0_eef
+      source: body
+      position:
+      - -0.221692480698007
+      - 0.021170149522611894
+      - 1.151136832428502
+    - name: gripper0_leftfinger
+      source: body
+      position:
+      - -0.2161390201656731
+      - 0.0008753455889821439
+      - 1.1956391233629171
+    - name: gripper0_finger_joint1_tip
+      source: body
+      position:
+      - -0.2206437049348086
+      - -0.008212080531866395
+      - 1.139913218241252
+    - name: gripper0_rightfinger
+      source: body
+      position:
+      - -0.2191063831012246
+      - 0.04243514803687755
+      - 1.1954570967148102
+    - name: gripper0_finger_joint2_tip
+      source: body
+      position:
+      - -0.2248217713193203
+      - 0.05030439262150163
+      - 1.139656923532428
+    - name: mount0_base
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_controller_box
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_pedestal_feet
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_torso
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_pedestal
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: akita_black_bowl_1_main
+      source: body
+      position:
+      - -0.2621465774637912
+      - -0.13139198629843865
+      - 1.01
+    - name: akita_black_bowl_2_main
+      source: body
+      position:
+      - 0.03896240134330575
+      - -0.2823638562218253
+      - 1.2315200000000002
+    - name: cookies_1_main
+      source: body
+      position:
+      - 0.056841395147385065
+      - 0.02341409336003745
+      - 0.97
+    - name: glazed_rim_porcelain_ramekin_1_main
+      source: body
+      position:
+      - -0.193181463804805
+      - 0.2088010629884112
+      - 0.97
+    - name: plate_1_main
+      source: body
+      position:
+      - 0.06007411385131641
+      - 0.20497603375866488
+      - 0.97
+    - name: wooden_cabinet_1_main
+      source: body
+      position:
+      - 0.03665239691095876
+      - -0.264436864981003
+      - 0.905
+    - name: wooden_cabinet_1_base
+      source: body
+      position:
+      - 0.03665239691095876
+      - -0.264436864981003
+      - 0.905
+    - name: wooden_cabinet_1_cabinet_top
+      source: body
+      position:
+      - 0.03665239691095876
+      - -0.264436864981003
+      - 0.905
+    - name: wooden_cabinet_1_cabinet_middle
+      source: body
+      position:
+      - 0.03665239691095876
+      - -0.264436864981003
+      - 0.905
+    - name: wooden_cabinet_1_cabinet_bottom
+      source: body
+      position:
+      - 0.03665239691095876
+      - -0.264436864981003
+      - 0.905
+    - name: flat_stove_1_main
+      source: body
+      position:
+      - -0.40042763315534474
+      - -0.13401682871566553
+      - 0.905
+    - name: flat_stove_1_base
+      source: body
+      position:
+      - -0.40042763315534474
+      - -0.13401682871566553
+      - 0.905
+    - name: flat_stove_1_burner
+      source: body
+      position:
+      - -0.2504276331553448
+      - -0.13401682871566553
+      - 0.905
+    - name: flat_stove_1_burner_plate
+      source: body
+      position:
+      - -0.2504276331553448
+      - -0.13401682871566553
+      - 0.905
+    - name: flat_stove_1_button
+      source: body
+      position:
+      - -0.40042763315534474
+      - -0.13401682871566553
+      - 0.905
+    candidates:
+    - joint: akita_black_bowl_1_joint0
+      object_name: akita_black_bowl_1
+      initial_position:
+      - -0.2621465774637912
+      - -0.13139198629843865
+      - 1.01
+      score: 2
+      semantic_score: 2
+      spatial_metric: 0.13305596574582673
+      spatial_reason: spatial rule on_top_or_near uses reference flat_stove_1_main
+        (xy_distance=0.1383, candidate_z=1.0100, reference_z=0.9050)
+      text_match_tokens:
+      - black
+      - bowl
+      direct_object_match_tokens:
+      - black
+      - bowl
+      tied: true
+      qpos_addr: 9
+      reason: 2 overlapping task/object tokens
+    - joint: akita_black_bowl_2_joint0
+      object_name: akita_black_bowl_2
+      initial_position:
+      - 0.03896240134330575
+      - -0.2823638562218253
+      - 1.2315200000000002
+      score: 2
+      semantic_score: 2
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens:
+      - black
+      - bowl
+      direct_object_match_tokens:
+      - black
+      - bowl
+      tied: true
+      qpos_addr: 16
+      reason: 2 overlapping task/object tokens
+    - joint: plate_1_joint0
+      object_name: plate_1
+      initial_position:
+      - 0.06007411385131641
+      - 0.20497603375866488
+      - 0.97
+      score: 1
+      semantic_score: 0
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens:
+      - plate
+      direct_object_match_tokens: []
+      tied: false
+      qpos_addr: 37
+      reason: 1 overlapping task/object tokens
+    - joint: cookies_1_joint0
+      object_name: cookies_1
+      initial_position:
+      - 0.056841395147385065
+      - 0.02341409336003745
+      - 0.97
+      score: 0
+      semantic_score: 0
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens: []
+      direct_object_match_tokens: []
+      tied: false
+      qpos_addr: 23
+      reason: 0 overlapping task/object tokens
+    - joint: glazed_rim_porcelain_ramekin_1_joint0
+      object_name: glazed_rim_porcelain_ramekin_1
+      initial_position:
+      - -0.193181463804805
+      - 0.2088010629884112
+      - 0.97
+      score: 0
+      semantic_score: 0
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens: []
+      direct_object_match_tokens: []
+      tied: false
+      qpos_addr: 30
+      reason: 0 overlapping task/object tokens
+    disturbance:
+      dx: 0.1
+      dy: 0.05
+      dz: 0.0
+      state_id: 0
+      target_joint: akita_black_bowl_1_joint0
+      before_position:
+      - -0.2621465774637912
+      - -0.13139198629843865
+      - 1.01
+      after_position:
+      - -0.1621465774637912
+      - -0.08139198629843865
+      - 1.01
+      actual_delta:
+      - 0.1
+      - 0.05
+      - 0.0
+      requested_delta:
+      - 0.1
+      - 0.05
+      - 0.0
+      fresh_observation_pixel_delta:
+        shape_changed: false
+        before_shape:
+        - 128
+        - 128
+        - 3
+        after_shape:
+        - 128
+        - 128
+        - 3
+        changed_pixels: 1408
+        mean_abs: 1.1030680338541667
+        max_abs: 172
+      fresh_observation_changed_pixels: 1408
+      consumed_noop_env_step: false
+      fresh_observation_method: env.env._get_observations(force_update=True)
+      fresh_observation_operations:
+      - sim.forward
+      - env.check_success
+      - env._post_process
+      - env._update_observables
+      - env.env._post_process
+      - env.env._update_observables
+      simulator_stable: true
+      simulator_error: null
+      has_nan_or_inf: false
+      obvious_table_or_object_penetration_proxy: false
+      workspace_bound_proxy: true
+      camera_visibility_proxy: true
+      geometric_sanity: true
+      state_0_geometric_sanity: true
+      state_0_camera_visibility_proxy: true
+      state_0_workspace_bound_proxy: true
+      qpos_delta_matches_request: true
+      restore_successful: true
+      before_contact_summary:
+        ncon: 0
+        sample: []
+      after_contact_summary:
+        ncon: 0
+        sample: []
+      mutation:
+        joint: akita_black_bowl_1_joint0
+        joint_id: 9
+        qpos_addr: 9
+        before_qpos:
+        - -0.2621465774637912
+        - -0.13139198629843865
+        - 1.01
+        - 0.7071067811865475
+        - 0.0
+        - 0.0
+        - 0.7071067811865476
+        after_qpos:
+        - -0.1621465774637912
+        - -0.08139198629843865
+        - 1.01
+        - 0.7071067811865475
+        - 0.0
+        - 0.0
+        - 0.7071067811865476
+        requested_delta_xyz:
+        - 0.1
+        - 0.05
+        - 0.0
+        actual_delta_xyz:
+        - 0.1
+        - 0.05
+        - 0.0
+    disturbance_error: null
+    relation_cues:
+    - 'on'
+  '8':
+    task_id: 8
+    description: pick up the black bowl next to the plate and place it on the plate
+    initial_states: 50
+    movable_free_joint_count: 5
+    direct_object_phrase: black bowl
+    direct_object_tokens:
+    - black
+    - bowl
+    auto_reliable: false
+    ambiguous: true
+    manual_review_required: true
+    recommended_target_joint: akita_black_bowl_1_joint0
+    selection_reason: 'Auto token matching tied among same-named manipulated objects;
+      manual spatial semantics select akita_black_bowl_1_joint0: spatial rule nearest
+      uses reference plate_1 (xy_distance=0.1194, candidate_z=0.9700, reference_z=0.9700)'
+    alternate_candidates:
+    - akita_black_bowl_2_joint0
+    - plate_1_joint0
+    - cookies_1_joint0
+    - glazed_rim_porcelain_ramekin_1_joint0
+    reference_positions:
+    - name: akita_black_bowl_1
+      source: free_joint
+      position:
+      - 0.007128605032953369
+      - 0.2982832159972166
+      - 0.97
+    - name: akita_black_bowl_2
+      source: free_joint
+      position:
+      - -0.1786715657145501
+      - 0.31024522983226266
+      - 0.97
+    - name: plate_1
+      source: free_joint
+      position:
+      - 0.055177961640832364
+      - 0.18896262340960737
+      - 0.97
+    - name: cookies_1
+      source: free_joint
+      position:
+      - 0.07006202671395616
+      - 0.044645695828825896
+      - 0.97
+    - name: glazed_rim_porcelain_ramekin_1
+      source: free_joint
+      position:
+      - -0.19487269994481637
+      - 0.20972718049962472
+      - 0.97
+    - name: world
+      source: body
+      position:
+      - 0.0
+      - 0.0
+      - 0.0
+    - name: table
+      source: body
+      position:
+      - 0.0
+      - 0.0
+      - 0.875
+    - name: robot0_base
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.912
+    - name: robot0_link0
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.912
+    - name: robot0_link1
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 1.245
+    - name: robot0_link2
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 1.245
+    - name: robot0_link3
+      source: body
+      position:
+      - -0.7159716623421848
+      - 0.0007995306633276349
+      - 1.5560024658509495
+    - name: robot0_link4
+      source: body
+      position:
+      - -0.6348411320576474
+      - -0.0024634197704732136
+      - 1.5706120589396129
+    - name: robot0_link5
+      source: body
+      position:
+      - -0.287264270611842
+      - -0.015334669666693487
+      - 1.38816506303781
+    - name: robot0_link6
+      source: body
+      position:
+      - -0.287264270611842
+      - -0.015334669666693487
+      - 1.38816506303781
+    - name: robot0_link7
+      source: body
+      position:
+      - -0.19938384356132763
+      - -0.018420877042804325
+      - 1.3847730333429429
+    - name: robot0_right_hand
+      source: body
+      position:
+      - -0.20348886865467464
+      - -0.018345944039293523
+      - 1.27835220289125
+    - name: gripper0_eef
+      source: body
+      position:
+      - -0.20722771780072777
+      - -0.01827769520041514
+      - 1.1814243103671729
+    - name: gripper0_leftfinger
+      source: body
+      position:
+      - -0.20592447586131984
+      - -0.03913792456457325
+      - 1.2259925308872035
+    - name: gripper0_finger_joint1_tip
+      source: body
+      position:
+      - -0.20825265939387524
+      - -0.04759682952579891
+      - 1.17003472099175
+    - name: gripper0_rightfinger
+      source: body
+      position:
+      - -0.20509276031922913
+      - 0.002519773375825936
+      - 1.2259897807043345
+    - name: gripper0_finger_joint2_tip
+      source: body
+      position:
+      - -0.2070815984810856
+      - 0.011057481120086435
+      - 1.1700308487163174
+    - name: mount0_base
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_controller_box
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_pedestal_feet
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_torso
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_pedestal
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: akita_black_bowl_1_main
+      source: body
+      position:
+      - 0.007128605032953369
+      - 0.2982832159972166
+      - 0.97
+    - name: akita_black_bowl_2_main
+      source: body
+      position:
+      - -0.1786715657145501
+      - 0.31024522983226266
+      - 0.97
+    - name: cookies_1_main
+      source: body
+      position:
+      - 0.07006202671395616
+      - 0.044645695828825896
+      - 0.97
+    - name: glazed_rim_porcelain_ramekin_1_main
+      source: body
+      position:
+      - -0.19487269994481637
+      - 0.20972718049962472
+      - 0.97
+    - name: plate_1_main
+      source: body
+      position:
+      - 0.055177961640832364
+      - 0.18896262340960737
+      - 0.97
+    - name: wooden_cabinet_1_main
+      source: body
+      position:
+      - 0.035610583525729114
+      - -0.27763451148262136
+      - 0.905
+    - name: wooden_cabinet_1_base
+      source: body
+      position:
+      - 0.035610583525729114
+      - -0.27763451148262136
+      - 0.905
+    - name: wooden_cabinet_1_cabinet_top
+      source: body
+      position:
+      - 0.035610583525729114
+      - -0.27763451148262136
+      - 0.905
+    - name: wooden_cabinet_1_cabinet_middle
+      source: body
+      position:
+      - 0.035610583525729114
+      - -0.27763451148262136
+      - 0.905
+    - name: wooden_cabinet_1_cabinet_bottom
+      source: body
+      position:
+      - 0.035610583525729114
+      - -0.27763451148262136
+      - 0.905
+    - name: flat_stove_1_main
+      source: body
+      position:
+      - -0.4171329342518191
+      - -0.13110662165900833
+      - 0.905
+    - name: flat_stove_1_base
+      source: body
+      position:
+      - -0.4171329342518191
+      - -0.13110662165900833
+      - 0.905
+    - name: flat_stove_1_burner
+      source: body
+      position:
+      - -0.26713293425181905
+      - -0.13110662165900833
+      - 0.905
+    - name: flat_stove_1_burner_plate
+      source: body
+      position:
+      - -0.26713293425181905
+      - -0.13110662165900833
+      - 0.905
+    - name: flat_stove_1_button
+      source: body
+      position:
+      - -0.4171329342518191
+      - -0.13110662165900833
+      - 0.905
+    candidates:
+    - joint: akita_black_bowl_1_joint0
+      object_name: akita_black_bowl_1
+      initial_position:
+      - 0.007128605032953369
+      - 0.2982832159972166
+      - 0.97
+      score: 2
+      semantic_score: 2
+      spatial_metric: 0.11941412242334305
+      spatial_reason: spatial rule nearest uses reference plate_1 (xy_distance=0.1194,
+        candidate_z=0.9700, reference_z=0.9700)
+      text_match_tokens:
+      - black
+      - bowl
+      direct_object_match_tokens:
+      - black
+      - bowl
+      tied: true
+      qpos_addr: 9
+      reason: 2 overlapping task/object tokens
+    - joint: akita_black_bowl_2_joint0
+      object_name: akita_black_bowl_2
+      initial_position:
+      - -0.1786715657145501
+      - 0.31024522983226266
+      - 0.97
+      score: 2
+      semantic_score: 2
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens:
+      - black
+      - bowl
+      direct_object_match_tokens:
+      - black
+      - bowl
+      tied: true
+      qpos_addr: 16
+      reason: 2 overlapping task/object tokens
+    - joint: plate_1_joint0
+      object_name: plate_1
+      initial_position:
+      - 0.055177961640832364
+      - 0.18896262340960737
+      - 0.97
+      score: 1
+      semantic_score: 0
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens:
+      - plate
+      direct_object_match_tokens: []
+      tied: false
+      qpos_addr: 37
+      reason: 1 overlapping task/object tokens
+    - joint: cookies_1_joint0
+      object_name: cookies_1
+      initial_position:
+      - 0.07006202671395616
+      - 0.044645695828825896
+      - 0.97
+      score: 0
+      semantic_score: 0
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens: []
+      direct_object_match_tokens: []
+      tied: false
+      qpos_addr: 23
+      reason: 0 overlapping task/object tokens
+    - joint: glazed_rim_porcelain_ramekin_1_joint0
+      object_name: glazed_rim_porcelain_ramekin_1
+      initial_position:
+      - -0.19487269994481637
+      - 0.20972718049962472
+      - 0.97
+      score: 0
+      semantic_score: 0
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens: []
+      direct_object_match_tokens: []
+      tied: false
+      qpos_addr: 30
+      reason: 0 overlapping task/object tokens
+    disturbance:
+      dx: 0.1
+      dy: 0.05
+      dz: 0.0
+      state_id: 0
+      target_joint: akita_black_bowl_1_joint0
+      before_position:
+      - 0.007128605032953369
+      - 0.2982832159972166
+      - 0.97
+      after_position:
+      - 0.10712860503295338
+      - 0.34828321599721657
+      - 0.97
+      actual_delta:
+      - 0.1
+      - 0.04999999999999999
+      - 0.0
+      requested_delta:
+      - 0.1
+      - 0.05
+      - 0.0
+      fresh_observation_pixel_delta:
+        shape_changed: false
+        before_shape:
+        - 128
+        - 128
+        - 3
+        after_shape:
+        - 128
+        - 128
+        - 3
+        changed_pixels: 970
+        mean_abs: 1.2100423177083333
+        max_abs: 167
+      fresh_observation_changed_pixels: 970
+      consumed_noop_env_step: false
+      fresh_observation_method: env.env._get_observations(force_update=True)
+      fresh_observation_operations:
+      - sim.forward
+      - env.check_success
+      - env._post_process
+      - env._update_observables
+      - env.env._post_process
+      - env.env._update_observables
+      simulator_stable: true
+      simulator_error: null
+      has_nan_or_inf: false
+      obvious_table_or_object_penetration_proxy: false
+      workspace_bound_proxy: true
+      camera_visibility_proxy: true
+      geometric_sanity: true
+      state_0_geometric_sanity: true
+      state_0_camera_visibility_proxy: true
+      state_0_workspace_bound_proxy: true
+      qpos_delta_matches_request: true
+      restore_successful: true
+      before_contact_summary:
+        ncon: 0
+        sample: []
+      after_contact_summary:
+        ncon: 0
+        sample: []
+      mutation:
+        joint: akita_black_bowl_1_joint0
+        joint_id: 9
+        qpos_addr: 9
+        before_qpos:
+        - 0.007128605032953369
+        - 0.2982832159972166
+        - 0.97
+        - 0.7071067811865475
+        - 0.0
+        - 0.0
+        - 0.7071067811865476
+        after_qpos:
+        - 0.10712860503295338
+        - 0.34828321599721657
+        - 0.97
+        - 0.7071067811865475
+        - 0.0
+        - 0.0
+        - 0.7071067811865476
+        requested_delta_xyz:
+        - 0.1
+        - 0.05
+        - 0.0
+        actual_delta_xyz:
+        - 0.1
+        - 0.04999999999999999
+        - 0.0
+    disturbance_error: null
+    relation_cues:
+    - next to
+    - 'on'
+  '9':
+    task_id: 9
+    description: pick up the black bowl on the wooden cabinet and place it on the
+      plate
+    initial_states: 50
+    movable_free_joint_count: 5
+    direct_object_phrase: black bowl
+    direct_object_tokens:
+    - black
+    - bowl
+    auto_reliable: false
+    ambiguous: true
+    manual_review_required: true
+    recommended_target_joint: akita_black_bowl_1_joint0
+    selection_reason: 'Auto token matching tied among same-named manipulated objects;
+      manual spatial semantics select akita_black_bowl_1_joint0: spatial rule inside_or_on_furniture
+      uses reference wooden_cabinet_1_main (xy_distance=0.0024, candidate_z=1.2315,
+      reference_z=0.9050)'
+    alternate_candidates:
+    - akita_black_bowl_2_joint0
+    - plate_1_joint0
+    - cookies_1_joint0
+    - glazed_rim_porcelain_ramekin_1_joint0
+    reference_positions:
+    - name: akita_black_bowl_1
+      source: free_joint
+      position:
+      - 0.038944822138478094
+      - -0.2651063558710821
+      - 1.2315200000000002
+    - name: akita_black_bowl_2
+      source: free_joint
+      position:
+      - -0.25166824114439823
+      - -0.1413688691282905
+      - 1.01
+    - name: plate_1
+      source: free_joint
+      position:
+      - 0.048217706605836394
+      - 0.21470529653592868
+      - 0.97
+    - name: cookies_1
+      source: free_joint
+      position:
+      - 0.0666981133542037
+      - 0.028227396877703467
+      - 0.97
+    - name: glazed_rim_porcelain_ramekin_1
+      source: free_joint
+      position:
+      - -0.20200226251826095
+      - 0.20481742663834107
+      - 0.97
+    - name: world
+      source: body
+      position:
+      - 0.0
+      - 0.0
+      - 0.0
+    - name: table
+      source: body
+      position:
+      - 0.0
+      - 0.0
+      - 0.875
+    - name: robot0_base
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.912
+    - name: robot0_link0
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.912
+    - name: robot0_link1
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 1.245
+    - name: robot0_link2
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 1.245
+    - name: robot0_link3
+      source: body
+      position:
+      - -0.7186880846009526
+      - 0.002138240824184219
+      - 1.5554949865167702
+    - name: robot0_link4
+      source: body
+      position:
+      - -0.6376301836693253
+      - 0.0011756356611045554
+      - 1.5708227419903718
+    - name: robot0_link5
+      source: body
+      position:
+      - -0.28989389705468416
+      - -0.004066626462942605
+      - 1.3883008428678747
+    - name: robot0_link6
+      source: body
+      position:
+      - -0.28989389705468416
+      - -0.004066626462942605
+      - 1.3883008428678747
+    - name: robot0_link7
+      source: body
+      position:
+      - -0.2020061123575645
+      - -0.004591025429663073
+      - 1.3838892324185668
+    - name: robot0_right_hand
+      source: body
+      position:
+      - -0.20735310789401823
+      - -0.005986952387682512
+      - 1.2775327045198945
+    - name: gripper0_eef
+      source: body
+      position:
+      - -0.2122231413873141
+      - -0.007258360039587541
+      - 1.1806633786403529
+    - name: gripper0_leftfinger
+      source: body
+      position:
+      - -0.21036913279990316
+      - -0.02750115616573765
+      - 1.225496020165841
+    - name: gripper0_finger_joint1_tip
+      source: body
+      position:
+      - -0.21333786373970118
+      - -0.03673287232241397
+      - 1.1696908944746498
+    - name: gripper0_rightfinger
+      source: body
+      position:
+      - -0.2095987274221272
+      - 0.014153606834499975
+      - 1.2249105708102783
+    - name: gripper0_finger_joint2_tip
+      source: body
+      position:
+      - -0.21225312793850587
+      - 0.021917305908564298
+      - 1.168866577960143
+    - name: mount0_base
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_controller_box
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_pedestal_feet
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_torso
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: mount0_pedestal
+      source: body
+      position:
+      - -0.66
+      - 0.0
+      - 0.922
+    - name: akita_black_bowl_1_main
+      source: body
+      position:
+      - 0.038944822138478094
+      - -0.2651063558710821
+      - 1.2315200000000002
+    - name: akita_black_bowl_2_main
+      source: body
+      position:
+      - -0.25166824114439823
+      - -0.1413688691282905
+      - 1.01
+    - name: cookies_1_main
+      source: body
+      position:
+      - 0.0666981133542037
+      - 0.028227396877703467
+      - 0.97
+    - name: glazed_rim_porcelain_ramekin_1_main
+      source: body
+      position:
+      - -0.20200226251826095
+      - 0.20481742663834107
+      - 0.97
+    - name: plate_1_main
+      source: body
+      position:
+      - 0.048217706605836394
+      - 0.21470529653592868
+      - 0.97
+    - name: wooden_cabinet_1_main
+      source: body
+      position:
+      - 0.03665239691095876
+      - -0.264436864981003
+      - 0.905
+    - name: wooden_cabinet_1_base
+      source: body
+      position:
+      - 0.03665239691095876
+      - -0.264436864981003
+      - 0.905
+    - name: wooden_cabinet_1_cabinet_top
+      source: body
+      position:
+      - 0.03665239691095876
+      - -0.264436864981003
+      - 0.905
+    - name: wooden_cabinet_1_cabinet_middle
+      source: body
+      position:
+      - 0.03665239691095876
+      - -0.264436864981003
+      - 0.905
+    - name: wooden_cabinet_1_cabinet_bottom
+      source: body
+      position:
+      - 0.03665239691095876
+      - -0.264436864981003
+      - 0.905
+    - name: flat_stove_1_main
+      source: body
+      position:
+      - -0.40042763315534474
+      - -0.13401682871566553
+      - 0.905
+    - name: flat_stove_1_base
+      source: body
+      position:
+      - -0.40042763315534474
+      - -0.13401682871566553
+      - 0.905
+    - name: flat_stove_1_burner
+      source: body
+      position:
+      - -0.2504276331553448
+      - -0.13401682871566553
+      - 0.905
+    - name: flat_stove_1_burner_plate
+      source: body
+      position:
+      - -0.2504276331553448
+      - -0.13401682871566553
+      - 0.905
+    - name: flat_stove_1_button
+      source: body
+      position:
+      - -0.40042763315534474
+      - -0.13401682871566553
+      - 0.905
+    candidates:
+    - joint: akita_black_bowl_1_joint0
+      object_name: akita_black_bowl_1
+      initial_position:
+      - 0.038944822138478094
+      - -0.2651063558710821
+      - 1.2315200000000002
+      score: 2
+      semantic_score: 2
+      spatial_metric: -0.004142214187366067
+      spatial_reason: spatial rule inside_or_on_furniture uses reference wooden_cabinet_1_main
+        (xy_distance=0.0024, candidate_z=1.2315, reference_z=0.9050)
+      text_match_tokens:
+      - black
+      - bowl
+      direct_object_match_tokens:
+      - black
+      - bowl
+      tied: true
+      qpos_addr: 9
+      reason: 2 overlapping task/object tokens
+    - joint: akita_black_bowl_2_joint0
+      object_name: akita_black_bowl_2
+      initial_position:
+      - -0.25166824114439823
+      - -0.1413688691282905
+      - 1.01
+      score: 2
+      semantic_score: 2
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens:
+      - black
+      - bowl
+      direct_object_match_tokens:
+      - black
+      - bowl
+      tied: true
+      qpos_addr: 16
+      reason: 2 overlapping task/object tokens
+    - joint: plate_1_joint0
+      object_name: plate_1
+      initial_position:
+      - 0.048217706605836394
+      - 0.21470529653592868
+      - 0.97
+      score: 1
+      semantic_score: 0
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens:
+      - plate
+      direct_object_match_tokens: []
+      tied: false
+      qpos_addr: 37
+      reason: 1 overlapping task/object tokens
+    - joint: cookies_1_joint0
+      object_name: cookies_1
+      initial_position:
+      - 0.0666981133542037
+      - 0.028227396877703467
+      - 0.97
+      score: 0
+      semantic_score: 0
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens: []
+      direct_object_match_tokens: []
+      tied: false
+      qpos_addr: 23
+      reason: 0 overlapping task/object tokens
+    - joint: glazed_rim_porcelain_ramekin_1_joint0
+      object_name: glazed_rim_porcelain_ramekin_1
+      initial_position:
+      - -0.20200226251826095
+      - 0.20481742663834107
+      - 0.97
+      score: 0
+      semantic_score: 0
+      spatial_metric: null
+      spatial_reason: null
+      text_match_tokens: []
+      direct_object_match_tokens: []
+      tied: false
+      qpos_addr: 30
+      reason: 0 overlapping task/object tokens
+    disturbance:
+      dx: 0.1
+      dy: 0.05
+      dz: 0.0
+      state_id: 0
+      target_joint: akita_black_bowl_1_joint0
+      before_position:
+      - 0.038944822138478094
+      - -0.2651063558710821
+      - 1.2315200000000002
+      after_position:
+      - 0.13894482213847809
+      - -0.21510635587108212
+      - 1.2315200000000002
+      actual_delta:
+      - 0.09999999999999999
+      - 0.04999999999999999
+      - 0.0
+      requested_delta:
+      - 0.1
+      - 0.05
+      - 0.0
+      fresh_observation_pixel_delta:
+        shape_changed: false
+        before_shape:
+        - 128
+        - 128
+        - 3
+        after_shape:
+        - 128
+        - 128
+        - 3
+        changed_pixels: 1216
+        mean_abs: 1.8073933919270833
+        max_abs: 166
+      fresh_observation_changed_pixels: 1216
+      consumed_noop_env_step: false
+      fresh_observation_method: env.env._get_observations(force_update=True)
+      fresh_observation_operations:
+      - sim.forward
+      - env.check_success
+      - env._post_process
+      - env._update_observables
+      - env.env._post_process
+      - env.env._update_observables
+      simulator_stable: true
+      simulator_error: null
+      has_nan_or_inf: false
+      obvious_table_or_object_penetration_proxy: false
+      workspace_bound_proxy: true
+      camera_visibility_proxy: true
+      geometric_sanity: true
+      state_0_geometric_sanity: true
+      state_0_camera_visibility_proxy: true
+      state_0_workspace_bound_proxy: true
+      qpos_delta_matches_request: true
+      restore_successful: true
+      before_contact_summary:
+        ncon: 0
+        sample: []
+      after_contact_summary:
+        ncon: 0
+        sample: []
+      mutation:
+        joint: akita_black_bowl_1_joint0
+        joint_id: 9
+        qpos_addr: 9
+        before_qpos:
+        - 0.038944822138478094
+        - -0.2651063558710821
+        - 1.2315200000000002
+        - 0.7071067811865475
+        - 0.0
+        - 0.0
+        - 0.7071067811865476
+        after_qpos:
+        - 0.13894482213847809
+        - -0.21510635587108212
+        - 1.2315200000000002
+        - 0.7071067811865475
+        - 0.0
+        - 0.0
+        - 0.7071067811865476
+        requested_delta_xyz:
+        - 0.1
+        - 0.05
+        - 0.0
+        actual_delta_xyz:
+        - 0.09999999999999999
+        - 0.04999999999999999
+        - 0.0
+    disturbance_error: null
+    relation_cues:
+    - 'on'
+    - in
+recommended_pilot_tasks:
+- task_id: 1
+  target_joint: akita_black_bowl_1_joint0
+  reason: Selected for small-batch pilot because the target joint is explicit, the
+    dx/dy disturbance passed geometric sanity, the policy-camera proxy changed, and
+    it adds spatial cues ['next to', 'on', 'in'].
+- task_id: 4
+  target_joint: akita_black_bowl_2_joint0
+  reason: Selected for small-batch pilot because the target joint is explicit, the
+    dx/dy disturbance passed geometric sanity, the policy-camera proxy changed, and
+    it adds spatial cues ['on', 'in'].
+- task_id: 3
+  target_joint: akita_black_bowl_1_joint0
+  reason: Selected for small-batch pilot because the target joint is explicit, the
+    dx/dy disturbance passed geometric sanity, the policy-camera proxy changed, and
+    it adds spatial cues ['on'].
+notes:
+- This audit does not load OpenVLA and does not run policy rollouts.
+- Reachability is not claimed; only geometric_sanity, camera_visibility_proxy, and
+  workspace_bound_proxy are recorded.
