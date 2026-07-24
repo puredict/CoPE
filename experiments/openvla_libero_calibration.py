@@ -328,6 +328,12 @@ def _run_smoke(
                 "checkpoint_path": checkpoint_identity["path"],
                 "checkpoint_revision": checkpoint_identity["revision"],
                 "inference_function": "libero_experiment_core.execute_policy_step",
+                "processor_loader": getattr(
+                    runtime_model_cfg, "processor_loader", "unrecorded"
+                ),
+                "processor_dynamic_load_error": getattr(
+                    runtime_model_cfg, "processor_dynamic_load_error", None
+                ),
                 "dummy_action_used": False,
                 "high_level_provider_used": False,
             },
@@ -758,6 +764,10 @@ def main() -> int:
     load_report = {
         "model_load_seconds": model_load_seconds,
         "resolved_unnorm_key": resolved_unnorm_key,
+        "processor_loader": getattr(runtime_model_cfg, "processor_loader", "unrecorded"),
+        "processor_dynamic_load_error": getattr(
+            runtime_model_cfg, "processor_dynamic_load_error", None
+        ),
         "gpu_after_load": _cuda_memory(),
     }
     _atomic_json(output_dir / "model_load.json", load_report)
