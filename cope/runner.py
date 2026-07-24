@@ -110,7 +110,9 @@ def readiness_report(
     repo_root: str | Path,
     allow_test_fixtures: bool,
 ) -> dict[str, Any]:
-    formal = phase in {"formal", "detected"}
+    # The GPU pilot is real policy evidence and must use the same anti-fake,
+    # provenance, checkpoint, validator, and backend gates as the larger runs.
+    formal = phase in {"pilot", "formal", "detected"}
     checks: list[dict[str, Any]] = []
 
     def check(name: str, passed: bool, detail: str) -> None:
@@ -273,6 +275,7 @@ class ComparisonRunner:
         backend: ComparisonBackend,
         repo_root: str | Path,
         output_dir: str | Path,
+        allow_test_fixtures: bool = False,
     ) -> None:
         self.config = config
         self.phase = phase
@@ -283,6 +286,7 @@ class ComparisonRunner:
         self.backend = backend
         self.repo_root = Path(repo_root)
         self.output_dir = Path(output_dir)
+        self.allow_test_fixtures = bool(allow_test_fixtures)
 
     def run(self, *, resume: bool = False) -> dict[str, Any]:
         selection = self.config.selection(self.phase)
@@ -369,7 +373,10 @@ class ComparisonRunner:
                         provider=self.provider,
                         engine_factory=self.engine_factory,
                         engine_config=self.config.engine,
-                        formal=self.phase in {"formal", "detected"},
+                        formal=(
+                            self.phase in {"pilot", "formal", "detected"}
+                            and not self.allow_test_fixtures
+                        ),
                     )
                     episode_dir = self.output_dir / "episodes" / pair.pair_key.split(":")[-1][:16] / method_name
                     record = self.backend.run_episode(

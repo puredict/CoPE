@@ -55,3 +55,8 @@ def test_pilot_fixture_readiness_still_reports_missing_local_runtime() -> None:
     )
     assert report["selected_pair_count"] == 4
     assert report["scheduled_episode_count"] == 24
+    blockers = "\n".join(report["blockers"])
+    assert "fake provider" in blockers
+    assert "metadata.is_fake=false" in blockers
+    assert "not formal-capable" in blockers
+    assert "checkpoint.sha256" in blockers

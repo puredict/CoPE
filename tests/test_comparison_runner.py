@@ -27,6 +27,7 @@ def make_runner(output_dir: Path, backend: FakeComparisonBackend) -> ComparisonR
         backend=backend,
         repo_root=ROOT,
         output_dir=output_dir,
+        allow_test_fixtures=True,
     )
 
 

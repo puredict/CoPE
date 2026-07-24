@@ -174,6 +174,7 @@ def main() -> None:
         backend=backend,
         repo_root=repo_root,
         output_dir=output_dir,
+        allow_test_fixtures=args.allow_test_fixtures,
     )
     summary = runner.run(resume=args.resume)
     print(json.dumps(summary, indent=2, sort_keys=True), flush=True)
