@@ -13,16 +13,30 @@ method result.
 - The independent clone began clean at remote `master`
   `570d78333ee977c8ae6de3d97120b23272c4c660`.
 - No `AGENTS.md` exists in the repository or its task-local parent.
-- An HTTPS `git ls-remote` check returned only `master`; the requested
-  `exp/disturbance-causal-atlas`, `method/cope-state-semantics`, and
-  `exp/cope-main-comparison` remote branches were absent at audit time.
+- An initial HTTPS `git ls-remote` check returned only `master`; the requested
+  dependency branches were not published remotely at audit time.
 - Therefore the only atlas connected in this branch is
   `tests/fixtures/disturbance_atlas_v1.fixture.jsonl`
   (`atlas_commit=fixture-atlas`, explicitly `fixture=true`).
-- The only engine used in tests is `tests.fakes:ProtocolFakeEngine`
-  (`engine_commit=fixture-engine`, explicitly `is_fake=true`).
-- Production code does not copy or implement CoPE constraint semantics. It
-  consumes the external `ConstraintStateEngine` adapter contract.
+- A read-only check found an in-progress, uncommitted atlas worktree with the
+  intended tasks `[1, 3, 4, 6, 8]` and seeds `[7, 8, 9]`; the main config is
+  aligned to those choices. That draft currently has only 5 state slots (75
+  base pair keys), 1,875 clean/disturbance-grid rows, and
+  `pending_simulator_audit` geometry records. It cannot satisfy the required
+  8 states/task, 120 locked main pair keys, or committed-geometry gate and was
+  not copied into production inputs.
+- A clean local `method/cope-state-semantics` branch later became available at
+  source commit `fd0e2c501342ed7226360ae63c14615a1fc44c65`. It was integrated
+  by cherry-pick with source attribution; its immutable state model, seven
+  operations, authority checks, serialization, replay, and schemas are now in
+  this branch.
+- `cope/state_engine_adapter.py` is a thin mapping/compiler layer over that
+  engine. Production transitions still go exclusively through the engine's
+  atomic `apply_patch`; the main experiment code does not reimplement state
+  semantics.
+- Unit tests continue to use `tests.fakes:ProtocolFakeEngine` where isolation
+  is useful, but formal readiness now resolves the real engine adapter and
+  records source commit `fd0e2c5`.
 
 ## Implemented interfaces and methods
 
@@ -32,6 +46,8 @@ method result.
   operations.
 - `cope/engine.py` enforces stable constraint fields, unaffected-slot
   preservation, and successful `Revalidate` before `Restore`.
+- `cope/state_engine_adapter.py` maps provider JSON to one atomic committed
+  engine patch and compiles accepted active constraints for the controller.
 - `cope/methods/` implements adapters for all six ranked conditions.
 - `cope/libero_backend.py` contains one shared LIBERO/OpenVLA rollout path for
   all six methods and reuses `libero_experiment_core.py` for model actions,
@@ -74,7 +90,9 @@ The automated gates cover:
 - traceable config hash, Git commit, checkpoint ID/digest, atlas commit, and
   engine commit.
 
-Fixture execution completed 4 pair keys x 6 methods = 24 synthetic episodes.
+Fixture execution completed 4 pair keys x 6 methods = 24 synthetic episodes
+using the integrated `fd0e2c5` engine adapter (the rollout backend, observation,
+provider, and atlas remained explicit test fakes).
 The runner reported 24 unique episode keys, all four six-condition pair
 validators passed, and a second resume pass executed zero new episodes. The
 analysis output marks these records `test_only=true`,
@@ -88,7 +106,7 @@ analysis output marks these records `test_only=true`,
 exit 0
 
 /Users/lijingsu/miniforge3/envs/lerobot312/bin/python -m pytest -q
-80 passed in 5.09s
+189 passed in 27.66s
 
 python experiments/cope_main_comparison.py --phase pilot ... \
   --validate-only --emit-schedule --allow-test-fixtures
@@ -132,9 +150,12 @@ full regeneration or CoPE and are not included in this study.
 ## Formal blockers
 
 1. Official `disturbance_atlas_v1.jsonl` and its real
-   `exp/disturbance-causal-atlas` commit are absent.
-2. The real persistent-state/typed-patch engine and its
-   `method/cope-state-semantics` commit are absent.
+   `exp/disturbance-causal-atlas` commit are absent. The observed draft still
+   needs three additional state slots per task and completed geometry audits
+   before it can produce the 120-key main lock.
+2. The committed engine is integrated, but no real observation-grounded
+   revalidation validator adapter/commit is supplied. Formal mode rejects the
+   current null validator configuration.
 3. No real high-level provider adapter/service configuration is supplied.
 4. The configured Linux checkpoint path is absent on this host and its
    SHA-256 is not frozen.
@@ -162,13 +183,15 @@ full regeneration or CoPE and are not included in this study.
 - Main runner: `experiments/cope_main_comparison.py`
 - Analysis: `tools/analyze_cope_main_comparison.py`
 - Engine contract: `cope/engine.py`
+- Integrated engine adapter: `cope/state_engine_adapter.py`
+- Integrated engine semantics: `cope/operations.py`, `cope/schema.py`
 - Unified validation: `cope/validation.py`
 - Fixture atlas: `tests/fixtures/disturbance_atlas_v1.fixture.jsonl`
 - Pilot dry-run readiness: `docs/audit/cope_main_pilot_dry_run_readiness.json`
 - Pilot synthetic schedule: `docs/audit/cope_main_pilot_schedule.jsonl`
 - Formal blocked readiness: `docs/audit/cope_main_formal_readiness.json`
 - Ignored synthetic dry-run artifacts:
-  `audit_outputs/cope_main_fixture_dry_run_v3/`
+  `audit_outputs/cope_main_fixture_dry_run_v4/`
 
 ## Supported and unsupported claims
 
@@ -179,6 +202,8 @@ Supported:
 - the common provider input, budget, controller, event, and pairing
   invariants are machine-checked;
 - typed patches are schema-checked and blind restore is guarded;
+- the integrated `fd0e2c5` engine passes its atomicity, invariant, schema,
+  replay, golden-scenario, counterexample, and property-sequence tests;
 - synthetic 24-episode orchestration, validation, resume, and analysis code
   paths execute successfully.
 

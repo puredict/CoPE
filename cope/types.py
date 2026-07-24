@@ -211,6 +211,8 @@ class PatchOutput:
         raw_operations = data.get("operations")
         if not isinstance(raw_operations, list):
             raise ValueError("operations must be a list")
+        if not raw_operations:
+            raise ValueError("operations must contain at least one typed patch")
         operations = tuple(PatchOperation.from_mapping(item, index) for index, item in enumerate(raw_operations))
         hint = data.get("controller_hint")
         if hint is not None:

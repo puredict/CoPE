@@ -67,6 +67,17 @@ def validate_engine(engine: ConstraintStateEngine, *, formal: bool) -> None:
             raise CoPEEngineProtocolError("formal run requires engine_commit")
         if not metadata.get("schema_version"):
             raise CoPEEngineProtocolError("formal run requires engine schema_version")
+        if metadata.get("revalidation_validator_configured") is not True:
+            raise CoPEEngineProtocolError("formal run requires a real revalidation validator adapter")
+        validator_metadata = metadata.get("revalidation_validator_metadata")
+        if not isinstance(validator_metadata, dict):
+            raise CoPEEngineProtocolError("formal run requires revalidation validator metadata")
+        if validator_metadata.get("is_fake") is not False:
+            raise CoPEEngineProtocolError("formal run forbids a fake revalidation validator")
+        if not validator_metadata.get("validator_commit"):
+            raise CoPEEngineProtocolError("formal run requires revalidation validator_commit")
+        if not metadata.get("controller_compiler_version"):
+            raise CoPEEngineProtocolError("formal run requires a versioned controller compiler")
 
 
 def _constraint_map(state: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -131,6 +142,61 @@ def apply_guarded_patch(
     validate_engine(engine, formal=False)
     before = engine.snapshot()
     _constraint_map(before)
+    atomic_apply = getattr(engine, "apply_typed_patch", None)
+    if callable(atomic_apply):
+        raw_operations = [asdict(operation) for operation in patch.operations]
+        atomic = atomic_apply(raw_operations, recovery_input.as_payload())
+        if not isinstance(atomic, dict):
+            raise CoPEEngineProtocolError("atomic engine adapter must return an object")
+        state_before = atomic.get("state_before")
+        state_after = atomic.get("state_after")
+        operations = atomic.get("operations")
+        revalidations = atomic.get("revalidations")
+        prompt = atomic.get("controller_prompt")
+        if state_before != before:
+            raise CoPEEngineProtocolError("atomic engine state_before does not match pre-call snapshot")
+        if not isinstance(state_after, dict):
+            raise CoPEEngineProtocolError("atomic engine state_after must be an object")
+        if not isinstance(operations, list) or not isinstance(revalidations, list):
+            raise CoPEEngineProtocolError("atomic engine operations/revalidations must be lists")
+        if [operation.get("op") for operation in operations] != [
+            operation.op for operation in patch.operations
+        ]:
+            raise CoPEEngineProtocolError("atomic engine changed typed operation order or type")
+        successful: set[str] = set()
+        for operation in operations:
+            target_id = operation.get("target_id")
+            if operation.get("op") == "Revalidate":
+                result = (operation.get("payload") or {}).get("result") or {}
+                if result.get("success") is True and target_id:
+                    successful.add(str(target_id))
+            elif operation.get("op") == "Restore" and target_id not in successful:
+                raise CoPEEngineProtocolError(
+                    f"blind restore rejected for {target_id!r}: no successful prior Revalidate"
+                )
+        _constraint_map(state_after)
+        if not isinstance(prompt, str) or not prompt.strip():
+            raise CoPEEngineProtocolError("atomic engine controller prompt must be non-empty")
+        affected_ids = {
+            str(operation.target_id)
+            for operation in patch.operations
+            if operation.target_id is not None
+        }
+        preservation = unaffected_slot_preservation(state_before, state_after, affected_ids)
+        if not preservation["passed"]:
+            raise CoPEEngineProtocolError(
+                "engine changed unaffected slots: "
+                f"missing={preservation['missing_ids']} changed={preservation['changed_ids']}"
+            )
+        return GuardedPatchResult(
+            state_before=state_before,
+            state_after=state_after,
+            operations=tuple(operations),
+            revalidations=tuple(revalidations),
+            controller_prompt=prompt,
+            preservation=preservation,
+        )
+
     successful_revalidations: set[str] = set()
     revalidations: list[dict[str, Any]] = []
     operations: list[dict[str, Any]] = []

@@ -92,6 +92,21 @@ def create_fake_engine(config: dict[str, Any]) -> ProtocolFakeEngine:
     return ProtocolFakeEngine(config)
 
 
+class AlwaysTrueRevalidationValidator:
+    validator_id = "always-true-test-validator"
+    metadata = {
+        "is_fake": True,
+        "validator_commit": "fixture-validator",
+    }
+
+    def __call__(self, slot: Any, evidence: dict[str, Any]) -> bool:
+        return True
+
+
+def create_true_revalidation_validator(config: dict[str, Any]) -> AlwaysTrueRevalidationValidator:
+    return AlwaysTrueRevalidationValidator()
+
+
 class FakeComparisonBackend:
     name = "deterministic_test_backend"
     formal_capable = False

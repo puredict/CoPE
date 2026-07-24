@@ -21,17 +21,17 @@ methods:
 
 selections:
   pilot:
-    task_ids: [0, 1]
+    task_ids: [1, 3]
     initial_state_ids: [0, 1]
     seeds: [7]
   formal:
-    task_ids: [0, 1, 2, 3, 4]
+    task_ids: [1, 3, 4, 6, 8]
     initial_state_ids: [0, 1, 2, 3, 4, 5, 6, 7]
-    seeds: [7, 13, 23]
+    seeds: [7, 8, 9]
   detected:
-    task_ids: [0, 1, 2, 3, 4]
+    task_ids: [1, 3, 4, 6, 8]
     initial_state_ids: [0, 1]
-    seeds: [7, 13, 23]
+    seeds: [7, 8, 9]
 
 budgets:
   policy_steps: 220
@@ -76,10 +76,14 @@ provider:
     commit: null
 
 engine:
-  factory: null  # Set after method/cope-state-semantics supplies its adapter.
+  factory: cope.state_engine_adapter:create_cope_state_engine
   required_source_branch: method/cope-state-semantics
-  engine_commit: null
-  schema_version: null
+  engine_commit: fd0e2c501342ed7226360ae63c14615a1fc44c65
+  schema_version: "1.0"
+  actor: high_level_recovery_provider
+  authority_priority: 100
+  authorized_sources: [task, planner, perception]
+  revalidation_validator_factory: null  # Required before formal execution.
 
 permissions:
   manual_intervention: false

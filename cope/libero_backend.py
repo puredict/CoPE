@@ -265,6 +265,11 @@ class LiberoComparisonBackend:
                     "initial_state_id": pair.initial_state_id,
                     "seed": pair.seed,
                     "engine_commit": context.engine_commit,
+                    "event_source": context.event_source,
+                    "policy_step_budget": self.config.max_policy_steps,
+                    "git_commit": context.git_commit,
+                    "config_hash": context.config_hash,
+                    "checkpoint_id": self.config.checkpoint_id,
                 },
             )
             for _ in range(self.config.warmup_env_steps):

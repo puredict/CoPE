@@ -17,7 +17,13 @@ from cope.config import ComparisonConfig
 from cope.engine import EngineFactory, validate_engine
 from cope.methods import build_method
 from cope.methods.base import RecoveryMethod
-from cope.pairing import AtlasManifest, PairSpec, select_pairs, validate_formal_atlas
+from cope.pairing import (
+    GIT_SHA_PATTERN,
+    AtlasManifest,
+    PairSpec,
+    select_pairs,
+    validate_formal_atlas,
+)
 from cope.providers.base import HighLevelRecoveryProvider
 from cope.types import METHOD_NAMES
 from cope.validation import read_jsonl, validate_episode_record, validate_run_records
@@ -82,8 +88,12 @@ def _engine_commit(engine_factory: EngineFactory | None, engine_config: dict[str
         return "", ["CoPE engine factory is not configured"]
     try:
         engine = engine_factory(engine_config)
-        validate_engine(engine, formal=formal)
-        return str(engine.metadata.get("engine_commit", "")), []
+        commit = str(engine.metadata.get("engine_commit", ""))
+        try:
+            validate_engine(engine, formal=formal)
+        except Exception as exc:
+            return commit, [f"CoPE engine readiness failed: {type(exc).__name__}: {exc}"]
+        return commit, []
     except Exception as exc:
         return "", [f"CoPE engine readiness failed: {type(exc).__name__}: {exc}"]
 
@@ -163,6 +173,19 @@ def readiness_report(
     check("high_level_provider", not provider_errors, "; ".join(provider_errors) or provider.metadata.fairness_fingerprint)
 
     engine_commit, engine_errors = _engine_commit(engine_factory, config.engine, formal)
+    expected_engine_commit = str(config.engine.get("engine_commit") or "")
+    if expected_engine_commit and engine_commit != expected_engine_commit:
+        engine_errors.append(
+            f"engine commit mismatch: expected {expected_engine_commit}, got {engine_commit or 'missing'}"
+        )
+    if engine_factory is not None and not engine_errors:
+        probe = engine_factory(config.engine)
+        expected_schema = str(config.engine.get("schema_version") or "")
+        actual_schema = str(probe.metadata.get("schema_version") or "")
+        if expected_schema and actual_schema != expected_schema:
+            engine_errors.append(
+                f"engine schema mismatch: expected {expected_schema}, got {actual_schema or 'missing'}"
+            )
     check("cope_engine", not engine_errors, "; ".join(engine_errors) or engine_commit)
 
     backend_errors: list[str] = []
@@ -183,7 +206,11 @@ def readiness_report(
     )
     check(
         "external_dependency_commits",
-        bool(manifest.atlas_commit and engine_commit) or not formal,
+        bool(
+            GIT_SHA_PATTERN.fullmatch(manifest.atlas_commit)
+            and GIT_SHA_PATTERN.fullmatch(engine_commit)
+        )
+        or not formal,
         f"atlas={manifest.atlas_commit or 'missing'} engine={engine_commit or 'missing'}",
     )
     analysis_missing = [

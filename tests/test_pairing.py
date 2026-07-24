@@ -23,7 +23,7 @@ def test_fixture_atlas_has_stable_unique_pilot_keys() -> None:
     atlas = load_atlas(ROOT / "tests/fixtures/disturbance_atlas_v1.fixture.jsonl")
     selected = select_pairs(
         atlas.pairs,
-        task_ids=(0, 1),
+        task_ids=(1, 3),
         initial_state_ids=(0, 1),
         seeds=(7,),
     )
@@ -45,7 +45,7 @@ def test_incomplete_cartesian_selection_is_rejected() -> None:
     with pytest.raises(ValueError, match="complete Cartesian"):
         select_pairs(
             atlas.pairs[:-1],
-            task_ids=(0, 1),
+            task_ids=(1, 3),
             initial_state_ids=(0, 1),
             seeds=(7,),
         )

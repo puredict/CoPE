@@ -77,7 +77,20 @@ class DeterministicFakeProvider(HighLevelRecoveryProvider):
                 {
                     "op": "Override",
                     "target_id": target_id,
-                    "payload": {"requires_relocalization": True},
+                    "payload": {
+                        "replacement": {
+                            "slot_id": f"{target_id}-after-move",
+                            "constraint_type": "task_goal",
+                            "content": {
+                                "instruction": (
+                                    "relocalize the affected object at its current position, "
+                                    f"then {recovery_input.original_task}"
+                                )
+                            },
+                            "source": "planner",
+                            "priority": 100,
+                        }
+                    },
                     "reason": "oracle event reports that the affected object moved",
                 }
             ],
