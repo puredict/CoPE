@@ -1,0 +1,359 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/puredict/CoPE/schemas/cope-state-v1.schema.json",
+  "title": "CoPE Constraint State v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "state_id",
+    "revision",
+    "slots",
+    "event_history",
+    "patch_history",
+    "validation_history",
+    "state_hash"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "state_id": {"$ref": "#/$defs/nonempty"},
+    "revision": {"type": "integer", "minimum": 0},
+    "slots": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/slot"}
+    },
+    "event_history": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/eventRecord"}
+    },
+    "patch_history": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/appliedPatch"}
+    },
+    "validation_history": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/validationRecord"}
+    },
+    "state_hash": {"$ref": "#/$defs/hash"}
+  },
+  "$defs": {
+    "nonempty": {"type": "string", "minLength": 1},
+    "hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "source": {
+      "enum": ["task", "user", "safety", "perception", "planner", "system"]
+    },
+    "mode": {
+      "enum": ["active", "suspended", "overridden", "demoted", "expired"]
+    },
+    "slot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "slot_id",
+        "constraint_type",
+        "content",
+        "source",
+        "mode",
+        "priority",
+        "created_event_id",
+        "last_updated_event_id",
+        "parent_slot_id",
+        "overrides_slot_ids",
+        "lineage",
+        "evidence_refs",
+        "metadata"
+      ],
+      "properties": {
+        "slot_id": {"$ref": "#/$defs/nonempty"},
+        "constraint_type": {"$ref": "#/$defs/nonempty"},
+        "content": {"type": "object", "minProperties": 1},
+        "source": {"$ref": "#/$defs/source"},
+        "mode": {"$ref": "#/$defs/mode"},
+        "priority": {"type": "integer", "minimum": 0, "maximum": 1000},
+        "created_event_id": {"$ref": "#/$defs/nonempty"},
+        "last_updated_event_id": {"$ref": "#/$defs/nonempty"},
+        "parent_slot_id": {
+          "oneOf": [{"type": "null"}, {"$ref": "#/$defs/nonempty"}]
+        },
+        "overrides_slot_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/nonempty"}
+        },
+        "lineage": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/nonempty"}
+        },
+        "evidence_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/nonempty"}
+        },
+        "metadata": {"type": "object"}
+      }
+    },
+    "insert": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["operation_type", "operation_id", "slot"],
+      "properties": {
+        "operation_type": {"const": "insert"},
+        "operation_id": {"$ref": "#/$defs/nonempty"},
+        "slot": {"$ref": "#/$defs/slot"}
+      }
+    },
+    "suspend": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["operation_type", "operation_id", "slot_id", "reason"],
+      "properties": {
+        "operation_type": {"const": "suspend"},
+        "operation_id": {"$ref": "#/$defs/nonempty"},
+        "slot_id": {"$ref": "#/$defs/nonempty"},
+        "reason": {"$ref": "#/$defs/nonempty"}
+      }
+    },
+    "override": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["operation_type", "operation_id", "slot_id", "replacement", "reason"],
+      "properties": {
+        "operation_type": {"const": "override"},
+        "operation_id": {"$ref": "#/$defs/nonempty"},
+        "slot_id": {"$ref": "#/$defs/nonempty"},
+        "replacement": {"$ref": "#/$defs/slot"},
+        "reason": {"$ref": "#/$defs/nonempty"}
+      }
+    },
+    "demote": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["operation_type", "operation_id", "slot_id", "new_priority", "reason"],
+      "properties": {
+        "operation_type": {"const": "demote"},
+        "operation_id": {"$ref": "#/$defs/nonempty"},
+        "slot_id": {"$ref": "#/$defs/nonempty"},
+        "new_priority": {"type": "integer", "minimum": 0, "maximum": 1000},
+        "reason": {"$ref": "#/$defs/nonempty"}
+      }
+    },
+    "revalidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "operation_type",
+        "operation_id",
+        "slot_id",
+        "validation_id",
+        "validator_id",
+        "evidence",
+        "result",
+        "applies_to_last_updated_event_id",
+        "reason"
+      ],
+      "properties": {
+        "operation_type": {"const": "revalidate"},
+        "operation_id": {"$ref": "#/$defs/nonempty"},
+        "slot_id": {"$ref": "#/$defs/nonempty"},
+        "validation_id": {"$ref": "#/$defs/nonempty"},
+        "validator_id": {"$ref": "#/$defs/nonempty"},
+        "evidence": {"type": "object"},
+        "result": {"type": "boolean"},
+        "applies_to_last_updated_event_id": {"$ref": "#/$defs/nonempty"},
+        "reason": {"$ref": "#/$defs/nonempty"}
+      }
+    },
+    "restore": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["operation_type", "operation_id", "slot_id", "validation_id", "reason"],
+      "properties": {
+        "operation_type": {"const": "restore"},
+        "operation_id": {"$ref": "#/$defs/nonempty"},
+        "slot_id": {"$ref": "#/$defs/nonempty"},
+        "validation_id": {"$ref": "#/$defs/nonempty"},
+        "reason": {"$ref": "#/$defs/nonempty"}
+      }
+    },
+    "expire": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["operation_type", "operation_id", "slot_id", "reason"],
+      "properties": {
+        "operation_type": {"const": "expire"},
+        "operation_id": {"$ref": "#/$defs/nonempty"},
+        "slot_id": {"$ref": "#/$defs/nonempty"},
+        "reason": {"$ref": "#/$defs/nonempty"}
+      }
+    },
+    "operation": {
+      "oneOf": [
+        {"$ref": "#/$defs/insert"},
+        {"$ref": "#/$defs/suspend"},
+        {"$ref": "#/$defs/override"},
+        {"$ref": "#/$defs/demote"},
+        {"$ref": "#/$defs/revalidate"},
+        {"$ref": "#/$defs/restore"},
+        {"$ref": "#/$defs/expire"}
+      ]
+    },
+    "patch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "patch_id",
+        "event_id",
+        "reason",
+        "operations",
+        "generator",
+        "input_state_hash",
+        "created_at",
+        "metadata"
+      ],
+      "properties": {
+        "patch_id": {"$ref": "#/$defs/nonempty"},
+        "event_id": {"$ref": "#/$defs/nonempty"},
+        "reason": {"$ref": "#/$defs/nonempty"},
+        "operations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/operation"}
+        },
+        "generator": {"$ref": "#/$defs/nonempty"},
+        "input_state_hash": {"$ref": "#/$defs/hash"},
+        "created_at": {
+          "description": "Deterministic logical timestamp; never a wall-clock value.",
+          "type": "integer",
+          "minimum": 0
+        },
+        "metadata": {"type": "object"}
+      }
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actor",
+        "authority_priority",
+        "authorized_sources",
+        "allow_safety_override",
+        "event_source",
+        "information_budget",
+        "policy_step_budget",
+        "high_level_call_count",
+        "pair_key",
+        "task_progress",
+        "termination_reason",
+        "manual_intervention",
+        "git_commit",
+        "config_hash",
+        "checkpoint_id",
+        "metadata"
+      ],
+      "properties": {
+        "actor": {"$ref": "#/$defs/nonempty"},
+        "authority_priority": {"type": "integer", "minimum": 0, "maximum": 1000},
+        "authorized_sources": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/source"}
+        },
+        "allow_safety_override": {"type": "boolean"},
+        "event_source": {
+          "oneOf": [{"type": "null"}, {"enum": ["oracle", "detected"]}]
+        },
+        "information_budget": {
+          "oneOf": [{"type": "null"}, {"type": "integer", "minimum": 0}]
+        },
+        "policy_step_budget": {
+          "oneOf": [{"type": "null"}, {"type": "integer", "minimum": 0}]
+        },
+        "high_level_call_count": {"type": "integer", "minimum": 0},
+        "pair_key": {"type": "object"},
+        "task_progress": {"type": "object"},
+        "termination_reason": {
+          "oneOf": [{"type": "null"}, {"type": "string"}]
+        },
+        "manual_intervention": {"type": "boolean"},
+        "git_commit": {
+          "oneOf": [{"type": "null"}, {"type": "string"}]
+        },
+        "config_hash": {
+          "oneOf": [{"type": "null"}, {"type": "string"}]
+        },
+        "checkpoint_id": {
+          "oneOf": [{"type": "null"}, {"type": "string"}]
+        },
+        "metadata": {"type": "object"}
+      }
+    },
+    "appliedPatch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["patch", "context"],
+      "properties": {
+        "patch": {"$ref": "#/$defs/patch"},
+        "context": {"$ref": "#/$defs/context"}
+      }
+    },
+    "eventRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_id",
+        "patch_id",
+        "revision",
+        "reason",
+        "generator",
+        "applied_operation_ids",
+        "affected_slot_ids",
+        "details"
+      ],
+      "properties": {
+        "event_id": {"$ref": "#/$defs/nonempty"},
+        "patch_id": {"$ref": "#/$defs/nonempty"},
+        "revision": {"type": "integer", "minimum": 1},
+        "reason": {"$ref": "#/$defs/nonempty"},
+        "generator": {"$ref": "#/$defs/nonempty"},
+        "applied_operation_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/nonempty"}
+        },
+        "affected_slot_ids": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/nonempty"}
+        },
+        "details": {"type": "object"}
+      }
+    },
+    "validationRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "validation_id",
+        "slot_id",
+        "validator_id",
+        "result",
+        "evidence",
+        "state_revision",
+        "applies_to_last_updated_event_id",
+        "event_id",
+        "operation_id"
+      ],
+      "properties": {
+        "validation_id": {"$ref": "#/$defs/nonempty"},
+        "slot_id": {"$ref": "#/$defs/nonempty"},
+        "validator_id": {"$ref": "#/$defs/nonempty"},
+        "result": {"type": "boolean"},
+        "evidence": {"type": "object"},
+        "state_revision": {"type": "integer", "minimum": 0},
+        "applies_to_last_updated_event_id": {"$ref": "#/$defs/nonempty"},
+        "event_id": {"$ref": "#/$defs/nonempty"},
+        "operation_id": {"$ref": "#/$defs/nonempty"}
+      }
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "trace_schema_version": "1.0",
+  "pair_key": {},
+  "event_source": "camera_guess",
+  "information_budget": -1,
+  "policy_step_budget": -220,
+  "high_level_call_count": -1,
+  "constraint_state_before": {
+    "state_id": "",
+    "revision": -1,
+    "state_hash": "not-a-hash"
+  },
+  "constraint_state_after": {
+    "state_id": "invalid",
+    "revision": 0,
+    "state_hash": "not-a-hash"
+  },
+  "patch_operations": [
+    {
+      "operation_type": "delete",
+      "operation_id": "op-delete"
+    }
+  ],
+  "slot_id": "",
+  "source": "anonymous",
+  "mode": "deleted",
+  "priority": 2001,
+  "lineage": [],
+  "revalidation_result": {
+    "validation_id": "",
+    "slot_id": "",
+    "validator_id": "",
+    "result": "yes",
+    "evidence": []
+  },
+  "task_progress": {},
+  "termination_reason": "",
+  "manual_intervention": "false",
+  "git_commit": "",
+  "config_hash": "bad",
+  "checkpoint_id": ""
+}
