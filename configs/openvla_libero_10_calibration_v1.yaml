@@ -1,0 +1,39 @@
+schema_version: openvla-libero-calibration-v1
+study_id: openvla_libero_10_candidate_task_calibration_v1
+task_suite: libero_10
+task_ids: [0, 1, 4, 8]
+initial_state_ids: [0, 1, 2, 3, 4]
+
+# The imported repeated-interruption preregistration fixed five clean states
+# per task but did not assign calibration seeds. This companion
+# preregistration makes that missing choice explicit. The affine scheme is
+# deterministic and cannot overlap the formal evaluation seeds [11, 29, 47].
+seed_scheme:
+  name: fixed_affine_non_evaluation_v1
+  base_seed: 20260724
+  task_stride: 100
+  state_stride: 1
+  forbidden_evaluation_seeds: [11, 29, 47]
+
+checkpoint:
+  repository: openvla/openvla-7b-finetuned-libero-10
+  revision: 80970322773f81baa2e22fe495d0487b93a05cfa
+  path: /home/lijingsu/vla/models/openvla-7b-finetuned-libero-10
+  unnorm_key: libero_10
+  expected_action_dim: 7
+  expected_proprio_dim: 7
+  expected_weight_files: 4
+
+runtime:
+  resolution: 256
+  center_crop: true
+  warmup_simulator_steps: 10
+  policy_step_budget: 220
+  success_predicate: libero_done_or_sparse_reward_ge_1
+  gripper_transform: normalize_binarize_then_openvla_invert
+
+selection:
+  minimum_clean_success_rate: 0.60
+  episodes_per_task: 5
+  selective_reruns_forbidden: true
+  calibration_excluded_from_evaluation: true

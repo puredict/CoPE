@@ -9,6 +9,13 @@ checkpoint:
   path: /home/lijingsu/vla/models/openvla-7b-finetuned-libero-spatial
   sha256: null  # Formal readiness requires the frozen checkpoint digest.
 
+dependency_commits:
+  baseline: 570d78333ee977c8ae6de3d97120b23272c4c660
+  cope_state_semantics: fd0e2c501342ed7226360ae63c14615a1fc44c65
+  main_experiment_adapters: e9d19ec358b98c1250c4a3144a987b1aa16ab634
+  repeated_interruptions: 1a8a774c13c31ccc64a05c00c2df00322d8201f5
+  auditability: cc8f5092b87769ca53becdb7070aa32a3062035b
+
 disturbance_manifest: data/disturbance_atlas_v1.jsonl
 
 methods:

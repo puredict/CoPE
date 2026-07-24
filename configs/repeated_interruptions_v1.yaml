@@ -11,13 +11,16 @@ methods:
 policy_step_budget: 220
 high_level_call_budget: 4
 camera_resolution: 256
-checkpoint: null
+checkpoint: /home/lijingsu/vla/models/openvla-7b-finetuned-libero-10
 adapters:
+  # These remain deliberately unset until a production repeated-rollout
+  # binding supplies the formal RecoveryAdapter protocol. The dependency SHA
+  # alone is not a factory implementation.
   history_augmented_full_regeneration: null
   cope_patch: null
 dependency_commits:
-  method/cope-state-semantics: null
-  main_experiment_adapters: null
+  method/cope-state-semantics: fd0e2c501342ed7226360ae63c14615a1fc44c65
+  main_experiment_adapters: e9d19ec358b98c1250c4a3144a987b1aa16ab634
 formal_run_requirements:
   clean_calibration_min_success_rate: 0.60
   clean_calibration_states_per_task: 5
