@@ -121,10 +121,20 @@ def _checkpoint_identity(config: Mapping[str, Any]) -> dict[str, Any]:
     if unnorm_key not in statistics or unnorm_key not in model_config.get("norm_stats", {}):
         raise ValueError(f"checkpoint does not provide normalization statistics for {unnorm_key}")
     action_stats = statistics[unnorm_key]["action"]
+    proprio_stats = statistics[unnorm_key]["proprio"]
     expected_dim = int(checkpoint["expected_action_dim"])
     for field in ("mean", "std", "min", "max", "q01", "q99", "mask"):
         if len(action_stats[field]) != expected_dim:
             raise ValueError(f"checkpoint action statistics {field} do not have dim {expected_dim}")
+    checkpoint_proprio_dim = int(checkpoint["checkpoint_proprio_statistics_dim"])
+    for field in ("mean", "std", "min", "max", "q01", "q99"):
+        if len(proprio_stats[field]) != checkpoint_proprio_dim:
+            raise ValueError(
+                f"checkpoint proprio statistics {field} do not have dim "
+                f"{checkpoint_proprio_dim}"
+            )
+    if bool(checkpoint["model_consumes_proprio"]):
+        raise ValueError("this OpenVLA LIBERO adapter is image-language-only")
     weights = sorted(root.glob("model-*.safetensors"))
     expected_weights = int(checkpoint["expected_weight_files"])
     if len(weights) != expected_weights:
@@ -153,7 +163,14 @@ def _checkpoint_identity(config: Mapping[str, Any]) -> dict[str, Any]:
         "files_manifest_sha256": checkpoint["files_manifest_sha256"],
         "unnorm_key": unnorm_key,
         "action_dim": expected_dim,
-        "proprio_dim": int(checkpoint["expected_proprio_dim"]),
+        "adapter_state_dim": int(checkpoint["expected_adapter_state_dim"]),
+        "checkpoint_proprio_statistics_dim": checkpoint_proprio_dim,
+        "checkpoint_proprio_statistics_all_zero": all(
+            float(item) == 0.0
+            for field in ("mean", "std", "min", "max", "q01", "q99")
+            for item in proprio_stats[field]
+        ),
+        "model_consumes_proprio": False,
         "action_mask": action_stats["mask"],
         "action_q01": action_stats["q01"],
         "action_q99": action_stats["q99"],
@@ -292,8 +309,12 @@ def _run_smoke(
             "real_libero_reset_observation": bool(observation["keys"]),
             "camera_frame_present": observation["frame_shape"][-1:] == [3],
             "proprio_dimension": observation["proprio_shape"]
-            == [int(checkpoint_identity["proprio_dim"])],
+            == [int(checkpoint_identity["adapter_state_dim"])],
             "proprio_finite": observation["proprio_finite"],
+            "image_language_only_model_contract": (
+                checkpoint_identity["model_consumes_proprio"] is False
+                and checkpoint_identity["checkpoint_proprio_statistics_all_zero"]
+            ),
             "resolved_unnorm_key": resolved_unnorm_key
             == checkpoint_identity["unnorm_key"],
             "action_validation": action_validation["passed"],
@@ -334,6 +355,13 @@ def _run_smoke(
                 "processor_dynamic_load_error": getattr(
                     runtime_model_cfg, "processor_dynamic_load_error", None
                 ),
+                "adapter_state_dim": checkpoint_identity["adapter_state_dim"],
+                "checkpoint_proprio_statistics_dim": checkpoint_identity[
+                    "checkpoint_proprio_statistics_dim"
+                ],
+                "model_consumes_proprio": checkpoint_identity[
+                    "model_consumes_proprio"
+                ],
                 "dummy_action_used": False,
                 "high_level_provider_used": False,
             },

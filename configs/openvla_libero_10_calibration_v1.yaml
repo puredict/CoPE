@@ -21,7 +21,9 @@ checkpoint:
   path: /home/lijingsu/vla/models/openvla-7b-finetuned-libero-10
   unnorm_key: libero_10
   expected_action_dim: 7
-  expected_proprio_dim: 7
+  expected_adapter_state_dim: 8
+  checkpoint_proprio_statistics_dim: 7
+  model_consumes_proprio: false
   expected_weight_files: 4
   files_manifest_sha256: 58773a8ef85515f695c99402f692dc5afe0fb71efd7f3984ff44c1f117c4f034
   weight_shards:
