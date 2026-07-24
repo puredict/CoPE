@@ -34,7 +34,10 @@ def test_formal_readiness_rejects_fake_provider_engine_manifest_and_backend() ->
     assert "formal atlas" in blockers
     assert "metadata.is_fake=false" in blockers
     assert "not formal-capable" in blockers
-    assert "checkpoint.sha256" in blockers
+    checkpoint_check = next(
+        item for item in report["checks"] if item["name"] == "checkpoint_digest"
+    )
+    assert checkpoint_check["passed"]
 
 
 def test_pilot_fixture_readiness_still_reports_missing_local_runtime() -> None:
@@ -59,4 +62,7 @@ def test_pilot_fixture_readiness_still_reports_missing_local_runtime() -> None:
     assert "fake provider" in blockers
     assert "metadata.is_fake=false" in blockers
     assert "not formal-capable" in blockers
-    assert "checkpoint.sha256" in blockers
+    checkpoint_check = next(
+        item for item in report["checks"] if item["name"] == "checkpoint_digest"
+    )
+    assert checkpoint_check["passed"]
