@@ -25,6 +25,7 @@ from cope.calibration import (  # noqa: E402
     CalibrationSeedScheme,
     build_calibration_entries,
     canonical_hash,
+    load_resume_trace,
     validate_openvla_action,
     wilson_interval,
 )
@@ -262,6 +263,7 @@ def _run_smoke(
     runtime_model_cfg: Any,
     resolved_unnorm_key: str,
     checkpoint_identity: Mapping[str, Any],
+    resume_trace_path: Path | None = None,
 ) -> dict[str, Any]:
     from PIL import Image
 
@@ -419,6 +421,15 @@ def _run_clean_episode(
     attempts = sorted(episode_dir.glob("attempt-*.jsonl"))
     attempt_number = len(attempts) + 1
     trace_path = episode_dir / f"attempt-{attempt_number:03d}.jsonl"
+    resume_trace = (
+        load_resume_trace(
+            resume_trace_path,
+            expected_warmup_steps=int(config["runtime"]["warmup_simulator_steps"]),
+            policy_step_budget=int(config["runtime"]["policy_step_budget"]),
+        )
+        if resume_trace_path is not None
+        else None
+    )
     task_id = int(entry["task_id"])
     state_id = int(entry["initial_state_id"])
     seed = int(entry["seed"])
@@ -430,7 +441,11 @@ def _run_clean_episode(
     runtime = config["runtime"]
     env = None
     started = time.monotonic()
-    steps: list[dict[str, Any]] = []
+    steps: list[dict[str, Any]] = (
+        [dict(row) for row in resume_trace["policy_records"]]
+        if resume_trace is not None
+        else []
+    )
     success = False
     termination_reason = "simulator_error"
     exception_record: dict[str, Any] | None = None
@@ -455,14 +470,40 @@ def _run_clean_episode(
             env, int(checkpoint_identity["action_dim"])
         )
         with trace_path.open("x", encoding="utf-8", buffering=1) as trace:
+            if resume_trace is not None:
+                trace.write(
+                    json.dumps(
+                        {
+                            "record_type": "resume_replay",
+                            "source_trace": resume_trace["path"],
+                            "source_trace_sha256": resume_trace["sha256"],
+                            "policy_steps_replayed": resume_trace["policy_steps"],
+                            "model_inference_replayed": False,
+                        },
+                        sort_keys=True,
+                    )
+                    + "\n"
+                )
+            warmup_records = (
+                resume_trace["warmup_records"] if resume_trace is not None else None
+            )
             for warmup_step in range(int(runtime["warmup_simulator_steps"])):
                 obs, reward, done, info = env.step(get_dummy_action("openvla"))
+                if warmup_records is not None:
+                    expected = warmup_records[warmup_step]
+                    if bool(done) != bool(expected["done"]) or abs(
+                        float(reward) - float(expected["reward"])
+                    ) > 1e-9:
+                        raise RuntimeError(
+                            f"resume warmup replay diverged at step {warmup_step}"
+                        )
                 trace.write(
                     json.dumps(
                         {
                             "record_type": "warmup",
                             "warmup_step": warmup_step,
                             "dummy_action": True,
+                            "replayed": resume_trace is not None,
                             "reward": float(reward),
                             "done": bool(done),
                         },
@@ -470,7 +511,39 @@ def _run_clean_episode(
                     )
                     + "\n"
                 )
-            for policy_step in range(int(runtime["policy_step_budget"])):
+            if resume_trace is not None:
+                for prior in resume_trace["policy_records"]:
+                    obs, replay_reward, replay_done, replay_info = env.step(
+                        prior["environment_action"]
+                    )
+                    policy_step = int(prior["policy_step"])
+                    if bool(replay_done) != bool(prior["done"]) or abs(
+                        float(replay_reward) - float(prior["reward"])
+                    ) > 1e-9:
+                        raise RuntimeError(
+                            f"resume policy replay diverged at step {policy_step}"
+                        )
+                    reward = float(replay_reward)
+                    done = bool(replay_done)
+                    info = dict(replay_info)
+                    trace.write(
+                        json.dumps(
+                            {
+                                **prior,
+                                "record_type": "policy_step",
+                                "replayed": True,
+                                "reward": reward,
+                                "done": done,
+                                "model_inference_replayed": False,
+                            },
+                            sort_keys=True,
+                        )
+                        + "\n"
+                    )
+            first_policy_step = len(steps)
+            for policy_step in range(
+                first_policy_step, int(runtime["policy_step_budget"])
+            ):
                 step = execute_policy_step(
                     cfg=runtime_model_cfg,
                     model=model,
@@ -571,13 +644,31 @@ def _run_clean_episode(
         "gpu": _cuda_memory(),
         "manual_intervention": False,
         "reset_count": 1,
+        "logical_reset_count_including_interrupted_attempt": (
+            2 if resume_trace is not None else 1
+        ),
         "rollback_count": 0,
         "fake_scripted_or_noop_policy": False,
+        "resumed_from_interrupted_trace": resume_trace is not None,
+        "selective_rerun": False,
+        "resume": (
+            {
+                "source_trace": resume_trace["path"],
+                "source_trace_sha256": resume_trace["sha256"],
+                "policy_steps_replayed": resume_trace["policy_steps"],
+                "model_inference_replayed": False,
+            }
+            if resume_trace is not None
+            else None
+        ),
         "attempt_number": attempt_number,
         "exception": exception_record,
         "artifacts": {
             "trace": str(trace_path),
             "episode": str(episode_path),
+            "interrupted_source_trace": (
+                resume_trace["path"] if resume_trace is not None else None
+            ),
         },
     }
     _atomic_json(episode_path, result)
@@ -635,7 +726,9 @@ def _summarize_calibration(
         "excluded_tasks": excluded,
         "pilot_authorized_by_calibration": bool(all_terminal and selected),
         "calibration_excluded_from_evaluation": True,
-        "no_selective_reruns": all(int(row["attempt_number"]) == 1 for row in records),
+        "no_selective_reruns": all(
+            not bool(row.get("selective_rerun", False)) for row in records
+        ),
     }
 
 

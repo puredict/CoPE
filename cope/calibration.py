@@ -3,7 +3,9 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import os
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Iterable, Mapping, Sequence
 
 
@@ -146,4 +148,169 @@ def validate_openvla_action(
         "action_low": list(low),
         "action_high": list(high),
         "expected_dim": expected_dim,
+    }
+
+
+def load_resume_trace(
+    path: str | Path,
+    *,
+    expected_warmup_steps: int,
+    policy_step_budget: int,
+) -> dict[str, Any]:
+    trace_path = Path(path)
+    records = [
+        json.loads(line)
+        for line in trace_path.read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
+    warmup = [row for row in records if row.get("record_type") == "warmup"]
+    policy = [row for row in records if row.get("record_type") == "policy_step"]
+    unexpected = [
+        row
+        for row in records
+        if row.get("record_type") not in {"resume_replay", "warmup", "policy_step"}
+    ]
+    if unexpected:
+        raise ValueError(f"resume trace contains unexpected record types: {trace_path}")
+    if [int(row.get("warmup_step", -1)) for row in warmup] != list(
+        range(expected_warmup_steps)
+    ):
+        raise ValueError("resume trace warmup steps are incomplete or non-contiguous")
+    policy_steps = [int(row.get("policy_step", -1)) for row in policy]
+    if policy_steps != list(range(len(policy))):
+        raise ValueError("resume trace policy steps are incomplete or non-contiguous")
+    if len(policy) >= policy_step_budget:
+        raise ValueError("resume trace already consumed the complete policy budget")
+    for row in policy:
+        validation = row.get("action_validation") or {}
+        if validation.get("passed") is not True:
+            raise ValueError("resume trace contains an invalid action")
+        if bool(row.get("done")) or float(row.get("reward", 0.0)) >= 1.0:
+            raise ValueError("resume trace already reached a terminal success")
+        action = row.get("environment_action")
+        if not isinstance(action, list) or not action:
+            raise ValueError("resume trace policy record lacks environment_action")
+    return {
+        "path": str(trace_path.resolve()),
+        "sha256": hashlib.sha256(trace_path.read_bytes()).hexdigest(),
+        "warmup_records": warmup,
+        "policy_records": policy,
+        "policy_steps": len(policy),
+    }
+
+
+def partition_entries(
+    entries: Sequence[Mapping[str, Any]],
+    *,
+    worker_id: int,
+    worker_count: int,
+) -> tuple[Mapping[str, Any], ...]:
+    if worker_count <= 0 or worker_id < 0 or worker_id >= worker_count:
+        raise ValueError("invalid worker partition")
+    return tuple(
+        entry for index, entry in enumerate(entries) if index % worker_count == worker_id
+    )
+
+
+def atomic_episode_claim(
+    claim_path: str | Path,
+    *,
+    episode_id: str,
+    worker_id: int,
+    worker_count: int,
+    config_hash: str,
+    launcher_id: str,
+    resume: bool,
+) -> dict[str, Any]:
+    path = Path(claim_path)
+    expected = {
+        "schema_version": "openvla-libero-calibration-claim-v1",
+        "episode_id": episode_id,
+        "worker_id": int(worker_id),
+        "worker_count": int(worker_count),
+        "config_hash": config_hash,
+        "launcher_id": launcher_id,
+    }
+    path.parent.mkdir(parents=True, exist_ok=True)
+    payload = json.dumps(expected, sort_keys=True, separators=(",", ":")) + "\n"
+    try:
+        descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o644)
+    except FileExistsError:
+        existing = json.loads(path.read_text(encoding="utf-8"))
+        identity_fields = (
+            "schema_version",
+            "episode_id",
+            "worker_id",
+            "worker_count",
+            "config_hash",
+        )
+        if any(existing.get(field) != expected[field] for field in identity_fields):
+            raise ValueError(f"existing claim identity mismatch: {path}")
+        if not resume:
+            raise FileExistsError(f"episode is already claimed: {episode_id}")
+        return {**existing, "claim_reused_for_resume": True, "path": str(path)}
+    try:
+        os.write(descriptor, payload.encode("utf-8"))
+        os.fsync(descriptor)
+    finally:
+        os.close(descriptor)
+    return {**expected, "claim_reused_for_resume": False, "path": str(path)}
+
+
+def audit_terminal_records(
+    *,
+    entries: Sequence[Mapping[str, Any]],
+    episode_roots: Sequence[str | Path],
+    config_hash: str,
+    checkpoint_revision: str,
+) -> dict[str, Any]:
+    expected = {str(entry["episode_id"]): dict(entry) for entry in entries}
+    records_by_id: dict[str, list[dict[str, Any]]] = {}
+    for root_value in episode_roots:
+        root = Path(root_value)
+        if not root.exists():
+            continue
+        for path in root.rglob("episode.json"):
+            record = json.loads(path.read_text(encoding="utf-8"))
+            episode_id = str(record.get("episode_id", ""))
+            record["_terminal_path"] = str(path.resolve())
+            records_by_id.setdefault(episode_id, []).append(record)
+    errors: list[str] = []
+    unexpected = sorted(set(records_by_id) - set(expected))
+    missing = sorted(set(expected) - set(records_by_id))
+    duplicates = sorted(
+        episode_id for episode_id, rows in records_by_id.items() if len(rows) != 1
+    )
+    if unexpected:
+        errors.append(f"unexpected terminal episode IDs: {unexpected}")
+    if missing:
+        errors.append(f"missing terminal episode IDs: {missing}")
+    if duplicates:
+        errors.append(f"duplicate terminal episode IDs: {duplicates}")
+    terminals: list[dict[str, Any]] = []
+    for episode_id in sorted(set(expected) & set(records_by_id)):
+        rows = records_by_id[episode_id]
+        if len(rows) != 1:
+            continue
+        row = rows[0]
+        entry = expected[episode_id]
+        if row.get("complete") is not True or row.get("phase") != "calibration":
+            errors.append(f"{episode_id}: record is not a complete calibration terminal")
+        if row.get("config_hash") != config_hash:
+            errors.append(f"{episode_id}: config_hash mismatch")
+        if (row.get("checkpoint") or {}).get("revision") != checkpoint_revision:
+            errors.append(f"{episode_id}: checkpoint revision mismatch")
+        for field in ("task_id", "initial_state_id", "seed"):
+            if int(row.get(field, -1)) != int(entry[field]):
+                errors.append(f"{episode_id}: fixed {field} mismatch")
+        terminals.append(row)
+    return {
+        "passed": not errors,
+        "errors": errors,
+        "expected_count": len(expected),
+        "terminal_count": len(terminals),
+        "missing_episode_ids": missing,
+        "duplicate_episode_ids": duplicates,
+        "unexpected_episode_ids": unexpected,
+        "terminals": terminals,
     }
