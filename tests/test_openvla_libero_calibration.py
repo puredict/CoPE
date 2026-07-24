@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import inspect
 import json
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -16,6 +17,7 @@ from cope.calibration import (
     validate_openvla_action,
     wilson_interval,
 )
+from experiments.openvla_libero_calibration import _run_clean_episode, _run_smoke
 
 
 def _scheme() -> CalibrationSeedScheme:
@@ -26,6 +28,11 @@ def _scheme() -> CalibrationSeedScheme:
         state_stride=1,
         forbidden_evaluation_seeds=(11, 29, 47),
     )
+
+
+def test_resume_trace_argument_belongs_to_clean_episode_not_smoke() -> None:
+    assert "resume_trace_path" in inspect.signature(_run_clean_episode).parameters
+    assert "resume_trace_path" not in inspect.signature(_run_smoke).parameters
 
 
 def test_calibration_entries_are_fixed_unique_and_disjoint_from_evaluation() -> None:

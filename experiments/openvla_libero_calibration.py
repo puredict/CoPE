@@ -263,7 +263,6 @@ def _run_smoke(
     runtime_model_cfg: Any,
     resolved_unnorm_key: str,
     checkpoint_identity: Mapping[str, Any],
-    resume_trace_path: Path | None = None,
 ) -> dict[str, Any]:
     from PIL import Image
 
@@ -406,6 +405,7 @@ def _run_clean_episode(
     runtime_model_cfg: Any,
     resolved_unnorm_key: str,
     checkpoint_identity: Mapping[str, Any],
+    resume_trace_path: Path | None = None,
 ) -> dict[str, Any]:
     episode_id = str(entry["episode_id"])
     episode_dir = output_dir / "episodes" / episode_id
