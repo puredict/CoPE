@@ -1,7 +1,8 @@
 # CoPE Main Comparison Implementation and Readiness Report
 
-Date: 2026-07-24  
-Branch: `exp/cope-main-comparison`  
+Date: 2026-07-24
+
+Branch: `exp/cope-main-comparison`
 Base commit: `570d78333ee977c8ae6de3d97120b23272c4c660`
 
 This report distinguishes infrastructure evidence from empirical robot
