@@ -1,0 +1,8 @@
+# Additive dependencies for CoPE main-comparison orchestration and analysis.
+# OpenVLA/LIBERO/robosuite/Torch remain provided by the project runtime.
+imageio>=2.34
+numpy>=1.24
+pandas>=2.0
+Pillow>=10.0
+PyYAML>=6.0
+statsmodels>=0.14

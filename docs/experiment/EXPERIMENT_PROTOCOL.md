@@ -380,3 +380,59 @@ Sampling plan:
 - Sample failures before watching all videos for cherry-picking, or report the selection rule used.
 
 Recommended Target: Maintain a `failure_case_index.csv` with run id, episode id, pair key, mode, failure labels, video path, annotator, and annotation timestamp.
+
+## 21. CoPE Main Comparison v1
+
+The ranked main comparison is frozen by
+`configs/cope_main_comparison_v1.yaml` and executed by
+`experiments/cope_main_comparison.py`. Its exact ordered condition set is:
+
+1. `clean`
+2. `reactive_disturbed`
+3. `structured_relocalize_prompt`
+4. `stage_backtrack_subgoal`
+5. `history_augmented_full_regeneration`
+6. `cope_patch`
+
+`full_reset_replan` and `oracle_rollback` remain diagnostic controls and are
+not members of this ranking.
+
+The oracle primary study is 5 tasks x 8 preregistered initial states x 3
+seeds = 120 pair keys and 720 episodes. The infrastructure pilot is 2 tasks x
+2 initial states x 1 seed x 6 conditions = 24 episodes. The detected-event
+sensitivity selection contains at least 30 pair keys and must be analyzed
+against matching oracle pair keys.
+
+Formal execution is guarded on all of the following:
+
+- an immutable non-fixture `disturbance_atlas_v1.jsonl` from
+  `exp/disturbance-causal-atlas`, with its commit recorded;
+- a non-fake adapter from `method/cope-state-semantics`, with engine commit and
+  schema recorded;
+- a non-fake provider that implements both full regeneration and typed patch
+  using identical model, temperature, token ceilings, timeout, and retries;
+- a frozen checkpoint digest, a clean Git worktree, GPU/runtime readiness, and
+  the mixed-effects analysis stack;
+- no manual interaction, reset, rollback, hidden fresh budget, or observation
+  refresh step.
+
+The provider receives the same `RecoveryInput` payload in both high-level
+modes. It contains only the configured observation, original task, structured
+event, public action/progress history, and information budget. Raw request,
+raw response, parsed output, retry/timeout/parse state, latency, and token
+usage are retained. Credentials and private chain-of-thought are forbidden
+from logs.
+
+CoPE production semantics are not implemented in the experiment branch.
+Instead, the runner consumes an external engine adapter. The adapter must
+preserve stable `id`, `source`, `priority`, and `lineage` on unaffected
+constraints. Only `Insert`, `Suspend`, `Override`, `Demote`, `Revalidate`,
+`Restore`, and `Expire` are accepted. A `Restore` is rejected unless a
+successful `Revalidate` for the same target occurred earlier in that patch.
+
+Every completed six-condition pair is validated for identical initial-state
+hash, pre-event action digest, event packet, fresh-observation hash, policy
+and post-event budgets, provider fingerprint, downstream controller,
+checkpoint, success/termination definitions, config hash, and source commit.
+Incomplete or duplicate pairs remain visible but cannot enter paired
+statistics.

@@ -1,4 +1,4 @@
-"""Persistent constraint state, typed patch, and guarded restoration engine."""
+"""Persistent CoPE state engine and strictly paired main-comparison infrastructure."""
 
 from .errors import CoPEError, InvariantError, SchemaError, TransitionError
 from .operations import apply_patch
@@ -37,8 +37,19 @@ from .serialization import (
     serialize_state,
 )
 from .validator import validate_state
+from .types import (
+    METHOD_NAMES,
+    PATCH_OPERATION_TYPES,
+    FullStateOutput,
+    MethodDecision,
+    PatchOperation,
+    PatchOutput,
+    RecoveryInput,
+)
 
 __all__ = [
+    "METHOD_NAMES",
+    "PATCH_OPERATION_TYPES",
     "SCHEMA_VERSION",
     "AppliedPatch",
     "CoPEError",
@@ -50,11 +61,16 @@ __all__ = [
     "EventRecord",
     "EventSource",
     "Expire",
+    "FullStateOutput",
     "Insert",
     "InvariantError",
+    "MethodDecision",
     "Override",
     "Patch",
+    "PatchOperation",
+    "PatchOutput",
     "PatchContext",
+    "RecoveryInput",
     "Restore",
     "Revalidate",
     "RevalidationResult",
