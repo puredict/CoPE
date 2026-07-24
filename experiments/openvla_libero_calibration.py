@@ -96,6 +96,14 @@ def _package_versions() -> dict[str, str | None]:
     return versions
 
 
+def _sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        while chunk := handle.read(8 * 1024 * 1024):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
 def _checkpoint_identity(config: Mapping[str, Any]) -> dict[str, Any]:
     checkpoint = dict(config["checkpoint"])
     root = Path(str(checkpoint["path"])).resolve()
@@ -132,12 +140,17 @@ def _checkpoint_identity(config: Mapping[str, Any]) -> dict[str, Any]:
         if expected:
             if int(expected.get("bytes", -1)) != record["bytes"]:
                 raise ValueError(f"weight shard size mismatch for {path.name}")
-            record["expected_sha256"] = str(expected.get("sha256", ""))
+            expected_sha256 = str(expected.get("sha256", ""))
+            actual_sha256 = _sha256_file(path)
+            if actual_sha256 != expected_sha256:
+                raise ValueError(f"weight shard SHA-256 mismatch for {path.name}")
+            record["sha256"] = actual_sha256
         shard_records.append(record)
     return {
         "repository": checkpoint["repository"],
         "revision": checkpoint["revision"],
         "path": str(root),
+        "files_manifest_sha256": checkpoint["files_manifest_sha256"],
         "unnorm_key": unnorm_key,
         "action_dim": expected_dim,
         "proprio_dim": int(checkpoint["expected_proprio_dim"]),

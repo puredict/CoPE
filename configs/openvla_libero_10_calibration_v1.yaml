@@ -23,6 +23,20 @@ checkpoint:
   expected_action_dim: 7
   expected_proprio_dim: 7
   expected_weight_files: 4
+  files_manifest_sha256: 58773a8ef85515f695c99402f692dc5afe0fb71efd7f3984ff44c1f117c4f034
+  weight_shards:
+    model-00001-of-00004.safetensors:
+      bytes: 4925122448
+      sha256: 72f7196d8768c104073d7e9104ad8023cb27727191de1a490612886428b18c51
+    model-00002-of-00004.safetensors:
+      bytes: 4947392496
+      sha256: 92a60a88c7dad2ba1fccc4acbebef98fc7a894891bc49f2e21cfbf1600daf413
+    model-00003-of-00004.safetensors:
+      bytes: 4947417456
+      sha256: 12b45ae85535565148907e379d6f35bcba83b9497006ff3b66658fa412ffac85
+    model-00004-of-00004.safetensors:
+      bytes: 262668432
+      sha256: d3b8e759db56b86709c56f8d156952415dd64e101feccfd01e701487041dd8c1
 
 runtime:
   resolution: 256

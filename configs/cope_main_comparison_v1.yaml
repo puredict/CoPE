@@ -6,8 +6,12 @@ event_source: oracle
 
 checkpoint:
   id: openvla-7b-finetuned-libero-spatial
+  repository: openvla/openvla-7b-finetuned-libero-spatial
+  revision: 962318cec55ac10993ff0f5f43eda9a270b4c873
   path: /home/lijingsu/vla/models/openvla-7b-finetuned-libero-spatial
-  sha256: null  # Formal readiness requires the frozen checkpoint digest.
+  # SHA-256 of the sorted per-file SHA-256 manifest. The manifest is retained
+  # with the integration outputs so the identity can be independently replayed.
+  sha256: 2f1d36893462b60a5efe76aed327d9cc713b561e96278bb02d73bf3c96c77974
 
 dependency_commits:
   baseline: 570d78333ee977c8ae6de3d97120b23272c4c660
