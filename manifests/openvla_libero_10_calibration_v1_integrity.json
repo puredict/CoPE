@@ -1,0 +1,17 @@
+{
+  "schema_version": "calibration-result-integrity-label-v1",
+  "result_paths": [
+    "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_v1",
+    "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_parallel_v1"
+  ],
+  "protocol_label": "nonstandard_truncated_calibration_horizon_220",
+  "policy_step_budget": 220,
+  "standard_libero_10_policy_step_budget": 520,
+  "file_count": 16,
+  "inventory_algorithm": "sha256(sorted '<file_sha256>  ./<relative_path>\\n' records)",
+  "inventory_sha256": "0a690dea5f611c06605897eb9b5647846b671a62e0f7a706313f062a8e38d48d",
+  "parallel_file_count": 90,
+  "parallel_inventory_sha256": "fa3ba7ccd9a13745d07afe3a3e1c9b6030abc0c1f913ccdfa9ac22cad70c933e",
+  "immutable": true,
+  "must_not_be_presented_as_standard_libero_10": true
+}

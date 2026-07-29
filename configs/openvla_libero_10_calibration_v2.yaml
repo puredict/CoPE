@@ -1,0 +1,194 @@
+schema_version: openvla-libero-calibration-v2
+study_id: openvla_libero_10_standard_protocol_clean_calibration_v2
+protocol_label: standard_libero10_clean_calibration_horizon_520
+evidence_scope: feasibility_screening_only_not_cope_evidence
+task_suite_name: libero_10
+task_suite: libero_10
+task_ids: [1, 5, 7]
+initial_state_ids: [0, 1, 2, 3, 4]
+
+runtime:
+  resolution: 256
+  center_crop: true
+  warmup_simulator_steps: 10
+  policy_step_budget: 520
+  total_environment_step_budget: 530
+  success_predicate: libero_done_or_sparse_reward_ge_1
+  gripper_transform: normalize_binarize_then_openvla_invert
+  model_consumes_proprio: false
+  adapter_state_dim: 8
+  shared_inference_server: false
+
+selection:
+  minimum_clean_success_rate: 0.60
+  episodes_per_task: 5
+  selective_reruns_forbidden: true
+  calibration_excluded_from_evaluation: true
+
+seed_scheme:
+  name: fixed_affine_calibration_v2_non_evaluation
+  base_seed: 20270724
+  task_stride: 100
+  state_stride: 1
+  forbidden_evaluation_seeds:
+    - 11
+    - 29
+    - 47
+    - 20260724
+    - 20260725
+    - 20260726
+    - 20260727
+    - 20260728
+    - 20260824
+    - 20260825
+    - 20260826
+    - 20260827
+    - 20260828
+    - 20260924
+    - 20260925
+    - 20260926
+    - 20260927
+    - 20260928
+    - 20261024
+    - 20261025
+    - 20261026
+    - 20261027
+    - 20261028
+
+checkpoint:
+  repository: openvla/openvla-7b-finetuned-libero-10
+  revision: 80970322773f81baa2e22fe495d0487b93a05cfa
+  path: /home/lijingsu/vla/models/openvla-7b-finetuned-libero-10
+  unnorm_key: libero_10
+  expected_action_dim: 7
+  expected_adapter_state_dim: 8
+  checkpoint_proprio_statistics_dim: 7
+  model_consumes_proprio: false
+  expected_weight_files: 4
+  files_manifest_sha256: 58773a8ef85515f695c99402f692dc5afe0fb71efd7f3984ff44c1f117c4f034
+  processor_loader: local_upstream_prismatic_processor_v1
+  tokenizer_files:
+    tokenizer.json: 8f5e2869e1807b8bb3c7717a294539c37e9de5d728ad60e31ef57e83cc5ea527
+    tokenizer_config.json: 0d9176185eb68a54a7be757961c1957b979920cc81339c4def0202dae5b602bc
+    tokenizer.model: 9e556afd44213b6bd1be2b850ebbbd98f5481437a8021afaf58ee7fb1818d347
+    preprocessor_config.json: 52ca6dd7fb31a2757658f94775b659553bc3532ab04babef02779387b3dec214
+  weight_shards:
+    model-00001-of-00004.safetensors:
+      bytes: 4925122448
+      sha256: 72f7196d8768c104073d7e9104ad8023cb27727191de1a490612886428b18c51
+    model-00002-of-00004.safetensors:
+      bytes: 4947392496
+      sha256: 92a60a88c7dad2ba1fccc4acbebef98fc7a894891bc49f2e21cfbf1600daf413
+    model-00003-of-00004.safetensors:
+      bytes: 4947417456
+      sha256: 12b45ae85535565148907e379d6f35bcba83b9497006ff3b66658fa412ffac85
+    model-00004-of-00004.safetensors:
+      bytes: 262668432
+      sha256: d3b8e759db56b86709c56f8d156952415dd64e101feccfd01e701487041dd8c1
+
+official_protocol:
+  repository: openvla/openvla
+  checked_out_commit: c8f03f48af692657d3060c19588038c7220e9af9
+  runner_path: /home/lijingsu/vla/src/openvla/experiments/robot/libero/run_libero_eval.py
+  runner_tracked_blob: 5c3f58178d7c827df829379354f7aefddc0458bc
+  runner_worktree_sha256: f4c1d741489980aa51a409d7a03ec4a08a4dc5710d32d559427b92e339c6a6f3
+  openvla_utils_sha256: 539687fa13e8fc69b79289cbb2be1b7e1076dcaae4dc0cbfb5e76c6739a38e61
+  robot_utils_sha256: d513c071fb8eaade42a5bc591a48022c11b63bfd58380d0cf319dcc3bdabb976
+  libero_utils_sha256: 6c162ce0954c8659018ee8ff1604a33904b50ac0631a8ca0f8bf1f7a4d25181d
+  attention_implementation: sdpa
+
+libero_runtime:
+  package_version: 0.1.0
+  source_path: /home/lijingsu/vla/src/LIBERO
+  source_commit: 570d78333ee977c8ae6de3d97120b23272c4c660
+  task_identity:
+    "1":
+      description: put both the cream cheese box and the butter in the basket
+      task_name: LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket
+      problem: Libero
+      problem_folder: libero_10
+      bddl_file: LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket.bddl
+      bddl_sha256: 3f552805c7ab34c44debcf38a48b8131d6fee3011dd86c039650b84e0f77d058
+      fixtures:
+        living_room_table: [living_room_table]
+      objects:
+        alphabet_soup: [alphabet_soup_1]
+        basket: [basket_1]
+        butter: [butter_1]
+        cream_cheese: [cream_cheese_1]
+        ketchup: [ketchup_1]
+        milk: [milk_1]
+        orange_juice: [orange_juice_1]
+        tomato_sauce: [tomato_sauce_1]
+      obj_of_interest: [cream_cheese_1, butter_1, basket_1]
+      goal_state:
+        - [in, cream_cheese_1, basket_1_contain_region]
+        - [in, butter_1, basket_1_contain_region]
+      init_states_file: LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket.pruned_init
+      init_states_file_sha256: f8ac06ea8f43bb328d40cba1e6a9767da2f8f5386fd7ff3f845c64a96bf6d2ce
+      state_sha256:
+        "0": 5abdf8f466f490901dee9f931b32eb181b2928eaa17bb6379742f988581d564a
+        "1": cd3e7f86ef217ee7b7d26cc505b3f56ea8f49664ef10f6749270dfcd39dd17a6
+        "2": ab6bf2ca98e96f1692d8ec7a5b7ec25eee1ea61c57d45c2816ac3dcc938ea3ee
+        "3": 3e0d23df2cf22ae6e897e15a1739d5bf25474b4e33196644890b8485f0e880f5
+        "4": d2cecde6c34039556fadf729cf7eb15d628b42094f6f0c092d9969c9cf659856
+    "5":
+      description: pick up the book and place it in the back compartment of the caddy
+      task_name: STUDY_SCENE1_pick_up_the_book_and_place_it_in_the_back_compartment_of_the_caddy
+      problem: Libero
+      problem_folder: libero_10
+      bddl_file: STUDY_SCENE1_pick_up_the_book_and_place_it_in_the_back_compartment_of_the_caddy.bddl
+      bddl_sha256: 07ca32c940d70c065e870452ef9c63e6dfa1d8506e6a86cf9b3763f652ba2d9f
+      fixtures:
+        desk_caddy: [desk_caddy_1]
+        study_table: [study_table]
+      objects:
+        black_book: [black_book_1]
+        white_yellow_mug: [white_yellow_mug_1]
+      obj_of_interest: [black_book_1, desk_caddy_1]
+      goal_state:
+        - [in, black_book_1, desk_caddy_1_back_contain_region]
+      init_states_file: STUDY_SCENE1_pick_up_the_book_and_place_it_in_the_back_compartment_of_the_caddy.pruned_init
+      init_states_file_sha256: 6cd3937ba18d64e72223222af36888d26ea201840415adbc4dae590454d0a5a8
+      state_sha256:
+        "0": 407c3d5eb11fd5b33bd2a6dea73a37415a99d7e72f0cc291074de29b1c63c37c
+        "1": fbf82707bd0a7721f0e118ac32aad30182e487e7a940bec7128ad6f18457e139
+        "2": 83ff554be370e25fb3b049d5c3db3f2cf4f20524a0eab8beeda093c6a81bad66
+        "3": 72e9938805b4da92baeb254ab7611081832edbb30e3f07c8136e1ea8a00fa235
+        "4": 825a43323d564777617871b44f4c0f871a263f5aac13b1d04f204cc4957134e8
+    "7":
+      description: put both the alphabet soup and the cream cheese box in the basket
+      task_name: LIVING_ROOM_SCENE1_put_both_the_alphabet_soup_and_the_cream_cheese_box_in_the_basket
+      problem: Libero
+      problem_folder: libero_10
+      bddl_file: LIVING_ROOM_SCENE1_put_both_the_alphabet_soup_and_the_cream_cheese_box_in_the_basket.bddl
+      bddl_sha256: e27ab37f512fe42e35771d6130f531e6a9656929e7b4c60b348b81360cf5675d
+      fixtures:
+        living_room_table: [living_room_table]
+      objects:
+        alphabet_soup: [alphabet_soup_1]
+        basket: [basket_1]
+        cream_cheese: [cream_cheese_1]
+        ketchup: [ketchup_1]
+        tomato_sauce: [tomato_sauce_1]
+      obj_of_interest: [alphabet_soup_1, cream_cheese_1, basket_1]
+      goal_state:
+        - [in, alphabet_soup_1, basket_1_contain_region]
+        - [in, cream_cheese_1, basket_1_contain_region]
+      init_states_file: LIVING_ROOM_SCENE1_put_both_the_alphabet_soup_and_the_cream_cheese_box_in_the_basket.pruned_init
+      init_states_file_sha256: 2113ea5923fcbbe1b57b428383934496072f062729d0b72d3021573d55d25abc
+      state_sha256:
+        "0": d02d4d5533fbcab414bfc49e4896182cd40e173dfa6316e39a2b418e902ae826
+        "1": 44f0d75550c414e622b03a43e56497e8c9bd0fe4a494c1d2b9c0c9625ed80120
+        "2": 9e8c129dc9a5047a34f8772063534c9948acdba167fee37ece92b48f33ea4b34
+        "3": 2f4104e7e2996340ed513d08c011e119ca975165933374a1d1d67e78bea6abee
+        "4": 8a0c2af93cde820ada3c3849d6b732233a61c05a82d655ef26fda87a7d85e708
+
+v1_protection:
+  path: /home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_v1
+  protocol_label: nonstandard_truncated_calibration_horizon_220
+  file_count: 16
+  inventory_sha256: 0a690dea5f611c06605897eb9b5647846b671a62e0f7a706313f062a8e38d48d
+  parallel_path: /home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_parallel_v1
+  parallel_file_count: 90
+  parallel_inventory_sha256: fa3ba7ccd9a13745d07afe3a3e1c9b6030abc0c1f913ccdfa9ac22cad70c933e
