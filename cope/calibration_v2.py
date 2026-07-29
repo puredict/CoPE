@@ -26,6 +26,18 @@ STATE_IDS = (0, 1, 2, 3, 4)
 WORKER_COUNT = 8
 
 
+def load_v2_config(path: str | Path) -> dict[str, Any]:
+    try:
+        import yaml
+    except ImportError as exc:
+        raise RuntimeError("PyYAML is required for calibration v2") from exc
+    value = yaml.safe_load(Path(path).read_text(encoding="utf-8"))
+    if not isinstance(value, dict):
+        raise ValueError("calibration v2 config root must be a mapping")
+    validate_config_contract(value)
+    return value
+
+
 def sha256_file(path: str | Path) -> str:
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 

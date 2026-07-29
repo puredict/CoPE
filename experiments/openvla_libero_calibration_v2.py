@@ -31,6 +31,7 @@ from cope.calibration_v2 import (  # noqa: E402
     build_v2_entries,
     ensure_output_separation,
     infrastructure_attempts,
+    load_v2_config,
     load_v2_resume_trace,
     read_jsonl,
     sha256_file,
@@ -48,7 +49,6 @@ from experiments.openvla_libero_calibration import (  # noqa: E402
     _cuda_memory,
     _exclusive_json,
     _git_identity,
-    _load_yaml,
     _model_cfg,
     _observation_summary,
 )
@@ -79,8 +79,7 @@ def _load_run_context(root: Path) -> tuple[dict[str, Any], dict[str, Any], tuple
     run_manifest = json.loads(
         (root / "run_manifest_v2.json").read_text(encoding="utf-8")
     )
-    config = _load_yaml(Path(str(run_manifest["config_path"])))
-    validate_config_contract(config)
+    config = load_v2_config(Path(str(run_manifest["config_path"])))
     config_hash = canonical_hash(config)
     if config_hash != run_manifest["config_hash"]:
         raise ValueError("calibration v2 config hash mismatch")
@@ -119,8 +118,7 @@ def prepare(
     output_root: Path,
     resume: bool,
 ) -> dict[str, Any]:
-    config = _load_yaml(config_path)
-    validate_config_contract(config)
+    config = load_v2_config(config_path)
     config_hash = canonical_hash(config)
     entries = validate_static_manifest(config, static_manifest_path)
     protected_root, output_root = ensure_output_separation(

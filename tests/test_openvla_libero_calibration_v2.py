@@ -16,12 +16,12 @@ from cope.calibration_v2 import (
     directory_inventory,
     ensure_output_separation,
     infrastructure_attempts,
+    load_v2_config,
     load_v2_resume_trace,
     read_jsonl,
     validate_config_contract,
     validate_static_manifest,
 )
-from experiments.openvla_libero_calibration import _load_yaml
 from experiments.openvla_libero_calibration_v2 import worker
 
 
@@ -31,7 +31,7 @@ MANIFEST_PATH = ROOT / "manifests/openvla_libero_10_calibration_v2.jsonl"
 
 
 def _config() -> dict:
-    return _load_yaml(CONFIG_PATH)
+    return load_v2_config(CONFIG_PATH)
 
 
 def _terminal(entry: dict, config_hash: str) -> dict:
