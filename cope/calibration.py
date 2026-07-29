@@ -4,6 +4,7 @@ import hashlib
 import json
 import math
 import os
+import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable, Mapping, Sequence
@@ -233,9 +234,33 @@ def atomic_episode_claim(
     }
     path.parent.mkdir(parents=True, exist_ok=True)
     payload = json.dumps(expected, sort_keys=True, separators=(",", ":")) + "\n"
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{path.name}.", suffix=".claim", dir=path.parent
+    )
     try:
-        descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o644)
-    except FileExistsError:
+        os.fchmod(descriptor, 0o644)
+        os.write(descriptor, payload.encode("utf-8"))
+        os.fsync(descriptor)
+        os.close(descriptor)
+        descriptor = -1
+        try:
+            os.link(temporary_name, path)
+        except FileExistsError:
+            pass
+        else:
+            return {
+                **expected,
+                "claim_reused_for_resume": False,
+                "path": str(path),
+            }
+    finally:
+        if descriptor >= 0:
+            os.close(descriptor)
+        try:
+            os.unlink(temporary_name)
+        except FileNotFoundError:
+            pass
+    if path.exists():
         existing = json.loads(path.read_text(encoding="utf-8"))
         identity_fields = (
             "schema_version",
@@ -249,12 +274,7 @@ def atomic_episode_claim(
         if not resume:
             raise FileExistsError(f"episode is already claimed: {episode_id}")
         return {**existing, "claim_reused_for_resume": True, "path": str(path)}
-    try:
-        os.write(descriptor, payload.encode("utf-8"))
-        os.fsync(descriptor)
-    finally:
-        os.close(descriptor)
-    return {**expected, "claim_reused_for_resume": False, "path": str(path)}
+    raise RuntimeError(f"atomic claim publication failed without a winner: {path}")
 
 
 def audit_terminal_records(
