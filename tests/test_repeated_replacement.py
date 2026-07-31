@@ -3,8 +3,10 @@ from __future__ import annotations
 import pytest
 
 from cope.repeated_replacement import (
+    apply_oracle_replacement_event,
     apply_oracle_replacement_chain,
     build_chained_replacement_event,
+    initialize_oracle_replacement_state,
 )
 from cope.semantic_replacement import FullStateValidationError, goal_commitment_id
 
@@ -95,3 +97,41 @@ def test_completed_progress_must_be_physically_true():
             physically_true_objects=(),
             pair_key="pair",
         )
+
+
+def test_incremental_events_preserve_the_same_state_history():
+    first, second = events()
+    state, _ = initialize_oracle_replacement_state(
+        done_object="cream_cheese_1",
+        initial_pending_object="butter_1",
+        physically_true_objects=("cream_cheese_1",),
+        pair_key="pair",
+    )
+    state, first_receipt = apply_oracle_replacement_event(
+        state,
+        first,
+        expected_source_object="butter_1",
+        used_objects=("cream_cheese_1", "butter_1"),
+        physically_true_objects=("cream_cheese_1",),
+        pair_key="pair",
+        chain_index=1,
+    )
+    state, second_receipt = apply_oracle_replacement_event(
+        state,
+        second,
+        expected_source_object="alphabet_soup_1",
+        used_objects=(
+            "cream_cheese_1",
+            "butter_1",
+            "alphabet_soup_1",
+        ),
+        physically_true_objects=("cream_cheese_1",),
+        pair_key="pair",
+        chain_index=2,
+    )
+    assert state.revision == 3
+    assert len(state.patch_history) == 3
+    assert (
+        first_receipt["transition"]["after_hash"]
+        == second_receipt["transition"]["before_hash"]
+    )

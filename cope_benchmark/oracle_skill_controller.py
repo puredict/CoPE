@@ -58,6 +58,30 @@ class OracleSkillResult:
         return asdict(self)
 
 
+@dataclass
+class HeldObjectCheckpoint:
+    object_name: str
+    object_start_position: tuple[float, float, float]
+    captured_eef_position: tuple[float, float, float]
+    success: bool
+    failure_reason: str | None
+    grasp_acquired: bool
+    object_lift_m: float
+    total_steps: int
+    phases: list[PhaseRecord] = field(default_factory=list)
+
+
+@dataclass
+class ReturnHeldResult:
+    object_name: str
+    success: bool
+    failure_reason: str | None
+    released: bool
+    return_position_error_m: float
+    total_steps: int
+    phases: list[PhaseRecord] = field(default_factory=list)
+
+
 class LiberoOracleSkillController:
     """Closed-loop Cartesian pick-place controller with explicit goal symbols."""
 
@@ -153,6 +177,193 @@ class LiberoOracleSkillController:
 
     def warmup(self) -> PhaseRecord:
         return self.hold("warmup", self.config.warmup_steps, gripper=-1.0)
+
+    def pick_object(self, object_name: str) -> HeldObjectCheckpoint:
+        """Pick and lift an object, returning a resumable physical checkpoint."""
+
+        cfg = self.config
+        phases: list[PhaseRecord] = []
+        start_steps = self.total_steps
+        object_start = self.position(object_name)
+        phases.append(
+            self.move_to(
+                "approach_object",
+                object_start + np.array([0.0, 0.0, cfg.approach_height_m]),
+                gripper=-1.0,
+            )
+        )
+        phases.append(
+            self.move_to(
+                "descend_to_grasp",
+                object_start + np.array([0.0, 0.0, cfg.grasp_offset_m]),
+                gripper=-1.0,
+            )
+        )
+        phases.append(self.hold("close_gripper", cfg.close_steps, gripper=1.0))
+        grasp = self.is_grasping(object_name)
+        if grasp:
+            lift_target = np.asarray(
+                self.observation["robot0_eef_pos"], dtype=float
+            ).copy()
+            lift_target[2] += cfg.lift_height_m
+            phases.append(self.move_to("lift_object", lift_target, gripper=1.0))
+        lift = float(self.position(object_name)[2] - object_start[2])
+        retained = grasp and self.is_grasping(object_name) and lift >= cfg.minimum_lift_m
+        eef = tuple(
+            float(value) for value in self.observation["robot0_eef_pos"]
+        )
+        reason = None
+        if not grasp:
+            reason = "grasp_not_acquired"
+        elif not retained:
+            reason = "object_not_retained_during_lift"
+        return HeldObjectCheckpoint(
+            object_name=object_name,
+            object_start_position=tuple(float(value) for value in object_start),
+            captured_eef_position=eef,
+            success=bool(retained),
+            failure_reason=reason,
+            grasp_acquired=bool(grasp),
+            object_lift_m=lift,
+            total_steps=self.total_steps - start_steps,
+            phases=phases,
+        )
+
+    def place_held(
+        self,
+        checkpoint: HeldObjectCheckpoint,
+        target_region_name: str,
+    ) -> OracleSkillResult:
+        """Continue a valid held-object checkpoint into a target region."""
+
+        cfg = self.config
+        phases: list[PhaseRecord] = []
+        start_steps = self.total_steps
+        object_name = checkpoint.object_name
+        if not checkpoint.success or not self.is_grasping(object_name):
+            return OracleSkillResult(
+                object_name=object_name,
+                target_region_name=target_region_name,
+                success=False,
+                failure_reason="invalid_or_stale_held_checkpoint",
+                grasp_acquired=checkpoint.grasp_acquired,
+                object_lift_m=checkpoint.object_lift_m,
+                target_predicate=False,
+                total_steps=0,
+                phases=phases,
+            )
+        region = self.position(target_region_name)
+        transfer_z = max(
+            cfg.transfer_height_m,
+            float(self.observation["robot0_eef_pos"][2]),
+            float(region[2] + cfg.release_offset_m + cfg.retreat_height_m),
+        )
+        phases.append(
+            self.move_to(
+                "transfer_above_target",
+                [region[0], region[1], transfer_z],
+                gripper=1.0,
+            )
+        )
+        phases.append(
+            self.move_to(
+                "descend_to_release",
+                [region[0], region[1], region[2] + cfg.release_offset_m],
+                gripper=1.0,
+            )
+        )
+        if self.in_region(object_name, target_region_name):
+            return OracleSkillResult(
+                object_name=object_name,
+                target_region_name=target_region_name,
+                success=True,
+                failure_reason=None,
+                grasp_acquired=True,
+                object_lift_m=checkpoint.object_lift_m,
+                target_predicate=True,
+                total_steps=self.total_steps - start_steps,
+                phases=phases,
+            )
+        phases.append(self.hold("open_gripper", cfg.open_steps, gripper=-1.0))
+        retreat = np.asarray(
+            self.observation["robot0_eef_pos"], dtype=float
+        ).copy()
+        retreat[2] += cfg.retreat_height_m
+        phases.append(self.move_to("retreat", retreat, gripper=-1.0))
+        phases.append(self.hold("settle", cfg.settle_steps, gripper=-1.0))
+        target_predicate = self.in_region(object_name, target_region_name)
+        return OracleSkillResult(
+            object_name=object_name,
+            target_region_name=target_region_name,
+            success=target_predicate,
+            failure_reason=None if target_predicate else "target_predicate_false",
+            grasp_acquired=True,
+            object_lift_m=checkpoint.object_lift_m,
+            target_predicate=target_predicate,
+            total_steps=self.total_steps - start_steps,
+            phases=phases,
+        )
+
+    def return_held_to_start(
+        self,
+        checkpoint: HeldObjectCheckpoint,
+    ) -> ReturnHeldResult:
+        """Safely restore a no-longer-required held object near its start pose."""
+
+        cfg = self.config
+        phases: list[PhaseRecord] = []
+        start_steps = self.total_steps
+        object_name = checkpoint.object_name
+        object_start = np.asarray(checkpoint.object_start_position, dtype=float)
+        if not checkpoint.success or not self.is_grasping(object_name):
+            return ReturnHeldResult(
+                object_name=object_name,
+                success=False,
+                failure_reason="invalid_or_stale_held_checkpoint",
+                released=False,
+                return_position_error_m=float("inf"),
+                total_steps=0,
+                phases=phases,
+            )
+        safe_z = max(
+            cfg.transfer_height_m,
+            float(self.observation["robot0_eef_pos"][2]),
+            float(object_start[2] + cfg.approach_height_m),
+        )
+        phases.append(
+            self.move_to(
+                "return_above_start",
+                [object_start[0], object_start[1], safe_z],
+                gripper=1.0,
+            )
+        )
+        phases.append(
+            self.move_to(
+                "return_descend",
+                object_start + np.array([0.0, 0.0, cfg.grasp_offset_m]),
+                gripper=1.0,
+            )
+        )
+        phases.append(self.hold("return_release", cfg.open_steps, gripper=-1.0))
+        retreat = np.asarray(
+            self.observation["robot0_eef_pos"], dtype=float
+        ).copy()
+        retreat[2] += cfg.retreat_height_m
+        phases.append(self.move_to("return_retreat", retreat, gripper=-1.0))
+        phases.append(self.hold("return_settle", cfg.settle_steps, gripper=-1.0))
+        final_position = self.position(object_name)
+        position_error = float(np.linalg.norm(final_position - object_start))
+        released = not self.is_grasping(object_name)
+        success = released and position_error <= 0.06
+        return ReturnHeldResult(
+            object_name=object_name,
+            success=success,
+            failure_reason=None if success else "safe_return_verification_failed",
+            released=released,
+            return_position_error_m=position_error,
+            total_steps=self.total_steps - start_steps,
+            phases=phases,
+        )
 
     def pick_and_place(
         self,

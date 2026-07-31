@@ -72,3 +72,29 @@ def test_unknown_state_reports_available_symbols():
         assert "can" in str(exc)
     else:
         raise AssertionError("missing state should raise KeyError")
+
+
+def test_pick_checkpoint_can_be_safely_returned_to_start():
+    env = FakeEnv()
+    controller = LiberoOracleSkillController(
+        env, {"robot0_eef_pos": env.eef.copy()}
+    )
+    checkpoint = controller.pick_object("can")
+    assert checkpoint.success
+    assert checkpoint.grasp_acquired
+    assert checkpoint.object_lift_m >= controller.config.minimum_lift_m
+    returned = controller.return_held_to_start(checkpoint)
+    assert returned.success
+    assert returned.released
+    assert returned.return_position_error_m <= 0.06
+
+
+def test_pick_checkpoint_can_resume_into_place():
+    env = FakeEnv()
+    controller = LiberoOracleSkillController(
+        env, {"robot0_eef_pos": env.eef.copy()}
+    )
+    checkpoint = controller.pick_object("can")
+    placed = controller.place_held(checkpoint, "basket_region")
+    assert placed.success
+    assert placed.target_predicate

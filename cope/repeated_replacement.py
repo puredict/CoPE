@@ -119,6 +119,148 @@ def _validate_event(
     return source_object, replacement_object
 
 
+def initialize_oracle_replacement_state(
+    *,
+    done_object: str,
+    initial_pending_object: str,
+    physically_true_objects: Sequence[str],
+    pair_key: str,
+) -> tuple[ConstraintState, dict[str, Any]]:
+    """Create the persistent two-commitment state before incremental events."""
+
+    physically_true = set(physically_true_objects)
+    if done_object not in physically_true:
+        raise FullStateValidationError("completed progress is not physically true")
+    if initial_pending_object in physically_true:
+        raise FullStateValidationError("pending object is already physically complete")
+    genesis_event = f"semantic-replace-chain-v1:{pair_key}:genesis"
+    state = ConstraintState.empty(f"replacement-chain:{pair_key}")
+    genesis = Patch(
+        patch_id=f"{genesis_event}:patch",
+        event_id=genesis_event,
+        reason="initialize persistent atomic task commitments",
+        operations=(
+            Insert(
+                "genesis-insert-done",
+                _goal_slot(done_object, event_id=genesis_event),
+            ),
+            Insert(
+                "genesis-insert-pending",
+                _goal_slot(initial_pending_object, event_id=genesis_event),
+            ),
+        ),
+        generator="oracle-repeated-replacement-canary",
+        input_state_hash=state.state_hash,
+        created_at=0,
+    )
+    initialized = apply_patch(
+        state,
+        genesis,
+        PatchContext.trusted("replacement-chain-genesis"),
+    )
+    if not initialized.accepted:
+        raise FullStateValidationError(
+            f"replacement-chain genesis rejected: {initialized.rejection_reason}"
+        )
+    return initialized.state, serialize_state(initialized.state)
+
+
+def apply_oracle_replacement_event(
+    state: ConstraintState,
+    event: Mapping[str, Any],
+    *,
+    expected_source_object: str,
+    used_objects: Sequence[str],
+    physically_true_objects: Sequence[str],
+    pair_key: str,
+    chain_index: int,
+) -> tuple[ConstraintState, dict[str, Any]]:
+    """Apply one event to an existing state without rebuilding its history."""
+
+    source_object, replacement_object = _validate_event(
+        event,
+        state=state,
+        expected_source_object=expected_source_object,
+        used_objects=set(used_objects),
+    )
+    source_id = goal_commitment_id(source_object)
+    replacement_id = goal_commitment_id(replacement_object)
+    source_slot = state.get_slot(source_id)
+    replacement_slot = _goal_slot(
+        replacement_object,
+        event_id=str(event["event_id"]),
+        parent_slot_id=source_id,
+        overrides_slot_ids=(source_id,),
+        lineage=source_slot.lineage + (replacement_id,),
+    )
+    before = serialize_state(state)
+    patch = Patch(
+        patch_id=f"{event['event_id']}:oracle-cope-patch",
+        event_id=str(event["event_id"]),
+        reason="authorized replacement of active chain-tip commitment",
+        operations=(
+            Override(
+                f"override-chain-tip-{chain_index}",
+                source_id,
+                replacement_slot,
+                "task owner replaced the active pending goal",
+            ),
+        ),
+        generator="oracle-repeated-replacement-canary",
+        input_state_hash=state.state_hash,
+        created_at=chain_index,
+        metadata={
+            "oracle_operation_selection": True,
+            "provider_called": False,
+            "chain_index": chain_index,
+        },
+    )
+    context = PatchContext(
+        actor="task_owner",
+        authority_priority=100,
+        authorized_sources=("task",),
+        event_source="oracle",
+        information_budget=0,
+        policy_step_budget=0,
+        high_level_call_count=chain_index,
+        pair_key={"pair_key": pair_key, "chain_index": chain_index},
+        task_progress={
+            "physically_true_objects": sorted(set(physically_true_objects))
+        },
+        manual_intervention=False,
+        metadata={"oracle_repeated_patch_canary": True},
+    )
+    transitioned = apply_patch(state, patch, context)
+    if not transitioned.accepted:
+        raise FullStateValidationError(
+            f"replacement chain step {chain_index} rejected: "
+            f"{transitioned.rejection_code}: {transitioned.rejection_reason}"
+        )
+    next_state = transitioned.state
+    receipt = {
+        "chain_index": chain_index,
+        "event": dict(event),
+        "state_before": before,
+        "state_after": serialize_state(next_state),
+        "patch": {
+            "patch_id": patch.patch_id,
+            "operation": "Override",
+            "target_id": source_id,
+            "replacement_id": replacement_id,
+        },
+        "transition": {
+            "accepted": True,
+            "revision_before": state.revision,
+            "revision_after": next_state.revision,
+            "before_hash": transitioned.before_hash,
+            "after_hash": transitioned.after_hash,
+            "applied_operation_ids": list(transitioned.applied_operation_ids),
+            "audit_record": thaw_json(transitioned.audit_record),
+        },
+    }
+    return next_state, receipt
+
+
 def apply_oracle_replacement_chain(
     events: Sequence[Mapping[str, Any]],
     *,
