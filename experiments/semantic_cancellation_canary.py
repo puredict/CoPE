@@ -56,7 +56,7 @@ from libero_experiment_core import (  # noqa: E402
 
 DEFAULT_CONFIG = ROOT / "configs/openvla_libero_10_calibration_v2.yaml"
 DEFAULT_MANIFEST = ROOT / "manifests/openvla_libero_10_calibration_v2.jsonl"
-MODES = ("no_edit", "cope_cancel")
+MODES = ("no_edit", "oracle_cancel_halt")
 
 
 def parse_args() -> argparse.Namespace:
@@ -227,11 +227,11 @@ def run_episode(
                                 "event": event,
                                 "accepted_full_state": full_state,
                                 "execution_directive": directive,
-                                "directive_applied": mode == "cope_cancel",
+                                "directive_applied": mode == "oracle_cancel_halt",
                                 "predicates": final_predicates,
                             },
                         )
-                        if mode == "cope_cancel":
+                        if mode == "oracle_cancel_halt":
                             termination = "halted_after_authorized_cancellation"
                             break
                 else:
@@ -253,7 +253,7 @@ def run_episode(
                     else "trace_exhausted_without_cancelled_goal_violation"
                 )
 
-            if mode == "cope_cancel" and event is not None:
+            if mode == "oracle_cancel_halt" and event is not None:
                 for verification_step in range(verification_hold_steps):
                     obs, reward, done, _ = env.step(get_dummy_action("openvla"))
                     verification_steps += 1
@@ -283,7 +283,7 @@ def run_episode(
         and cancellation_compliance(event, final_predicates)
         and not cancelled_goal_violated
         and (
-            mode != "cope_cancel"
+            mode != "oracle_cancel_halt"
             or (
                 termination == "halted_after_authorized_cancellation"
                 and verification_steps == verification_hold_steps
