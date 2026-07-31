@@ -57,6 +57,13 @@ from libero_experiment_core import (  # noqa: E402
 DEFAULT_CONFIG = ROOT / "configs/openvla_libero_10_calibration_v2.yaml"
 DEFAULT_MANIFEST = ROOT / "manifests/openvla_libero_10_calibration_v2.jsonl"
 MODES = ("no_edit", "oracle_full")
+PROMPT_VARIANTS = (
+    "shared_compiler",
+    "single_object",
+    "progress_explicit",
+    "pick_place",
+    "task0_exact_diagnostic",
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -66,6 +73,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-root", type=Path, required=True)
     parser.add_argument("--state-id", type=int, required=True)
     parser.add_argument("--modes", default=",".join(MODES))
+    parser.add_argument("--prompt-variant", choices=PROMPT_VARIANTS, default="shared_compiler")
+    parser.add_argument("--prefix-trace", type=Path)
     parser.add_argument("--stable-steps", type=int, default=5)
     parser.add_argument("--event-deadline", type=int, default=300)
     parser.add_argument("--policy-budget", type=int, default=520)
@@ -107,6 +116,42 @@ def _find_entry(
     return matched[0]
 
 
+def _load_prefix_records(path: Path | None) -> tuple[dict[str, Any], ...]:
+    if path is None:
+        return ()
+    rows = [
+        json.loads(line)
+        for line in path.read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
+    policy = [dict(row) for row in rows if row.get("record_type") == "policy_step"]
+    steps = [int(row.get("policy_step", -1)) for row in policy]
+    if steps != list(range(len(policy))):
+        raise ValueError("prefix trace policy steps are not contiguous from zero")
+    if not all(isinstance(row.get("environment_action"), list) for row in policy):
+        raise ValueError("prefix trace is missing environment actions")
+    return tuple(policy)
+
+
+def _prompt_for_variant(variant: str, full_state: Mapping[str, Any]) -> str:
+    if variant == "shared_compiler":
+        return compile_controller_prompt(full_state)
+    if variant == "single_object":
+        return "put the alphabet soup in the basket"
+    if variant == "progress_explicit":
+        return (
+            "the cream cheese box is already in the basket; "
+            "now put the alphabet soup in the basket"
+        )
+    if variant == "pick_place":
+        return "pick up the alphabet soup and place it in the basket"
+    if variant == "task0_exact_diagnostic":
+        # This exact task-0 instruction is diagnostic only: it includes an
+        # extra tomato-sauce goal and cannot be a fair main method.
+        return "put both the alphabet soup and the tomato sauce in the basket"
+    raise ValueError(f"unknown prompt variant {variant!r}")
+
+
 def run_episode(
     *,
     mode: str,
@@ -121,6 +166,8 @@ def run_episode(
     event_deadline: int,
     policy_budget: int,
     git: Mapping[str, Any],
+    prompt_variant: str,
+    prefix_records: tuple[dict[str, Any], ...],
 ) -> dict[str, Any]:
     if mode not in MODES:
         raise ValueError(f"unknown mode {mode!r}")
@@ -151,6 +198,7 @@ def run_episode(
     final_reward = 0.0
     final_done = False
     policy_steps = 0
+    prefix_policy_steps_replayed = 0
     custom_success = False
     termination = "policy_step_budget_exhausted"
     action_schema_valid = True
@@ -184,27 +232,57 @@ def run_episode(
                     "policy_budget": policy_budget,
                     "stable_steps": stable_steps,
                     "event_deadline": event_deadline,
+                    "prompt_variant": prompt_variant,
+                    "prefix_trace_steps_available": len(prefix_records),
                     "action_spec_source": action_spec_source,
                 },
             )
             for policy_step in range(policy_budget):
-                step = execute_policy_step(
-                    cfg=runtime_model_cfg,
-                    model=model,
-                    processor=processor,
-                    env=env,
-                    obs=obs,
-                    prompt=current_prompt,
-                    resize_size=resize_size,
+                prefix = (
+                    prefix_records[policy_step]
+                    if event is None and policy_step < len(prefix_records)
+                    else None
                 )
+                if prefix is not None:
+                    replay_started = time.monotonic()
+                    obs, reward, done, _ = env.step(prefix["environment_action"])
+                    environment_step_seconds = time.monotonic() - replay_started
+                    raw_action = prefix.get("raw_action", [])
+                    environment_action = prefix["environment_action"]
+                    prefix_policy_steps_replayed += 1
+                    inference_seconds = 0.0
+                    prefix_replayed = True
+                    expected_reward = float(prefix.get("reward", reward))
+                    expected_done = bool(prefix.get("done", done))
+                    if float(reward) != expected_reward or bool(done) != expected_done:
+                        raise RuntimeError(
+                            "prefix replay diverged from the frozen calibration trace"
+                        )
+                else:
+                    step = execute_policy_step(
+                        cfg=runtime_model_cfg,
+                        model=model,
+                        processor=processor,
+                        env=env,
+                        obs=obs,
+                        prompt=current_prompt,
+                        resize_size=resize_size,
+                    )
+                    obs = step.next_obs
+                    reward = step.reward
+                    done = step.done
+                    raw_action = step.raw_action
+                    environment_action = step.env_action
+                    inference_seconds = step.inference_seconds
+                    environment_step_seconds = step.env_step_seconds
+                    prefix_replayed = False
                 policy_steps = policy_step + 1
-                obs = step.next_obs
-                final_reward = float(step.reward)
-                final_done = bool(step.done)
+                final_reward = float(reward)
+                final_done = bool(done)
                 final_predicates = _predicates(view)
                 validation = validate_openvla_action(
-                    step.raw_action,
-                    step.env_action,
+                    raw_action,
+                    environment_action,
                     expected_dim=int(config["checkpoint"]["expected_action_dim"]),
                     action_low=action_low,
                     action_high=action_high,
@@ -217,13 +295,14 @@ def run_episode(
                         "policy_step": policy_step,
                         "mode": mode,
                         "prompt": current_prompt,
-                        "raw_action": step.raw_action,
-                        "environment_action": step.env_action,
+                        "raw_action": raw_action,
+                        "environment_action": environment_action,
                         "reward": final_reward,
                         "done": final_done,
                         "predicates": final_predicates,
-                        "inference_seconds": step.inference_seconds,
-                        "environment_step_seconds": step.env_step_seconds,
+                        "inference_seconds": inference_seconds,
+                        "environment_step_seconds": environment_step_seconds,
+                        "prefix_replayed": prefix_replayed,
                         "action_schema_valid": validation["passed"],
                     },
                 )
@@ -250,7 +329,7 @@ def run_episode(
                                 name for name in ORIGINAL_OBJECTS if final_predicates[name]
                             ),
                         )
-                        compiled_prompt = compile_controller_prompt(full_state)
+                        compiled_prompt = _prompt_for_variant(prompt_variant, full_state)
                         if mode == "oracle_full":
                             current_prompt = compiled_prompt
                         _write_trace(
@@ -262,6 +341,7 @@ def run_episode(
                                 "event": event,
                                 "accepted_full_state": full_state,
                                 "compiled_prompt": compiled_prompt,
+                                "prompt_variant": prompt_variant,
                                 "prompt_applied": mode == "oracle_full",
                                 "predicates": final_predicates,
                             },
@@ -321,6 +401,8 @@ def run_episode(
         "policy_step_budget": policy_budget,
         "policy_steps_consumed": policy_steps,
         "warmup_steps_consumed": 10,
+        "prompt_variant": prompt_variant,
+        "prefix_policy_steps_replayed": prefix_policy_steps_replayed,
         "action_schema_valid": action_schema_valid,
         "manual_intervention": False,
         "reset_after_start": False,
@@ -357,6 +439,7 @@ def main() -> None:
         "initial_state_sha256"
     ]:
         raise ValueError("runtime task identity does not match the frozen entry")
+    prefix_records = _load_prefix_records(args.prefix_trace)
     args.output_root.mkdir(parents=True, exist_ok=True)
     worker_root = args.output_root / f"state{args.state_id:02d}"
     worker_root.mkdir(exist_ok=False)
@@ -385,6 +468,8 @@ def main() -> None:
                     event_deadline=args.event_deadline,
                     policy_budget=args.policy_budget,
                     git=git,
+                    prompt_variant=args.prompt_variant,
+                    prefix_records=prefix_records,
                 )
             )
         summary = {
@@ -395,6 +480,7 @@ def main() -> None:
             "results": [
                 {
                     "mode": item["mode"],
+                    "prompt_variant": item["prompt_variant"],
                     "event_reached": item["event_reached"],
                     "event_step": (item["event"] or {}).get("world_version"),
                     "current_goal_success": item["current_goal_success"],
