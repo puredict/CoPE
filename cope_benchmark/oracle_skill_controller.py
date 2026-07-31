@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import hashlib
 from dataclasses import asdict, dataclass, field
-from typing import Any, Sequence
+from typing import Any, Callable, Sequence
 
 import numpy as np
 
@@ -91,11 +91,13 @@ class LiberoOracleSkillController:
         env: Any,
         observation: dict[str, Any],
         config: OracleSkillConfig | None = None,
+        step_observer: Callable[[np.ndarray, int], None] | None = None,
     ) -> None:
         self.env = env
         self.base_env = getattr(env, "env", env)
         self.observation = observation
         self.config = config or OracleSkillConfig()
+        self.step_observer = step_observer
         self.total_steps = 0
         # Retain the exact low-level commands issued through env.step so
         # paired experimental arms can prove they share a prefix.  This is
@@ -116,6 +118,8 @@ class LiberoOracleSkillController:
         )
         self.observation, reward, done, _ = self.env.step(canonical_action)
         self.total_steps += 1
+        if self.step_observer is not None:
+            self.step_observer(canonical_action.copy(), self.total_steps)
         return float(reward), bool(done)
 
     def action_prefix_sha256(self, step_count: int | None = None) -> str:
@@ -151,9 +155,12 @@ class LiberoOracleSkillController:
         target_position: Sequence[float],
         gripper: float,
         max_steps: int | None = None,
+        translation_action_limit: float = 1.0,
     ) -> PhaseRecord:
         cfg = self.config
         target = np.asarray(target_position, dtype=float)
+        if not 0.0 < translation_action_limit <= 1.0:
+            raise ValueError("translation_action_limit must be in (0, 1]")
         stable = 0
         reward = 0.0
         done = False
@@ -170,7 +177,11 @@ class LiberoOracleSkillController:
             if stable >= cfg.stable_steps:
                 break
             action = np.zeros(7, dtype=float)
-            action[:3] = np.clip(delta / cfg.translation_scale_m, -1.0, 1.0)
+            action[:3] = np.clip(
+                delta / cfg.translation_scale_m,
+                -translation_action_limit,
+                translation_action_limit,
+            )
             action[6] = float(gripper)
             reward, done = self._step(action)
             executed += 1

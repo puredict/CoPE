@@ -13,7 +13,7 @@ import csv
 import hashlib
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, Sequence
 
 import numpy as np
 
@@ -23,6 +23,7 @@ from cope.repeated_replacement import (
     initialize_oracle_replacement_state,
 )
 from cope.semantic_replacement import RECEPTACLE
+from cope_benchmark.oracle_safety_telemetry import OracleSafetyTelemetry
 from cope_benchmark.oracle_skill_controller import LiberoOracleSkillController
 from libero_experiment_core import (
     ExperimentConfig,
@@ -46,6 +47,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--timing", choices=TIMINGS, required=True)
     parser.add_argument("--mode", choices=MODES, required=True)
     parser.add_argument("--resolution", type=int, default=64)
+    parser.add_argument("--safety-telemetry", action="store_true")
+    parser.add_argument("--stage-descent-action-limit", type=float, default=1.0)
+    parser.add_argument("--stage-offset-x-m", type=float, default=0.0)
+    parser.add_argument("--stage-offset-y-m", type=float, default=0.0)
     parser.add_argument("--output-csv", type=Path, required=True)
     return parser.parse_args()
 
@@ -111,6 +116,8 @@ def stage_held_near_region(
     controller: LiberoOracleSkillController,
     checkpoint: Any,
     region_name: str,
+    descent_action_limit: float = 1.0,
+    xy_offset_m: Sequence[float] = (0.0, 0.0),
 ) -> dict[str, Any]:
     """Release an obsolete held object at a short, verified table staging pose."""
 
@@ -152,6 +159,7 @@ def stage_held_near_region(
     # basket edge exposed by the more aggressive 20 cm pilot.
     offset = 0.75 * distance
     stage_xy = region[:2] + direction / distance * offset
+    stage_xy += np.asarray(xy_offset_m, dtype=float)
     target = np.array([stage_xy[0], stage_xy[1], origin[2]], dtype=float)
     safe_z = max(
         controller.config.transfer_height_m,
@@ -167,6 +175,7 @@ def stage_held_near_region(
         "stage_descend",
         target + np.array([0.0, 0.0, controller.config.grasp_offset_m]),
         gripper=1.0,
+        translation_action_limit=descent_action_limit,
     )
     controller.hold(
         "stage_release", controller.config.open_steps, gripper=-1.0
@@ -214,7 +223,12 @@ def main() -> int:
     try:
         env.reset()
         observation = env.set_init_state(states[args.state_id])
-        controller = LiberoOracleSkillController(env, observation)
+        telemetry = OracleSafetyTelemetry(env) if args.safety_telemetry else None
+        controller = LiberoOracleSkillController(
+            env,
+            observation,
+            step_observer=telemetry.record if telemetry else None,
+        )
         warmup = controller.warmup()
         completed = controller.pick_and_place(DONE_OBJECT, RECEPTACLE)
 
@@ -276,6 +290,19 @@ def main() -> int:
             separators=(",", ":"),
         )
         held_position_at_event = position_json(controller, HELD_REPLACEMENT)
+        if telemetry:
+            telemetry.begin(
+                event_step=event_step,
+                object_positions={
+                    name: controller.position(name)
+                    for name in (
+                        DONE_OBJECT,
+                        ORIGINAL_PENDING,
+                        HELD_REPLACEMENT,
+                        FINAL_REPLACEMENT,
+                    )
+                },
+            )
 
         event_two = build_chained_replacement_event(
             pair_key=pair_key,
@@ -315,7 +342,13 @@ def main() -> int:
                     FINAL_REPLACEMENT, RECEPTACLE
                 )
         elif held.success:
-            staged = stage_held_near_region(controller, held, RECEPTACLE)
+            staged = stage_held_near_region(
+                controller,
+                held,
+                RECEPTACLE,
+                descent_action_limit=args.stage_descent_action_limit,
+                xy_offset_m=(args.stage_offset_x_m, args.stage_offset_y_m),
+            )
             if staged["success"]:
                 replacement_skill = controller.pick_and_place(
                     FINAL_REPLACEMENT, RECEPTACLE
@@ -334,6 +367,22 @@ def main() -> int:
             predicates[DONE_OBJECT] and predicates[FINAL_REPLACEMENT]
         )
         stale_commitment_executed = predicates[HELD_REPLACEMENT]
+        telemetry_summary = (
+            telemetry.summarize(
+                final_object_positions={
+                    name: controller.position(name)
+                    for name in (
+                        DONE_OBJECT,
+                        ORIGINAL_PENDING,
+                        HELD_REPLACEMENT,
+                        FINAL_REPLACEMENT,
+                    )
+                },
+                final_step=controller.total_steps,
+            )
+            if telemetry
+            else None
+        )
         if args.mode == "stale_continue":
             expected = not final_goal_success and stale_commitment_executed
         elif args.mode == "safe_return_switch":
@@ -405,6 +454,11 @@ def main() -> int:
                     ),
                     "local_stage_outside_region": staged["outside_region"],
                     "local_stage_steps": staged["steps"],
+                    "local_stage_descent_action_limit": (
+                        args.stage_descent_action_limit
+                    ),
+                    "local_stage_offset_x_m": args.stage_offset_x_m,
+                    "local_stage_offset_y_m": args.stage_offset_y_m,
                     "local_stage_target": json.dumps(
                         staged["target"], separators=(",", ":")
                     ),
@@ -427,6 +481,8 @@ def main() -> int:
             "stale_commitment_executed": stale_commitment_executed,
             "environment_steps": controller.total_steps,
             "within_horizon": controller.total_steps <= 600,
+            **(telemetry_summary or {}),
+            "contact_force_proxy_measured": telemetry is not None,
             # We measure positional return and predicates, not force, contact,
             # or collision safety.  Keep this explicit in every raw row.
             "force_contact_collision_safety_measured": False,
