@@ -8,9 +8,11 @@ from cope.target_substitution import (
     BACK_REGION,
     FRONT_PROMPT,
     FRONT_REGION,
+    LEFT_REGION,
     LiftMilestone,
     StableLiftDetector,
     TargetStateValidationError,
+    TARGET_PROMPTS,
     build_oracle_target_state,
     build_target_event,
     commitment_id,
@@ -20,10 +22,11 @@ from cope.target_substitution import (
 )
 
 
-def valid_pair():
+def valid_pair(replacement_target=FRONT_REGION):
     event = build_target_event(
         LiftMilestone(policy_step=78, initial_z=0.88, current_z=0.92, stable_steps=5),
         pair_key="pair",
+        replacement_target=replacement_target,
     )
     return event, build_oracle_target_state(event)
 
@@ -100,3 +103,11 @@ def test_success_uses_front_not_back_target() -> None:
     assert not current_goal_success({"front": False, "back": True})
     event, state = valid_pair()
     assert state["commitments"][0]["id"] == commitment_id(BACK_REGION)
+
+
+def test_left_target_round_trip_uses_state_grounding() -> None:
+    event, state = valid_pair(LEFT_REGION)
+    validate(event, state)
+    assert compile_target_prompt(state) == TARGET_PROMPTS[LEFT_REGION]
+    assert current_goal_success({"left": True}, LEFT_REGION)
+    assert not current_goal_success({"front": True}, LEFT_REGION)

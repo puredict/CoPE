@@ -8,8 +8,16 @@ TASK_ID = 5
 BOOK = "black_book_1"
 BACK_REGION = "desk_caddy_1_back_contain_region"
 FRONT_REGION = "desk_caddy_1_front_contain_region"
+LEFT_REGION = "desk_caddy_1_left_contain_region"
+RIGHT_REGION = "desk_caddy_1_right_contain_region"
 FULL_STATE_SCHEMA = "full-state-v2"
 FRONT_PROMPT = "pick up the book and place it in the front compartment of the caddy"
+TARGET_PROMPTS = {
+    FRONT_REGION: FRONT_PROMPT,
+    LEFT_REGION: "pick up the book and place it in the left compartment of the caddy",
+    RIGHT_REGION: "pick up the book and place it in the right compartment of the caddy",
+}
+REPLACEMENT_REGIONS = frozenset(TARGET_PROMPTS)
 
 
 class TargetStateValidationError(ValueError):
@@ -75,7 +83,10 @@ def build_target_event(
     *,
     pair_key: str,
     previous_state_version: int = 0,
+    replacement_target: str = FRONT_REGION,
 ) -> dict[str, Any]:
+    if replacement_target not in REPLACEMENT_REGIONS:
+        raise ValueError(f"unsupported replacement target {replacement_target!r}")
     return {
         "event_id": f"target-substitute-v1:{pair_key}",
         "event_type": "replace_goal_target",
@@ -85,7 +96,7 @@ def build_target_event(
         "operation": "supersede",
         "object": BOOK,
         "old_target": BACK_REGION,
-        "replacement_target": FRONT_REGION,
+        "replacement_target": replacement_target,
         "valid_from_state_version": int(previous_state_version),
         "world_version": int(milestone.policy_step),
         "evidence": {
@@ -122,21 +133,24 @@ def build_oracle_target_state(
     previous_state_version: int = 0,
 ) -> dict[str, Any]:
     event_id = str(event["event_id"])
+    replacement_target = str(event["replacement_target"])
+    if replacement_target not in REPLACEMENT_REGIONS:
+        raise ValueError(f"unsupported replacement target {replacement_target!r}")
     return {
         "schema_version": FULL_STATE_SCHEMA,
         "state_version": int(previous_state_version) + 1,
         "current_goal": {
-            "all": [{"predicate": "in", "arguments": [BOOK, FRONT_REGION]}]
+            "all": [{"predicate": "in", "arguments": [BOOK, replacement_target]}]
         },
         "entities": [
             {"id": BOOK, "kind": "object"},
             {"id": BACK_REGION, "kind": "region"},
-            {"id": FRONT_REGION, "kind": "region"},
+            {"id": replacement_target, "kind": "region"},
         ],
         "commitments": [
             _commitment(BACK_REGION, status="superseded", event_id=event_id),
             _commitment(
-                FRONT_REGION,
+                replacement_target,
                 status="active",
                 event_id=event_id,
                 links=(commitment_id(BACK_REGION),),
@@ -152,12 +166,14 @@ def build_oracle_target_state(
         ],
         "plan": [
             {
-                "step_id": "place-book-front",
+                "step_id": "place-book-replacement-target",
                 "skill": "place_in",
-                "arguments": [BOOK, FRONT_REGION],
+                "arguments": [BOOK, replacement_target],
                 "status": "pending",
                 "preconditions": ["milestone:book_lifted"],
-                "effects": [{"predicate": "in", "arguments": [BOOK, FRONT_REGION]}],
+                "effects": [
+                    {"predicate": "in", "arguments": [BOOK, replacement_target]}
+                ],
                 "dependencies": ["milestone:book_lifted"],
             }
         ],
@@ -186,7 +202,8 @@ def validate_oracle_target_state(
         raise TargetStateValidationError("event is not authorized")
     if event.get("target_commitment_id") != commitment_id(BACK_REGION):
         raise TargetStateValidationError("event targets the wrong commitment")
-    if event.get("replacement_target") != FRONT_REGION:
+    replacement_target = str(event.get("replacement_target"))
+    if replacement_target not in REPLACEMENT_REGIONS:
         raise TargetStateValidationError("replacement target is invalid")
     if not physically_lifted:
         raise TargetStateValidationError("claimed lift milestone is not physically true")
@@ -199,23 +216,46 @@ def validate_oracle_target_state(
         raise TargetStateValidationError("commitment IDs must be unique")
     if by_id.get(commitment_id(BACK_REGION), {}).get("lifecycle_status") != "superseded":
         raise TargetStateValidationError("old target is not superseded")
-    replacement = by_id.get(commitment_id(FRONT_REGION), {})
+    replacement = by_id.get(commitment_id(replacement_target), {})
     if replacement.get("lifecycle_status") != "active":
         raise TargetStateValidationError("replacement target is not active")
     if replacement.get("supersession_links") != [commitment_id(BACK_REGION)]:
         raise TargetStateValidationError("replacement lineage is invalid")
     if state.get("current_goal") != {
-        "all": [{"predicate": "in", "arguments": [BOOK, FRONT_REGION]}]
+        "all": [{"predicate": "in", "arguments": [BOOK, replacement_target]}]
     }:
         raise TargetStateValidationError("current goal does not match the authorized event")
 
 
 def compile_target_prompt(state: Mapping[str, Any]) -> str:
-    expected = {"all": [{"predicate": "in", "arguments": [BOOK, FRONT_REGION]}]}
-    if state.get("current_goal") != expected:
+    goal = state.get("current_goal")
+    if not isinstance(goal, Mapping):
         raise TargetStateValidationError("unsupported current goal")
-    return FRONT_PROMPT
+    atoms = goal.get("all")
+    if not isinstance(atoms, list) or len(atoms) != 1:
+        raise TargetStateValidationError("unsupported current goal")
+    atom = atoms[0]
+    if not isinstance(atom, Mapping):
+        raise TargetStateValidationError("unsupported current goal")
+    arguments = atom.get("arguments")
+    if (
+        atom.get("predicate") != "in"
+        or not isinstance(arguments, list)
+        or len(arguments) != 2
+        or arguments[0] != BOOK
+        or arguments[1] not in REPLACEMENT_REGIONS
+    ):
+        raise TargetStateValidationError("unsupported current goal")
+    return TARGET_PROMPTS[str(arguments[1])]
 
 
-def current_goal_success(predicates: Mapping[str, bool]) -> bool:
-    return bool(predicates.get("front", False))
+def current_goal_success(
+    predicates: Mapping[str, bool],
+    replacement_target: str = FRONT_REGION,
+) -> bool:
+    key = {
+        FRONT_REGION: "front",
+        LEFT_REGION: "left",
+        RIGHT_REGION: "right",
+    }.get(replacement_target)
+    return bool(key and predicates.get(key, False))

@@ -25,8 +25,11 @@ from cope.calibration_v2 import (  # noqa: E402
 from cope.target_substitution import (  # noqa: E402
     BACK_REGION,
     BOOK,
-    FRONT_PROMPT,
     FRONT_REGION,
+    LEFT_REGION,
+    REPLACEMENT_REGIONS,
+    RIGHT_REGION,
+    TARGET_PROMPTS,
     StableLiftDetector,
     build_oracle_target_state,
     build_target_event,
@@ -60,7 +63,12 @@ from libero_experiment_core import (  # noqa: E402
 
 DEFAULT_CONFIG = ROOT / "configs/openvla_libero_10_calibration_v2.yaml"
 DEFAULT_MANIFEST = ROOT / "manifests/openvla_libero_10_calibration_v2.jsonl"
-MODES = ("front_from_reset", "no_edit", "oracle_full")
+MODES = ("target_from_reset", "no_edit", "oracle_full")
+TARGET_NAMES = {
+    "front": FRONT_REGION,
+    "left": LEFT_REGION,
+    "right": RIGHT_REGION,
+}
 
 
 def parse_args() -> argparse.Namespace:
@@ -70,6 +78,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-root", type=Path, required=True)
     parser.add_argument("--state-id", type=int, required=True)
     parser.add_argument("--modes", default=",".join(MODES))
+    parser.add_argument("--replacement-target", choices=tuple(TARGET_NAMES), default="front")
     parser.add_argument("--prefix-trace", type=Path)
     parser.add_argument("--minimum-lift", type=float, default=0.03)
     parser.add_argument("--stable-steps", type=int, default=5)
@@ -95,6 +104,8 @@ def _predicates(view: LiberoStateView) -> dict[str, bool]:
     return {
         "back": view.libero_predicate("in", (BOOK, BACK_REGION)),
         "front": view.libero_predicate("in", (BOOK, FRONT_REGION)),
+        "left": view.libero_predicate("in", (BOOK, LEFT_REGION)),
+        "right": view.libero_predicate("in", (BOOK, RIGHT_REGION)),
     }
 
 
@@ -114,6 +125,7 @@ def run_episode(
     policy_budget: int,
     git: Mapping[str, Any],
     prefix_records: tuple[dict[str, Any], ...],
+    replacement_target: str,
 ) -> dict[str, Any]:
     if mode not in MODES:
         raise ValueError(f"unknown mode {mode!r}")
@@ -152,7 +164,13 @@ def run_episode(
         env, original_prompt = create_libero_env(task, cfg)
         if original_prompt != entry["description"]:
             raise ValueError("runtime prompt differs from the frozen calibration manifest")
-        current_prompt = FRONT_PROMPT if mode == "front_from_reset" else original_prompt
+        if replacement_target not in REPLACEMENT_REGIONS:
+            raise ValueError(f"unsupported replacement target {replacement_target!r}")
+        current_prompt = (
+            TARGET_PROMPTS[replacement_target]
+            if mode == "target_from_reset"
+            else original_prompt
+        )
         env.reset()
         obs = env.set_init_state(initial_state)
         for _ in range(10):
@@ -187,6 +205,7 @@ def run_episode(
                     "policy_budget": policy_budget,
                     "stable_steps": stable_steps,
                     "event_deadline": event_deadline,
+                    "replacement_target": replacement_target,
                     "prefix_trace_steps_available": len(prefix_records),
                     "action_spec_source": action_spec_source,
                 },
@@ -194,7 +213,7 @@ def run_episode(
             for policy_step in range(policy_budget):
                 prefix = (
                     prefix_records[policy_step]
-                    if mode != "front_from_reset"
+                    if mode != "target_from_reset"
                     and event is None
                     and policy_step < len(prefix_records)
                     else None
@@ -268,7 +287,7 @@ def run_episode(
                 if not validation["passed"]:
                     raise RuntimeError("OpenVLA action contract failed")
 
-                if mode != "front_from_reset" and event is None:
+                if mode != "target_from_reset" and event is None:
                     milestone = detector.observe(
                         policy_step,
                         book_z=final_position[2],
@@ -276,7 +295,11 @@ def run_episode(
                         in_front=final_predicates["front"],
                     )
                     if milestone is not None:
-                        event = build_target_event(milestone, pair_key=pair_key)
+                        event = build_target_event(
+                            milestone,
+                            pair_key=pair_key,
+                            replacement_target=replacement_target,
+                        )
                         full_state = build_oracle_target_state(event)
                         validate_oracle_target_state(
                             full_state,
@@ -302,12 +325,23 @@ def run_episode(
                             },
                         )
 
-                custom_success = current_goal_success(final_predicates)
+                custom_success = current_goal_success(
+                    final_predicates,
+                    replacement_target,
+                )
                 if custom_success:
-                    termination = "front_target_satisfied"
+                    termination = "replacement_target_satisfied"
                     break
                 if final_predicates.get("back", False) or final_done or final_reward >= 1.0:
                     termination = "back_target_violation"
+                    break
+                wrong_replacement = any(
+                    final_predicates.get(name, False)
+                    for name, region in TARGET_NAMES.items()
+                    if region != replacement_target
+                )
+                if wrong_replacement:
+                    termination = "wrong_replacement_target_violation"
                     break
             else:
                 termination = "policy_step_budget_exhausted"
@@ -337,11 +371,14 @@ def run_episode(
         "event_reached": event is not None,
         "event": event,
         "accepted_full_state": full_state,
+        "replacement_target": replacement_target,
         "initial_book_z": initial_book_z,
         "current_goal_success": custom_success,
         "final_predicates": final_predicates,
         "final_book_position": final_position,
         "back_target_violation": bool(final_predicates.get("back", False)),
+        "wrong_replacement_target_violation": termination
+        == "wrong_replacement_target_violation",
         "termination_reason": termination,
         "policy_step_budget": policy_budget,
         "policy_steps_consumed": policy_steps,
@@ -384,6 +421,7 @@ def main() -> None:
     ]:
         raise ValueError("runtime task identity does not match the frozen entry")
     prefix_records = _load_prefix_records(args.prefix_trace)
+    replacement_target = TARGET_NAMES[args.replacement_target]
     args.output_root.mkdir(parents=True, exist_ok=True)
     worker_root = args.output_root / f"state{args.state_id:02d}"
     worker_root.mkdir(exist_ok=False)
@@ -414,6 +452,7 @@ def main() -> None:
                     policy_budget=args.policy_budget,
                     git=git,
                     prefix_records=prefix_records,
+                    replacement_target=replacement_target,
                 )
             )
         summary = {
@@ -421,6 +460,7 @@ def main() -> None:
             "physical_gpu": visible,
             "state_id": args.state_id,
             "modes": list(modes),
+            "replacement_target": replacement_target,
             "results": [
                 {
                     "mode": item["mode"],
