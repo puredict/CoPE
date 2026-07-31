@@ -10,6 +10,16 @@ from cope.semantic_replacement import (
     MilestoneEvent,
     goal_commitment_id,
 )
+from cope.operations import apply_patch
+from cope.schema import (
+    ConstraintSlot,
+    ConstraintState,
+    Expire,
+    Insert,
+    Patch,
+    PatchContext,
+)
+from cope.serialization import serialize_state, thaw_json
 
 
 def build_cancellation_event(
@@ -157,3 +167,142 @@ def cancellation_compliance(
     return bool(predicates.get(str(event["done_object"]), False)) and not bool(
         predicates.get(str(event["pending_object"]), False)
     )
+
+
+def apply_oracle_cancellation_patch(
+    event: Mapping[str, Any],
+    *,
+    physically_true_objects: Sequence[str],
+) -> dict[str, Any]:
+    """Exercise the production typed-patch engine with an oracle Expire choice.
+
+    This is an oracle patch canary, not a provider-generated CoPE result.
+    """
+
+    oracle_state = build_oracle_cancellation_state(event)
+    validate_oracle_cancellation_state(
+        oracle_state,
+        event,
+        previous_state_version=0,
+        physically_true_objects=physically_true_objects,
+    )
+    done_object = str(event["done_object"])
+    pending_object = str(event["pending_object"])
+    genesis_event = f"{event['event_id']}:genesis"
+    state = ConstraintState.empty(f"cancellation:{event['event_id']}")
+
+    def goal_slot(object_name: str) -> ConstraintSlot:
+        identifier = goal_commitment_id(object_name)
+        return ConstraintSlot(
+            slot_id=identifier,
+            constraint_type="task_goal",
+            content={
+                "predicate": "in",
+                "arguments": [object_name, RECEPTACLE],
+            },
+            source="task",
+            mode="active",
+            priority=100,
+            created_event_id=genesis_event,
+            last_updated_event_id=genesis_event,
+            lineage=(identifier,),
+            metadata={"semantic_role": "original_goal_commitment"},
+        )
+
+    genesis = Patch(
+        patch_id=f"{event['event_id']}:genesis-patch",
+        event_id=genesis_event,
+        reason="initialize two atomic task commitments",
+        operations=(
+            Insert("genesis-insert-done", goal_slot(done_object)),
+            Insert("genesis-insert-pending", goal_slot(pending_object)),
+        ),
+        generator="oracle-cancellation-canary",
+        input_state_hash=state.state_hash,
+        created_at=0,
+    )
+    initialized = apply_patch(
+        state,
+        genesis,
+        PatchContext.trusted("cancellation-genesis"),
+    )
+    if not initialized.accepted:
+        raise FullStateValidationError(
+            f"cancellation genesis patch rejected: {initialized.rejection_reason}"
+        )
+    state = initialized.state
+    state_before = serialize_state(state)
+    cancellation_patch = Patch(
+        patch_id=f"{event['event_id']}:oracle-cope-patch",
+        event_id=str(event["event_id"]),
+        reason="authorized cancellation of pending task commitment",
+        operations=(
+            Expire(
+                "expire-cancelled-pending-goal",
+                goal_commitment_id(pending_object),
+                "task owner cancelled the pending goal",
+            ),
+        ),
+        generator="oracle-cope-patch-canary",
+        input_state_hash=state.state_hash,
+        created_at=1,
+        metadata={
+            "oracle_operation_selection": True,
+            "provider_called": False,
+        },
+    )
+    context = PatchContext(
+        actor="task_owner",
+        authority_priority=100,
+        authorized_sources=("task",),
+        event_source="oracle",
+        information_budget=0,
+        policy_step_budget=0,
+        high_level_call_count=0,
+        pair_key={"event_id": str(event["event_id"])},
+        task_progress={
+            "physically_true_objects": list(physically_true_objects),
+        },
+        manual_intervention=False,
+        metadata={"oracle_patch_canary": True},
+    )
+    transitioned = apply_patch(state, cancellation_patch, context)
+    if not transitioned.accepted:
+        raise FullStateValidationError(
+            f"oracle CoPE cancellation patch rejected: "
+            f"{transitioned.rejection_code}: {transitioned.rejection_reason}"
+        )
+    state_after = transitioned.state
+    if state_after.get_slot(goal_commitment_id(pending_object)).mode.value != "expired":
+        raise FullStateValidationError("pending commitment did not become an expired tombstone")
+    if state_after.get_slot(goal_commitment_id(done_object)).mode.value != "active":
+        raise FullStateValidationError("unaffected completed commitment did not remain active")
+    unsatisfied_active = [
+        slot
+        for slot in state_after.slots
+        if slot.mode.value in {"active", "demoted"}
+        and str(slot.content["arguments"][0]) not in set(physically_true_objects)
+    ]
+    if unsatisfied_active:
+        raise FullStateValidationError("patched state still has an unsatisfied active goal")
+    return {
+        "method_label": "oracle_cope_patch_halt",
+        "oracle_operation_selection": True,
+        "provider_called": False,
+        "state_before": state_before,
+        "state_after": serialize_state(state_after),
+        "patch": {
+            "patch_id": cancellation_patch.patch_id,
+            "event_id": cancellation_patch.event_id,
+            "operation": "Expire",
+            "target_id": goal_commitment_id(pending_object),
+        },
+        "transition": {
+            "accepted": True,
+            "before_hash": transitioned.before_hash,
+            "after_hash": transitioned.after_hash,
+            "applied_operation_ids": list(transitioned.applied_operation_ids),
+            "audit_record": thaw_json(transitioned.audit_record),
+        },
+        "execution_directive": "HALT",
+    }

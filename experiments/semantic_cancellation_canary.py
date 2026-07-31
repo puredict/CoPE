@@ -23,6 +23,7 @@ from cope.calibration_v2 import (  # noqa: E402
     validate_static_manifest,
 )
 from cope.semantic_cancellation import (  # noqa: E402
+    apply_oracle_cancellation_patch,
     build_cancellation_event,
     build_oracle_cancellation_state,
     cancellation_compliance,
@@ -56,7 +57,8 @@ from libero_experiment_core import (  # noqa: E402
 
 DEFAULT_CONFIG = ROOT / "configs/openvla_libero_10_calibration_v2.yaml"
 DEFAULT_MANIFEST = ROOT / "manifests/openvla_libero_10_calibration_v2.jsonl"
-MODES = ("no_edit", "oracle_cancel_halt")
+MODES = ("no_edit", "oracle_cancel_halt", "oracle_cope_patch_halt")
+HALT_MODES = frozenset({"oracle_cancel_halt", "oracle_cope_patch_halt"})
 
 
 def parse_args() -> argparse.Namespace:
@@ -130,6 +132,7 @@ def run_episode(
     )
     event: dict[str, Any] | None = None
     full_state: dict[str, Any] | None = None
+    patch_receipt: dict[str, Any] | None = None
     final_predicates: dict[str, bool] = {}
     policy_steps = 0
     post_event_policy_actions = 0
@@ -206,18 +209,24 @@ def run_episode(
                     milestone = detector.observe(policy_step, final_predicates)
                     if milestone is not None:
                         event = build_cancellation_event(milestone, pair_key=pair_key)
-                        full_state = build_oracle_cancellation_state(event)
-                        validate_oracle_cancellation_state(
-                            full_state,
-                            event,
-                            previous_state_version=0,
-                            physically_true_objects=tuple(
-                                name
-                                for name in ORIGINAL_OBJECTS
-                                if final_predicates[name]
-                            ),
+                        true_objects = tuple(
+                            name for name in ORIGINAL_OBJECTS if final_predicates[name]
                         )
-                        directive = compile_execution_directive(full_state)
+                        if mode == "oracle_cope_patch_halt":
+                            patch_receipt = apply_oracle_cancellation_patch(
+                                event,
+                                physically_true_objects=true_objects,
+                            )
+                            directive = str(patch_receipt["execution_directive"])
+                        else:
+                            full_state = build_oracle_cancellation_state(event)
+                            validate_oracle_cancellation_state(
+                                full_state,
+                                event,
+                                previous_state_version=0,
+                                physically_true_objects=true_objects,
+                            )
+                            directive = compile_execution_directive(full_state)
                         _write_trace(
                             trace,
                             {
@@ -226,12 +235,13 @@ def run_episode(
                                 "mode": mode,
                                 "event": event,
                                 "accepted_full_state": full_state,
+                                "accepted_patch_receipt": patch_receipt,
                                 "execution_directive": directive,
-                                "directive_applied": mode == "oracle_cancel_halt",
+                                "directive_applied": mode in HALT_MODES,
                                 "predicates": final_predicates,
                             },
                         )
-                        if mode == "oracle_cancel_halt":
+                        if mode in HALT_MODES:
                             termination = "halted_after_authorized_cancellation"
                             break
                 else:
@@ -253,7 +263,7 @@ def run_episode(
                     else "trace_exhausted_without_cancelled_goal_violation"
                 )
 
-            if mode == "oracle_cancel_halt" and event is not None:
+            if mode in HALT_MODES and event is not None:
                 for verification_step in range(verification_hold_steps):
                     obs, reward, done, _ = env.step(get_dummy_action("openvla"))
                     verification_steps += 1
@@ -283,7 +293,7 @@ def run_episode(
         and cancellation_compliance(event, final_predicates)
         and not cancelled_goal_violated
         and (
-            mode != "oracle_cancel_halt"
+            mode not in HALT_MODES
             or (
                 termination == "halted_after_authorized_cancellation"
                 and verification_steps == verification_hold_steps
@@ -304,6 +314,7 @@ def run_episode(
         "event_reached": event is not None,
         "event": event,
         "accepted_full_state": full_state,
+        "accepted_patch_receipt": patch_receipt,
         "cancellation_success": cancellation_success,
         "cancelled_goal_violated": cancelled_goal_violated,
         "valid_progress_retained": bool(

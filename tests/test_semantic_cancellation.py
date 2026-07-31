@@ -5,6 +5,7 @@ import copy
 import pytest
 
 from cope.semantic_cancellation import (
+    apply_oracle_cancellation_patch,
     build_cancellation_event,
     build_oracle_cancellation_state,
     cancellation_compliance,
@@ -97,3 +98,24 @@ def test_cancellation_compliance_detects_stale_execution_and_progress_loss() -> 
         event,
         {"cream_cheese_1": False, "butter_1": False},
     )
+
+
+def test_oracle_cope_patch_expires_only_pending_goal_and_compiles_halt() -> None:
+    event, _ = valid_pair()
+    receipt = apply_oracle_cancellation_patch(
+        event,
+        physically_true_objects=("cream_cheese_1",),
+    )
+    assert receipt["method_label"] == "oracle_cope_patch_halt"
+    assert receipt["oracle_operation_selection"] is True
+    assert receipt["provider_called"] is False
+    assert receipt["execution_directive"] == "HALT"
+    assert receipt["transition"]["accepted"] is True
+    assert receipt["transition"]["applied_operation_ids"] == [
+        "expire-cancelled-pending-goal"
+    ]
+    before = {slot["slot_id"]: slot for slot in receipt["state_before"]["slots"]}
+    after = {slot["slot_id"]: slot for slot in receipt["state_after"]["slots"]}
+    assert before[goal_commitment_id("butter_1")]["mode"] == "active"
+    assert after[goal_commitment_id("butter_1")]["mode"] == "expired"
+    assert after[goal_commitment_id("cream_cheese_1")]["mode"] == "active"
