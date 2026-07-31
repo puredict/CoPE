@@ -59,12 +59,18 @@ def main() -> int:
         controller = LiberoOracleSkillController(env, observation)
         warmup = controller.warmup()
         completed = controller.pick_and_place(DONE_OBJECT, RECEPTACLE)
+        physical_truth_before_first_patch = controller.in_region(
+            DONE_OBJECT, RECEPTACLE
+        )
+        physically_true_objects = (
+            (DONE_OBJECT,) if physical_truth_before_first_patch else ()
+        )
 
         pair_key = f"in-motion:task01:state{args.state_id:02d}"
         state, _ = initialize_oracle_replacement_state(
             done_object=DONE_OBJECT,
             initial_pending_object=ORIGINAL_PENDING,
-            physically_true_objects=(DONE_OBJECT,),
+            physically_true_objects=physically_true_objects,
             pair_key=pair_key,
         )
         event_one = build_chained_replacement_event(
@@ -80,7 +86,7 @@ def main() -> int:
             event_one,
             expected_source_object=ORIGINAL_PENDING,
             used_objects=(DONE_OBJECT, ORIGINAL_PENDING),
-            physically_true_objects=(DONE_OBJECT,),
+            physically_true_objects=physically_true_objects,
             pair_key=pair_key,
             chain_index=1,
         )
@@ -94,6 +100,12 @@ def main() -> int:
         event_two = None
         receipt_two = None
         if args.mode != "single_patch_complete" and held and held.success:
+            physical_truth_before_second_patch = controller.in_region(
+                DONE_OBJECT, RECEPTACLE
+            )
+            physically_true_objects = (
+                (DONE_OBJECT,) if physical_truth_before_second_patch else ()
+            )
             event_two = build_chained_replacement_event(
                 pair_key=pair_key,
                 step_index=2,
@@ -111,7 +123,7 @@ def main() -> int:
                     ORIGINAL_PENDING,
                     HELD_REPLACEMENT,
                 ),
-                physically_true_objects=(DONE_OBJECT,),
+                physically_true_objects=physically_true_objects,
                 pair_key=pair_key,
                 chain_index=2,
             )
@@ -160,6 +172,14 @@ def main() -> int:
             "prompt": prompt,
             "warmup_steps": warmup.steps,
             "completed_progress_success": completed.success,
+            "physical_truth_before_first_patch": (
+                physical_truth_before_first_patch
+            ),
+            "physical_truth_before_second_patch": (
+                physical_truth_before_second_patch
+                if event_two is not None
+                else ""
+            ),
             "first_patch_accepted": receipt_one["transition"]["accepted"],
             "held_checkpoint_captured": held is not None and held.success,
             "held_object": HELD_REPLACEMENT,

@@ -63,6 +63,12 @@ def main() -> int:
         controller = LiberoOracleSkillController(env, observation)
         warmup = controller.warmup()
         first_skill = controller.pick_and_place(DONE_OBJECT, RECEPTACLE)
+        physical_truth_verified = controller.in_region(
+            DONE_OBJECT, RECEPTACLE
+        )
+        physically_true_objects = (
+            (DONE_OBJECT,) if physical_truth_verified else ()
+        )
 
         pair_key = f"oracle-skill:task01:state{args.state_id:02d}"
         event_one = build_chained_replacement_event(
@@ -87,7 +93,7 @@ def main() -> int:
                 events,
                 done_object=DONE_OBJECT,
                 initial_pending_object=ORIGINAL_PENDING,
-                physically_true_objects=(DONE_OBJECT,),
+                physically_true_objects=physically_true_objects,
                 pair_key=pair_key,
             )
         elif args.mode == "double_patch":
@@ -96,7 +102,7 @@ def main() -> int:
                 events,
                 done_object=DONE_OBJECT,
                 initial_pending_object=ORIGINAL_PENDING,
-                physically_true_objects=(DONE_OBJECT,),
+                physically_true_objects=physically_true_objects,
                 pair_key=pair_key,
             )
         elif args.mode == "second_event_no_edit":
@@ -105,7 +111,7 @@ def main() -> int:
                 [event_one],
                 done_object=DONE_OBJECT,
                 initial_pending_object=ORIGINAL_PENDING,
-                physically_true_objects=(DONE_OBJECT,),
+                physically_true_objects=physically_true_objects,
                 pair_key=pair_key,
             )
         elif args.mode == "double_event_no_edit":
@@ -154,6 +160,7 @@ def main() -> int:
             "prompt": prompt,
             "warmup_steps": warmup.steps,
             "first_skill_success": first_skill.success,
+            "physical_truth_verified_before_patch": physical_truth_verified,
             "first_failure_reason": first_skill.failure_reason or "",
             "event_count": len(events),
             "patch_count": len(receipts),

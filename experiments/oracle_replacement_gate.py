@@ -63,6 +63,12 @@ def main() -> int:
         controller = LiberoOracleSkillController(env, observation)
         warmup = controller.warmup()
         first = controller.pick_and_place(DONE_OBJECT, RECEPTACLE)
+        physical_truth_verified = controller.in_region(
+            DONE_OBJECT, RECEPTACLE
+        )
+        physically_true_objects = (
+            (DONE_OBJECT,) if physical_truth_verified else ()
+        )
 
         checkpoint_mode = args.mode.startswith("checkpoint_")
         if checkpoint_mode and first.success:
@@ -79,7 +85,7 @@ def main() -> int:
             if args.mode == "checkpoint_oracle_cope_patch":
                 patch_receipt = apply_oracle_replacement_patch(
                     event,
-                    physically_true_objects=(DONE_OBJECT,),
+                    physically_true_objects=physically_true_objects,
                 )
 
         second_object = (
@@ -113,6 +119,7 @@ def main() -> int:
             "first_skill_success": first.success,
             "first_failure_reason": first.failure_reason or "",
             "first_lift_m": f"{first.object_lift_m:.6f}",
+            "physical_truth_verified_before_patch": physical_truth_verified,
             "event_reached": event is not None,
             "patch_applied": patch_receipt is not None,
             "patch_operation": (

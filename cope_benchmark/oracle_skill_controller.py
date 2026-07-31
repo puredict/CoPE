@@ -8,6 +8,7 @@ without conflating them with language-policy failures.
 
 from __future__ import annotations
 
+import hashlib
 from dataclasses import asdict, dataclass, field
 from typing import Any, Sequence
 
@@ -96,6 +97,10 @@ class LiberoOracleSkillController:
         self.observation = observation
         self.config = config or OracleSkillConfig()
         self.total_steps = 0
+        # Retain the exact low-level commands issued through env.step so
+        # paired experimental arms can prove they share a prefix.  This is
+        # evidence only: it is never read by the control policy.
+        self.action_history: list[tuple[float, ...]] = []
 
     def position(self, state_name: str) -> np.ndarray:
         if state_name not in self.base_env.object_states_dict:
@@ -105,9 +110,27 @@ class LiberoOracleSkillController:
         return np.asarray(state["pos"], dtype=float).copy()
 
     def _step(self, action: Sequence[float]) -> tuple[float, bool]:
-        self.observation, reward, done, _ = self.env.step(np.asarray(action, dtype=float))
+        canonical_action = np.asarray(action, dtype=np.float64)
+        self.action_history.append(
+            tuple(float(value) for value in canonical_action)
+        )
+        self.observation, reward, done, _ = self.env.step(canonical_action)
         self.total_steps += 1
         return float(reward), bool(done)
+
+    def action_prefix_sha256(self, step_count: int | None = None) -> str:
+        """Hash the exact env.step action prefix using a stable encoding."""
+
+        prefix = (
+            self.action_history
+            if step_count is None
+            else self.action_history[:step_count]
+        )
+        actions = np.asarray(prefix, dtype="<f8")
+        digest = hashlib.sha256()
+        digest.update(str(actions.shape).encode("ascii"))
+        digest.update(actions.tobytes(order="C"))
+        return digest.hexdigest()
 
     def hold(self, phase: str, steps: int, gripper: float) -> PhaseRecord:
         reward = 0.0

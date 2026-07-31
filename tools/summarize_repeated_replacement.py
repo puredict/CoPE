@@ -25,8 +25,18 @@ def main() -> None:
             raise ValueError(f"expected one row in {path}")
         row = source_rows[0]
         row["source_csv"] = str(path.relative_to(ROOT))
-        if row["patch_count"] == "2":
-            row["revision_path"] = "1>2>3"
+        expected_revision_path = {
+            "0": "",
+            "1": "1>2",
+            "2": "1>2>3",
+        }[row["patch_count"]]
+        if row["revision_path"] != expected_revision_path:
+            raise ValueError(
+                f"raw revision-path mismatch in {path}: "
+                f"expected {expected_revision_path!r}, "
+                f"found {row['revision_path']!r}; "
+                "refusing to normalize raw evidence"
+            )
         rows.append(row)
     if len(rows) != 25:
         raise ValueError(f"expected 25 repeated-replacement rows, got {len(rows)}")
