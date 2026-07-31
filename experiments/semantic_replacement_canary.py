@@ -409,7 +409,10 @@ def main() -> None:
         _atomic_json(worker_root / "summary.json", summary)
         print(json.dumps(summary, indent=2, sort_keys=True), flush=True)
     finally:
-        unload_torch_model_refs(model, processor, runtime_model_cfg)
+        # The shared helper only performs GC/CUDA cache cleanup.  Drop the
+        # strong references here before invoking it.
+        model = processor = runtime_model_cfg = None
+        unload_torch_model_refs()
 
 
 if __name__ == "__main__":
