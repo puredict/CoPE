@@ -3,6 +3,17 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Mapping, Sequence
 
+from cope.operations import apply_patch
+from cope.schema import (
+    ConstraintSlot,
+    ConstraintState,
+    Insert,
+    Override,
+    Patch,
+    PatchContext,
+)
+from cope.serialization import serialize_state, thaw_json
+
 
 FULL_STATE_SCHEMA = "full-state-v2"
 TASK_ID = 1
@@ -318,3 +329,167 @@ def current_goal_success(state: Mapping[str, Any], predicates: Mapping[str, bool
         if arguments[1] != RECEPTACLE or not bool(predicates.get(str(arguments[0]), False)):
             return False
     return True
+
+
+def apply_oracle_replacement_patch(
+    event: Mapping[str, Any],
+    *,
+    physically_true_objects: Sequence[str],
+) -> dict[str, Any]:
+    """Exercise CoPE's typed patch engine with an oracle Override choice.
+
+    The semantic operation is selected by an oracle and no provider is called.
+    This is a mechanism canary, not a claim about event interpretation.
+    """
+
+    oracle_state = build_oracle_full_state(event)
+    validate_oracle_full_state(
+        oracle_state,
+        event,
+        previous_state_version=0,
+        physically_true_objects=physically_true_objects,
+    )
+    done_object = str(event["done_object"])
+    pending_object = str(event["pending_object"])
+    replacement_object = str(event["replacement_object"])
+    event_id = str(event["event_id"])
+    genesis_event = f"{event_id}:genesis"
+    state = ConstraintState.empty(f"replacement:{event_id}")
+
+    def goal_slot(
+        object_name: str,
+        *,
+        created_event_id: str,
+        parent_slot_id: str | None = None,
+        overrides_slot_ids: tuple[str, ...] = (),
+        lineage: tuple[str, ...] | None = None,
+    ) -> ConstraintSlot:
+        identifier = goal_commitment_id(object_name)
+        return ConstraintSlot(
+            slot_id=identifier,
+            constraint_type="task_goal",
+            content={
+                "predicate": "in",
+                "arguments": [object_name, RECEPTACLE],
+            },
+            source="task",
+            mode="active",
+            priority=100,
+            created_event_id=created_event_id,
+            last_updated_event_id=created_event_id,
+            parent_slot_id=parent_slot_id,
+            overrides_slot_ids=overrides_slot_ids,
+            lineage=lineage or (identifier,),
+            metadata={"semantic_role": "task_goal_commitment"},
+        )
+
+    genesis = Patch(
+        patch_id=f"{event_id}:genesis-patch",
+        event_id=genesis_event,
+        reason="initialize two atomic task commitments",
+        operations=(
+            Insert(
+                "genesis-insert-done",
+                goal_slot(done_object, created_event_id=genesis_event),
+            ),
+            Insert(
+                "genesis-insert-pending",
+                goal_slot(pending_object, created_event_id=genesis_event),
+            ),
+        ),
+        generator="oracle-replacement-canary",
+        input_state_hash=state.state_hash,
+        created_at=0,
+    )
+    initialized = apply_patch(
+        state,
+        genesis,
+        PatchContext.trusted("replacement-genesis"),
+    )
+    if not initialized.accepted:
+        raise FullStateValidationError(
+            f"replacement genesis patch rejected: {initialized.rejection_reason}"
+        )
+    state = initialized.state
+    state_before = serialize_state(state)
+    pending_id = goal_commitment_id(pending_object)
+    replacement_id = goal_commitment_id(replacement_object)
+    replacement = goal_slot(
+        replacement_object,
+        created_event_id=event_id,
+        parent_slot_id=pending_id,
+        overrides_slot_ids=(pending_id,),
+        lineage=(pending_id, replacement_id),
+    )
+    replacement_patch = Patch(
+        patch_id=f"{event_id}:oracle-cope-patch",
+        event_id=event_id,
+        reason="authorized replacement of pending task commitment",
+        operations=(
+            Override(
+                "override-pending-goal-with-replacement",
+                pending_id,
+                replacement,
+                "task owner replaced the pending goal",
+            ),
+        ),
+        generator="oracle-cope-patch-canary",
+        input_state_hash=state.state_hash,
+        created_at=1,
+        metadata={
+            "oracle_operation_selection": True,
+            "provider_called": False,
+        },
+    )
+    context = PatchContext(
+        actor="task_owner",
+        authority_priority=100,
+        authorized_sources=("task",),
+        event_source="oracle",
+        information_budget=0,
+        policy_step_budget=0,
+        high_level_call_count=0,
+        pair_key={"event_id": event_id},
+        task_progress={"physically_true_objects": list(physically_true_objects)},
+        manual_intervention=False,
+        metadata={"oracle_patch_canary": True},
+    )
+    transitioned = apply_patch(state, replacement_patch, context)
+    if not transitioned.accepted:
+        raise FullStateValidationError(
+            "oracle CoPE replacement patch rejected: "
+            f"{transitioned.rejection_code}: {transitioned.rejection_reason}"
+        )
+    state_after = transitioned.state
+    if state_after.get_slot(pending_id).mode.value != "overridden":
+        raise FullStateValidationError("pending commitment did not become overridden")
+    if state_after.get_slot(replacement_id).mode.value != "active":
+        raise FullStateValidationError("replacement commitment is not active")
+    if state_after.get_slot(goal_commitment_id(done_object)).mode.value != "active":
+        raise FullStateValidationError("unaffected completed commitment did not remain active")
+    return {
+        "method_label": "oracle_cope_patch_override",
+        "oracle_operation_selection": True,
+        "provider_called": False,
+        "state_before": state_before,
+        "state_after": serialize_state(state_after),
+        "patch": {
+            "patch_id": replacement_patch.patch_id,
+            "event_id": replacement_patch.event_id,
+            "operation": "Override",
+            "target_id": pending_id,
+            "replacement_id": replacement_id,
+        },
+        "transition": {
+            "accepted": True,
+            "before_hash": transitioned.before_hash,
+            "after_hash": transitioned.after_hash,
+            "applied_operation_ids": list(transitioned.applied_operation_ids),
+            "audit_record": thaw_json(transitioned.audit_record),
+        },
+        "execution_directive": {
+            "skill": "place_in",
+            "arguments": [replacement_object, RECEPTACLE],
+        },
+        "oracle_full_state": oracle_state,
+    }

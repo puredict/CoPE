@@ -9,6 +9,7 @@ from cope.semantic_replacement import (
     FullStateValidationError,
     MilestoneEvent,
     StableFirstMilestoneDetector,
+    apply_oracle_replacement_patch,
     build_oracle_full_state,
     build_replacement_event,
     compile_controller_prompt,
@@ -144,3 +145,22 @@ def test_current_goal_success_requires_replacement_and_retained_progress() -> No
         state,
         {"cream_cheese_1": True, "alphabet_soup_1": False, "butter_1": True},
     )
+
+
+def test_oracle_replacement_patch_uses_typed_override_and_preserves_progress() -> None:
+    event, _ = valid_pair()
+    receipt = apply_oracle_replacement_patch(
+        event,
+        physically_true_objects=("cream_cheese_1",),
+    )
+    assert receipt["method_label"] == "oracle_cope_patch_override"
+    assert receipt["oracle_operation_selection"] is True
+    assert receipt["provider_called"] is False
+    assert receipt["patch"]["operation"] == "Override"
+    assert receipt["transition"]["accepted"] is True
+    before = {slot["slot_id"]: slot for slot in receipt["state_before"]["slots"]}
+    after = {slot["slot_id"]: slot for slot in receipt["state_after"]["slots"]}
+    assert before[goal_commitment_id("butter_1")]["mode"] == "active"
+    assert after[goal_commitment_id("butter_1")]["mode"] == "overridden"
+    assert after[goal_commitment_id("alphabet_soup_1")]["mode"] == "active"
+    assert after[goal_commitment_id("cream_cheese_1")]["mode"] == "active"
