@@ -1,0 +1,7 @@
+[run_project_env] Using project-isolated LIBERO/OpenVLA environment for this subprocess only.
+[run_project_env] LD_LIBRARY_PATH is unset here to avoid the broken system CUDA nvJitLink path.
+cases=123 expectation_failures=62
+replacement_fullstate_v2: cases=61 expectation_failures=32 malformed_accepted=32
+cancellation_fullstate_v2: cases=50 expectation_failures=23 malformed_accepted=23
+main_fullstate_parser: cases=12 expectation_failures=7 malformed_accepted=7
+replay_csv_matches=TRUE
