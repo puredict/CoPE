@@ -24,7 +24,10 @@ from cope.repeated_replacement import (
 )
 from cope.semantic_replacement import RECEPTACLE
 from cope_benchmark.oracle_safety_telemetry import OracleSafetyTelemetry
-from cope_benchmark.oracle_skill_controller import LiberoOracleSkillController
+from cope_benchmark.oracle_skill_controller import (
+    LiberoOracleSkillController,
+    OracleSkillConfig,
+)
 from libero_experiment_core import (
     ExperimentConfig,
     create_libero_env,
@@ -48,6 +51,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--mode", choices=MODES, required=True)
     parser.add_argument("--resolution", type=int, default=64)
     parser.add_argument("--safety-telemetry", action="store_true")
+    parser.add_argument("--max-move-steps", type=int, default=40)
     parser.add_argument("--stage-descent-action-limit", type=float, default=1.0)
     parser.add_argument("--stage-offset-x-m", type=float, default=0.0)
     parser.add_argument("--stage-offset-y-m", type=float, default=0.0)
@@ -210,6 +214,8 @@ def stage_held_near_region(
 
 def main() -> int:
     args = parse_args()
+    if args.max_move_steps <= 0:
+        raise ValueError("max_move_steps must be positive")
     suite = get_benchmark_suite("libero_10")
     task = suite.get_task(1)
     states = list(suite.get_task_init_states(1))
@@ -227,6 +233,7 @@ def main() -> int:
         controller = LiberoOracleSkillController(
             env,
             observation,
+            config=OracleSkillConfig(max_move_steps=args.max_move_steps),
             step_observer=telemetry.record if telemetry else None,
         )
         warmup = controller.warmup()
@@ -414,6 +421,7 @@ def main() -> int:
             "oracle_execution": True,
             "oracle_operation_selection": True,
             "learned_policy_used": False,
+            "oracle_max_move_steps": args.max_move_steps,
             "warmup_steps": warmup.steps,
             "completed_progress_success": completed.success,
             "physical_truth_before_first_patch": physical_truth_before_first_patch,

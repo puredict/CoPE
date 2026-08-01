@@ -1,0 +1,13 @@
+Fresh-state recovery command record
+Date: 2026-08-01 Asia/Shanghai
+Remote worktree: /home/lijingsu/codex-worktrees/fsr-pc-v2-canary
+Preregistration commit: e4e923e22880f079a343c1ad450f0e8158b1e819
+
+For each state in 5 6 7 8 9 10 11 12 13 14 and each mode in
+stale_continue safe_return_switch local_stage_switch, run:
+
+CUDA_VISIBLE_DEVICES="" scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python experiments/oracle_interruption_timing_gate.py --state-id STATE --timing pre_release --mode MODE --safety-telemetry --output-csv research/fresh_state_recovery_2026-08-01/raw_v1_preregistered/stateSTATE_MODE.csv
+
+Standard output and error are retained in the same directory as
+stateSTATE_MODE.txt. The method defaults frozen by the preregistration are
+stage-descent-action-limit=1.0 and stage-offset-x/y=0.0.
