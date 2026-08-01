@@ -10,7 +10,6 @@ import statistics
 from pathlib import Path
 
 
-STATES = tuple(range(5, 15))
 MODES = ("stale_continue", "safe_return_switch", "local_stage_switch")
 PAIR_FIELDS = (
     "event_step",
@@ -53,6 +52,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-csv", type=Path, required=True)
     parser.add_argument("--output-report", type=Path, required=True)
     parser.add_argument("--prereg-commit", required=True)
+    parser.add_argument("--state-start", type=int, default=5)
+    parser.add_argument("--state-end", type=int, default=14)
+    parser.add_argument("--supersedes", default="")
     return parser.parse_args()
 
 
@@ -74,11 +76,14 @@ def hazardous(row: dict[str, str] | None) -> bool:
 
 def main() -> int:
     args = parse_args()
+    states = tuple(range(args.state_start, args.state_end + 1))
+    if len(states) != 10:
+        raise ValueError("this preregistered summarizer requires exactly 10 states")
     paired: dict[int, dict[str, dict[str, str] | None]] = {}
     failure_reason: dict[tuple[int, str], str] = {}
     prefix_valid: dict[int, bool] = {}
 
-    for state in STATES:
+    for state in states:
         state_rows: dict[str, dict[str, str] | None] = {}
         for mode in MODES:
             csv_path = args.raw_dir / f"state{state}_{mode}.csv"
@@ -151,7 +156,7 @@ def main() -> int:
         "source_log",
     )
     ledger: list[dict[str, object]] = []
-    for state in STATES:
+    for state in states:
         for mode in MODES:
             row = paired[state][mode]
             log_path = args.raw_dir / f"state{state}_{mode}.txt"
@@ -210,9 +215,9 @@ def main() -> int:
         writer.writeheader()
         writer.writerows(ledger)
 
-    stale = [paired[state]["stale_continue"] for state in STATES]
-    exact = [paired[state]["safe_return_switch"] for state in STATES]
-    local = [paired[state]["local_stage_switch"] for state in STATES]
+    stale = [paired[state]["stale_continue"] for state in states]
+    exact = [paired[state]["safe_return_switch"] for state in states]
+    local = [paired[state]["local_stage_switch"] for state in states]
     exact_success = sum(physical(row) for row in exact)
     local_success = sum(physical(row) for row in local)
     stale_negative = sum(
@@ -233,7 +238,7 @@ def main() -> int:
 
     paired_success_states = [
         state
-        for state in STATES
+        for state in states
         if physical(paired[state]["safe_return_switch"])
         and physical(paired[state]["local_stage_switch"])
     ]
@@ -295,7 +300,7 @@ def main() -> int:
         decision_code = "REJECT_PREREGISTERED_RULE"
 
     pair_lines: list[str] = []
-    for state in STATES:
+    for state in states:
         e = paired[state]["safe_return_switch"]
         l = paired[state]["local_stage_switch"]
         s = paired[state]["stale_continue"]
@@ -327,6 +332,21 @@ def main() -> int:
         f"paired mean delta {statistics.mean(impulse_deltas):+.2f} N·s"
         if impulse_deltas else "no paired physical successes"
     )
+    failure_states = [state for state in states if not prefix_valid[state]]
+    failure_text = (
+        "No assigned state was missing an event row."
+        if not failure_states
+        else (
+            f"States {failure_states} produced no event row in all three arms "
+            "because completed-progress validation found the cream-cheese "
+            "placement physically false. These are method-independent substrate "
+            "failures, retained on the assigned denominator and not technically retried."
+        )
+    )
+    supersedes_text = (
+        f"This report supersedes `{args.supersedes}`."
+        if args.supersedes else ""
+    )
     report = f"""# Preregistered fresh-state recovery result
 
 Date: 2026-08-01
@@ -334,19 +354,15 @@ Date: 2026-08-01
 Preregistration commit: `{args.prereg_commit}`
 
 Evidence class: privileged oracle mechanism experiment on previously
-uninspected LIBERO task-1 initial states 5–14. This is not learned-policy CoPE
+uninspected LIBERO task-1 initial states {args.state_start}–{args.state_end}. This is not learned-policy CoPE
 versus FSR-PC evidence and does not establish safety.
 
-This protocol-corrected report supersedes the preliminary `03_RESULT.md`,
-which incorrectly converted a C1 validity failure into method rejection.
+{supersedes_text}
 
 ## Assigned denominator and integrity
 
 Valid raw rows: {len(exact_present) + len(local_present) + sum(row is not None for row in stale)}/30.
-State 5 produced no event row in all three arms because completed-progress
-validation found the cream-cheese placement physically false. This is a
-method-independent substrate failure, retained on the assigned denominator and
-not technically retried. States with complete matching prefixes: {prefix_count}/10.
+{failure_text} States with complete matching prefixes: {prefix_count}/10.
 
 | Endpoint | Stale continue | Exact return | Local stage |
 |---|---:|---:|---:|
@@ -389,11 +405,12 @@ Peak proxy: {peak_summary}. Impulse proxy: {impulse_summary}.
 Decision: **{decision}**.
 
 The frozen protocol states that a C1 failure invalidates the assigned
-comparison, whereas failure of C2–C5 rejects local staging. Therefore the
-state-5 method-independent substrate failure makes this run inconclusive for
-the retain/reject decision. The nine event-qualified pairs remain conditional
-mechanism evidence, but they cannot repair the assigned-denominator validity
-failure. States 5–14 may not be reused as fresh data for a modified rule.
+comparison, whereas failure of C2–C5 rejects local staging. Any
+method-independent substrate failure therefore makes this run inconclusive for
+the retain/reject decision. Event-qualified pairs remain conditional mechanism
+evidence, but cannot repair an assigned-denominator validity failure. States
+{args.state_start}–{args.state_end} may not be reused as fresh data for a
+modified rule.
 """
     args.output_report.parent.mkdir(parents=True, exist_ok=True)
     args.output_report.write_text(report, encoding="utf-8")
