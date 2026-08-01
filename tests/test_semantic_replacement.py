@@ -131,6 +131,47 @@ def test_wrong_lifecycle_or_lineage_is_rejected() -> None:
         validate(event, broken)
 
 
+def test_canonical_persistent_sections_are_event_bound_and_complete() -> None:
+    event, state = valid_pair()
+    corruptions = []
+    broken = copy.deepcopy(state)
+    broken["progress_ledger"][0]["physically_valid"] = False
+    corruptions.append(broken)
+    broken = copy.deepcopy(state)
+    broken["plan"][0]["arguments"][0] = "butter_1"
+    corruptions.append(broken)
+    broken = copy.deepcopy(state)
+    broken["entities"].pop()
+    corruptions.append(broken)
+    broken = copy.deepcopy(state)
+    broken["evidence_versions"]["world_version"] = -1
+    corruptions.append(broken)
+    broken = copy.deepcopy(state)
+    broken["pending_restorations"].append({"target_id": "obsolete"})
+    corruptions.append(broken)
+    broken = copy.deepcopy(state)
+    broken["commitments"][0]["owner"] = "model"
+    corruptions.append(broken)
+    for corrupted in corruptions:
+        with pytest.raises(FullStateValidationError):
+            validate(event, corrupted)
+
+
+def test_duplicate_goal_atom_and_already_completed_pending_goal_are_rejected() -> None:
+    event, state = valid_pair()
+    state["current_goal"]["all"].append(copy.deepcopy(state["current_goal"]["all"][0]))
+    with pytest.raises(FullStateValidationError):
+        validate(event, state)
+    _, canonical = valid_pair()
+    with pytest.raises(FullStateValidationError, match="already physically satisfied"):
+        validate_oracle_full_state(
+            canonical,
+            event,
+            previous_state_version=0,
+            physically_true_objects=("cream_cheese_1", "butter_1"),
+        )
+
+
 def test_current_goal_success_requires_replacement_and_retained_progress() -> None:
     event, state = valid_pair()
     assert current_goal_success(

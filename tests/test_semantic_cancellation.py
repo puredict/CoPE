@@ -88,6 +88,32 @@ def test_cancelled_commitment_cannot_remain_active_or_in_plan() -> None:
         validate(event, broken)
 
 
+def test_cancellation_requires_canonical_progress_entities_evidence_and_provenance() -> None:
+    event, state = valid_pair()
+    corruptions = []
+    broken = copy.deepcopy(state)
+    broken["progress_ledger"] = []
+    corruptions.append(broken)
+    broken = copy.deepcopy(state)
+    broken["entities"][0]["kind"] = "region"
+    corruptions.append(broken)
+    broken = copy.deepcopy(state)
+    broken["evidence_versions"]["event_id"] = "other-event"
+    corruptions.append(broken)
+    broken = copy.deepcopy(state)
+    broken["pending_restorations"].append({"target_id": "obsolete"})
+    corruptions.append(broken)
+    broken = copy.deepcopy(state)
+    broken["commitments"][0]["source"] = "model"
+    corruptions.append(broken)
+    broken = copy.deepcopy(state)
+    broken["commitments"][0].pop("predicate")
+    corruptions.append(broken)
+    for corrupted in corruptions:
+        with pytest.raises(FullStateValidationError):
+            validate(event, corrupted)
+
+
 def test_cancellation_compliance_detects_stale_execution_and_progress_loss() -> None:
     event, _ = valid_pair()
     assert not cancellation_compliance(

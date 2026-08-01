@@ -221,6 +221,73 @@ def _require_mapping(value: Any, label: str) -> Mapping[str, Any]:
     return value
 
 
+def _mapping_list_by_id(value: Any, *, label: str, id_field: str) -> dict[str, Mapping[str, Any]]:
+    if not isinstance(value, list):
+        raise FullStateValidationError(f"{label} must be a list")
+    result: dict[str, Mapping[str, Any]] = {}
+    for index, raw in enumerate(value):
+        item = _require_mapping(raw, f"{label}[{index}]")
+        identifier = item.get(id_field)
+        if not isinstance(identifier, str) or not identifier:
+            raise FullStateValidationError(f"{label}[{index}].{id_field} must be nonempty")
+        if identifier in result:
+            raise FullStateValidationError(f"duplicate {label} {id_field} {identifier!r}")
+        result[identifier] = item
+    return result
+
+
+def validate_canonical_task_sections(
+    state: Mapping[str, Any],
+    canonical: Mapping[str, Any],
+) -> None:
+    """Validate persistent sections shared by native rewrites and materialized patches.
+
+    The canonical builders are event-bound and deterministic. Comparing their
+    semantic sections closes omissions without trusting provider prose. Current
+    goal and event authorization remain event-specific checks in the callers.
+    """
+
+    actual_commitments = _mapping_list_by_id(
+        state.get("commitments"), label="commitments", id_field="id"
+    )
+    expected_commitments = _mapping_list_by_id(
+        canonical.get("commitments"), label="canonical commitments", id_field="id"
+    )
+    if actual_commitments != expected_commitments:
+        raise FullStateValidationError(
+            "commitment semantics, authority, provenance, or lineage are non-canonical"
+        )
+
+    actual_entities = _mapping_list_by_id(
+        state.get("entities"), label="entities", id_field="id"
+    )
+    expected_entities = _mapping_list_by_id(
+        canonical.get("entities"), label="canonical entities", id_field="id"
+    )
+    if actual_entities != expected_entities:
+        raise FullStateValidationError("task-relevant entity closure is non-canonical")
+
+    actual_progress = _mapping_list_by_id(
+        state.get("progress_ledger"),
+        label="progress_ledger",
+        id_field="milestone_id",
+    )
+    expected_progress = _mapping_list_by_id(
+        canonical.get("progress_ledger"),
+        label="canonical progress_ledger",
+        id_field="milestone_id",
+    )
+    if actual_progress != expected_progress:
+        raise FullStateValidationError("progress ledger does not match witnessed progress")
+
+    if state.get("plan") != canonical.get("plan"):
+        raise FullStateValidationError("plan does not implement the authorized current goal")
+    if state.get("pending_restorations") != canonical.get("pending_restorations"):
+        raise FullStateValidationError("pending restorations were not authorized by the event")
+    if state.get("evidence_versions") != canonical.get("evidence_versions"):
+        raise FullStateValidationError("evidence versions do not bind to the current event and state")
+
+
 def validate_oracle_full_state(
     state: Mapping[str, Any],
     event: Mapping[str, Any],
@@ -243,8 +310,11 @@ def validate_oracle_full_state(
         raise FullStateValidationError("replacement object is invalid")
     if event.get("target_commitment_id") != goal_commitment_id(pending_object):
         raise FullStateValidationError("event targets the wrong commitment")
-    if done_object not in set(physically_true_objects):
+    physically_true = set(physically_true_objects)
+    if done_object not in physically_true:
         raise FullStateValidationError("claimed completed milestone is not physically true")
+    if pending_object in physically_true:
+        raise FullStateValidationError("pending commitment is already physically satisfied")
 
     commitments = state.get("commitments")
     if not isinstance(commitments, list) or len(commitments) != 3:
@@ -276,7 +346,7 @@ def validate_oracle_full_state(
 
     goal = _require_mapping(state.get("current_goal"), "current_goal")
     atoms = goal.get("all")
-    if not isinstance(atoms, list):
+    if not isinstance(atoms, list) or len(atoms) != 2:
         raise FullStateValidationError("current_goal.all must be a list")
     normalized = {
         (atom.get("predicate"), tuple(atom.get("arguments", ())))
@@ -289,6 +359,12 @@ def validate_oracle_full_state(
     }
     if normalized != expected_atoms:
         raise FullStateValidationError("current goal is not the authorized post-event conjunction")
+
+    canonical = build_oracle_full_state(
+        event,
+        previous_state_version=previous_state_version,
+    )
+    validate_canonical_task_sections(state, canonical)
 
 
 def compile_controller_prompt(state: Mapping[str, Any]) -> str:

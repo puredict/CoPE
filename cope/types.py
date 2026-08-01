@@ -27,6 +27,8 @@ PATCH_OPERATION_TYPES: tuple[str, ...] = (
     "Expire",
 )
 
+FULL_STATE_OUTPUT_SCHEMA = "full-state-v1"
+
 
 def canonical_json(value: Any) -> str:
     return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
@@ -144,12 +146,18 @@ class FullStateOutput:
     def from_mapping(cls, value: Any) -> "FullStateOutput":
         data = _require_mapping(value, "full-state output")
         schema_version = _require_nonempty_string(data.get("schema_version"), "schema_version")
+        if schema_version != FULL_STATE_OUTPUT_SCHEMA:
+            raise ValueError(f"unsupported full-state schema {schema_version!r}")
         constraints = data.get("constraints")
         plan = data.get("plan")
         if not isinstance(constraints, list) or not all(isinstance(item, Mapping) for item in constraints):
             raise ValueError("constraints must be a list of objects")
+        if not constraints:
+            raise ValueError("constraints must contain at least one task commitment")
         if not isinstance(plan, list) or not all(isinstance(item, Mapping) for item in plan):
             raise ValueError("plan must be a list of objects")
+        if not plan:
+            raise ValueError("plan must contain at least one nonterminal step")
         normalized_constraints: list[dict[str, Any]] = []
         seen_ids: set[str] = set()
         for index, item in enumerate(constraints):
@@ -158,13 +166,55 @@ class FullStateOutput:
             if constraint_id in seen_ids:
                 raise ValueError(f"duplicate regenerated constraint id {constraint_id!r}")
             seen_ids.add(constraint_id)
+            _require_nonempty_string(normalized.get("source"), f"constraints[{index}].source")
+            priority = normalized.get("priority")
+            if isinstance(priority, bool) or not isinstance(priority, int) or priority < 0:
+                raise ValueError(f"constraints[{index}].priority must be a nonnegative integer")
+            lineage = normalized.get("lineage")
+            if not isinstance(lineage, list) or not all(
+                isinstance(identifier, str) and identifier for identifier in lineage
+            ):
+                raise ValueError(f"constraints[{index}].lineage must be a list of stable IDs")
             normalized_constraints.append(normalized)
+        normalized_plan = tuple(dict(item) for item in plan)
+        diagnostic_prompt = _require_nonempty_string(
+            data.get("controller_prompt"), "controller_prompt"
+        )
+        compiled_prompt = cls.compile_controller_prompt(
+            tuple(normalized_constraints), normalized_plan
+        )
+        if diagnostic_prompt != compiled_prompt:
+            raise ValueError("controller_prompt does not match the neutral full-state compiler")
         return cls(
             schema_version=schema_version,
             constraints=tuple(normalized_constraints),
-            plan=tuple(dict(item) for item in plan),
-            controller_prompt=_require_nonempty_string(data.get("controller_prompt"), "controller_prompt"),
+            plan=normalized_plan,
+            controller_prompt=compiled_prompt,
         )
+
+    @staticmethod
+    def compile_controller_prompt(
+        constraints: tuple[dict[str, Any], ...],
+        plan: tuple[dict[str, Any], ...],
+    ) -> str:
+        candidates = [
+            item
+            for item in constraints
+            if isinstance(item.get("text"), str) and str(item["text"]).strip()
+        ]
+        if not candidates:
+            raise ValueError("neutral full-state compiler requires a textual task commitment")
+        selected = sorted(
+            candidates,
+            key=lambda item: (-int(item["priority"]), str(item["id"])),
+        )[0]
+        task = str(selected["text"]).strip()
+        requires_relocalization = any(
+            "relocalize" in canonical_json(step).lower() for step in plan
+        )
+        if requires_relocalization:
+            return f"relocalize the affected object at its current position, then {task}"
+        return task
 
     def as_payload(self) -> dict[str, Any]:
         return asdict(self)

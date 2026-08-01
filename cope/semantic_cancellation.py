@@ -9,6 +9,7 @@ from cope.semantic_replacement import (
     FullStateValidationError,
     MilestoneEvent,
     goal_commitment_id,
+    validate_canonical_task_sections,
 )
 from cope.operations import apply_patch
 from cope.schema import (
@@ -152,6 +153,12 @@ def validate_oracle_cancellation_state(
         raise FullStateValidationError("current goal does not match cancellation")
     if state.get("plan") != [] or state.get("execution_directive") != "HALT":
         raise FullStateValidationError("cancelled terminal state must compile to HALT")
+
+    canonical = build_oracle_cancellation_state(
+        event,
+        previous_state_version=previous_state_version,
+    )
+    validate_canonical_task_sections(state, canonical)
 
 
 def compile_execution_directive(state: Mapping[str, Any]) -> str:
