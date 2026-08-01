@@ -1,0 +1,17 @@
+case_id,dimension,expected_accept,actual_accept,expectation_met,compiled_prompt_unchanged,validation_error
+valid,control,True,True,True,,
+wrong_schema,schema,False,False,True,,wrong full-state schema
+stale_state_version,version,False,False,True,,state version is stale or skips a revision
+unauthorized_event,authority,False,False,True,,event is not authorized to replace the task goal
+duplicate_commitment,identity,False,False,True,,duplicate commitment id 'goal:in:cream_cheese_1:basket_1_contain_region'
+wrong_lifecycle,lifecycle,False,False,True,,commitment lifecycle statuses do not match the event
+missing_supersession,lineage,False,False,True,,replacement does not preserve supersession lineage
+wrong_current_goal,goal,False,False,True,,current goal is not the authorized post-event conjunction
+missing_progress_ledger,progress,False,True,False,,
+false_progress_ledger,progress,False,True,False,,
+missing_plan,plan,False,True,False,,
+wrong_plan_object,plan,False,True,False,,
+missing_entities,entities,False,True,False,,
+stale_evidence_version,evidence,False,True,False,,
+missing_evidence_versions,evidence,False,True,False,,
+malicious_diagnostic_prompt,compiler_isolation,True,True,True,True,

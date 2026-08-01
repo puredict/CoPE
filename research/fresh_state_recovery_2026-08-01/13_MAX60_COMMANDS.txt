@@ -1,0 +1,10 @@
+Max-60 fresh-state command record
+Date: 2026-08-01 Asia/Shanghai
+Preregistration commit: 7e7b6ce9cc87e6c880886bcbbd731177544c3099
+States: 15 16 17 18 19 20 21 22 23 24
+Modes: stale_continue safe_return_switch local_stage_switch
+
+CUDA_VISIBLE_DEVICES="" scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python experiments/oracle_interruption_timing_gate.py --state-id STATE --timing pre_release --mode MODE --safety-telemetry --max-move-steps 60 --output-csv research/fresh_state_recovery_2026-08-01/max60_raw_v1_preregistered/stateSTATE_MODE.csv
+
+Standard output and error are retained as stateSTATE_MODE.txt. Staging offset
+defaults to zero and staging descent action limit defaults to 1.0.
