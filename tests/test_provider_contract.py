@@ -119,3 +119,31 @@ def test_full_state_output_rejects_noncanonical_structure(mutation: str) -> None
         payload["plan"] = []
     with pytest.raises(ValueError):
         FullStateOutput.from_mapping(payload)
+
+
+def test_neutral_full_state_compiler_is_order_invariant_and_priority_driven() -> None:
+    constraints = [
+        {
+            "id": "secondary",
+            "source": "task",
+            "priority": 10,
+            "lineage": [],
+            "text": "secondary instruction",
+        },
+        {
+            "id": "primary",
+            "source": "task",
+            "priority": 100,
+            "lineage": [],
+            "text": "primary instruction",
+        },
+    ]
+    payload = {
+        "schema_version": "full-state-v1",
+        "constraints": constraints,
+        "plan": [{"step": "complete accepted state"}],
+        "controller_prompt": "primary instruction",
+    }
+    first = FullStateOutput.from_mapping(payload)
+    second = FullStateOutput.from_mapping({**payload, "constraints": list(reversed(constraints))})
+    assert first.controller_prompt == second.controller_prompt == "primary instruction"

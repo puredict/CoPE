@@ -114,6 +114,29 @@ def test_cancellation_requires_canonical_progress_entities_evidence_and_provenan
             validate(event, corrupted)
 
 
+def test_cancellation_validator_generalizes_to_other_done_sibling_and_order() -> None:
+    event = build_cancellation_event(
+        MilestoneEvent(
+            policy_step=177,
+            done_object="butter_1",
+            pending_object="cream_cheese_1",
+            stable_steps=5,
+        ),
+        pair_key="different-pair",
+        previous_state_version=3,
+    )
+    state = build_oracle_cancellation_state(event, previous_state_version=3)
+    state["commitments"].reverse()
+    state["entities"].reverse()
+    state["audit_note"] = "top-level diagnostic metadata is not executable"
+    validate_oracle_cancellation_state(
+        state,
+        event,
+        previous_state_version=3,
+        physically_true_objects=("butter_1",),
+    )
+
+
 def test_cancellation_compliance_detects_stale_execution_and_progress_loss() -> None:
     event, _ = valid_pair()
     assert not cancellation_compliance(

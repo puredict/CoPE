@@ -172,6 +172,25 @@ def test_duplicate_goal_atom_and_already_completed_pending_goal_are_rejected() -
         )
 
 
+def test_canonical_validator_generalizes_across_versions_objects_and_list_order() -> None:
+    event = build_replacement_event(
+        milestone(),
+        pair_key="different-pair",
+        previous_state_version=5,
+        replacement_object="milk_1",
+    )
+    state = build_oracle_full_state(event, previous_state_version=5)
+    state["commitments"].reverse()
+    state["entities"].reverse()
+    state["audit_note"] = "top-level diagnostic metadata is not executable"
+    validate_oracle_full_state(
+        state,
+        event,
+        previous_state_version=5,
+        physically_true_objects=("cream_cheese_1",),
+    )
+
+
 def test_current_goal_success_requires_replacement_and_retained_progress() -> None:
     event, state = valid_pair()
     assert current_goal_success(
