@@ -1,0 +1,10 @@
+X09 two-state Oracle pilot command record
+Date: 2026-08-02 Asia/Shanghai
+
+Focused tests before implementation commit:
+CUDA_VISIBLE_DEVICES="" scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python -m pytest -q tests/test_semantic_oracle_pilot.py tests/test_live_semantic_runner.py
+
+Assigned run after a clean implementation commit:
+CUDA_VISIBLE_DEVICES="" scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python experiments/semantic_oracle_pilot.py --authorization research/semantic_oracle_pilot_2026-08-02/01_AUTHORIZATION.csv --result-csv research/semantic_oracle_pilot_2026-08-02/03_ASSIGNED_RESULTS.csv --pair-audit-csv research/semantic_oracle_pilot_2026-08-02/04_PAIR_AUDIT.csv
+
+No output may be overwritten. States 27--49 are forbidden.
