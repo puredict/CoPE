@@ -100,6 +100,10 @@ def decomposed_violations(
     post_commitments = _records(candidate.get("commitments"), "identity_lifecycle", add)
     pre_entities = _records(pre.get("entities"), "restoration_entity", add)
     post_entities = _records(candidate.get("entities"), "restoration_entity", add)
+    pre_commitment_order = list(pre_commitments)
+    post_commitment_order = [row.get("id") for row in candidate.get("commitments", []) if isinstance(row, Mapping)]
+    pre_entity_order = list(pre_entities)
+    post_entity_order = [row.get("id") for row in candidate.get("entities", []) if isinstance(row, Mapping)]
     pre_goal = _goal_atoms(pre.get("current_goal"), add)
     post_goal = _goal_atoms(candidate.get("current_goal"), add)
 
@@ -108,15 +112,24 @@ def decomposed_violations(
     replacement_id = event.get("replacement_id")
     affected_ids = {item for item in (target_id, override_id, replacement_id) if isinstance(item, str)}
     for record_id, record in pre_commitments.items():
+        if record_id in post_commitments and set(post_commitments[record_id]) != set(record):
+            add("identity_lifecycle", f"commitment_field_set_changed:{record_id}")
         if record_id not in affected_ids and post_commitments.get(record_id) != record:
             add("unaffected_scope", f"commitment_changed:{record_id}")
     expected_ids = set(pre_commitments)
+    expected_commitment_order = list(pre_commitment_order)
     if event_type == "replace_commitment" and isinstance(replacement_id, str):
         expected_ids.add(replacement_id)
+        if replacement_id not in expected_commitment_order:
+            expected_commitment_order.append(replacement_id)
     if event_type == "activate_override" and isinstance(override_id, str):
         expected_ids.add(override_id)
+        if override_id not in expected_commitment_order:
+            expected_commitment_order.append(override_id)
     if set(post_commitments) != expected_ids:
         add("identity_lifecycle", "commitment_id_set_incorrect")
+    if post_commitment_order != expected_commitment_order:
+        add("identity_lifecycle", "commitment_order_incorrect")
 
     expected_goal = copy.deepcopy(pre_goal)
 
@@ -133,6 +146,10 @@ def decomposed_violations(
     expected_plan = copy.deepcopy(pre.get("plan"))
     expected_restorations = copy.deepcopy(pre.get("pending_restorations"))
     expected_entity_ids = set(pre_entities)
+    expected_entity_order = list(pre_entity_order)
+    for entity_id, entity in pre_entities.items():
+        if entity_id in post_entities and set(post_entities[entity_id]) != set(entity):
+            add("restoration_entity", f"entity_field_set_changed:{entity_id}")
 
     if event_type == "cancel_commitment":
         target = post_commitments.get(str(target_id), {})
@@ -180,6 +197,8 @@ def decomposed_violations(
                 "status": "pending", "cancellation_reason": None,
             }]
             expected_entity_ids.add(str(grounding[0]))
+            if str(grounding[0]) not in expected_entity_order:
+                expected_entity_order.append(str(grounding[0]))
             if post_entities.get(str(grounding[0])) != {"id": grounding[0], "kind": "object"}:
                 add("restoration_entity", "replacement_entity_missing_or_wrong")
     elif event_type == "activate_override":
@@ -240,6 +259,8 @@ def decomposed_violations(
                 "status": "pending", "cancellation_reason": None,
             }]
             expected_entity_ids.add(str(grounding[1]))
+            if str(grounding[1]) not in expected_entity_order:
+                expected_entity_order.append(str(grounding[1]))
             if str(grounding[1]) not in pre_entities and post_entities.get(str(grounding[1])) != {"id": grounding[1], "kind": "region"}:
                 add("restoration_entity", "released_region_entity_missing_or_wrong")
         restoration = {"target_id": target_id, "override_id": override_id}
@@ -263,6 +284,8 @@ def decomposed_violations(
         add("restoration_entity", "restoration_records_incorrect")
     if set(post_entities) != expected_entity_ids:
         add("restoration_entity", "entity_id_set_incorrect")
+    if post_entity_order != expected_entity_order:
+        add("restoration_entity", "entity_order_incorrect")
     for entity_id, entity in pre_entities.items():
         if post_entities.get(entity_id) != entity:
             add("unaffected_scope", f"entity_changed:{entity_id}")

@@ -41,3 +41,23 @@ def test_unaffected_sibling_corruption_is_rejected():
     with pytest.raises(DecomposedValidationError) as caught:
         validate_decomposed(candidate, case.pre_state, case.event)
     assert "unaffected_scope" in caught.value.violations
+
+
+@pytest.mark.parametrize("field", ["commitments", "entities"])
+def test_canonical_record_order_is_enforced(field):
+    case = next(item for item in load_manifest(CASES) if item.case_id == "cancel_sibling")
+    candidate = state_without_history(derive_post_state(case.pre_state, case.event))
+    candidate[field].reverse()
+    with pytest.raises(DecomposedValidationError) as caught:
+        validate_decomposed(candidate, case.pre_state, case.event)
+    expected_group = "identity_lifecycle" if field == "commitments" else "restoration_entity"
+    assert expected_group in caught.value.violations
+
+
+def test_surplus_field_on_affected_commitment_is_rejected():
+    case = next(item for item in load_manifest(CASES) if item.case_id == "replace_pending_target")
+    candidate = state_without_history(derive_post_state(case.pre_state, case.event))
+    next(item for item in candidate["commitments"] if item["id"] == "deliver:b")["extra"] = True
+    with pytest.raises(DecomposedValidationError) as caught:
+        validate_decomposed(candidate, case.pre_state, case.event)
+    assert "identity_lifecycle" in caught.value.violations
