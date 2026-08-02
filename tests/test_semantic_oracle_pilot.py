@@ -100,3 +100,12 @@ def test_pair_audit_rejects_policy_budget_overrun() -> None:
     audit = audit_pairs(rows)
     assert audit[0]["budgets_respected"] is False
     assert audit[0]["pair_passed"] is False
+
+
+def test_pair_audit_never_treats_two_missing_values_as_equal() -> None:
+    rows = [arm_row(arm) for arm in ARMS]
+    for row in rows:
+        row["event_packet_sha256"] = ""
+    audit = audit_pairs(rows)
+    assert audit[0]["event_packet_equal"] is False
+    assert audit[0]["pair_passed"] is False

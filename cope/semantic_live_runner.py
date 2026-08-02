@@ -229,10 +229,18 @@ def run_semantic_wiring(
     independently_logged_predicates: Mapping[str, bool],
     simulator_state_before: str,
     controller_action_count_before: int,
+    authorized_state_ids: Sequence[int] | None = None,
 ) -> dict[str, Any]:
     state_id = int(row["state_id"])
-    if state_id not in DEVELOPMENT_STATE_IDS:
-        raise ValueError("reserved or unregistered state access rejected")
+    allowed_states = (
+        DEVELOPMENT_STATE_IDS
+        if authorized_state_ids is None
+        else frozenset(int(item) for item in authorized_state_ids)
+    )
+    if not allowed_states:
+        raise ValueError("caller-authorized state set cannot be empty")
+    if state_id not in allowed_states:
+        raise ValueError("state is outside the caller-authorized semantic set")
     milestone = MilestoneEvent(
         policy_step=int(observation["predicate_snapshot"]["policy_step"]),
         done_object=row["done_object"],

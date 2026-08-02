@@ -303,12 +303,24 @@ def run_arm(
         enable_auto_disturbance=False,
     )
     env = None
+    row.update(
+        {
+            "runtime_git_commit": runtime_commit,
+            "authorization_sha256": authorization.sha256,
+            "source_manifest_sha256": authorization.manifest_sha256,
+            "semantic_config_sha256": authorization.semantic_config.sha256,
+            "controller_config_sha256": stable_hash(asdict(CONTROLLER_CONFIG)),
+            "resolution": int(authorization.row["resolution"]),
+            "seed": state_id,
+        }
+    )
     try:
         set_seed(state_id)
         initial_state = initial_states[state_id]
         initial_hash = __import__("hashlib").sha256(
             np.asarray(initial_state).tobytes()
         ).hexdigest()
+        row["initial_state_sha256"] = initial_hash
         env, prompt = create_libero_env(task, cfg)
         env.reset()
         observation = env.set_init_state(initial_state)
@@ -380,6 +392,22 @@ def run_arm(
             "pending": _position(controller, PENDING_OBJECT),
             "replacement": _position(controller, REPLACEMENT_OBJECT),
         }
+        row.update(
+            {
+                "prefix_action_sha256": prefix_hash,
+                "prefix_action_count": prefix_count,
+                "event_policy_step": controller.total_steps,
+                "event_simulator_sha256": sim_before,
+                "checkpoint_pose_sha256": stable_hash(checkpoint_pose),
+                "checkpoint_eef_position": json.dumps(checkpoint_pose["eef"]),
+                "checkpoint_done_position": json.dumps(checkpoint_pose["done"]),
+                "checkpoint_pending_position": json.dumps(checkpoint_pose["pending"]),
+                "checkpoint_replacement_position": json.dumps(
+                    checkpoint_pose["replacement"]
+                ),
+                "stable_steps_observed": len(stability_trace),
+            }
+        )
         outer_observation = observation_packet(
             controller.observation,
             resolution=int(authorization.row["resolution"]),
@@ -395,6 +423,14 @@ def run_arm(
             policy_step=controller.total_steps,
             simulator_state_sha256=sim_before,
         )
+        row.update(
+            {
+                "event_rgb_sha256": live_observation["sha256"],
+                "event_packet_sha256": live_observation["predicate_snapshot"][
+                    "snapshot_sha256"
+                ],
+            }
+        )
         semantic = run_semantic_wiring(
             row=semantic_row,
             config=authorization.semantic_config,
@@ -404,6 +440,7 @@ def run_arm(
             independently_logged_predicates=independent,
             simulator_state_before=sim_before,
             controller_action_count_before=prefix_count,
+            authorized_state_ids=AUTHORIZED_STATES,
         )
         semantic = finalize_mutation_accounting(
             semantic,
@@ -414,6 +451,25 @@ def run_arm(
         )
         if semantic["passed"] is not True:
             raise RuntimeError("X04 semantic wiring failed inside the pilot episode")
+
+        row.update(
+            {
+                "event_recovery_input_sha256": semantic[
+                    "native_recovery_input_sha256"
+                ],
+                "semantic_pass": semantic["semantic_pass"],
+                "canonical_states_equal": semantic["canonical_states_equal"],
+                "directives_equal": semantic["directives_equal"],
+                "provider_called": semantic["provider_called"],
+                "validator_is_fake": semantic["validator_is_fake"],
+                "semantic_simulator_unchanged": semantic[
+                    "simulator_unchanged_by_semantics"
+                ],
+                "semantic_actions_unchanged": semantic[
+                    "controller_actions_unchanged_by_semantics"
+                ],
+            }
+        )
 
         directive = json.loads(semantic["compiled_directive"])
         policy_actions = 0
@@ -474,13 +530,6 @@ def run_arm(
         )
         row.update(
             {
-                "runtime_git_commit": runtime_commit,
-                "authorization_sha256": authorization.sha256,
-                "source_manifest_sha256": authorization.manifest_sha256,
-                "semantic_config_sha256": authorization.semantic_config.sha256,
-                "controller_config_sha256": stable_hash(asdict(CONTROLLER_CONFIG)),
-                "resolution": int(authorization.row["resolution"]),
-                "seed": state_id,
                 "initial_state_sha256": initial_hash,
                 "prefix_action_sha256": prefix_hash,
                 "prefix_action_count": prefix_count,
@@ -535,6 +584,16 @@ def run_arm(
             }
         )
         return row
+    except Exception as exc:
+        row.update(
+            {
+                "failure_stage": "pilot_episode",
+                "error_type": type(exc).__name__,
+                "error_message": str(exc),
+                "passed": False,
+            }
+        )
+        return row
     finally:
         if env is not None:
             env.close()
@@ -568,15 +627,32 @@ def audit_pairs(rows: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]:
             and all(item.get("passed") in (True, "True", "true") for item in pair),
         }
         for output_name, field in equality_fields.items():
-            audit[output_name] = len(pair) == 2 and len(
-                {str(item.get(field, "")) for item in pair}
-            ) == 1
-        audit["budgets_respected"] = len(pair) == 2 and all(
-            int(item.get("post_event_policy_actions") or 0)
-            <= int(item.get("post_event_policy_action_budget") or 0)
-            and int(item.get("verification_hold_steps_observed") or 0)
-            == int(item.get("verification_hold_steps_required") or 0)
-            for item in pair
+            values = [item.get(field) for item in pair]
+            audit[output_name] = (
+                len(pair) == 2
+                and all(value not in (None, "") for value in values)
+                and len({str(value) for value in values}) == 1
+            )
+        required_budget_fields = (
+            "post_event_policy_actions",
+            "post_event_policy_action_budget",
+            "verification_hold_steps_observed",
+            "verification_hold_steps_required",
+        )
+        audit["budgets_respected"] = (
+            len(pair) == 2
+            and all(
+                item.get(field) not in (None, "")
+                for item in pair
+                for field in required_budget_fields
+            )
+            and all(
+                int(item["post_event_policy_actions"])
+                <= int(item["post_event_policy_action_budget"])
+                and int(item["verification_hold_steps_observed"])
+                == int(item["verification_hold_steps_required"])
+                for item in pair
+            )
         )
         audit["pair_passed"] = all(
             audit.get(field) in (True, "True", "true")

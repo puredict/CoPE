@@ -252,6 +252,27 @@ def test_packet_simulator_binding_is_not_format_only() -> None:
         )
 
 
+def test_explicit_pilot_authorization_does_not_weaken_default_state_lock() -> None:
+    row = frozen_row(25, "cancel_pending_goal")
+    kwargs = {
+        "row": row,
+        "config": synthetic_config(),
+        "original_task": "put both objects in the basket",
+        "observation": semantic_observation(row),
+        "public_action_history": (),
+        "independently_logged_predicates": {
+            "cream_cheese_1": True,
+            "butter_1": False,
+        },
+        "simulator_state_before": SIM_HASH,
+        "controller_action_count_before": 120,
+    }
+    with pytest.raises(ValueError, match="caller-authorized semantic set"):
+        run_semantic_wiring(**kwargs)
+    authorized = run_semantic_wiring(**kwargs, authorized_state_ids={25, 26})
+    assert authorized["semantic_pass"] is True
+
+
 def test_mutation_accounting_rejects_action_or_state_change() -> None:
     result = finalize_mutation_accounting(
         {"semantic_pass": True},
