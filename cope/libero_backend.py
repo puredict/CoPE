@@ -15,6 +15,7 @@ from cope.config import ComparisonConfig
 from cope.detector import DetectorFactory, RecoveryEventDetector
 from cope.methods.base import MethodExecutionError, RecoveryMethod
 from cope.pairing import PairSpec
+from cope.libero_predicate_validator import attach_libero_predicate_snapshot
 from cope.providers.base import HighLevelRecoveryProvider, provider_call_record
 from cope.runner import RunContext
 from cope.types import MethodDecision, RecoveryInput, stable_hash
@@ -359,6 +360,17 @@ class LiberoComparisonBackend:
                         "height": int(frame.shape[0]),
                         "fresh": True,
                     }
+                    observation_packet = attach_libero_predicate_snapshot(
+                        observation_packet,
+                        env,
+                        engine_config=self.config.engine,
+                        observation_fields=self.config.information_budget.observation_fields,
+                        task_suite=self.config.task_suite,
+                        task_id=pair.task_id,
+                        event_id=str(candidate_packet.get("event_id", "")),
+                        policy_step=policy_step,
+                        simulator_state_sha256=_simulator_state_hash(env),
+                    )
                     task_progress = {
                         "source": "libero_sparse_reward",
                         "latest_reward": float(reward),
