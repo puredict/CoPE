@@ -1,0 +1,4 @@
+focused decomposed/predicate suites: 14 passed in 0.42s
+complete repository regression: 445 passed in 47.25s
+remote branch: codex/cope-formal-integration
+repair commit: 04b3c44
