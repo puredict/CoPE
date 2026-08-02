@@ -3,8 +3,9 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from cope.native_ntrack import build_case, expected_patch
+from cope.native_ntrack import build_case, derive_post_state, expected_patch, state_without_history
 from cope.providers.openai_compatible import OpenAICompatibleRecoveryProvider, normalized_wire_request_hash
+from experiments.native_output_ntrack import run_pair
 
 
 class _Response:
@@ -44,3 +45,33 @@ def test_nonfake_adapter_has_matched_common_input_and_redacts_credential(monkeyp
     assert "secret-value" not in json.dumps(patch_call.raw_request)
     assert "secret-value" not in json.dumps(patch_call.raw_response)
     assert len(captured) == 2
+
+
+def test_oracle_transport_controls_pass_fairness_and_shared_validator(monkeypatch) -> None:
+    monkeypatch.setenv("TEST_PROVIDER_KEY", "secret-value")
+    provider = OpenAICompatibleRecoveryProvider({
+        "provider": "test-real-adapter", "model": "frozen-model-version",
+        "api_key_env": "TEST_PROVIDER_KEY", "max_retries": 0,
+    })
+    case_ids = [
+        "no_op", "cancel_sibling", "replace_pending_target", "activate_override",
+        "release_override", "world_change_release", "wrong_source_revoke", "stale_version",
+        "idempotence", "irrelevant_sibling_change", "continuity_valid", "continuity_invalid",
+    ]
+    for case_id in case_ids:
+        case = build_case(case_id, "control", "oracle", "test_only")
+        outputs = [
+            expected_patch(case.pre_state, case.event),
+            state_without_history(derive_post_state(case.pre_state, case.event)),
+        ]
+        def fake_urlopen(req, timeout):
+            return _Response({
+                "id": "request-id", "choices": [{"message": {"content": json.dumps(outputs.pop(0))}}],
+                "usage": {"prompt_tokens": 100, "completion_tokens": 20},
+            })
+        monkeypatch.setattr("cope.providers.openai_compatible.request.urlopen", fake_urlopen)
+        rows = run_pair(case, provider)
+        assert len(rows) == 2
+        assert all(row["fairness_pass"] for row in rows)
+        assert all(row["first_pass_valid"] for row in rows)
+        assert all(row["semantic_correct"] for row in rows)
