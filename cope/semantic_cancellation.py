@@ -186,11 +186,15 @@ def apply_oracle_cancellation_patch(
     This is an oracle patch canary, not a provider-generated CoPE result.
     """
 
-    oracle_state = build_oracle_cancellation_state(event)
+    previous_state_version = int(event.get("valid_from_state_version", 0))
+    oracle_state = build_oracle_cancellation_state(
+        event,
+        previous_state_version=previous_state_version,
+    )
     validate_oracle_cancellation_state(
         oracle_state,
         event,
-        previous_state_version=0,
+        previous_state_version=previous_state_version,
         physically_true_objects=physically_true_objects,
     )
     done_object = str(event["done_object"])
