@@ -1,0 +1,4 @@
+arm,fault_cells,parser_rejected,native_representation_guard_rejected,common_validator_rejected,accepted,representation_fail_open,end_to_end_fail_open,parser_or_matched_guard_rejects,caller_state_mutated,uncaught_crash,passed
+cope,16,4,12,0,0,0,0,16,0,0,16
+compact_tx,16,8,1,7,0,7,0,16,0,0,16
+fsr_pc,16,4,0,12,0,12,0,16,0,0,16

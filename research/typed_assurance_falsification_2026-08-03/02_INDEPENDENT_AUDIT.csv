@@ -1,0 +1,18 @@
+check,pass,observed,expected
+manifest_16_unique_faults,True,"[16,16]","[16,16]"
+clean_36_cells,True,36,36
+clean_12_tri_arm_controls,True,12,12
+all_clean_controls_exact_and_valid,True,36,36
+fault_16_tri_arm_triplets,True,"[48,16]","[48,16]"
+all_fault_proposals_changed,True,48,48
+full_pipeline_rejects_48_of_48,True,48,48
+zero_end_to_end_fail_open,True,0,0
+zero_uncaught_crash,True,0,0
+zero_caller_state_mutation,True,0,0
+all_fault_cells_pass_frozen_gate,True,48,48
+aggregate_recomputes_from_raw,True,"{""compact_tx"":{""accepted"":0,""common_validator_rejected"":7,""end_to_end_fail_open"":0,""native_representation_guard_rejected"":1,""parser_or_matched_guard_rejects"":16,""parser_rejected"":8,""representation_fail_open"":7},""cope"":{""accepted"":0,""common_validator_rejected"":0,""end_to_end_fail_open"":0,""native_representation_guard_rejected"":12,""parser_or_matched_guard_rejects"":16,""parser_rejected"":4,""representation_fail_open"":0},""fsr_pc"":{""accepted"":0,""common_validator_rejected"":12,""end_to_end_fail_open"":0,""native_representation_guard_rejected"":0,""parser_or_matched_guard_rejects"":16,""parser_rejected"":4,""representation_fail_open"":12}}","""exact CSV aggregate"""
+representation_fail_open_counts,True,"{""compact_tx"":7,""cope"":0,""fsr_pc"":12}","{""compact_tx"":7,""cope"":0,""fsr_pc"":12}"
+matched_guard_equalizes,True,"{""compact_tx"":16,""cope"":16,""fsr_pc"":16}","{""compact_tx"":16,""cope"":16,""fsr_pc"":16}"
+native_advantage_but_typing_specificity_fails,True,"[""True"",""True"",""False""]","[""True"",""True"",""False""]"
+evidence_and_resource_boundary,True,"[""0"",""false"",""false"",""offline_deterministic_fault_injection""]","[""0"",""false"",""false"",""offline_deterministic_fault_injection""]"
+run_decision_pass,True,"""PASS""","""PASS"""
