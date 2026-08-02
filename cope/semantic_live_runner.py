@@ -34,6 +34,10 @@ from cope.types import InformationBudget, RecoveryInput, canonical_json, stable_
 SEMANTIC_CONFIG_SCHEMA = "cope-semantic-task1-pilot-config-v1"
 DEVELOPMENT_STATE_IDS = frozenset(range(5))
 EVENT_TYPES = frozenset({"replace_pending_goal", "cancel_pending_goal"})
+DONE_OBJECT = "cream_cheese_1"
+PENDING_OBJECT = "butter_1"
+REPLACEMENT_OBJECT = "alphabet_soup_1"
+REQUIRED_STABLE_STEPS = 5
 
 
 @dataclass(frozen=True)
@@ -89,6 +93,19 @@ def load_semantic_config(path: Path, *, repo_root: Path) -> LoadedSemanticConfig
         raise ValueError("semantic config reserve identity differs from the frozen manifest")
     if row.get("rollout_authorized", "").lower() != "false":
         raise ValueError("development integration requires the reserved rollout lock to remain closed")
+    if row.get("predicate_snapshot_schema") != "cope-libero-predicate-snapshot-v1":
+        raise ValueError("semantic config predicate packet schema is not pinned")
+    if row.get("predicate_factory") != (
+        "cope.libero_predicate_validator:create_libero_predicate_validator"
+    ):
+        raise ValueError("semantic config predicate factory is not the production validator")
+    for path_key, digest_key in (
+        ("bddl_path", "bddl_sha256"),
+        ("init_states_path", "init_states_sha256"),
+    ):
+        artifact = Path(row[path_key])
+        if not artifact.is_file() or sha256_file(artifact) != row[digest_key]:
+            raise ValueError(f"semantic config artifact verification failed for {path_key}")
     reserve_path = repo_root / row["pilot_manifest_path"]
     with reserve_path.open(newline="", encoding="utf-8") as handle:
         reserve_rows = list(csv.DictReader(handle))
@@ -121,6 +138,13 @@ def validate_case_rows(rows: Sequence[Mapping[str, str]]) -> None:
             raise ValueError(f"unsupported event type {event_type!r}")
         if row["case_id"] in case_ids:
             raise ValueError("duplicate case_id")
+        if row.get("done_object") != DONE_OBJECT or row.get("pending_object") != PENDING_OBJECT:
+            raise ValueError("case manifest atomic commitments differ from preregistration")
+        if int(row.get("stable_steps", 0)) != REQUIRED_STABLE_STEPS:
+            raise ValueError("case manifest stability threshold differs from preregistration")
+        expected_replacement = REPLACEMENT_OBJECT if event_type == "replace_pending_goal" else ""
+        if row.get("replacement_object", "") != expected_replacement:
+            raise ValueError("case manifest replacement assignment differs from preregistration")
         case_ids.add(row["case_id"])
         observed.add((state_id, event_type))
     if observed != expected or len(rows) != len(expected):
@@ -204,9 +228,7 @@ def run_semantic_wiring(
     public_action_history: Sequence[Mapping[str, Any]],
     independently_logged_predicates: Mapping[str, bool],
     simulator_state_before: str,
-    simulator_state_after: str,
     controller_action_count_before: int,
-    controller_action_count_after: int,
 ) -> dict[str, Any]:
     state_id = int(row["state_id"])
     if state_id not in DEVELOPMENT_STATE_IDS:
@@ -230,6 +252,14 @@ def run_semantic_wiring(
         raise ValueError("live packet is not bound to the semantic event")
     if packet.get("test_only") is not False or packet.get("source_kind") != "live_libero_eval_predicate":
         raise ValueError("production path rejects fake or non-live predicate packets")
+    if packet.get("policy_step") != event.get("world_version"):
+        raise ValueError("live packet policy step is not bound to the semantic event")
+    if packet.get("observation_sha256") != observation.get("sha256"):
+        raise ValueError("live packet is not bound to the outer RGB observation")
+    if packet.get("simulator_state_sha256") != simulator_state_before:
+        raise ValueError("live packet is not bound to the probed simulator state")
+    if packet.get("producer_commit") != config.row["predicate_producer_commit"]:
+        raise ValueError("live packet producer differs from the pinned semantic config")
     packet_predicates = {
         str(item["arguments"][0]): bool(item["value"])
         for item in packet["predicates"]
@@ -244,48 +274,67 @@ def run_semantic_wiring(
         observation=observation,
         event=event,
         public_action_history=public_action_history,
-        task_progress={"physically_true_objects": list(physically_true)},
+        task_progress={
+            "source": "live_libero_eval_predicate",
+            "physically_true_objects": list(physically_true),
+            "simulator_state_sha256": simulator_state_before,
+            "controller_action_count": int(controller_action_count_before),
+        },
         observation_fields=config.observation_fields,
     )
     validator = create_libero_predicate_validator(config.predicate_engine_config)
     if validator.metadata.get("is_fake") is not False:
         raise RuntimeError("production validator unexpectedly advertises fake metadata")
 
+    # Each branch consumes its event from its own decode of the canonical
+    # RecoveryInput.  The builders do not receive a side-channel event object.
+    native_event = native_input.event
+    cope_event = cope_input.event
+    if native_event != cope_event or native_event != event:
+        raise RuntimeError("paired RecoveryInput event payloads diverged")
     if row["event_type"] == "replace_pending_goal":
-        native_state = build_oracle_full_state(event)
-        receipt = apply_oracle_replacement_patch(event, physically_true_objects=physically_true)
+        native_state = build_oracle_full_state(native_event)
+        receipt = apply_oracle_replacement_patch(
+            cope_event, physically_true_objects=physically_true
+        )
         materialized_state = materialize_replacement_receipt(
-            receipt, event, physically_true_objects=physically_true
+            receipt, cope_event, physically_true_objects=physically_true
         )
     else:
-        native_state = build_oracle_cancellation_state(event)
-        receipt = apply_oracle_cancellation_patch(event, physically_true_objects=physically_true)
+        native_state = build_oracle_cancellation_state(native_event)
+        receipt = apply_oracle_cancellation_patch(
+            cope_event, physically_true_objects=physically_true
+        )
         materialized_state = materialize_cancellation_receipt(
-            receipt, event, physically_true_objects=physically_true
+            receipt, cope_event, physically_true_objects=physically_true
         )
 
     state_before = deserialize_state(receipt["state_before"])
     done_slot = next(slot for slot in state_before.slots if slot.content["arguments"][0] == row["done_object"])
     pending_slot = next(slot for slot in state_before.slots if slot.content["arguments"][0] == row["pending_object"])
-    evidence = {"observation": observation, "event": event}
+    evidence = {"observation": cope_input.observation, "event": cope_event}
     done_value = validator(done_slot, evidence)
     pending_value = validator(pending_slot, evidence)
     if done_value is not True or pending_value is not False:
         raise RuntimeError("production validator did not consume expected atomic task-1 predicates")
 
     native_directive = _accepted_validate_compile(
-        native_state, event, event_type=row["event_type"], physically_true_objects=physically_true
+        native_state,
+        native_event,
+        event_type=row["event_type"],
+        physically_true_objects=physically_true,
     )
     materialized_directive = _accepted_validate_compile(
-        materialized_state, event, event_type=row["event_type"], physically_true_objects=physically_true
+        materialized_state,
+        cope_event,
+        event_type=row["event_type"],
+        physically_true_objects=physically_true,
     )
-    passed = all(
+    semantic_pass = all(
         (
             canonical_json(native_state) == canonical_json(materialized_state),
             stable_hash(native_state) == stable_hash(materialized_state),
             native_directive == materialized_directive,
-            simulator_state_before == simulator_state_after,
-            controller_action_count_before == controller_action_count_after,
             receipt.get("provider_called") is False,
             receipt.get("transition", {}).get("accepted") is True,
         )
@@ -326,8 +375,38 @@ def run_semantic_wiring(
         "accepted_transition": receipt["transition"]["accepted"],
         "provider_called": receipt["provider_called"],
         "oracle_operation_selector": receipt["oracle_operation_selection"],
-        "simulator_unchanged_by_semantics": simulator_state_before == simulator_state_after,
-        "controller_actions_unchanged_by_semantics": controller_action_count_before == controller_action_count_after,
-        "post_event_policy_actions": 0,
-        "passed": passed,
+        "semantic_pass": semantic_pass,
     }
+
+
+def finalize_mutation_accounting(
+    semantic_result: Mapping[str, Any],
+    *,
+    simulator_state_before: str,
+    simulator_state_after: str,
+    controller_action_count_before: int,
+    controller_action_count_after: int,
+) -> dict[str, Any]:
+    result = dict(semantic_result)
+    simulator_unchanged = simulator_state_before == simulator_state_after
+    actions_unchanged = controller_action_count_before == controller_action_count_after
+    post_event_actions = controller_action_count_after - controller_action_count_before
+    passed = bool(
+        result.get("semantic_pass") is True
+        and simulator_unchanged
+        and actions_unchanged
+        and post_event_actions == 0
+    )
+    result.update(
+        {
+            "simulator_state_before": simulator_state_before,
+            "simulator_state_after": simulator_state_after,
+            "simulator_unchanged_by_semantics": simulator_unchanged,
+            "controller_action_count_before": controller_action_count_before,
+            "controller_action_count_after": controller_action_count_after,
+            "controller_actions_unchanged_by_semantics": actions_unchanged,
+            "post_event_policy_actions": post_event_actions,
+            "passed": passed,
+        }
+    )
+    return result
