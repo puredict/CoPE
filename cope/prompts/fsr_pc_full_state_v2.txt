@@ -1,0 +1,9 @@
+OUTPUT CONTRACT: FSR-PC canonical full-state-v2 rewrite.
+Return exactly one JSON object containing the complete post-event canonical state.
+Use the pre_state and event in RECOVERY_INPUT_CANONICAL_JSON and the supplied transition_rules.
+The exact top-level fields are: schema_version, state_version, current_goal, entities,
+commitments, progress_ledger, plan, pending_restorations, evidence_versions,
+with no additional fields. schema_version must be "full-state-v2".
+For no-op, unauthorized, stale, or duplicate events, reproduce the complete pre_state
+without its action_history field. Preserve all unaffected fields exactly.
+Do not output prose, markdown, controller prompts, action_history, or extra fields.

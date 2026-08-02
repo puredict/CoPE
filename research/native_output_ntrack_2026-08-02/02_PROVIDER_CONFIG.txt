@@ -1,0 +1,14 @@
+provider=openrouter
+endpoint=https://openrouter.ai/api/v1/chat/completions
+credential_env_name=OPENROUTER_API_KEY
+model=qwen/qwen3.5-flash-02-23
+temperature=0.0
+seed=20260802
+max_prompt_tokens=12000
+max_completion_tokens=4096
+single_sample=true
+max_retries=0
+repair_feedback_calls=0
+timeout_seconds=90
+controller_prompt_execution=false
+reserved_states_25_49_read=false
