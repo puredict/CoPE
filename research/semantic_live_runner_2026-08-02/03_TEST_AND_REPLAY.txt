@@ -1,0 +1,60 @@
+CoPE X04 integration test and replay record
+Date: 2026-08-02 Asia/Shanghai
+
+Pre-registration commit: 3305dc298e383db8a17a64e3d2257cd67c0bee34
+Initial implementation commits: 4da39c1b38efa1d2faa5c5091934b4014dd057f9, 2912c3bbea7767dc6137ad399cda7ebffabf62ce
+Hardened authoritative implementation commit: 739e175521e93a8c598cdef20f5b0570f1809c81
+Predicate producer commit: 298dac707bb0d57aad050978d6e81d7aab93090d
+
+Required pre-simulation nvidia-smi:
+- 8 x RTX 3090 visible; each at 12 MiB, 0% utilization; only Xorg listed.
+- All experiment commands set CUDA_VISIBLE_DEVICES="". No GPU was selected or used.
+
+CPU/dry-run targeted contracts:
+- tests/test_live_semantic_runner.py
+- tests/test_semantic_materialization.py
+- tests/test_libero_predicate_validator.py
+- tests/test_libero_backend_predicate_snapshot.py
+- Result: 38 passed in 0.33s.
+
+Authoritative live run:
+- development states: 0,1,2,3,4 only
+- assigned: 10
+- passed: 10
+- production live packets: 10
+- reserved state consumed: 0
+- post-event policy actions: 0
+- provider calls: 0
+- runtime implementation commit recorded in every row: 739e175521e93a8c598cdef20f5b0570f1809c81
+
+Deterministic replay:
+- assigned: 10
+- passed: 10
+- production live packets: 10
+- reserved state consumed: 0
+- authoritative CSV SHA-256: 0bfe482a2663fb04b42afdae10aac6624e08fc1bb5705a1bdbe9dc6abf6a2dbf
+- replay CSV SHA-256:        0bfe482a2663fb04b42afdae10aac6624e08fc1bb5705a1bdbe9dc6abf6a2dbf
+- cmp exit: 0 (byte-identical)
+
+Frozen independent full-state-v2 replay:
+- assigned: 4
+- passed: 4
+- reserve consumed: 0
+- cmp against authoritative 11_INDEPENDENT_ASSIGNED_RESULTS.csv: exit 0
+
+Frozen shared semantic corruption audit:
+- cases: 123
+- expectation failures: 0
+- malformed accepted: 0
+- replacement full-state-v2: 61 cases
+- cancellation full-state-v2: 50 cases
+- main full-state parser: 12 cases
+- cmp against authoritative 01_POSTFIX_RESULTS.csv: exit 0
+
+Full repository regression:
+- 349 passed in 46.75s
+
+Integrity note:
+- An earlier pre-hardening 10/10 output is retained as 03_ASSIGNED_RESULTS_SUPERSEDED.csv and is not decision evidence.
+- No result was hand-edited. The authoritative and replay files were created with output-create semantics.
+- States 25--49 were not read; state 26 was not run.
