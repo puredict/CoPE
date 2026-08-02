@@ -1,0 +1,9 @@
+predicate_group,materialized_fault_candidates,fault_candidates_violating_group,unique_catch_count,ablation_fail_open_count,clean_false_positive_count,unique_catch_cells
+authorization_noop,39,5,5,5,0,F05:fsr_pc;F07:compact_tx;F07:fsr_pc;F08:compact_tx;F08:fsr_pc
+version_evidence,39,24,9,9,0,F06:fsr_pc;F14:cope_generic;F14:compact_tx;F14:fsr_pc;F15:compact_tx;F15:fsr_pc;O06:cope_generic;O06:compact_tx;O06:fsr_pc
+identity_lifecycle,39,19,2,2,0,F11:fsr_pc;F12:fsr_pc
+goal_consistency,39,17,0,0,0,
+progress_preservation,39,1,1,1,0,F09:fsr_pc
+action_continuity,39,20,3,3,0,F10:cope_generic;F10:compact_tx;F10:fsr_pc
+restoration_entity,39,14,0,0,0,
+unaffected_scope,39,2,2,2,0,F16:compact_tx;F16:fsr_pc

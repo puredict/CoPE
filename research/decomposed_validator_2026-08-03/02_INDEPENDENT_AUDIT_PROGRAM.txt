@@ -1,0 +1,158 @@
+#!/usr/bin/env python3
+"""Independent CSV-only audit for X16; imports no CoPE code."""
+
+from __future__ import annotations
+
+import csv
+import hashlib
+import json
+from collections import Counter
+from pathlib import Path
+
+
+ROOT = Path("research/decomposed_validator_2026-08-03")
+RUN = ROOT / "run_v1"
+GROUPS = (
+    "authorization_noop", "version_evidence", "identity_lifecycle", "goal_consistency",
+    "progress_preservation", "action_continuity", "restoration_entity", "unaffected_scope",
+)
+
+
+def read_csv(path: Path) -> list[dict[str, str]]:
+    with path.open(newline="", encoding="utf-8") as stream:
+        return list(csv.DictReader(stream))
+
+
+def truth(value: str) -> bool:
+    if value not in {"True", "False"}:
+        raise ValueError(f"not a CSV boolean: {value!r}")
+    return value == "True"
+
+
+def add(checks: list[dict[str, str]], name: str, passed: bool, observed: object, expected: object) -> None:
+    checks.append({
+        "check": name,
+        "pass": str(bool(passed)),
+        "observed": json.dumps(observed, sort_keys=True, separators=(",", ":")),
+        "expected": json.dumps(expected, sort_keys=True, separators=(",", ":")),
+    })
+
+
+def status_map(path: Path) -> dict[str, str]:
+    result = {}
+    for line in path.read_text(encoding="utf-8").splitlines():
+        key, value = line.split("=", 1)
+        result[key] = value
+    return result
+
+
+def split_groups(row: dict[str, str]) -> set[str]:
+    return {item for item in row["violated_groups"].split(";") if item}
+
+
+def main() -> int:
+    predicate_manifest = read_csv(ROOT / "01_PREDICATE_MANIFEST.csv")
+    source = read_csv(RUN / "02_SOURCE_AUDIT.csv")
+    clean = read_csv(RUN / "03_CLEAN_RESULTS.csv")
+    faults = read_csv(RUN / "04_FAULT_RESULTS.csv")
+    coverage = read_csv(RUN / "05_PREDICATE_COVERAGE_ABLATION.csv")
+    status = status_map(RUN / "06_STATUS.txt")
+    checks: list[dict[str, str]] = []
+
+    manifest_groups = tuple(row["predicate_group"] for row in predicate_manifest)
+    add(checks, "predicate_manifest_exact_groups", manifest_groups == GROUPS, manifest_groups, GROUPS)
+    source_ok = len(source) == 1 and source[0]["pass"] == "True" and source[0]["forbidden_hits"] == "" and source[0]["whole_state_compare_hits"] == ""
+    add(checks, "source_audit_no_oracle_or_whole_state_pattern", source_ok, source, "one passing source-audit row")
+
+    add(checks, "clean_48_rows", len(clean) == 48, len(clean), 48)
+    clean_ok = all(
+        truth(row["candidate_materialized"])
+        and not truth(row["candidate_incorrect"])
+        and truth(row["exact_validator_accepted"])
+        and truth(row["decomposed_validator_accepted"])
+        and row["violated_group_count"] == "0"
+        and truth(row["exact_decomposed_parity"])
+        and truth(row["caller_state_unchanged"])
+        and truth(row["pass"])
+        for row in clean
+    )
+    add(checks, "clean_48_specificity", clean_ok, sum(truth(row["pass"]) for row in clean), 48)
+
+    add(checks, "fault_88_rows", len(faults) == 88, len(faults), 88)
+    native = [row for row in faults if truth(row["native_rejected"])]
+    materialized = [row for row in faults if truth(row["candidate_materialized"])]
+    add(checks, "native_and_materialized_partition", len(native) == 49 and len(materialized) == 39 and len(native) + len(materialized) == 88, [len(native), len(materialized)], [49, 39])
+    materialized_ok = all(
+        truth(row["candidate_incorrect"])
+        and truth(row["exact_validator_called"])
+        and not truth(row["exact_validator_accepted"])
+        and truth(row["decomposed_validator_called"])
+        and not truth(row["decomposed_validator_accepted"])
+        and int(row["violated_group_count"]) > 0
+        and split_groups(row).issubset(set(GROUPS))
+        and truth(row["exact_decomposed_parity"])
+        for row in materialized
+    )
+    add(checks, "materialized_faults_rejected_39_of_39", materialized_ok, sum(not truth(row["decomposed_validator_accepted"]) for row in materialized), 39)
+    add(checks, "full_pipeline_rejects_88_of_88", all(truth(row["full_decomposed_pipeline_rejected"]) for row in faults), sum(truth(row["full_decomposed_pipeline_rejected"]) for row in faults), 88)
+    add(checks, "exact_decomposed_parity_136", all(truth(row["exact_decomposed_parity"]) for row in clean + faults), sum(truth(row["exact_decomposed_parity"]) for row in clean + faults), 136)
+    add(checks, "zero_crash", not any(truth(row["uncaught_crash"]) for row in clean + faults), sum(truth(row["uncaught_crash"]) for row in clean + faults), 0)
+    add(checks, "zero_caller_mutation", all(truth(row["caller_state_unchanged"]) for row in clean + faults), sum(not truth(row["caller_state_unchanged"]) for row in clean + faults), 0)
+
+    coverage_map = {row["predicate_group"]: row for row in coverage}
+    recomputed = {}
+    for group in GROUPS:
+        violated = [row for row in materialized if group in split_groups(row)]
+        unique = [row for row in materialized if split_groups(row) == {group}]
+        clean_fp = [row for row in clean if group in split_groups(row)]
+        recomputed[group] = {
+            "fault_candidates_violating_group": len(violated),
+            "unique_catch_count": len(unique),
+            "ablation_fail_open_count": len(unique),
+            "clean_false_positive_count": len(clean_fp),
+        }
+    coverage_ok = len(coverage) == 8 and set(coverage_map) == set(GROUPS)
+    if coverage_ok:
+        coverage_ok = all(
+            all(int(coverage_map[group][field]) == value for field, value in values.items())
+            for group, values in recomputed.items()
+        )
+    add(checks, "coverage_ablation_recomputed", coverage_ok, recomputed, "exact coverage CSV")
+    expected_unique = {
+        "authorization_noop": 5, "version_evidence": 9, "identity_lifecycle": 2,
+        "goal_consistency": 0, "progress_preservation": 1, "action_continuity": 3,
+        "restoration_entity": 0, "unaffected_scope": 2,
+    }
+    observed_unique = {group: recomputed[group]["unique_catch_count"] for group in GROUPS}
+    add(checks, "unique_catch_counts", observed_unique == expected_unique, observed_unique, expected_unique)
+    add(checks, "zero_clean_group_false_positive", all(values["clean_false_positive_count"] == 0 for values in recomputed.values()), sum(values["clean_false_positive_count"] for values in recomputed.values()), 0)
+    gates_ok = status.get("source_audit_pass") == "True" and status.get("clean_specificity_gate") == "True" and status.get("frozen_suite_sufficiency_gate") == "True"
+    add(checks, "frozen_gates", gates_ok, [status.get("source_audit_pass"), status.get("clean_specificity_gate"), status.get("frozen_suite_sufficiency_gate")], ["True", "True", "True"])
+    boundary_ok = status.get("learned_provider_calls") == "0" and status.get("gpu_llm_robot_simulator_used") == "false" and status.get("reserved_states_27_49_read") == "false" and status.get("evidence_class") == "offline_deterministic_candidate_replay"
+    add(checks, "evidence_resource_boundary", boundary_ok, [status.get("learned_provider_calls"), status.get("gpu_llm_robot_simulator_used"), status.get("reserved_states_27_49_read"), status.get("evidence_class")], ["0", "false", "false", "offline_deterministic_candidate_replay"])
+    add(checks, "run_decision_pass", status.get("decision") == "PASS", status.get("decision"), "PASS")
+
+    output = ROOT / "02_INDEPENDENT_AUDIT.csv"
+    with output.open("x", newline="", encoding="utf-8") as stream:
+        writer = csv.DictWriter(stream, fieldnames=["check", "pass", "observed", "expected"], lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(checks)
+    passed = sum(row["pass"] == "True" for row in checks)
+    decision = "PASS" if passed == len(checks) else "FAIL"
+    result = {
+        "audit_program_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        "checks_passed": passed,
+        "checks_total": len(checks),
+        "decision": decision,
+        "materialized_fault_candidates": len(materialized),
+        "decomposed_rejected": sum(not truth(row["decomposed_validator_accepted"]) for row in materialized),
+        "learned_provider_calls": 0,
+        "reserved_states_read": False,
+    }
+    (ROOT / "02_INDEPENDENT_AUDIT_STATUS.txt").write_text(json.dumps(result, sort_keys=True, separators=(",", ":")) + "\n", encoding="utf-8")
+    print(json.dumps(result, sort_keys=True))
+    return 0 if decision == "PASS" else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
