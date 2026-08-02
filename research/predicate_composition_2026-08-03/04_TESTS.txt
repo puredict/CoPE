@@ -1,0 +1,32 @@
+X17 TEST RECORD — 2026-08-03 Asia/Shanghai
+
+Focused tests:
+  tests/test_predicate_composition_stress.py
+  Result: 3 passed in 0.14s
+
+Composition campaign:
+  clean accepted: 12/12
+  size-1 candidates: 8/8
+  size-2 candidates: 21/21
+  size-3 candidates: 35/35
+  changed candidates: 64/64
+  decomposed rejected: 64/64
+  exact rejected: 64/64
+  exact group attribution: 64/64
+  singleton ablation fail-open: 8/8 groups
+  decision: PASS
+
+Independent CSV-only audit:
+  checks: 15/15
+  decision: PASS
+
+Complete repository regression:
+  428 passed in 47.21s
+  exit status: 0
+
+Resource/evidence boundary:
+  provider/LLM calls: 0
+  credentials used: false
+  GPU/robot/simulator used: false
+  reserved states 27--49 read: false
+

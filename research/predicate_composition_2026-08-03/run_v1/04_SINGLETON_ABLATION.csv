@@ -1,0 +1,9 @@
+mutation_id,predicate_group,singleton_candidate_id,singleton_observed_groups,violations_after_removing_group,would_fail_open_if_group_removed,pass
+M01,authorization_noop,AUTH_SINGLE,authorization_noop,,True,True
+M02,version_evidence,K1_01,version_evidence,,True,True
+M03,identity_lifecycle,K1_02,identity_lifecycle,,True,True
+M04,goal_consistency,K1_03,goal_consistency,,True,True
+M05,progress_preservation,K1_04,progress_preservation,,True,True
+M06,action_continuity,K1_05,action_continuity,,True,True
+M07,restoration_entity,K1_06,restoration_entity,,True,True
+M08,unaffected_scope,K1_07,unaffected_scope,,True,True
