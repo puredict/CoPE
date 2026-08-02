@@ -66,12 +66,19 @@ FAULTS = [
 def test_faults_fail_closed_without_partial_publish(fault_id: str, case_id: str) -> None:
     case = build_case(case_id, "assigned", "test", "public_synthetic")
     before = canonical_json(case.pre_state)
+
+    def selected_validator(candidate, state, event):
+        if fault_id == "F08":
+            raise RuntimeError("forced external validator exception")
+        return validate_and_compile(candidate, state, event)
+
     with pytest.raises(TransactionRejected) as caught:
-        execute_transaction(case.pre_state, case.event, validate_and_compile, fault_id=fault_id)
+        execute_transaction(case.pre_state, case.event, selected_validator, fault_id=fault_id)
     receipt = caught.value.receipt
     assert receipt["published"] is False
     assert receipt["rolled_back"] is True
     assert receipt["after_sha256"] is None
+    assert receipt["validator_calls"] == 1
     assert canonical_json(case.pre_state) == before
 
 
@@ -96,4 +103,3 @@ def test_tx_exec_source_is_independent_of_forbidden_constructors() -> None:
             for alias in node.names:
                 used.add(alias.name.rsplit(".", 1)[-1])
     assert not forbidden.intersection(used)
-

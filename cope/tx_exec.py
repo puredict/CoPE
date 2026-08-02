@@ -292,8 +292,6 @@ def execute_transaction(
     }
     validate_started = time.perf_counter_ns()
     try:
-        if fault_id == "F08":
-            raise RuntimeError("forced validator exception")
         receipt["validator_calls"] = 1
         directive = validator(tx.staged, state, event)
         receipt["validator_passed"] = True
@@ -314,4 +312,3 @@ def execute_transaction(
     if canonical_json(state) != caller_before:
         raise RuntimeError("caller-visible pre-state mutated during commit")
     return TransactionResult(post_state, carrier, receipt, directive)
-

@@ -102,11 +102,16 @@ def fault_rows(fault_manifest: Path, cases: dict[str, NativeCase]) -> list[dict[
         rejected = False
         receipt: dict[str, Any] = {}
         error_class = ""
+        def selected_validator(candidate: Any, state: Any, event: Any) -> str:
+            if assignment["fault_id"] == "F08":
+                raise RuntimeError("forced external validator exception")
+            return validate_and_compile(candidate, state, event)
+
         try:
             execute_transaction(
                 case.pre_state,
                 case.event,
-                validate_and_compile,
+                selected_validator,
                 fault_id=assignment["fault_id"],
             )
         except TransactionRejected as exc:
@@ -350,4 +355,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
