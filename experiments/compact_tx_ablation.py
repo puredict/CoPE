@@ -165,6 +165,7 @@ def fault_results(fault_manifest: Path, cases: dict[str, NativeCase], cached: di
             rejected and receipt.get("published") is False
             and receipt.get("rolled_back") is True
             and receipt.get("after_sha256") is None and pre_unchanged
+            and receipt.get("rejection_stage") == assignment["layer"]
         )
         rows.append({
             "fault_id": fault_id,
@@ -177,6 +178,8 @@ def fault_results(fault_manifest: Path, cases: dict[str, NativeCase], cached: di
             "after_sha256_empty": receipt.get("after_sha256") is None,
             "validator_calls": receipt.get("validator_calls", ""),
             "rejection_class": receipt.get("rejection_class", ""),
+            "actual_rejection_stage": receipt.get("rejection_stage", ""),
+            "stage_matches_manifest": receipt.get("rejection_stage") == assignment["layer"],
             "pass": passed,
         })
     return rows
@@ -296,4 +299,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

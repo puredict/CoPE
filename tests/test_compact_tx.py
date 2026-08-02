@@ -69,6 +69,12 @@ def test_compact_faults_fail_closed(fault_id: str) -> None:
     assert caught.value.receipt["published"] is False
     assert caught.value.receipt["rolled_back"] is True
     assert caught.value.receipt["after_sha256"] is None
+    expected_stage = {
+        "C01": "parser", "C02": "parser", "C03": "parser", "C04": "parser",
+        "C05": "materializer", "C06": "semantic_validator",
+        "C07": "semantic_validator", "C08": "semantic_validator",
+    }[fault_id]
+    assert caught.value.receipt["rejection_stage"] == expected_stage
     assert canonical_json(case.pre_state) == before
 
 
@@ -83,4 +89,3 @@ def test_compact_source_does_not_use_semantic_constructors() -> None:
         elif isinstance(node, (ast.Import, ast.ImportFrom)):
             for alias in node.names: used.add(alias.name.rsplit(".", 1)[-1])
     assert not forbidden.intersection(used)
-

@@ -79,6 +79,18 @@ def parse_proposal(
         path = str(item["path"])
         if not path.startswith("/") or "//" in path or path.endswith("/"):
             raise CompactTransactionError("compact write path is malformed")
+        parts = path.removeprefix("/").split("/")
+        root_projection = len(parts) == 1 and parts[0] in {
+            "current_goal",
+            "plan",
+            "pending_restorations",
+            "state_version",
+            "evidence_versions",
+        }
+        record_add = len(parts) == 3 and parts[0] in {"commitments", "entities"} and parts[1] == "+"
+        record_update = len(parts) == 3 and parts[0] == "commitments" and parts[1] != "+"
+        if not (root_projection or record_add or record_update):
+            raise CompactTransactionError("compact write path is not allowlisted")
         paths.append(path)
     if len(set(paths)) != len(paths):
         raise CompactTransactionError("compact proposal contains duplicate paths")
@@ -157,12 +169,15 @@ def execute_compact_transaction(
         "published": False,
         "rolled_back": False,
         "rejection_class": None,
+        "rejection_stage": None,
         "parse_materialize_ns": 0,
         "validate_ns": 0,
         "commit_ns": 0,
     }
+    rejection_stage = "parser"
     try:
         parsed = parse_proposal(proposal, state, event)
+        rejection_stage = "materializer"
         staged = copy.deepcopy(before)
         for write in parsed["writes"]:
             _apply_write(staged, write)
@@ -176,6 +191,7 @@ def execute_compact_transaction(
         receipt["staged_sha256"] = stable_hash(staged)
         receipt["parse_materialize_ns"] = time.perf_counter_ns() - started
         validate_started = time.perf_counter_ns()
+        rejection_stage = "semantic_validator"
         receipt["validator_calls"] = 1
         directive = validator(staged, state, event)
         receipt["validate_ns"] = time.perf_counter_ns() - validate_started
@@ -190,10 +206,10 @@ def execute_compact_transaction(
             receipt["parse_materialize_ns"] = time.perf_counter_ns() - started
         receipt["rolled_back"] = True
         receipt["rejection_class"] = type(exc).__name__
+        receipt["rejection_stage"] = rejection_stage
         if canonical_json(state) != caller_before:
             raise RuntimeError("compact transaction mutated caller state on rejection") from exc
         raise CompactTransactionRejected(str(exc), receipt) from exc
     if canonical_json(state) != caller_before:
         raise RuntimeError("compact transaction mutated caller state on success")
     return CompactTransactionResult(post_state, parsed, receipt, directive)
-
