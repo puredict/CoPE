@@ -188,22 +188,53 @@ def write_preflight_fairness(
     return all_pass
 
 
-def write_empty_results(path: Path) -> None:
+def write_blocked_results(
+    path: Path, cases: list[NativeCase], provider: OpenAICompatibleRecoveryProvider
+) -> None:
     with path.open("x", newline="", encoding="utf-8") as handle:
-        csv.DictWriter(handle, fieldnames=FIELDS, lineterminator="\n").writeheader()
+        writer = csv.DictWriter(handle, fieldnames=FIELDS, lineterminator="\n")
+        writer.writeheader()
+        for case in cases:
+            common = case.recovery_input
+            for arm, mode, contract in (
+                ("cope", "patch", provider.patch_contract),
+                ("fsr_pc", "regenerate", provider.full_contract),
+            ):
+                audited = provider.build_audited_request(mode, common, contract)
+                writer.writerow({
+                    "case_id": case.case_id, "phase": case.phase, "family": case.family,
+                    "source": case.source, "arm": arm, "model": provider.metadata.model,
+                    "temperature": provider.metadata.temperature, "seed": provider.seed,
+                    "max_completion_tokens": provider.metadata.max_completion_tokens,
+                    "timeout_seconds": provider.metadata.timeout_seconds, "retry_budget": 0,
+                    "repair_budget": 0, "input_hash": common.input_hash,
+                    "common_input_bytes_sha256": audited["common_input_message_sha256"],
+                    "normalized_request_sha256": normalized_raw_request_hash(audited),
+                    "fairness_pass": True, "provider_status": "configuration_blocked",
+                    "provider_error": "credential_unavailable", "response_sha256": "",
+                    "parser_valid": "", "semantic_valid": "", "first_pass_valid": "",
+                    "semantic_correct": "", "unauthorized_or_stale_edit": "",
+                    "progress_corruption": "", "continuity_error": "", "compiled_directive": "",
+                    "prompt_tokens": 0, "completion_tokens": 0, "latency_seconds": "0.000000",
+                    "validator_calls": 0, "repair_success": "not_enabled",
+                    "parse_or_validation_error": "",
+                })
 
 
-def write_blocked_aggregate(path: Path) -> None:
-    fields = ["arm", "assigned", "provider_ok", "provider_outage_or_timeout", "first_pass_valid", "semantic_correct", "unauthorized_or_stale_edit", "progress_corruption", "continuity_error", "prompt_tokens", "completion_tokens", "latency_seconds", "validator_calls"]
+def write_blocked_aggregate(path: Path, assigned: int) -> None:
+    fields = ["arm", "assigned", "configuration_blocked", "method_evaluable", "provider_ok", "provider_outage_or_timeout", "first_pass_valid", "semantic_correct", "unauthorized_or_stale_edit", "progress_corruption", "continuity_error", "prompt_tokens", "completion_tokens", "latency_seconds", "validator_calls"]
     with path.open("x", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
         writer.writeheader()
         for arm in ("cope", "fsr_pc"):
-            writer.writerow({field: arm if field == "arm" else 0 for field in fields})
+            row = {field: arm if field == "arm" else 0 for field in fields}
+            row["assigned"] = assigned
+            row["configuration_blocked"] = assigned
+            writer.writerow(row)
 
 
 def write_aggregate(path: Path, rows: list[dict[str, Any]]) -> None:
-    fields = ["arm", "assigned", "provider_ok", "provider_outage_or_timeout", "first_pass_valid", "semantic_correct", "unauthorized_or_stale_edit", "progress_corruption", "continuity_error", "prompt_tokens", "completion_tokens", "latency_seconds", "validator_calls"]
+    fields = ["arm", "assigned", "configuration_blocked", "method_evaluable", "provider_ok", "provider_outage_or_timeout", "first_pass_valid", "semantic_correct", "unauthorized_or_stale_edit", "progress_corruption", "continuity_error", "prompt_tokens", "completion_tokens", "latency_seconds", "validator_calls"]
     with path.open("x", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
         writer.writeheader()
@@ -212,6 +243,8 @@ def write_aggregate(path: Path, rows: list[dict[str, Any]]) -> None:
             writer.writerow({
                 "arm": arm,
                 "assigned": len(selected),
+                "configuration_blocked": sum(row["provider_status"] == "configuration_blocked" for row in selected),
+                "method_evaluable": sum(row["provider_status"] == "ok" for row in selected),
                 "provider_ok": sum(row["provider_status"] == "ok" for row in selected),
                 "provider_outage_or_timeout": sum(row["provider_status"] in {"outage", "timeout"} for row in selected),
                 "first_pass_valid": sum(bool(row["first_pass_valid"]) for row in selected),
@@ -274,14 +307,14 @@ def main() -> int:
         fairness_pass = write_preflight_fairness(
             args.output_dir / "03_FAIRNESS_INPUT_HASH_AUDIT.csv", cases, provider
         )
-        write_empty_results(args.output_dir / "04_PER_SAMPLE_RESULTS.csv")
-        write_blocked_aggregate(args.output_dir / "05_AGGREGATE.csv")
+        write_blocked_results(args.output_dir / "04_PER_SAMPLE_RESULTS.csv", cases, provider)
+        write_blocked_aggregate(args.output_dir / "05_AGGREGATE.csv", len(cases))
         with (args.output_dir / "06_FAILURE_TAXONOMY.csv").open("x", newline="", encoding="utf-8") as handle:
             writer = csv.writer(handle, lineterminator="\n")
             writer.writerow(["arm", "family", "category", "count"])
-            writer.writerow(["both", "configuration", "credential_unavailable", 1])
+            writer.writerow(["both", "configuration", "credential_unavailable", 2 * len(cases)])
         status = {
-            "smoke_gate_pass": False, "expanded": False, "assigned_pairs": 0,
+            "smoke_gate_pass": False, "expanded": False, "assigned_pairs": len(cases),
             "provider_calls": 0, "configuration_blocker": "credential_unavailable",
             "fairness_preflight_pass": fairness_pass, "provider": provider.metadata.provider,
             "model": provider.metadata.model, "credential_env_name": provider.api_key_env,
