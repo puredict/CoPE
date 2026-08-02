@@ -14,7 +14,7 @@ spent. This is a scientific NO-GO, not an implementation failure.
 
 - remote worktree: `/home/lijingsu/codex-worktrees/cope-formal-integration`
 - branch: `codex/cope-formal-integration`
-- final HEAD: `8f658cd00a3723b9146156d97587c380dabbc7ae`
+- evidence HEAD immediately before this memo: `8f658cd00a3723b9146156d97587c380dabbc7ae`
 - final porcelain: clean
 - final regression: 445 passed in 47.57 seconds
 
