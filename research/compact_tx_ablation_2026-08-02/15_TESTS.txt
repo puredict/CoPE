@@ -1,0 +1,22 @@
+X12 compact generic transaction verification record
+Date: 2026-08-02 Asia/Shanghai
+
+Focused compact plus verbose transaction suites before v1:
+42 passed in 0.12s
+
+Focused suites after parser-layer correction:
+42 passed in 0.12s
+
+Authoritative assigned v2:
+clean semantic equivalence 12/12
+fail-closed faults 8/8
+fault rejection layer matches frozen manifest 8/8
+deterministic proposal replay 12/12
+independent CSV/AST audit 9/9
+
+Final full repository regression:
+403 passed in 46.40s
+
+GPU / LLM / robot / simulator used: no
+LIBERO states 27-49 read: no
+

@@ -1,0 +1,13 @@
+schema_version=compact-tx-ablation-status-v1
+clean_pass=12/12
+fault_pass=8/8
+replay_identical=12/12
+compact_smaller_than_fsr=12/12
+median_compact_over_fsr=0.370750
+cope_smaller_than_compact=8/12
+median_cope_over_compact=0.409594
+verbose_encoding_confound_gate=True
+cope_specialized_size_gate=False
+decision=PASS
+gpu_llm_robot_simulator_used=false
+reserved_states_27_49_read=false

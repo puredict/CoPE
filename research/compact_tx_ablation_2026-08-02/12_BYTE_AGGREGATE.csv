@@ -1,0 +1,4 @@
+scope,cases,cope_smaller,median_cope_over_compact,compact_smaller_than_fsr,median_compact_over_fsr
+all,12,8,0.409594,12,0.370750
+posthoc_nonempty_or_version_write,8,8,0.219042,8,0.586861
+posthoc_zero_write_noop,4,0,1.070802,4,0.089754

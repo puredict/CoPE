@@ -1,0 +1,10 @@
+check,pass,detail
+clean_12_of_12,True,12
+clean_validator_once,True,12 rows
+fault_8_of_8,True,8
+fault_layer_match,True,8 rows
+fault_atomicity,True,8 rows
+replay_12_of_12,True,12
+compact_fsr_gate,True,12/12 median=0.370750
+cope_compact_frozen_gate,True,frozen gate correctly fails: 8/12 median=0.409594
+source_independence,True,

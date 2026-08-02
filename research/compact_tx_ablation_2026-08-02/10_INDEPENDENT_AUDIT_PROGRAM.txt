@@ -1,0 +1,87 @@
+from __future__ import annotations
+
+import ast
+import csv
+import hashlib
+import statistics
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parent
+RUN = ROOT / "run_assigned_v2"
+
+
+def load(name):
+    with (RUN / name).open(newline="", encoding="utf-8") as handle:
+        return list(csv.DictReader(handle))
+
+
+def yes(value):
+    return str(value).lower() == "true"
+
+
+clean = load("03_CLEAN_RESULTS.csv")
+faults = load("04_FAULT_RESULTS.csv")
+sizes = load("05_BYTE_RESULTS.csv")
+resources = load("06_RESOURCE_RESULTS.csv")
+replays = load("07_REPLAY_RESULTS.csv")
+checks = []
+
+
+def check(name, passed, detail):
+    checks.append({"check": name, "pass": passed, "detail": detail})
+
+
+check("clean_12_of_12", len(clean) == 12 and all(yes(row["pass"]) for row in clean), str(len(clean)))
+check("clean_validator_once", all(row["validator_calls"] == "1" for row in clean), "12 rows")
+check("fault_8_of_8", len(faults) == 8 and all(yes(row["pass"]) for row in faults), str(len(faults)))
+check("fault_layer_match", all(yes(row["stage_matches_manifest"]) and row["layer"] == row["actual_rejection_stage"] for row in faults), "8 rows")
+check("fault_atomicity", all(not yes(row["published"]) and yes(row["rolled_back"]) and yes(row["pre_state_unchanged"]) for row in faults), "8 rows")
+check("replay_12_of_12", len(replays) == 12 and all(yes(row["byte_identical"]) and row["first_sha256"] == row["second_sha256"] for row in replays), str(len(replays)))
+
+by_case = {}
+for row in sizes:
+    by_case.setdefault(row["case_id"], {})[row["method"]] = int(row["proposal_bytes"])
+compact_fsr = [value["compact_tx"] / value["fsr_pc"] for value in by_case.values()]
+cope_compact = [value["cope"] / value["compact_tx"] for value in by_case.values()]
+check("compact_fsr_gate", sum(value < 1 for value in compact_fsr) >= 8 and statistics.median(compact_fsr) <= 0.9, f"{sum(value < 1 for value in compact_fsr)}/12 median={statistics.median(compact_fsr):.6f}")
+check("cope_compact_frozen_gate", not (sum(value < 1 for value in cope_compact) == 12 and statistics.median(cope_compact) <= 0.5), f"frozen gate correctly fails: {sum(value < 1 for value in cope_compact)}/12 median={statistics.median(cope_compact):.6f}")
+
+source = ROOT.parents[1] / "cope" / "compact_tx.py"
+tree = ast.parse(source.read_text(encoding="utf-8"))
+forbidden = {"expected_patch", "materialize_patch", "derive_post_state", "apply_patch"}
+used = set()
+for node in ast.walk(tree):
+    if isinstance(node, ast.Name): used.add(node.id)
+    elif isinstance(node, ast.Attribute): used.add(node.attr)
+    elif isinstance(node, (ast.Import, ast.ImportFrom)):
+        for alias in node.names: used.add(alias.name.rsplit(".", 1)[-1])
+check("source_independence", not forbidden.intersection(used), ";".join(sorted(forbidden.intersection(used))))
+
+with (ROOT / "11_INDEPENDENT_AUDIT.csv").open("x", newline="", encoding="utf-8") as handle:
+    writer = csv.DictWriter(handle, fieldnames=["check", "pass", "detail"], lineterminator="\n")
+    writer.writeheader(); writer.writerows(checks)
+
+changing = [case_id for case_id, value in by_case.items() if value["compact_tx"] > 130]
+noop = [case_id for case_id in by_case if case_id not in changing]
+aggregate = [
+    {"scope": "all", "cases": 12, "cope_smaller": sum(value < 1 for value in cope_compact), "median_cope_over_compact": f"{statistics.median(cope_compact):.6f}", "compact_smaller_than_fsr": sum(value < 1 for value in compact_fsr), "median_compact_over_fsr": f"{statistics.median(compact_fsr):.6f}"},
+    {"scope": "posthoc_nonempty_or_version_write", "cases": len(changing), "cope_smaller": sum(by_case[c]["cope"] < by_case[c]["compact_tx"] for c in changing), "median_cope_over_compact": f"{statistics.median(by_case[c]['cope']/by_case[c]['compact_tx'] for c in changing):.6f}", "compact_smaller_than_fsr": sum(by_case[c]["compact_tx"] < by_case[c]["fsr_pc"] for c in changing), "median_compact_over_fsr": f"{statistics.median(by_case[c]['compact_tx']/by_case[c]['fsr_pc'] for c in changing):.6f}"},
+    {"scope": "posthoc_zero_write_noop", "cases": len(noop), "cope_smaller": sum(by_case[c]["cope"] < by_case[c]["compact_tx"] for c in noop), "median_cope_over_compact": f"{statistics.median(by_case[c]['cope']/by_case[c]['compact_tx'] for c in noop):.6f}", "compact_smaller_than_fsr": sum(by_case[c]["compact_tx"] < by_case[c]["fsr_pc"] for c in noop), "median_compact_over_fsr": f"{statistics.median(by_case[c]['compact_tx']/by_case[c]['fsr_pc'] for c in noop):.6f}"},
+]
+with (ROOT / "12_BYTE_AGGREGATE.csv").open("x", newline="", encoding="utf-8") as handle:
+    writer = csv.DictWriter(handle, fieldnames=list(aggregate[0]), lineterminator="\n")
+    writer.writeheader(); writer.writerows(aggregate)
+
+hash_rows = []
+for path in sorted(RUN.iterdir()):
+    if path.is_file(): hash_rows.append({"file": path.name, "sha256": hashlib.sha256(path.read_bytes()).hexdigest()})
+with (ROOT / "13_OUTPUT_HASHES.csv").open("x", newline="", encoding="utf-8") as handle:
+    writer = csv.DictWriter(handle, fieldnames=["file", "sha256"], lineterminator="\n")
+    writer.writeheader(); writer.writerows(hash_rows)
+
+passed = all(row["pass"] for row in checks)
+print(f"checks={sum(row['pass'] for row in checks)}/{len(checks)}")
+print(f"decision={'PASS' if passed else 'FAIL'}")
+raise SystemExit(0 if passed else 2)
+

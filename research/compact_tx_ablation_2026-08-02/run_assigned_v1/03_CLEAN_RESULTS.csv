@@ -1,0 +1,13 @@
+case_id,family,compact_equals_verbose_tx,compact_equals_cope,compact_equals_fsr,directive_equal,directive,input_unchanged,receipt_integrity,validator_calls,pass
+no_op,no_op,True,True,True,True,PLAN:place-b,True,True,1,True
+cancel_sibling,cancellation,True,True,True,True,HALT,True,True,1,True
+replace_pending_target,replacement,True,True,True,True,PLAN:place-c,True,True,1,True
+activate_override,override,True,True,True,True,HALT,True,True,1,True
+release_override,release,True,True,True,True,PLAN:place-b,True,True,1,True
+world_change_release,release_world_change,True,True,True,True,PLAN:place-b,True,True,1,True
+wrong_source_revoke,authorization,True,True,True,True,PLAN:place-b,True,True,1,True
+stale_version,version,True,True,True,True,PLAN:place-b,True,True,1,True
+idempotence,idempotence,True,True,True,True,PLAN:place-b,True,True,1,True
+irrelevant_sibling_change,irrelevant_change,True,True,True,True,PLAN:place-b,True,True,1,True
+continuity_valid,continuity,True,True,True,True,CONTINUE:place-b,True,True,1,True
+continuity_invalid,continuity,True,True,True,True,CANCEL:place-b,True,True,1,True
