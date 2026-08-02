@@ -1,0 +1,5 @@
+case_id,triplet_rows,input_hash_equal,common_bytes_equal,normalized_request_equal,fairness_pass
+no_op,3,True,True,True,True
+replace_pending_target,3,True,True,True,True
+wrong_source_revoke,3,True,True,True,True
+continuity_invalid,3,True,True,True,True

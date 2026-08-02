@@ -1,0 +1,1 @@
+{"assigned_triplets":4,"credential_env_name":"OPENROUTER_API_KEY","credential_logged":false,"expanded":false,"max_tokens":4096,"model":"qwen/qwen3.5-flash-02-23","provider":"openrouter","repairs":0,"retries":0,"seed":20260802,"smoke_gate_pass":false,"temperature":0.0,"timeout_seconds":90.0}

@@ -1,0 +1,13 @@
+arm,family,category,count
+compact_tx,authorization,valid,1
+compact_tx,continuity,provider_response_parse_failure,1
+compact_tx,no_op,valid,1
+compact_tx,replacement,provider_response_parse_failure,1
+cope,authorization,provider_response_parse_failure,1
+cope,continuity,provider_budget_violation,1
+cope,no_op,valid,1
+cope,replacement,valid,1
+fsr_pc,authorization,provider_budget_violation,1
+fsr_pc,continuity,provider_budget_violation,1
+fsr_pc,no_op,provider_budget_violation,1
+fsr_pc,replacement,provider_budget_violation,1
