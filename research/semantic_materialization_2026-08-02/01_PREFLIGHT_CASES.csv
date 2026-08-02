@@ -1,0 +1,5 @@
+case_id,event_type,policy_step,done_object,pending_object,replacement_object,previous_state_version
+replace_cream_alphabet_v0,replace_pending_goal,120,cream_cheese_1,butter_1,alphabet_soup_1,0
+replace_butter_milk_v5,replace_pending_goal,177,butter_1,cream_cheese_1,milk_1,5
+cancel_cream_v0,cancel_pending_goal,135,cream_cheese_1,butter_1,,0
+cancel_butter_v3,cancel_pending_goal,188,butter_1,cream_cheese_1,,3
