@@ -1,0 +1,6 @@
+failure_type,assigned_count
+method_independent_pre_event_failure,0
+semantic_mutated_physical_state_or_action_count,0
+paired_prefix_or_state_mismatch,0
+horizon_exceeded,0
+assigned_arm_expected_outcome_not_observed,0
