@@ -214,8 +214,10 @@ def stage_held_near_region(
 
 def main() -> int:
     args = parse_args()
-    if args.max_move_steps <= 0:
-        raise ValueError("max_move_steps must be positive")
+    if args.state_id not in range(5):
+        raise ValueError("qualification state-id must be one of 0..4")
+    if args.max_move_steps != 60:
+        raise ValueError("qualification freezes max-move-steps at 60")
     suite = get_benchmark_suite("libero_10")
     task = suite.get_task(1)
     states = list(suite.get_task_init_states(1))
@@ -418,9 +420,16 @@ def main() -> int:
             "mode": args.mode,
             "pair_key": pair_key,
             "prompt": prompt,
+            "controller_privilege": "simulator_geometry_oracle",
+            "oracle_geometry_used": True,
             "oracle_execution": True,
             "oracle_operation_selection": True,
+            "provider_called": False,
             "learned_policy_used": False,
+            "shared_init_container_loaded": True,
+            "reset_state_index": args.state_id,
+            "reserved_state_indexed": False,
+            "checkpoint_access": "deterministic_replay_and_simulator_hash",
             "oracle_max_move_steps": args.max_move_steps,
             "warmup_steps": warmup.steps,
             "completed_progress_success": completed.success,

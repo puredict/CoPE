@@ -5,19 +5,26 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 from pathlib import Path
 from typing import Any
+
+import numpy as np
 
 from cope.repeated_replacement import (
     apply_oracle_replacement_chain,
     build_chained_replacement_event,
 )
 from cope.semantic_replacement import RECEPTACLE, goal_commitment_id
-from cope_benchmark.oracle_skill_controller import LiberoOracleSkillController
+from cope_benchmark.oracle_skill_controller import (
+    LiberoOracleSkillController,
+    OracleSkillConfig,
+)
 from libero_experiment_core import (
     ExperimentConfig,
     create_libero_env,
     get_benchmark_suite,
+    sim_from_env,
 )
 
 
@@ -39,12 +46,28 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--state-id", type=int, required=True)
     parser.add_argument("--mode", choices=MODES, required=True)
     parser.add_argument("--resolution", type=int, default=64)
+    parser.add_argument("--max-move-steps", type=int, default=60)
     parser.add_argument("--output-csv", type=Path, required=True)
     return parser.parse_args()
 
 
+def simulator_state_sha256(env: Any) -> str:
+    sim = sim_from_env(env)
+    digest = hashlib.sha256()
+    for name, value in (("state", sim.get_state().flatten()), ("ctrl", sim.data.ctrl)):
+        array = np.asarray(value, dtype="<f8")
+        digest.update(name.encode("ascii"))
+        digest.update(str(array.shape).encode("ascii"))
+        digest.update(array.tobytes(order="C"))
+    return digest.hexdigest()
+
+
 def main() -> int:
     args = parse_args()
+    if args.state_id not in range(5):
+        raise ValueError("qualification state-id must be one of 0..4")
+    if args.max_move_steps != 60:
+        raise ValueError("qualification freezes max-move-steps at 60")
     suite = get_benchmark_suite("libero_10")
     task = suite.get_task(1)
     states = list(suite.get_task_init_states(1))
@@ -60,7 +83,11 @@ def main() -> int:
     try:
         env.reset()
         observation = env.set_init_state(states[args.state_id])
-        controller = LiberoOracleSkillController(env, observation)
+        controller = LiberoOracleSkillController(
+            env,
+            observation,
+            config=OracleSkillConfig(max_move_steps=args.max_move_steps),
+        )
         warmup = controller.warmup()
         first_skill = controller.pick_and_place(DONE_OBJECT, RECEPTACLE)
         physical_truth_verified = controller.in_region(
@@ -69,6 +96,9 @@ def main() -> int:
         physically_true_objects = (
             (DONE_OBJECT,) if physical_truth_verified else ()
         )
+        comparison_step = controller.total_steps
+        comparison_action_prefix_sha256 = controller.action_prefix_sha256()
+        comparison_sim_state_sha256 = simulator_state_sha256(env)
 
         pair_key = f"oracle-skill:task01:state{args.state_id:02d}"
         event_one = build_chained_replacement_event(
@@ -117,6 +147,12 @@ def main() -> int:
         elif args.mode == "double_event_no_edit":
             events = [event_one, event_two]
 
+        semantic_sim_state_after_sha256 = simulator_state_sha256(env)
+        semantic_emitted_no_action = controller.total_steps == comparison_step
+        semantic_preserved_sim_state = (
+            semantic_sim_state_after_sha256 == comparison_sim_state_sha256
+        )
+
         selected_object = {
             "original": ORIGINAL_PENDING,
             "single_patch": FIRST_REPLACEMENT,
@@ -157,10 +193,25 @@ def main() -> int:
             "task_id": 1,
             "state_id": args.state_id,
             "mode": args.mode,
+            "pair_group": f"repeated_state{args.state_id:02d}",
             "prompt": prompt,
+            "controller_privilege": "simulator_geometry_oracle",
+            "oracle_geometry_used": True,
+            "learned_policy_used": False,
+            "shared_init_container_loaded": True,
+            "reset_state_index": args.state_id,
+            "reserved_state_indexed": False,
+            "checkpoint_access": "deterministic_replay_and_simulator_hash",
+            "oracle_max_move_steps": args.max_move_steps,
             "warmup_steps": warmup.steps,
             "first_skill_success": first_skill.success,
             "physical_truth_verified_before_patch": physical_truth_verified,
+            "comparison_checkpoint_step": comparison_step,
+            "comparison_action_prefix_sha256": comparison_action_prefix_sha256,
+            "comparison_sim_state_sha256": comparison_sim_state_sha256,
+            "semantic_sim_state_after_sha256": semantic_sim_state_after_sha256,
+            "semantic_emitted_no_action": semantic_emitted_no_action,
+            "semantic_preserved_sim_state": semantic_preserved_sim_state,
             "first_failure_reason": first_skill.failure_reason or "",
             "event_count": len(events),
             "patch_count": len(receipts),
@@ -239,7 +290,8 @@ def main() -> int:
             and len(receipts) == 2
         ),
     }[args.mode]
-    return 0 if first_skill.success and second_ok and expected else 1
+    integrity = semantic_emitted_no_action and semantic_preserved_sim_state
+    return 0 if first_skill.success and second_ok and expected and integrity else 1
 
 
 if __name__ == "__main__":
