@@ -1,0 +1,8 @@
+schema_version=provider-byte-budget-v1
+assigned_cells=36
+common_input_hash_equal=True
+provider_calls=0
+tokenizer_used=false
+decision=PASS
+evidence_class=deterministic_provider_visible_byte_accounting
+reserved_states_27_49_read=false
