@@ -1,0 +1,10 @@
+fault_id,source_case,injection,layer
+C01,cancel_sibling,stale_base_version,parser
+C02,cancel_sibling,wrong_event_id,parser
+C03,cancel_sibling,forbidden_root_path,parser
+C04,replace_pending_target,duplicate_path,parser
+C05,cancel_sibling,unknown_stable_record,materializer
+C06,replace_pending_target,drop_progress_ledger,semantic_validator
+C07,continuity_invalid,retain_illegal_executing_action,semantic_validator
+C08,irrelevant_sibling_change,external_validator_exception,semantic_validator
+
