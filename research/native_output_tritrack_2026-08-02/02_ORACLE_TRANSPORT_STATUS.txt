@@ -1,0 +1,1 @@
+{"assigned_cells":36,"assigned_triplets":12,"credential_logged":false,"decision":"PASS","first_position_counts":{"compact_tx":4,"cope":4,"fsr_pc":4},"gpu_used":false,"learned_provider_calls":0,"mocked_transport_calls":36,"passed_cells":36,"reserved_states_read":false,"schema_version":"tri-arm-oracle-transport-control-v1","simulator_used":false,"test_only":true}

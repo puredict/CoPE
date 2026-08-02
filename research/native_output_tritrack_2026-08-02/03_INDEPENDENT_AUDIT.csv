@@ -1,0 +1,16 @@
+check,pass,observed,expected
+manifest_has_12_unique_cases,True,"[12,12]","[12,12]"
+preflight_has_36_cells,True,36,36
+each_case_has_exact_tri_arm_triplet,True,12,12
+all_triplet_request_hashes_match,True,12,12
+fairness_audit_12_of_12,True,12,12
+all_cells_credential_blocked,True,36,36
+blocked_cells_have_no_generated_artifacts,True,36,36
+run_status_zero_provider_calls,True,"[0,""credential_unavailable""]","[0,""credential_unavailable""]"
+run_status_does_not_claim_smoke_pass,True,"[false,false]","[false,false]"
+reserved_states_not_read,True,false,false
+balanced_first_position,True,"{""compact_tx"":4,""cope"":4,""fsr_pc"":4}","{""compact_tx"":4,""cope"":4,""fsr_pc"":4}"
+aggregate_marks_zero_evaluable,True,3,3
+taxonomy_is_configuration_only,True,"[{""arm"":""all"",""category"":""credential_unavailable"",""count"":""36"",""family"":""configuration""}]","[{""arm"":""all"",""category"":""credential_unavailable"",""count"":""36"",""family"":""configuration""}]"
+mocked_oracle_transport_36_of_36,True,36,36
+mocked_order_balanced,True,"{""compact_tx"":4,""cope"":4,""fsr_pc"":4}","{""compact_tx"":4,""cope"":4,""fsr_pc"":4}"

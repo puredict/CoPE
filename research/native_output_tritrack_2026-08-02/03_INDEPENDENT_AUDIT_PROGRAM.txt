@@ -1,0 +1,128 @@
+#!/usr/bin/env python3
+"""CSV-only audit for X13; deliberately does not import CoPE implementation."""
+
+from __future__ import annotations
+
+import csv
+import hashlib
+import json
+from collections import Counter, defaultdict
+from pathlib import Path
+
+
+ROOT = Path("research/native_output_tritrack_2026-08-02")
+RUN = ROOT / "run_credential_preflight_v1"
+ARMS = {"cope", "compact_tx", "fsr_pc"}
+
+
+def read_csv(path: Path) -> list[dict[str, str]]:
+    with path.open(newline="", encoding="utf-8") as stream:
+        return list(csv.DictReader(stream))
+
+
+def record(rows: list[dict[str, object]], check: str, passed: bool, observed: object, expected: object) -> None:
+    rows.append(
+        {
+            "check": check,
+            "pass": str(bool(passed)),
+            "observed": json.dumps(observed, sort_keys=True, separators=(",", ":")),
+            "expected": json.dumps(expected, sort_keys=True, separators=(",", ":")),
+        }
+    )
+
+
+def main() -> int:
+    manifest = read_csv(ROOT / "01_CASE_MANIFEST.csv")
+    oracle = read_csv(ROOT / "02_ORACLE_TRANSPORT_CONTROLS.csv")
+    fairness = read_csv(RUN / "03_FAIRNESS_INPUT_HASH_AUDIT.csv")
+    samples = read_csv(RUN / "04_PER_SAMPLE_RESULTS.csv")
+    aggregate = read_csv(RUN / "05_AGGREGATE.csv")
+    taxonomy = read_csv(RUN / "06_FAILURE_TAXONOMY.csv")
+    status = json.loads((RUN / "07_RUN_STATUS.txt").read_text(encoding="utf-8"))
+
+    checks: list[dict[str, object]] = []
+    case_ids = [row["case_id"] for row in manifest]
+    grouped: dict[str, list[dict[str, str]]] = defaultdict(list)
+    for row in samples:
+        grouped[row["case_id"]].append(row)
+
+    record(checks, "manifest_has_12_unique_cases", len(manifest) == 12 and len(set(case_ids)) == 12, [len(manifest), len(set(case_ids))], [12, 12])
+    record(checks, "preflight_has_36_cells", len(samples) == 36, len(samples), 36)
+    triplets_ok = all(len(grouped[c]) == 3 and {r["arm"] for r in grouped[c]} == ARMS for c in case_ids)
+    record(checks, "each_case_has_exact_tri_arm_triplet", triplets_ok and set(grouped) == set(case_ids), len(grouped), 12)
+    same_hashes = all(
+        len({r["input_hash"] for r in grouped[c]}) == 1
+        and len({r["common_input_bytes_sha256"] for r in grouped[c]}) == 1
+        and len({r["normalized_request_sha256"] for r in grouped[c]}) == 1
+        for c in case_ids
+    )
+    record(checks, "all_triplet_request_hashes_match", same_hashes, sum(1 for c in case_ids if len({r["normalized_request_sha256"] for r in grouped[c]}) == 1), 12)
+    record(checks, "fairness_audit_12_of_12", len(fairness) == 12 and all(r["fairness_pass"] == "True" for r in fairness), sum(r["fairness_pass"] == "True" for r in fairness), 12)
+
+    blocked_ok = all(r["provider_status"] == "configuration_blocked" and r["provider_error"] == "credential_unavailable" for r in samples)
+    zero_artifacts = all(
+        r["response_sha256"] == ""
+        and r["parser_valid"] == ""
+        and r["semantic_correct"] == ""
+        and r["proposal_bytes"] == "0"
+        and r["validator_calls"] == "0"
+        for r in samples
+    )
+    record(checks, "all_cells_credential_blocked", blocked_ok, sum(r["provider_status"] == "configuration_blocked" for r in samples), 36)
+    record(checks, "blocked_cells_have_no_generated_artifacts", zero_artifacts, sum(r["response_sha256"] == "" for r in samples), 36)
+    record(checks, "run_status_zero_provider_calls", status.get("provider_calls") == 0 and status.get("configuration_blocker") == "credential_unavailable", [status.get("provider_calls"), status.get("configuration_blocker")], [0, "credential_unavailable"])
+    record(checks, "run_status_does_not_claim_smoke_pass", status.get("smoke_gate_pass") is False and status.get("expanded") is False, [status.get("smoke_gate_pass"), status.get("expanded")], [False, False])
+    record(checks, "reserved_states_not_read", status.get("reserved_states_read") is False, status.get("reserved_states_read"), False)
+
+    first_counts = Counter(row["arm"] for row in samples if row["call_order_position"] == "0")
+    record(checks, "balanced_first_position", dict(sorted(first_counts.items())) == {"compact_tx": 4, "cope": 4, "fsr_pc": 4}, dict(sorted(first_counts.items())), {"compact_tx": 4, "cope": 4, "fsr_pc": 4})
+    aggregate_ok = len(aggregate) == 3 and {r["arm"] for r in aggregate} == ARMS and all(r["assigned"] == "12" and r["configuration_blocked"] == "12" and r["method_evaluable"] == "0" for r in aggregate)
+    record(checks, "aggregate_marks_zero_evaluable", aggregate_ok, len(aggregate), 3)
+    taxonomy_ok = taxonomy == [{"arm": "all", "family": "configuration", "category": "credential_unavailable", "count": "36"}]
+    record(checks, "taxonomy_is_configuration_only", taxonomy_ok, taxonomy, [{"arm": "all", "family": "configuration", "category": "credential_unavailable", "count": "36"}])
+
+    oracle_pass = len(oracle) == 36 and all(
+        r["fairness_pass"] == "True"
+        and r["parser_valid"] == "True"
+        and r["semantic_valid"] == "True"
+        and r["semantic_correct"] == "True"
+        and r["validator_calls"] == "1"
+        and r["test_only"] == "True"
+        and r["provider_calls"] == "1"
+        and r["gpu_used"] == "False"
+        and r["simulator_used"] == "False"
+        and r["reserved_states_read"] == "False"
+        for r in oracle
+    )
+    record(checks, "mocked_oracle_transport_36_of_36", oracle_pass, sum(r["semantic_correct"] == "True" for r in oracle), 36)
+    oracle_first = Counter(row["arm"] for row in oracle if row["call_order_position"] == "0")
+    record(checks, "mocked_order_balanced", dict(sorted(oracle_first.items())) == {"compact_tx": 4, "cope": 4, "fsr_pc": 4}, dict(sorted(oracle_first.items())), {"compact_tx": 4, "cope": 4, "fsr_pc": 4})
+
+    output = ROOT / "03_INDEPENDENT_AUDIT.csv"
+    with output.open("w", newline="", encoding="utf-8") as stream:
+        writer = csv.DictWriter(stream, fieldnames=["check", "pass", "observed", "expected"])
+        writer.writeheader()
+        writer.writerows(checks)
+
+    passed = sum(row["pass"] == "True" for row in checks)
+    decision = "PASS" if passed == len(checks) else "FAIL"
+    status_out = {
+        "audit_program_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        "checks_passed": passed,
+        "checks_total": len(checks),
+        "decision": decision,
+        "learned_provider_calls": 0,
+        "learned_result_available": False,
+        "mocked_cells_passed": sum(r["semantic_correct"] == "True" for r in oracle),
+        "mocked_cells_total": len(oracle),
+        "preflight_cells_blocked": sum(r["provider_status"] == "configuration_blocked" for r in samples),
+        "preflight_cells_total": len(samples),
+        "reserved_states_read": False,
+    }
+    (ROOT / "03_INDEPENDENT_AUDIT_STATUS.txt").write_text(json.dumps(status_out, sort_keys=True, separators=(",", ":")) + "\n", encoding="utf-8")
+    print(json.dumps(status_out, sort_keys=True))
+    return 0 if decision == "PASS" else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
