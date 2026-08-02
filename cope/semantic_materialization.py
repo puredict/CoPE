@@ -3,16 +3,16 @@ from __future__ import annotations
 from typing import Any, Mapping, Sequence
 
 from cope.semantic_cancellation import (
-    build_oracle_cancellation_state,
     validate_oracle_cancellation_state,
 )
 from cope.semantic_replacement import (
+    FULL_STATE_SCHEMA,
     RECEPTACLE,
     FullStateValidationError,
-    build_oracle_full_state,
     goal_commitment_id,
     validate_oracle_full_state,
 )
+from cope.serialization import deserialize_state
 
 
 def _require_mapping(value: Any, label: str) -> Mapping[str, Any]:
@@ -44,6 +44,13 @@ def _validate_receipt(
 
     before = _require_mapping(receipt.get("state_before"), "receipt.state_before")
     after = _require_mapping(receipt.get("state_after"), "receipt.state_after")
+    try:
+        deserialize_state(before)
+        deserialize_state(after)
+    except Exception as exc:
+        raise FullStateValidationError(
+            "receipt contains a non-canonical or hash-invalid typed state"
+        ) from exc
     transition = _require_mapping(receipt.get("transition"), "receipt.transition")
     if transition.get("accepted") is not True:
         raise FullStateValidationError("materialization requires an accepted typed transition")
@@ -124,6 +131,34 @@ def _validate_slot(
             )
 
 
+def _full_commitment(
+    slot: Mapping[str, Any],
+    *,
+    lifecycle_status: str,
+    event: Mapping[str, Any],
+) -> dict[str, Any]:
+    content = _require_mapping(slot.get("content"), "slot.content")
+    grounding = content.get("arguments")
+    if not isinstance(grounding, list):
+        raise FullStateValidationError("slot content arguments must be a list")
+    return {
+        "id": slot["slot_id"],
+        "type": "task_goal",
+        "predicate": content["predicate"],
+        "grounding": list(grounding),
+        "lifecycle_status": lifecycle_status,
+        "source": str(event["issuer"]),
+        "owner": str(event["issuer"]),
+        "authority": int(event["authority"]),
+        "valid_from": str(event["event_id"]),
+        "valid_until": "task_end",
+        "dependencies": [],
+        "support_links": [],
+        "override_links": [],
+        "supersession_links": list(slot.get("overrides_slot_ids") or ()),
+    }
+
+
 def materialize_replacement_receipt(
     receipt: Mapping[str, Any],
     event: Mapping[str, Any],
@@ -194,11 +229,56 @@ def materialize_replacement_receipt(
         semantic_role="task_goal_commitment",
     )
 
-    previous_state_version = int(event.get("valid_from_state_version", 0))
-    materialized = build_oracle_full_state(
-        event,
-        previous_state_version=previous_state_version,
-    )
+    previous_state_version = int(event["valid_from_state_version"])
+    materialized = {
+        "schema_version": FULL_STATE_SCHEMA,
+        # ConstraintState.revision is an engine-local transaction counter;
+        # the semantic state version is event-scoped and has a separate namespace.
+        "state_version": previous_state_version + 1,
+        "current_goal": {
+            "all": [
+                dict(slots[done_id]["content"]),
+                dict(slots[replacement_id]["content"]),
+            ]
+        },
+        "entities": [
+            {"id": done_object, "kind": "object"},
+            {"id": pending_object, "kind": "object"},
+            {"id": replacement_object, "kind": "object"},
+            {"id": RECEPTACLE, "kind": "region"},
+        ],
+        "commitments": [
+            _full_commitment(slots[done_id], lifecycle_status="satisfied", event=event),
+            _full_commitment(slots[pending_id], lifecycle_status="superseded", event=event),
+            _full_commitment(slots[replacement_id], lifecycle_status="active", event=event),
+        ],
+        "progress_ledger": [
+            {
+                "milestone_id": done_id,
+                "achieved": True,
+                "physically_valid": True,
+                "still_goal_relevant": True,
+            }
+        ],
+        "plan": [
+            {
+                "step_id": "place-replacement",
+                "skill": "place_in",
+                "arguments": [replacement_object, RECEPTACLE],
+                "status": "pending",
+                "preconditions": [],
+                "effects": [dict(slots[replacement_id]["content"])],
+                "dependencies": [done_id],
+            }
+        ],
+        "pending_restorations": [],
+        "evidence_versions": {
+            "event_id": event_id,
+            "world_version": int(event["world_version"]),
+            "input_state_version": previous_state_version,
+        },
+        "controller_prompt": "diagnostic-only; execution must use the shared compiler",
+    }
     validate_oracle_full_state(
         materialized,
         event,
@@ -261,11 +341,38 @@ def materialize_cancellation_receipt(
         semantic_role="original_goal_commitment",
     )
 
-    previous_state_version = int(event.get("valid_from_state_version", 0))
-    materialized = build_oracle_cancellation_state(
-        event,
-        previous_state_version=previous_state_version,
-    )
+    previous_state_version = int(event["valid_from_state_version"])
+    materialized = {
+        "schema_version": FULL_STATE_SCHEMA,
+        "state_version": previous_state_version + 1,
+        "current_goal": {"all": [dict(slots[done_id]["content"])]},
+        "entities": [
+            {"id": done_object, "kind": "object"},
+            {"id": pending_object, "kind": "object"},
+            {"id": RECEPTACLE, "kind": "region"},
+        ],
+        "commitments": [
+            _full_commitment(slots[done_id], lifecycle_status="satisfied", event=event),
+            _full_commitment(slots[pending_id], lifecycle_status="cancelled", event=event),
+        ],
+        "progress_ledger": [
+            {
+                "milestone_id": done_id,
+                "achieved": True,
+                "physically_valid": True,
+                "still_goal_relevant": True,
+            }
+        ],
+        "plan": [],
+        "pending_restorations": [],
+        "evidence_versions": {
+            "event_id": event_id,
+            "world_version": int(event["world_version"]),
+            "input_state_version": previous_state_version,
+        },
+        "execution_directive": "HALT",
+        "controller_prompt": "diagnostic-only; no controller call is permitted",
+    }
     validate_oracle_cancellation_state(
         materialized,
         event,

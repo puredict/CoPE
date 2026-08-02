@@ -1,8 +1,13 @@
 from __future__ import annotations
 
 import copy
+import hashlib
+import inspect
+import json
 
 import pytest
+
+import cope.semantic_materialization as semantic_materialization
 
 from cope.semantic_cancellation import (
     apply_oracle_cancellation_patch,
@@ -20,6 +25,29 @@ from cope.semantic_replacement import (
     build_oracle_full_state,
     build_replacement_event,
 )
+
+
+def rehash_after(receipt) -> None:
+    payload = copy.deepcopy(receipt["state_after"])
+    payload.pop("state_hash")
+    digest = hashlib.sha256(
+        json.dumps(
+            payload,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+            allow_nan=False,
+        ).encode("utf-8")
+    ).hexdigest()
+    receipt["state_after"]["state_hash"] = digest
+    receipt["transition"]["after_hash"] = digest
+    receipt["transition"]["audit_record"]["after_hash"] = digest
+
+
+def test_materializer_does_not_call_native_full_state_builders() -> None:
+    source = inspect.getsource(semantic_materialization)
+    assert "build_oracle_full_state(" not in source
+    assert "build_oracle_cancellation_state(" not in source
 
 
 def replacement_pair(*, previous_state_version: int = 0, replacement: str = "alphabet_soup_1"):
@@ -105,6 +133,7 @@ def test_replacement_materializer_rejects_corrupted_receipts(corruption: str) ->
             slot["content"]["arguments"][1] = "table"
         elif corruption == "lineage":
             slot["lineage"] = [replacement_id]
+        rehash_after(receipt)
     with pytest.raises(FullStateValidationError):
         materialize_replacement_receipt(
             receipt,
@@ -130,6 +159,7 @@ def test_cancellation_materializer_rejects_corrupted_receipts(corruption: str) -
             slot["mode"] = "active"
         elif corruption == "grounding":
             slot["content"]["arguments"][1] = "table"
+        rehash_after(receipt)
     with pytest.raises(FullStateValidationError):
         materialize_cancellation_receipt(
             receipt,
