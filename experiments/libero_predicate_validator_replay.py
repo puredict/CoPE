@@ -13,7 +13,7 @@ from cope.libero_predicate_validator import (
 from cope.schema import ConstraintSlot
 
 
-PRODUCER_COMMIT = "2fcfb32ec9c3a4b80642ddea494d9e32c85eb11b"
+PRODUCER_COMMIT = "298dac707bb0d57aad050978d6e81d7aab93090d"
 EXPECTED_CASE_COUNT = 10
 
 
