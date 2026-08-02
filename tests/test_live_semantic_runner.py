@@ -12,6 +12,8 @@ from cope.semantic_live_runner import (
     validate_case_rows,
 )
 
+# This module intentionally exercises the reusable contract layer, not CLI internals.
+
 
 def test_development_state_lock_rejects_reserved_state() -> None:
     assert DEVELOPMENT_STATE_IDS == frozenset(range(5))
