@@ -1,0 +1,13 @@
+case_id,exact_accepted,decomposed_accepted,decision_parity,pass
+no_op,True,True,True,True
+replace_pending_target,True,True,True,True
+wrong_source_revoke,True,True,True,True
+continuity_invalid,True,True,True,True
+cancel_sibling,True,True,True,True
+activate_override,True,True,True,True
+release_override,True,True,True,True
+world_change_release,True,True,True,True
+stale_version,True,True,True,True
+idempotence,True,True,True,True
+irrelevant_sibling_change,True,True,True,True
+continuity_valid,True,True,True,True
