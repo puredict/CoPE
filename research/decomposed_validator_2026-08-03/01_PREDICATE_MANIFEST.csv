@@ -1,0 +1,9 @@
+predicate_group,contract_scope
+authorization_noop,unauthorized stale duplicate and no-op events preserve task state
+version_evidence,authorized transitions advance exactly once and bind evidence to the event
+identity_lifecycle,stable IDs are unique and event-target lifecycles have the required effect
+goal_consistency,current goal includes required atoms and excludes invalidated atoms
+progress_preservation,achieved physically valid milestones remain preserved
+action_continuity,executing conflicting actions cancel and valid actions continue
+restoration_entity,override restoration and newly referenced entity records are consistent
+unaffected_scope,commitments entities and records outside the event scope remain unchanged
