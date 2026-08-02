@@ -52,6 +52,7 @@ class OpenAICompatibleRecoveryProvider(HighLevelRecoveryProvider):
             raise ProviderConfigurationError("native N-track freezes retries at zero")
         prompt_dir = Path(__file__).resolve().parents[1] / "prompts"
         self.patch_contract = (prompt_dir / "cope_typed_patch_v1.txt").read_text(encoding="utf-8")
+        self.compact_contract = (prompt_dir / "generic_compact_transaction_v1.txt").read_text(encoding="utf-8")
         self.full_contract = (prompt_dir / "fsr_pc_full_state_v2.txt").read_text(encoding="utf-8")
 
     @property
@@ -174,6 +175,9 @@ class OpenAICompatibleRecoveryProvider(HighLevelRecoveryProvider):
 
     def regenerate(self, recovery_input: RecoveryInput) -> ProviderInvocation:
         return self._call("regenerate", recovery_input, self.full_contract)
+
+    def compact(self, recovery_input: RecoveryInput) -> ProviderInvocation:
+        return self._call("compact", recovery_input, self.compact_contract)
 
     def patch(self, recovery_input: RecoveryInput, constraint_state: dict[str, Any]) -> ProviderInvocation:
         embedded = recovery_input.task_progress.get("pre_state")

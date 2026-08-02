@@ -1,0 +1,26 @@
+OUTPUT CONTRACT: generic compact path/value transaction.
+Return exactly one JSON object with exactly these top-level fields:
+schema_version, base_version, event_id, writes.
+schema_version must be "generic-compact-transaction-v1".
+base_version must equal pre_state.state_version. event_id must equal event.event_id.
+Use the pre_state, event, and transition_rules in RECOVERY_INPUT_CANONICAL_JSON.
+writes is the minimum deterministic ordered list of generic objects with exactly:
+{"op":"replace","path":"/...","value":...}
+or
+{"op":"add","path":"/...","value":...}
+Allowed paths are only:
+/commitments/<stable-id>/<existing-field> using replace
+/commitments/+/<new-stable-id> using add with the complete new record
+/entities/+/<new-stable-id> using add with the complete new entity
+/current_goal using replace
+/plan using replace
+/pending_restorations using replace
+/state_version using replace
+/evidence_versions using replace
+Order writes as: existing commitment updates in event order; new commitment records;
+new entities; current_goal; plan; pending_restorations; state_version; evidence_versions.
+Include only changed fields and projections. For authorized state-changing or
+irrelevant-world-change events, state_version and evidence_versions must advance exactly
+as transition_rules require. For no-op, unauthorized, stale, or duplicate events,
+writes must be []. Do not include per-write hashes, CoPE semantic operation names,
+full unchanged records, prose, markdown, controller commands, or extra fields.

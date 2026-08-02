@@ -127,7 +127,7 @@ class ProviderInvocation:
     latency_seconds: float = 0.0
 
     def __post_init__(self) -> None:
-        if self.mode not in {"regenerate", "patch"}:
+        if self.mode not in {"regenerate", "patch", "compact"}:
             raise ValueError(f"invalid provider invocation mode {self.mode!r}")
         if self.retry_count < 0:
             raise ValueError("retry_count must be >= 0")
