@@ -1,0 +1,10 @@
+fault_id,source_case,injection,expected_outcome,expected_pre_state_unchanged
+F01,cancel_sibling,mutate_unauthorized_target,fail_closed,true
+F02,replace_pending_target,drop_progress_ledger,fail_closed,true
+F03,stale_version,force_stale_event_write,fail_closed,true
+F04,wrong_source_revoke,force_unauthorized_write,fail_closed,true
+F05,replace_pending_target,wrong_replacement_grounding,fail_closed,true
+F06,release_override,drop_pending_restoration_transition,fail_closed,true
+F07,continuity_invalid,retain_illegal_executing_action,fail_closed,true
+F08,irrelevant_sibling_change,forced_validator_exception,fail_closed,true
+
