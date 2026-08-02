@@ -1,0 +1,31 @@
+X09 two-state Oracle semantic pilot evidence log
+Date: 2026-08-02 Asia/Shanghai
+
+X04 evidence commit: 579186e776a5630b5f1591956ef07ed523b14d35
+X09 preregistration commit: 1d6ce6fbe8b2058bd7932c6a882d7b553aa85166
+Assigned implementation commit: c58c4cb402fb6b2cea92b922d1cd81cd67ca1517
+Assigned failure evidence commit: 2690b5d314f8881cac0c4133087466511458ecfc
+Authorization-boundary correction commit: 9218924cfa914fe830d5f3439ad024c79228485e
+
+Pre-assigned focused tests:
+12 passed in 0.17s
+
+Pre-assigned full regression:
+353 passed in 47.27s
+
+Assigned command:
+CUDA_VISIBLE_DEVICES="" scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python experiments/semantic_oracle_pilot.py --authorization research/semantic_oracle_pilot_2026-08-02/01_AUTHORIZATION.csv --result-csv research/semantic_oracle_pilot_2026-08-02/03_ASSIGNED_RESULTS.csv --pair-audit-csv research/semantic_oracle_pilot_2026-08-02/04_PAIR_AUDIT.csv
+arms=4 arm_passed=0 pairs=2 pair_passed=0 states27_49_indexed=0
+
+Assigned root cause:
+ValueError: reserved or unregistered state access rejected
+
+Post-correction focused tests:
+14 passed in 0.20s
+
+Consumed-state debug command:
+CUDA_VISIBLE_DEVICES="" scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python experiments/semantic_oracle_pilot.py --authorization research/semantic_oracle_pilot_2026-08-02/01_AUTHORIZATION.csv --result-csv research/semantic_oracle_pilot_2026-08-02/06_DEBUG_REPLAY_RESULTS.csv --pair-audit-csv research/semantic_oracle_pilot_2026-08-02/07_DEBUG_PAIR_AUDIT.csv
+arms=4 arm_passed=4 pairs=2 pair_passed=2 states27_49_indexed=0
+
+Post-correction full regression:
+355 passed in 46.72s
