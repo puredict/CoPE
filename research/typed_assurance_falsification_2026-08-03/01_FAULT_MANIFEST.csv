@@ -1,0 +1,17 @@
+fault_id,source_case,mutation_class,semantic_intent,prediction_scope
+F01,no_op,structural,replace the output object with a scalar,parser
+F02,no_op,structural,use an unknown top-level schema version,parser
+F03,no_op,structural,remove one required top-level field,parser
+F04,no_op,structural,add an unauthorized top-level field,parser
+F05,stale_version,binding,bind output to a different input state version,representation_or_validator
+F06,activate_override,binding,bind output to a different event ID,representation_or_validator
+F07,wrong_source_revoke,authorization,apply the rejected cancellation anyway,representation_or_validator
+F08,idempotence,idempotence,reapply the duplicate cancellation effect,representation_or_validator
+F09,world_change_release,progress,drop an achieved progress milestone,representation_or_validator
+F10,continuity_invalid,continuity,retain the now-conflicting executing action,representation_or_validator
+F11,cancel_sibling,stable_identity,redirect the transition to an unknown commitment ID,representation_or_validator
+F12,replace_pending_target,duplication,duplicate a transition edit or stable record,representation_or_validator
+F13,replace_pending_target,grounding,substitute the replacement with an unobserved package,representation_or_validator
+F14,irrelevant_sibling_change,omission,omit the required evidence and version transition,representation_or_validator
+F15,continuity_valid,version,advance the output state version twice,representation_or_validator
+F16,release_override,scope,corrupt an unrelated satisfied sibling commitment,representation_or_validator
