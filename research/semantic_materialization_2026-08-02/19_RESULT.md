@@ -62,6 +62,9 @@ carry a second copy of `valid_from_state_version`.
 - Frozen corruption audit: 123/123 expected decisions; 0 malformed accepted.
 - CoPE atomicity/property replay: 67 passed.
 - Full repository regression: 326 passed in 46.27 s.
+- True-clean formal readiness: correctly refused execution (`ready=false`,
+  `rollout_authorized=false`, exit 2) with formal atlas, provider, validator,
+  rollout backend, provenance, and `statsmodels` blockers; cleanliness passed.
 
 ## Gate interpretation
 

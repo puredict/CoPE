@@ -16,6 +16,12 @@ Date: 2026-08-02 (Asia/Shanghai)
 - `18_INDEPENDENT_FULL_REGRESSION_STDOUT.txt`: 326-test repository regression.
 - `19_RESULT.md`: scope-aware interpretation and next experiment.
 - `20_X_GATE_STATUS.csv`: X01--X08 gate delta.
+- `22_TRUE_CLEAN_READINESS.txt` and `23_TRUE_CLEAN_READINESS.json`: authoritative
+  clean-tree refusal; `ready=false`, `rollout_authorized=false`, exit 2.
+- `26_SHA256SUMS_FINAL.txt`: authoritative artifact checksum manifest. The
+  failed first checksum attempt is retained as `24_SHA256SUMS_INCOMPLETE.txt`;
+  it used the wrong relative path for the root-level pilot manifest. File 25
+  predates this final index annotation. Both 24 and 25 are non-authoritative.
 
 ## Retained but superseded artifacts
 
