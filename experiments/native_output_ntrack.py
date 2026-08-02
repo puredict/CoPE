@@ -23,6 +23,7 @@ from cope.native_ntrack import (
 from cope.providers.openai_compatible import (
     OpenAICompatibleRecoveryProvider,
     ProviderConfigurationError,
+    normalized_raw_request_hash,
     normalized_wire_request_hash,
 )
 from cope.types import ProviderInvocation, canonical_json, stable_hash
@@ -160,6 +161,47 @@ def write_fairness(path: Path, rows: list[dict[str, Any]]) -> None:
             })
 
 
+def write_preflight_fairness(
+    path: Path, cases: list[NativeCase], provider: OpenAICompatibleRecoveryProvider
+) -> bool:
+    fields = ["case_id", "paired_rows", "input_hash_equal", "common_bytes_equal", "normalized_request_equal", "fairness_pass"]
+    all_pass = True
+    with path.open("x", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
+        writer.writeheader()
+        for case in cases:
+            common = case.recovery_input
+            patch = provider.build_audited_request("patch", common, provider.patch_contract)
+            full = provider.build_audited_request("regenerate", common, provider.full_contract)
+            passed = bool(
+                patch["recovery_input"] == full["recovery_input"] == common.as_payload()
+                and patch["common_input_message_sha256"] == full["common_input_message_sha256"]
+                and normalized_raw_request_hash(patch) == normalized_raw_request_hash(full)
+            )
+            all_pass = all_pass and passed
+            writer.writerow({
+                "case_id": case.case_id, "paired_rows": 2, "input_hash_equal": True,
+                "common_bytes_equal": patch["common_input_message_sha256"] == full["common_input_message_sha256"],
+                "normalized_request_equal": normalized_raw_request_hash(patch) == normalized_raw_request_hash(full),
+                "fairness_pass": passed,
+            })
+    return all_pass
+
+
+def write_empty_results(path: Path) -> None:
+    with path.open("x", newline="", encoding="utf-8") as handle:
+        csv.DictWriter(handle, fieldnames=FIELDS, lineterminator="\n").writeheader()
+
+
+def write_blocked_aggregate(path: Path) -> None:
+    fields = ["arm", "assigned", "provider_ok", "provider_outage_or_timeout", "first_pass_valid", "semantic_correct", "unauthorized_or_stale_edit", "progress_corruption", "continuity_error", "prompt_tokens", "completion_tokens", "latency_seconds", "validator_calls"]
+    with path.open("x", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
+        writer.writeheader()
+        for arm in ("cope", "fsr_pc"):
+            writer.writerow({field: arm if field == "arm" else 0 for field in fields})
+
+
 def write_aggregate(path: Path, rows: list[dict[str, Any]]) -> None:
     fields = ["arm", "assigned", "provider_ok", "provider_outage_or_timeout", "first_pass_valid", "semantic_correct", "unauthorized_or_stale_edit", "progress_corruption", "continuity_error", "prompt_tokens", "completion_tokens", "latency_seconds", "validator_calls"]
     with path.open("x", newline="", encoding="utf-8") as handle:
@@ -228,6 +270,26 @@ def main() -> int:
         "max_retries": 0, "timeout_seconds": args.timeout,
     })
     cases = load_manifest(args.manifest)
+    if not os.environ.get(provider.api_key_env):
+        fairness_pass = write_preflight_fairness(
+            args.output_dir / "03_FAIRNESS_INPUT_HASH_AUDIT.csv", cases, provider
+        )
+        write_empty_results(args.output_dir / "04_PER_SAMPLE_RESULTS.csv")
+        write_blocked_aggregate(args.output_dir / "05_AGGREGATE.csv")
+        with (args.output_dir / "06_FAILURE_TAXONOMY.csv").open("x", newline="", encoding="utf-8") as handle:
+            writer = csv.writer(handle, lineterminator="\n")
+            writer.writerow(["arm", "family", "category", "count"])
+            writer.writerow(["both", "configuration", "credential_unavailable", 1])
+        status = {
+            "smoke_gate_pass": False, "expanded": False, "assigned_pairs": 0,
+            "provider_calls": 0, "configuration_blocker": "credential_unavailable",
+            "fairness_preflight_pass": fairness_pass, "provider": provider.metadata.provider,
+            "model": provider.metadata.model, "credential_env_name": provider.api_key_env,
+            "credential_logged": False, "reserved_states_read": False,
+        }
+        (args.output_dir / "07_RUN_STATUS.txt").write_text(canonical_json(status) + "\n", encoding="utf-8")
+        print(canonical_json(status))
+        return 3
     smoke = [case for case in cases if case.phase == "smoke"]
     expansion = [case for case in cases if case.phase == "expansion"]
     rows: list[dict[str, Any]] = []

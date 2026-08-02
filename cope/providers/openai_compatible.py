@@ -61,10 +61,9 @@ class OpenAICompatibleRecoveryProvider(HighLevelRecoveryProvider):
     def _common_message(self, recovery_input: RecoveryInput) -> str:
         return "RECOVERY_INPUT_CANONICAL_JSON\n" + canonical_json(recovery_input.as_payload())
 
-    def _call(self, mode: str, recovery_input: RecoveryInput, output_contract: str) -> ProviderInvocation:
-        key = os.environ.get(self.api_key_env)
-        if not key:
-            raise ProviderConfigurationError(f"credential environment variable {self.api_key_env} is not set")
+    def build_audited_request(
+        self, mode: str, recovery_input: RecoveryInput, output_contract: str
+    ) -> dict[str, Any]:
         messages = [
             {
                 "role": "system",
@@ -84,13 +83,20 @@ class OpenAICompatibleRecoveryProvider(HighLevelRecoveryProvider):
             "max_tokens": self._metadata.max_completion_tokens,
             "response_format": {"type": "json_object"},
         }
-        audited_request = {
+        return {
             "mode": mode,
             "recovery_input": recovery_input.as_payload(),
             "common_input_message_sha256": stable_hash(messages[1]["content"]),
             "output_contract_sha256": stable_hash(output_contract),
             "wire_payload": wire_payload,
         }
+
+    def _call(self, mode: str, recovery_input: RecoveryInput, output_contract: str) -> ProviderInvocation:
+        audited_request = self.build_audited_request(mode, recovery_input, output_contract)
+        key = os.environ.get(self.api_key_env)
+        if not key:
+            raise ProviderConfigurationError(f"credential environment variable {self.api_key_env} is not set")
+        wire_payload = audited_request["wire_payload"]
         req = request.Request(
             self.endpoint,
             data=canonical_json(wire_payload).encode("utf-8"),
@@ -177,7 +183,11 @@ class OpenAICompatibleRecoveryProvider(HighLevelRecoveryProvider):
 
 
 def normalized_wire_request_hash(invocation: ProviderInvocation) -> str:
-    payload = json.loads(canonical_json(invocation.raw_request["wire_payload"]))
+    return normalized_raw_request_hash(invocation.raw_request)
+
+
+def normalized_raw_request_hash(raw_request: Mapping[str, Any]) -> str:
+    payload = json.loads(canonical_json(raw_request["wire_payload"]))
     payload["messages"][2]["content"] = "<ARM_OUTPUT_CONTRACT>"
     return stable_hash(payload)
 
