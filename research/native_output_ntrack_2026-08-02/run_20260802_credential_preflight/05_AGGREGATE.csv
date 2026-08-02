@@ -1,0 +1,3 @@
+arm,assigned,provider_ok,provider_outage_or_timeout,first_pass_valid,semantic_correct,unauthorized_or_stale_edit,progress_corruption,continuity_error,prompt_tokens,completion_tokens,latency_seconds,validator_calls
+cope,0,0,0,0,0,0,0,0,0,0,0,0
+fsr_pc,0,0,0,0,0,0,0,0,0,0,0,0

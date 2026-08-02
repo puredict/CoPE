@@ -1,0 +1,13 @@
+case_id,paired_rows,input_hash_equal,common_bytes_equal,normalized_request_equal,fairness_pass
+no_op,2,True,True,True,True
+replace_pending_target,2,True,True,True,True
+wrong_source_revoke,2,True,True,True,True
+continuity_invalid,2,True,True,True,True
+cancel_sibling,2,True,True,True,True
+activate_override,2,True,True,True,True
+release_override,2,True,True,True,True
+world_change_release,2,True,True,True,True
+stale_version,2,True,True,True,True
+idempotence,2,True,True,True,True
+irrelevant_sibling_change,2,True,True,True,True
+continuity_valid,2,True,True,True,True
