@@ -1,0 +1,162 @@
+from __future__ import annotations
+
+import ast
+import csv
+import hashlib
+import statistics
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parent
+RUN = ROOT / "run_assigned_v3"
+
+
+def rows(name):
+    with (RUN / name).open(newline="", encoding="utf-8") as handle:
+        return list(csv.DictReader(handle))
+
+
+def yes(value):
+    return str(value).lower() == "true"
+
+
+clean = rows("03_CLEAN_RESULTS.csv")
+faults = rows("04_FAULT_RESULTS.csv")
+carriers = rows("05_CARRIER_BYTES.csv")
+resources = rows("06_RESOURCE_RESULTS.csv")
+replays = rows("07_REPLAY_RESULTS.csv")
+audits = rows("08_AUDIT_RESULTS.csv")
+with (ROOT / "01_CASE_MANIFEST.csv").open(newline="", encoding="utf-8") as handle:
+    manifest = {row["case_id"]: row for row in csv.DictReader(handle)}
+
+checks = []
+
+
+def add(name, passed, detail):
+    checks.append({"check": name, "pass": passed, "detail": detail})
+
+
+add("clean_denominator", len(clean) == 12, str(len(clean)))
+add("clean_unique_cases", len({row["case_id"] for row in clean}) == 12, "unique case IDs")
+add(
+    "clean_semantic_equivalence",
+    all(yes(row["tx_equals_oracle"]) and yes(row["tx_equals_cope"]) for row in clean),
+    "TX equals independent oracle and materialized CoPE",
+)
+add(
+    "clean_directive_manifest",
+    all(row["directive"].split(":", 1)[0] == manifest[row["case_id"]]["expected_directive_class"] for row in clean),
+    "directive class equals frozen manifest",
+)
+add(
+    "clean_integrity",
+    all(yes(row["input_unchanged"]) and yes(row["receipt_integrity"]) and row["validator_calls"] == "1" for row in clean),
+    "input immutable; receipt complete; one validator call",
+)
+add("fault_denominator", len(faults) == 8, str(len(faults)))
+add(
+    "fault_atomicity",
+    all(
+        yes(row["rejected"])
+        and not yes(row["published"])
+        and yes(row["rolled_back"])
+        and yes(row["pre_state_unchanged"])
+        and yes(row["after_sha256_empty"])
+        and row["validator_calls"] == "1"
+        for row in faults
+    ),
+    "all eight fail closed after one validator call",
+)
+add("replay_denominator", len(replays) == 12, str(len(replays)))
+add(
+    "replay_hash_equality",
+    all(yes(row["byte_identical"]) and row["first_sha256"] == row["second_sha256"] for row in replays),
+    "semantic rows byte-identical",
+)
+add("embedded_audits", len(audits) == 4 and all(yes(row["pass"]) for row in audits), "4/4")
+
+source_path = ROOT.parents[1] / "cope" / "tx_exec.py"
+tree = ast.parse(source_path.read_text(encoding="utf-8"))
+forbidden = {
+    "expected_patch",
+    "materialize_patch",
+    "derive_post_state",
+    "apply_patch",
+    "PatchOutput",
+    "ConstraintStateEngine",
+}
+used = set()
+for node in ast.walk(tree):
+    if isinstance(node, ast.Name):
+        used.add(node.id)
+    elif isinstance(node, ast.Attribute):
+        used.add(node.attr)
+    elif isinstance(node, (ast.Import, ast.ImportFrom)):
+        for alias in node.names:
+            used.add(alias.name.rsplit(".", 1)[-1])
+overlap = sorted(forbidden.intersection(used))
+add("independent_source_ast", not overlap, ";".join(overlap))
+
+output_hashes = []
+for path in sorted(RUN.glob("*")):
+    if path.is_file():
+        output_hashes.append(
+            {"file": path.name, "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+        )
+add("output_file_count", len(output_hashes) == 7, str(len(output_hashes)))
+
+with (ROOT / "12_INDEPENDENT_AUDIT.csv").open("x", newline="", encoding="utf-8") as handle:
+    writer = csv.DictWriter(handle, fieldnames=["check", "pass", "detail"], lineterminator="\n")
+    writer.writeheader()
+    writer.writerows(checks)
+
+by_method = {}
+for method in ("tx_exec", "cope", "fsr_pc"):
+    selected = [row for row in resources if row["method"] == method]
+    by_method[method] = {
+        "method": method,
+        "cases": len(selected),
+        "median_of_case_median_total_ns": int(statistics.median(int(row["median_total_ns"]) for row in selected)),
+        "median_of_case_median_peak_bytes": int(statistics.median(int(row["median_peak_bytes"]) for row in selected)),
+    }
+
+tx_total_ratios = []
+tx_peak_ratios = []
+for case_id in manifest:
+    item = {row["method"]: row for row in resources if row["case_id"] == case_id}
+    tx_total_ratios.append(int(item["tx_exec"]["median_total_ns"]) / int(item["fsr_pc"]["median_total_ns"]))
+    tx_peak_ratios.append(int(item["tx_exec"]["median_peak_bytes"]) / int(item["fsr_pc"]["median_peak_bytes"]))
+
+carrier_summary = {
+    "method": "carrier_summary",
+    "cases": len(carriers),
+    "median_of_case_median_total_ns": int(
+        statistics.median(int(row["tx_carrier_bytes"]) for row in carriers)
+    ),
+    "median_of_case_median_peak_bytes": int(
+        statistics.median(int(row["fsr_full_state_bytes"]) for row in carriers)
+    ),
+}
+
+aggregate = [*by_method.values(), carrier_summary]
+with (ROOT / "13_RESOURCE_AGGREGATE.csv").open("x", newline="", encoding="utf-8") as handle:
+    writer = csv.DictWriter(
+        handle,
+        fieldnames=["method", "cases", "median_of_case_median_total_ns", "median_of_case_median_peak_bytes"],
+        lineterminator="\n",
+    )
+    writer.writeheader()
+    writer.writerows(aggregate)
+
+with (ROOT / "14_OUTPUT_HASHES.csv").open("x", newline="", encoding="utf-8") as handle:
+    writer = csv.DictWriter(handle, fieldnames=["file", "sha256"], lineterminator="\n")
+    writer.writeheader()
+    writer.writerows(output_hashes)
+
+all_pass = all(bool(row["pass"]) for row in checks)
+print(f"checks={sum(bool(row['pass']) for row in checks)}/{len(checks)}")
+print(f"tx_over_fsr_total_ratio_median={statistics.median(tx_total_ratios):.6f}")
+print(f"tx_over_fsr_peak_ratio_median={statistics.median(tx_peak_ratios):.6f}")
+print(f"decision={'PASS' if all_pass else 'FAIL'}")
+raise SystemExit(0 if all_pass else 2)
+

@@ -1,0 +1,9 @@
+fault_id,source_case,injection,rejected,published,rolled_back,pre_state_unchanged,after_sha256_empty,error_class,validator_calls,rollback_integrity,pass
+F01,cancel_sibling,mutate_unauthorized_target,True,False,True,True,True,NativeOutputError,1,True,True
+F02,replace_pending_target,drop_progress_ledger,True,False,True,True,True,NativeOutputError,1,True,True
+F03,stale_version,force_stale_event_write,True,False,True,True,True,NativeOutputError,1,True,True
+F04,wrong_source_revoke,force_unauthorized_write,True,False,True,True,True,NativeOutputError,1,True,True
+F05,replace_pending_target,wrong_replacement_grounding,True,False,True,True,True,NativeOutputError,1,True,True
+F06,release_override,drop_pending_restoration_transition,True,False,True,True,True,NativeOutputError,1,True,True
+F07,continuity_invalid,retain_illegal_executing_action,True,False,True,True,True,NativeOutputError,1,True,True
+F08,irrelevant_sibling_change,forced_validator_exception,True,False,True,True,True,RuntimeError,1,True,True

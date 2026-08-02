@@ -1,0 +1,13 @@
+case_id,family,cope_patch_bytes,tx_carrier_bytes,tx_receipt_bytes,fsr_full_state_bytes,mutation_count
+no_op,no_op,114,106,606,1259,0
+cancel_sibling,cancellation,173,1307,715,1101,5
+replace_pending_target,replacement,211,2278,774,1643,7
+activate_override,override,203,2180,770,1546,7
+release_override,release,201,1933,784,1602,7
+world_change_release,release_world_change,205,2426,844,1644,9
+wrong_source_revoke,authorization,128,120,631,1259,0
+stale_version,version,122,114,627,1259,0
+idempotence,idempotence,120,112,625,1259,0
+irrelevant_sibling_change,irrelevant_change,160,626,660,1284,2
+continuity_valid,continuity,151,608,651,1277,2
+continuity_invalid,continuity,259,2339,771,1704,7

@@ -1,0 +1,18 @@
+X11 TX-EXEC+ authoritative command record
+Date: 2026-08-02 Asia/Shanghai
+
+Environment prefix:
+scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python
+
+Focused tests:
+scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python -m pytest -q tests/test_tx_exec.py tests/test_native_output_ntrack.py
+
+Authoritative assigned v3:
+scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python experiments/tx_exec_falsification.py --case-manifest research/tx_exec_falsification_2026-08-02/01_CASE_MANIFEST.csv --fault-manifest research/tx_exec_falsification_2026-08-02/02_FAULT_MANIFEST.csv --output-dir research/tx_exec_falsification_2026-08-02/run_assigned_v3
+
+Independent CSV/AST audit:
+/home/lijingsu/vla/.venv/bin/python research/tx_exec_falsification_2026-08-02/11_INDEPENDENT_AUDIT_PROGRAM.txt
+
+Full regression:
+scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python -m pytest -q
+
