@@ -1,0 +1,10 @@
+scenario,arm,total_bytes,per_case_output_only_wins
+actual_contract_every_call,cope,61019,
+hypothetical_contract_cached_once,cope,50624,
+proposal_only,cope,2047,8
+actual_contract_every_call,compact_tx,73443,
+hypothetical_contract_cached_once,compact_tx,56283,
+proposal_only,compact_tx,7091,4
+actual_contract_every_call,fsr_pc,73133,
+hypothetical_contract_cached_once,fsr_pc,65191,
+proposal_only,fsr_pc,16837,0
