@@ -39,7 +39,7 @@ between the two preflights, and the scientific stopping rule did not change.
   release, release after world change, wrong-source and stale no-edit,
   idempotence, irrelevant change, and valid/invalid action continuity.
 - Focused native tests: 20 passed.
-- Full repository regression: 361 passed in 46.82 seconds.
+- Final full repository regression: 361 passed in 46.90 seconds.
 - Provider `controller_prompt` is outside both accepted schemas and is never
   executed.
 - Provider calls: 0; robot/simulator/controller calls: 0; reserve states read:

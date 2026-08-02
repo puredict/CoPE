@@ -7,8 +7,8 @@ Focused native contract/transport suite:
 Earlier focused shared-semantic suite:
 69 passed in 0.27s
 
-Full repository regression after oracle transport control:
-361 passed in 46.82s
+Final full repository regression after reporting correction:
+361 passed in 46.90s
 
 Oracle transport control coverage:
 12/12 paired cases; 24/24 arm cells parser-valid, semantic-valid, and fairness-pass.
