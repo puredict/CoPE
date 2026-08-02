@@ -75,3 +75,19 @@ def test_oracle_transport_controls_pass_fairness_and_shared_validator(monkeypatc
         assert all(row["fairness_pass"] for row in rows)
         assert all(row["first_pass_valid"] for row in rows)
         assert all(row["semantic_correct"] for row in rows)
+
+
+def test_reasoning_effort_is_identical_and_auditable_across_arms() -> None:
+    case = build_case("cancel_sibling", "smoke", "cancel", "public_synthetic")
+    provider = OpenAICompatibleRecoveryProvider({
+        "provider": "test-real-adapter", "model": "frozen-model-version",
+        "api_key_env": "TEST_PROVIDER_KEY", "max_retries": 0,
+        "reasoning_effort": "none",
+    })
+    requests = [
+        provider.build_audited_request("patch", case.recovery_input, provider.patch_contract),
+        provider.build_audited_request("compact", case.recovery_input, provider.compact_contract),
+        provider.build_audited_request("regenerate", case.recovery_input, provider.full_contract),
+    ]
+    assert all(item["wire_payload"]["reasoning"] == {"effort": "none"} for item in requests)
+    assert provider.reasoning_effort == "none"

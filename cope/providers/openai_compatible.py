@@ -38,6 +38,10 @@ class OpenAICompatibleRecoveryProvider(HighLevelRecoveryProvider):
         self.endpoint = str(config.get("endpoint", "https://openrouter.ai/api/v1/chat/completions"))
         self.api_key_env = str(config.get("api_key_env", "OPENROUTER_API_KEY"))
         self.seed = int(config.get("seed", 20260802))
+        configured_reasoning = config.get("reasoning_effort")
+        self.reasoning_effort = None if configured_reasoning is None else str(configured_reasoning)
+        if self.reasoning_effort not in {None, "none", "minimal", "low", "medium", "high", "xhigh", "max"}:
+            raise ProviderConfigurationError(f"unsupported reasoning effort {self.reasoning_effort!r}")
         self._metadata = ProviderMetadata(
             provider=str(config.get("provider", "openai_compatible")),
             model=str(config["model"]),
@@ -84,6 +88,8 @@ class OpenAICompatibleRecoveryProvider(HighLevelRecoveryProvider):
             "max_tokens": self._metadata.max_completion_tokens,
             "response_format": {"type": "json_object"},
         }
+        if self.reasoning_effort is not None:
+            wire_payload["reasoning"] = {"effort": self.reasoning_effort}
         return {
             "mode": mode,
             "recovery_input": recovery_input.as_payload(),

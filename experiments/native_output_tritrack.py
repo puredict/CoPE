@@ -36,7 +36,7 @@ from cope.types import ProviderInvocation, canonical_json, stable_hash
 
 
 FIELDS = [
-    "case_id", "phase", "family", "source", "arm", "model", "temperature", "seed",
+    "case_id", "phase", "family", "source", "arm", "model", "reasoning_effort", "temperature", "seed",
     "max_completion_tokens", "timeout_seconds", "retry_budget", "repair_budget",
     "input_hash", "common_input_bytes_sha256", "normalized_request_sha256", "fairness_pass",
     "provider_status", "provider_error", "response_sha256", "parser_valid", "semantic_valid",
@@ -113,6 +113,7 @@ def evaluate(case: NativeCase, arm: str, invocation: ProviderInvocation, provide
         "source": case.source,
         "arm": arm,
         "model": provider.metadata.model,
+        "reasoning_effort": provider.reasoning_effort or "provider_default",
         "temperature": provider.metadata.temperature,
         "seed": provider.seed,
         "max_completion_tokens": provider.metadata.max_completion_tokens,
@@ -255,6 +256,7 @@ def write_blocked_results(
                 writer.writerow({
                     "case_id": case.case_id, "phase": case.phase, "family": case.family,
                     "source": case.source, "arm": arm, "model": provider.metadata.model,
+                    "reasoning_effort": provider.reasoning_effort or "provider_default",
                     "temperature": provider.metadata.temperature, "seed": provider.seed,
                     "max_completion_tokens": provider.metadata.max_completion_tokens,
                     "timeout_seconds": provider.metadata.timeout_seconds, "retry_budget": 0,
@@ -339,6 +341,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--endpoint", default="https://openrouter.ai/api/v1/chat/completions")
     parser.add_argument("--api-key-env", default="OPENROUTER_API_KEY")
     parser.add_argument("--model", required=True)
+    parser.add_argument(
+        "--reasoning-effort",
+        choices=("none", "minimal", "low", "medium", "high", "xhigh", "max"),
+    )
     parser.add_argument("--temperature", type=float, default=0.0)
     parser.add_argument("--seed", type=int, default=20260802)
     parser.add_argument("--max-tokens", type=int, default=4096)
@@ -352,6 +358,7 @@ def main() -> int:
     provider = OpenAICompatibleRecoveryProvider({
         "provider": args.provider, "endpoint": args.endpoint, "api_key_env": args.api_key_env,
         "model": args.model, "temperature": args.temperature, "seed": args.seed,
+        "reasoning_effort": args.reasoning_effort,
         "max_completion_tokens": args.max_tokens, "max_prompt_tokens": 12000,
         "max_retries": 0, "timeout_seconds": args.timeout,
     })
@@ -371,6 +378,7 @@ def main() -> int:
             "provider_calls": 0, "configuration_blocker": "credential_unavailable",
             "fairness_preflight_pass": fairness_pass, "provider": provider.metadata.provider,
             "model": provider.metadata.model, "credential_env_name": provider.api_key_env,
+            "reasoning_effort": provider.reasoning_effort or "provider_default",
             "credential_logged": False, "reserved_states_read": False,
         }
         (args.output_dir / "07_RUN_STATUS.txt").write_text(canonical_json(status) + "\n", encoding="utf-8")
@@ -400,6 +408,7 @@ def main() -> int:
         "assigned_triplets": len(rows) // 3,
         "provider": provider.metadata.provider,
         "model": provider.metadata.model,
+        "reasoning_effort": provider.reasoning_effort or "provider_default",
         "temperature": provider.metadata.temperature,
         "seed": provider.seed,
         "max_tokens": provider.metadata.max_completion_tokens,
