@@ -1,0 +1,7 @@
+schema_version=local-model-diagnostic-status-v1
+status=not_run
+provider_calls=0
+checkpoint_download_complete=false
+reason=nontrivial_checkpoint_download_requires_explicit_authorization_under_repository_rules
+formal_x13_substitute=false
+reserved_states_27_49_read=false
