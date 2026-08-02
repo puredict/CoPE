@@ -1,0 +1,9 @@
+gate_id,component,cpu_contract,live_integration,current_decision,blocks_reserved_rollout,evidence,next_action
+X03,predicate packet producer,PASS,NOT_RUN,PARTIAL,yes,"Registered LIBERO task-1 predicates called in unit producer; backend hook is disabled by default","Emit a production packet on an already consumed development state and preserve its episode provenance"
+X03,predicate packet integrity and binding,PASS,NOT_RUN,PARTIAL,yes,"Event/RGB/sim-state/task/commit/hash checks and corruption rejection pass","Verify the exact live packet against independently logged simulator predicates"
+X03,revalidation validator protocol,PASS,NOT_RUN,PARTIAL,yes,"Production metadata passes formal engine protocol; live_packet_observed=false","Initialize atomic semantic slots and exercise Revalidate/Restore through the main method path"
+X03,test/fake separation,PASS,NOT_APPLICABLE,PASS,no,"Test mode reports is_fake=true; production rejects test_only packets","Keep this invariant in readiness and episode audit"
+X08,LIBERO-10 task-1 asset identity,PASS,PRIOR_CALIBRATION,PARTIAL,yes,"Checkpoint/weight-count/BDDL/init-state path and hashes pinned; config 13/13","Have the embodied semantic runner load this exact config"
+X08,semantic event and information budget,PASS,NOT_RUN,PARTIAL,yes,"Replacement/cancellation and predicate_snapshot field frozen in config","Verify byte-identical RecoveryInput across native FSR and CoPE live arms"
+X08,reserved state manifest,PASS,NOT_INSPECTED,PARTIAL,yes,"States 25/26 remain reserved_uninspected; zero packets read","Do not unlock until live packet plus runner gates pass"
+X08,updated-goal controller competence,PRIOR_FAIL,PRIOR_FAIL,FAIL,yes,"Correct LIBERO-10 checkpoint identity does not reverse the earlier replacement ceiling failure","Use cancellation first; qualify another controller before replacement efficacy comparison"

@@ -1,0 +1,3 @@
+[run_project_env] Using project-isolated LIBERO/OpenVLA environment for this subprocess only.
+[run_project_env] LD_LIBRARY_PATH is unset here to avoid the broken system CUDA nvJitLink path.
+{"formal_engine_protocol": "PASS", "live_packet_observed": false, "rollout_authorized": false, "validator_metadata": {"allows_test_packets": false, "is_fake": false, "packet_schema": "cope-libero-predicate-snapshot-v1", "task_id": 1, "task_suite": "libero_10", "validator_commit": "298dac707bb0d57aad050978d6e81d7aab93090d", "validator_version": "cope-libero-predicate-validator-v1"}}

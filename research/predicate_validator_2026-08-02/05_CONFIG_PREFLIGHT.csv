@@ -1,0 +1,2 @@
+schema_version,config_sha256,schema,task,checkpoint_identity,checkpoint_path,weight_file_count,bddl_hash,init_states_hash,predicate_factory,predicate_commit,predicate_budget,event_families,reserved_manifest,rollout_locked,reserved_state_packets_read,gpu_used,rollout_authorized,passed
+cope-semantic-task1-pilot-config-v1,ac922cb314cdeae0f78bcafbcb960aa3d612dab75ce2db48a9c5de3334288cb2,True,True,True,True,True,True,True,True,True,True,True,True,True,0,False,False,True
