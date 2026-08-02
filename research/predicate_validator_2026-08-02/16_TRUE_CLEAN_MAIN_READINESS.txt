@@ -1,0 +1,109 @@
+[run_project_env] Using project-isolated LIBERO/OpenVLA environment for this subprocess only.
+[run_project_env] LD_LIBRARY_PATH is unset here to avoid the broken system CUDA nvJitLink path.
+{
+  "readiness_report": "/tmp/tmp.bl0EUAH7CP/readiness.json",
+  "schema_version": "cope-main-readiness-v1",
+  "ready": false,
+  "phase": "pilot",
+  "event_source": "oracle",
+  "git_commit": "29f2ff5ff7d3ac3c7cdf5ddc97fdfdccd3de1c62",
+  "config_hash": "4c17746c497ab9faddb9f1f7720700591980b8c33763603fc634fb9d58ad6bdb",
+  "manifest": {
+    "path": "/home/lijingsu/codex-worktrees/fsr-pc-v2-canary/tests/fixtures/disturbance_atlas_v1.fixture.jsonl",
+    "digest": "f6472bc4f781a5d2690ce06ff8c78f69923590cbcef6df90ef0511f660f3600e",
+    "atlas_commit": "fixture-atlas",
+    "fixture": true
+  },
+  "selected_pair_count": 4,
+  "scheduled_episode_count": 24,
+  "engine_commit": "fd0e2c501342ed7226360ae63c14615a1fc44c65",
+  "test_only": true,
+  "rollout_authorized": false,
+  "formal_evidence_eligible": false,
+  "checks": [
+    {
+      "name": "git_commit_recorded",
+      "passed": true,
+      "detail": "29f2ff5ff7d3ac3c7cdf5ddc97fdfdccd3de1c62"
+    },
+    {
+      "name": "git_worktree_clean",
+      "passed": true,
+      "detail": "clean"
+    },
+    {
+      "name": "six_condition_order",
+      "passed": true,
+      "detail": "('clean', 'reactive_disturbed', 'structured_relocalize_prompt', 'stage_backtrack_subgoal', 'history_augmented_full_regeneration', 'cope_patch')"
+    },
+    {
+      "name": "ranked_privileges_forbidden",
+      "passed": true,
+      "detail": "manual=false reset=false rollback=false"
+    },
+    {
+      "name": "primary_oracle_event",
+      "passed": true,
+      "detail": "oracle"
+    },
+    {
+      "name": "complete_preregistered_pairs",
+      "passed": true,
+      "detail": "4"
+    },
+    {
+      "name": "episode_count",
+      "passed": true,
+      "detail": "24"
+    },
+    {
+      "name": "disturbance_atlas",
+      "passed": false,
+      "detail": "formal atlas cannot contain fixtures; formal atlas must identify source_branch=exp/disturbance-causal-atlas; formal atlas must record a real git commit SHA"
+    },
+    {
+      "name": "high_level_provider",
+      "passed": false,
+      "detail": "high-level provider is not configured"
+    },
+    {
+      "name": "cope_engine",
+      "passed": false,
+      "detail": "CoPE engine readiness failed: CoPEEngineProtocolError: formal run requires a real revalidation validator adapter"
+    },
+    {
+      "name": "rollout_backend",
+      "passed": false,
+      "detail": "rollout backend is not configured"
+    },
+    {
+      "name": "checkpoint",
+      "passed": true,
+      "detail": "/home/lijingsu/vla/models/openvla-7b-finetuned-libero-spatial"
+    },
+    {
+      "name": "checkpoint_digest",
+      "passed": true,
+      "detail": "2f1d36893462b60a5efe76aed327d9cc713b561e96278bb02d73bf3c96c77974"
+    },
+    {
+      "name": "external_dependency_commits",
+      "passed": false,
+      "detail": "atlas=fixture-atlas engine=fd0e2c501342ed7226360ae63c14615a1fc44c65"
+    },
+    {
+      "name": "analysis_stack",
+      "passed": false,
+      "detail": "missing ['statsmodels']"
+    }
+  ],
+  "blockers": [
+    "formal atlas cannot contain fixtures; formal atlas must identify source_branch=exp/disturbance-causal-atlas; formal atlas must record a real git commit SHA",
+    "high-level provider is not configured",
+    "CoPE engine readiness failed: CoPEEngineProtocolError: formal run requires a real revalidation validator adapter",
+    "rollout backend is not configured",
+    "atlas=fixture-atlas engine=fd0e2c501342ed7226360ae63c14615a1fc44c65",
+    "missing ['statsmodels']"
+  ]
+}
+validate_only_exit_status=2

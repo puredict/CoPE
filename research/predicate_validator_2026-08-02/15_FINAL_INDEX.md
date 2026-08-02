@@ -18,6 +18,8 @@ Date: 2026-08-02 (Asia/Shanghai)
   live packet and rollout still locked.
 - `13_RESULT.md`: scientific interpretation, limitations, and next action.
 - `14_X03_X08_STATUS.csv`: component-level gate status.
+- `16_TRUE_CLEAN_MAIN_READINESS.txt`: unchanged main/spatial runner still
+  refuses execution; proves the new sidecar config did not silently unlock it.
 - `manifests/semantic_task1_config_v1.csv`: pinned semantic task-1 config.
 
 This index contains no GPU run, simulator run, learned-provider call, new

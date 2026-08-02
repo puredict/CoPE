@@ -44,6 +44,9 @@ validation happened:
 - Production-mode validator metadata passes the engine's formal protocol check,
   while recording `live_packet_observed=false` and
   `rollout_authorized=false`.
+- A true-clean run of the unchanged main config still refuses execution and
+  still points to the spatial checkpoint with no configured validator. This is
+  expected: the new semantic CSV is not yet loaded by that runner.
 
 ## Why this is not a fake experiment
 
