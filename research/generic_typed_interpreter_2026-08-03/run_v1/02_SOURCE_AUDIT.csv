@@ -1,0 +1,2 @@
+module,source_sha256,forbidden_symbols,forbidden_hits,pass
+cope.generic_typed_interpreter,0d68a2502c33ad6b8dcb1f92cfc1b6358df382edfc8b35b2c4f641ce2002b40d,expected_patch;derive_post_state;validate_and_compile,,True

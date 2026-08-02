@@ -1,0 +1,20 @@
+check,pass,observed,expected
+manifest_22_unique,True,"[22,22]","[22,22]"
+manifest_axis_counts,True,"{""commission_or_structure"":14,""omission"":8}","{""commission_or_structure"":14,""omission"":8}"
+generic_source_forbidden_symbol_audit,True,"[{""forbidden_hits"":"""",""forbidden_symbols"":""expected_patch;derive_post_state;validate_and_compile"",""module"":""cope.generic_typed_interpreter"",""pass"":""True"",""source_sha256"":""0d68a2502c33ad6b8dcb1f92cfc1b6358df382edfc8b35b2c4f641ce2002b40d""}]","""one passing row with zero forbidden hits"""
+clean_12_four_arm_groups,True,"[48,12]","[48,12]"
+clean_48_of_48_exact,True,48,48
+fault_22_four_arm_groups,True,"[88,22]","[88,22]"
+fault_proposals_all_changed,True,88,88
+faults_all_rejected_end_to_end,True,88,88
+zero_end_to_end_fail_open,True,0,0
+zero_crash,True,0,0
+zero_caller_mutation,True,0,0
+fault_gate_88_of_88,True,88,88
+aggregate_recomputed_from_raw,True,12,12
+all_representation_fail_open_counts,True,"{""compact_tx"":13,""cope_exact"":0,""cope_generic"":8,""fsr_pc"":18}","{""compact_tx"":13,""cope_exact"":0,""cope_generic"":8,""fsr_pc"":18}"
+commission_representation_fail_open_counts,True,"{""compact_tx"":5,""cope_exact"":0,""cope_generic"":0,""fsr_pc"":10}","{""compact_tx"":5,""cope_exact"":0,""cope_generic"":0,""fsr_pc"":10}"
+omission_representation_fail_open_counts,True,"{""compact_tx"":8,""cope_exact"":0,""cope_generic"":8,""fsr_pc"":8}","{""compact_tx"":8,""cope_exact"":0,""cope_generic"":8,""fsr_pc"":8}"
+frozen_gates,True,"[""True"",""True"",""True"",""True""]","[""True"",""True"",""True"",""True""]"
+evidence_resource_boundary,True,"[""0"",""false"",""false"",""offline_deterministic_fault_injection""]","[""0"",""false"",""false"",""offline_deterministic_fault_injection""]"
+run_decision_pass,True,"""PASS""","""PASS"""
