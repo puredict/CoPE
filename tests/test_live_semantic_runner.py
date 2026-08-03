@@ -358,8 +358,6 @@ def _compact_output(event: dict[str, Any]) -> dict[str, Any]:
         "current_goal",
         "plan",
         "pending_restorations",
-        "state_version",
-        "evidence_versions",
     ):
         if before[key] != after[key]:
             writes.append({"op": "replace", "path": f"/{key}", "value": after[key]})
@@ -414,13 +412,23 @@ class ScriptedProvider:
                 validation_failure="provider_timeout",
             )
         event = dict(recovery_input.event)
-        output = (
-            _cope_output(event)
-            if mode == "patch"
-            else _compact_output(event)
-            if mode == "compact"
-            else build_expected_live_post_state(event)
-        )
+        if "neutral-label sparse" in output_contract:
+            output = _cope_output(event)
+            output["operation"] = (
+                "N01" if event["event_type"] == "replace_pending_goal" else "N02"
+            )
+        elif mode == "patch":
+            output = _cope_output(event)
+        elif mode == "compact":
+            output = _compact_output(event)
+        else:
+            full = build_expected_live_post_state(event)
+            output = {
+                key: value
+                for key, value in full.items()
+                if key
+                not in {"schema_version", "state_version", "evidence_versions"}
+            }
         return ProviderInvocation(
             mode=mode,
             raw_request=raw_request,
@@ -453,7 +461,12 @@ def test_learned_triplet_is_provider_backed_fair_and_trusted(event_type: str) ->
     assert result["oracle_substitution"] is False
     assert result["fallback_used"] is False
     assert result["post_interruption_action_delta"] == 0
-    assert {item["arm"] for item in result["arms"]} == {"cope", "compact_tx", "fsr_pc"}
+    assert {item["arm"] for item in result["arms"]} == {
+        "cope",
+        "neutral_patch",
+        "compact_tx",
+        "fsr_pc",
+    }
     assert all(item["provider_status"] == "ok" for item in result["arms"])
     assert all(item["semantic_valid"] is True for item in result["arms"]), [
         (item["arm"], item["parse_or_validation_error"]) for item in result["arms"]
@@ -524,7 +537,7 @@ def test_provider_failure_is_retained_without_silent_fallback() -> None:
     assert cope["semantic_valid"] is False
     assert cope["fallback_used"] is False
     assert result["fallback_used"] is False
-    assert provider.calls == ["patch", "compact", "regenerate"]
+    assert provider.calls == ["patch", "patch", "compact", "regenerate"]
 
 
 def test_rejects_idempotence_violation() -> None:
@@ -552,7 +565,7 @@ def test_phase_a_rejects_nonzero_action_delta() -> None:
         )
 
 
-def test_state0_gate_requires_both_families_and_all_three_provider_ok() -> None:
+def test_state0_gate_requires_both_families_and_all_four_provider_ok() -> None:
     replacement = _run_learned(frozen_row(0, "replace_pending_goal"))
     cancellation = _run_learned(frozen_row(0, "cancel_pending_goal"))
     assert state0_expansion_allowed([replacement, cancellation]) is True

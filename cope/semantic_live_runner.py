@@ -82,6 +82,12 @@ PERSISTENT_STATE_FIELDS = frozenset(
         "evidence_versions",
     }
 )
+SEMANTIC_STATE_FIELDS = PERSISTENT_STATE_FIELDS - {
+    "schema_version",
+    "state_version",
+    "evidence_versions",
+}
+LIVE_ARMS = ("cope", "neutral_patch", "compact_tx", "fsr_pc")
 
 LIVE_COPE_CONTRACT = """OUTPUT CONTRACT: X15 CoPE live minimum patch.
 Return exactly one JSON object and no prose or receipt.
@@ -95,6 +101,18 @@ with replacement_object and replacement_target, matching the pre_state ID format
 patch_id must be a nonempty fresh identifier and must not claim oracle origin.
 Do not return state, history, receipt, hashes, controller actions, or extra fields."""
 
+LIVE_NEUTRAL_CONTRACT = """OUTPUT CONTRACT: neutral-label sparse live patch.
+Return exactly one JSON object and no prose or receipt.
+For replace_pending_goal the exact fields are event_id, operation, patch_id,
+target_id, replacement_id and operation must be "N01".
+For cancel_pending_goal the exact fields are event_id, operation, patch_id,
+target_id and operation must be "N02".
+N01 deactivates only the named target and activates the named replacement; N02
+deactivates only the named target without replacement. Copy all IDs from the
+event. patch_id is a nonempty fresh identifier. Do not emit CoPE operation
+names, state/evidence versions, processed events, state, receipt, hashes,
+controller actions, history, or extra fields."""
+
 LIVE_COMPACT_CONTRACT = """OUTPUT CONTRACT: X15 equivalent generic live transaction.
 Return exactly one JSON object with schema_version, base_version, event_id, writes.
 schema_version is \"generic-compact-transaction-v1\". base_version equals
@@ -102,16 +120,23 @@ task_progress.pre_state.state_version and event_id equals event.event_id.
 writes is the minimum generic path/value transaction that produces the authorized
 post-event persistent state. Legal write objects have exactly op, path, value.
 Use only add or replace and the allowlisted commitment/entity/current_goal/plan/
-pending_restorations/state_version/evidence_versions paths. Do not return CoPE
-operations, state, history, receipt, controller actions, or extra fields."""
+pending_restorations paths. Address existing commitment fields by stable ID,
+for example /commitments/goal:butter_1/lifecycle_status. Add a complete new
+record at /commitments/+/goal:alphabet_soup_1 or
+/entities/+/alphabet_soup_1. Root current_goal, plan, and
+pending_restorations writes replace the complete root value. The trusted shared
+envelope, not this output, supplies state/evidence versions and event records.
+Do not return CoPE operations, transaction metadata, state, history, receipt,
+controller actions, or extra fields."""
 
-LIVE_FSR_CONTRACT = """OUTPUT CONTRACT: X15 FSR-PC complete live persistent state.
-Return exactly one full-state-v2 JSON object with exactly these fields:
-schema_version, state_version, current_goal, entities, commitments,
-progress_ledger, plan, pending_restorations, evidence_versions.
-Produce the complete post-event state from task_progress.pre_state and event.
-Preserve witnessed progress and unaffected records. Do not return action_history,
-receipt, hashes, controller actions, patch fields, prose, or extra fields."""
+LIVE_FSR_CONTRACT = """OUTPUT CONTRACT: FSR-PC complete semantic state.
+Return exactly one JSON object with exactly these semantic fields: current_goal,
+entities, commitments, progress_ledger, plan, pending_restorations. Produce the
+complete post-event semantic state from task_progress.pre_state and event.
+Preserve witnessed progress and unaffected records. The trusted shared envelope,
+not this output, supplies schema/state/evidence versions and event records. Do
+not return transaction metadata, action_history, receipt, hashes, controller
+actions, patch fields, prose, or extra fields."""
 
 
 class LearnedSemanticError(ValueError):
@@ -942,12 +967,50 @@ def validate_live_persistent_state(
     return compile_execution_directive(enriched)
 
 
-def parse_live_full_state(value: Any) -> dict[str, Any]:
-    if not isinstance(value, Mapping) or set(value) != PERSISTENT_STATE_FIELDS:
-        raise LearnedSemanticError("FSR-PC output is not one complete canonical persistent state")
-    if value.get("schema_version") != "full-state-v2":
-        raise LearnedSemanticError("FSR-PC output has the wrong schema")
-    return copy.deepcopy(dict(value))
+def translate_live_neutral_patch(
+    value: Any, event: Mapping[str, Any]
+) -> dict[str, Any]:
+    expected = (
+        {"event_id", "operation", "patch_id", "target_id", "replacement_id"}
+        if event["event_type"] == "replace_pending_goal"
+        else {"event_id", "operation", "patch_id", "target_id"}
+    )
+    if not isinstance(value, Mapping) or set(value) != expected:
+        raise LearnedSemanticError("neutral sparse patch fields are noncanonical")
+    expected_label = (
+        "N01" if event["event_type"] == "replace_pending_goal" else "N02"
+    )
+    if value.get("operation") != expected_label:
+        raise LearnedSemanticError("neutral sparse patch uses the wrong operation label")
+    translated = copy.deepcopy(dict(value))
+    translated["operation"] = (
+        "Override" if expected_label == "N01" else "Expire"
+    )
+    parse_live_cope_patch(translated, event)
+    return translated
+
+
+def trusted_live_transaction_finalize(
+    state: Mapping[str, Any], event: Mapping[str, Any]
+) -> dict[str, Any]:
+    """Attach transaction-owned state/evidence fields after semantic generation."""
+
+    out = copy.deepcopy(dict(state))
+    expected = build_expected_live_post_state(event)
+    out["schema_version"] = expected["schema_version"]
+    out["state_version"] = expected["state_version"]
+    out["evidence_versions"] = copy.deepcopy(expected["evidence_versions"])
+    return out
+
+
+def parse_live_fsr_semantic_state(
+    value: Any, event: Mapping[str, Any]
+) -> dict[str, Any]:
+    if not isinstance(value, Mapping) or set(value) != SEMANTIC_STATE_FIELDS:
+        raise LearnedSemanticError(
+            "FSR-PC output is not one complete metadata-free semantic state"
+        )
+    return trusted_live_transaction_finalize(value, event)
 
 
 def _provider_status(invocation: ProviderInvocation) -> tuple[str, str]:
@@ -987,7 +1050,41 @@ def evaluate_live_arm(
                 directive = validate_live_persistent_state(
                     candidate, event, physically_true_objects
                 )
+            elif arm == "neutral_patch":
+                translated = translate_live_neutral_patch(
+                    invocation.parsed_output, event
+                )
+                parser_valid = True
+                candidate, receipt = execute_live_cope_patch(
+                    translated,
+                    event,
+                    physically_true_objects=physically_true_objects,
+                )
+                receipt = {
+                    **receipt,
+                    "method_label": "learned_neutral_sparse_live_patch",
+                    "neutral_model_proposal_sha256": stable_hash(
+                        invocation.parsed_output
+                    ),
+                }
+                directive = validate_live_persistent_state(
+                    candidate, event, physically_true_objects
+                )
             elif arm == "compact_tx":
+                raw_writes = (
+                    invocation.parsed_output.get("writes")
+                    if isinstance(invocation.parsed_output, Mapping)
+                    else None
+                )
+                if isinstance(raw_writes, list) and any(
+                    isinstance(write, Mapping)
+                    and str(write.get("path", "")).removeprefix("/").split("/")[0]
+                    in {"schema_version", "state_version", "evidence_versions", "processed_events"}
+                    for write in raw_writes
+                ):
+                    raise LearnedSemanticError(
+                        "compact output generated transaction metadata"
+                    )
                 proposal = parse_proposal(invocation.parsed_output, pre_state, event)
                 parser_valid = True
                 result = execute_compact_transaction(
@@ -997,12 +1094,15 @@ def evaluate_live_arm(
                     lambda staged, _state, _event: validate_live_persistent_state(
                         staged, _event, physically_true_objects
                     ),
+                    trusted_finalize=trusted_live_transaction_finalize,
                 )
                 candidate = result.post_state
                 receipt = result.receipt
                 directive = result.directive
             elif arm == "fsr_pc":
-                candidate = parse_live_full_state(invocation.parsed_output)
+                candidate = parse_live_fsr_semantic_state(
+                    invocation.parsed_output, event
+                )
                 parser_valid = True
                 directive = validate_live_persistent_state(
                     candidate, event, physically_true_objects
@@ -1171,6 +1271,7 @@ def run_learned_semantic_triplet(
     )
     specs = (
         ("cope", "patch", LIVE_COPE_CONTRACT),
+        ("neutral_patch", "patch", LIVE_NEUTRAL_CONTRACT),
         ("compact_tx", "compact", LIVE_COMPACT_CONTRACT),
         ("fsr_pc", "regenerate", LIVE_FSR_CONTRACT),
     )
@@ -1260,11 +1361,9 @@ def state0_expansion_allowed(triplets: Sequence[Mapping[str, Any]]) -> bool:
         if triplet.get("shared_envelope", {}).get("pass") is not True:
             return False
         arms = triplet.get("arms")
-        if not isinstance(arms, list) or {item.get("arm") for item in arms} != {
-            "cope",
-            "compact_tx",
-            "fsr_pc",
-        }:
+        if not isinstance(arms, list) or {
+            item.get("arm") for item in arms
+        } != set(LIVE_ARMS):
             return False
         if not triplet.get("fairness_pass"):
             return False
@@ -1291,7 +1390,7 @@ def recorded_state0_expansion_allowed(rows: Sequence[Mapping[str, Any]]) -> bool
     def truth(value: Any) -> bool:
         return value is True or str(value).lower() == "true"
 
-    if len(rows) != 6:
+    if len(rows) != 2 * len(LIVE_ARMS):
         return False
     if {str(row.get("event_type")) for row in rows} != EVENT_TYPES:
         return False
@@ -1303,7 +1402,7 @@ def recorded_state0_expansion_allowed(rows: Sequence[Mapping[str, Any]]) -> bool
     if len(by_case) != 2:
         return False
     for group in by_case.values():
-        if {row.get("arm") for row in group} != {"cope", "compact_tx", "fsr_pc"}:
+        if {row.get("arm") for row in group} != set(LIVE_ARMS):
             return False
         if any(
             row.get("provider_status") != "ok"

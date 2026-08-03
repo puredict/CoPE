@@ -152,6 +152,10 @@ def execute_compact_transaction(
     validator: Callable[[Mapping[str, Any], Mapping[str, Any], Mapping[str, Any]], str],
     *,
     staged_fault: str | None = None,
+    trusted_finalize: Callable[
+        [Mapping[str, Any], Mapping[str, Any]], Mapping[str, Any]
+    ]
+    | None = None,
 ) -> CompactTransactionResult:
     caller_before = canonical_json(state)
     before = _without_history(state)
@@ -181,6 +185,13 @@ def execute_compact_transaction(
         staged = copy.deepcopy(before)
         for write in parsed["writes"]:
             _apply_write(staged, write)
+        if trusted_finalize is not None:
+            finalized = trusted_finalize(copy.deepcopy(staged), event)
+            if not isinstance(finalized, Mapping):
+                raise CompactTransactionError(
+                    "trusted finalizer must return a state mapping"
+                )
+            staged = copy.deepcopy(dict(finalized))
         if staged_fault == "drop_progress_ledger":
             staged["progress_ledger"] = []
         elif staged_fault == "retain_illegal_executing_action":

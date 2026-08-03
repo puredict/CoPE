@@ -25,6 +25,7 @@ from cope.semantic_live_runner import (
     X15_SEED,
     X15_TEMPERATURE,
     X15_TIMEOUT_SECONDS,
+    LIVE_ARMS,
     load_semantic_config,
     recorded_state0_expansion_allowed,
     run_learned_semantic_triplet,
@@ -201,7 +202,7 @@ def _write_family_aggregate(path: Path, rows: Sequence[Mapping[str, Any]]) -> No
         writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
         writer.writeheader()
         for event_type in ("replace_pending_goal", "cancel_pending_goal"):
-            for arm in ("cope", "compact_tx", "fsr_pc"):
+            for arm in LIVE_ARMS:
                 selected = [
                     row
                     for row in rows
@@ -543,7 +544,7 @@ def main() -> int:
         "state0_expansion_allowed": expansion_allowed,
         "states_1_4_requested": bool(args.expand_states_1_4),
         "states_1_4_executed": any(item["state_id"] > 0 for item in triplets),
-        "provider_calls": 3 * len(triplets),
+        "provider_calls": len(LIVE_ARMS) * len(triplets),
         "fallback_used": any(item["fallback_used"] for item in triplets),
         "oracle_substitution": any(item["oracle_substitution"] for item in triplets),
         "post_interruption_action_delta": sum(
