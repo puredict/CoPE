@@ -1,0 +1,13 @@
+base_case_id,family,variants,cope_correct,compact_tx_correct,fsr_pc_correct,cope_minus_compact,cluster_outcome
+no_op,no_op,5,5,5,1,0,tie
+replace_pending_target,replacement,5,0,0,0,0,tie
+wrong_source_revoke,authorization,5,0,0,0,0,tie
+continuity_invalid,continuity_conflict,5,0,0,0,0,tie
+cancel_sibling,cancellation,5,5,0,0,5,cope_win
+activate_override,override,5,5,0,0,5,cope_win
+release_override,release,5,5,0,0,5,cope_win
+world_change_release,release_world_change,5,5,0,0,5,cope_win
+stale_version,version,5,0,5,0,-5,compact_win
+idempotence,idempotence,5,0,5,0,-5,compact_win
+irrelevant_sibling_change,irrelevant_change,5,1,1,2,0,tie
+continuity_valid,continuity_valid,5,2,2,2,0,tie
