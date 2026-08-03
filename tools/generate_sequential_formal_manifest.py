@@ -5,7 +5,12 @@ from __future__ import annotations
 
 import argparse
 import csv
+import sys
 from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 from cope.sequential_prompting import ARMS, MAX_COMPLETION_TOKENS, MODEL, SEED_BASE, TEMPERATURE
 
