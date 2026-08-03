@@ -28,6 +28,7 @@ from cope.semantic_live_runner import (
     run_oracle_semantic_fixture,
     recorded_state0_expansion_allowed,
     select_validated_cope_execution,
+    select_validated_live_execution,
     state0_expansion_allowed,
     validate_case_rows,
 )
@@ -620,6 +621,23 @@ def test_embodied_command_rejects_unvalidated_arm() -> None:
             {"arm": "cope", "semantic_correct": False},
             "cancel_pending_goal",
         )
+
+
+@pytest.mark.parametrize("event_type", tuple(EVENT_TYPES))
+def test_neutral_sparse_command_uses_the_same_validated_executor_state(
+    event_type: str,
+) -> None:
+    result = _run_learned(frozen_row(0, event_type))
+    neutral = next(
+        item for item in result["arms"] if item["arm"] == "neutral_patch"
+    )
+    command = select_validated_live_execution(neutral, event_type)
+    assert command["selection_source"] == "validated_provider_post_state"
+    assert command["execution_kind"] == (
+        "pick_and_place"
+        if event_type == "replace_pending_goal"
+        else "halt"
+    )
 
 
 def test_live_shared_envelope_rejects_model_generated_transaction_metadata() -> None:

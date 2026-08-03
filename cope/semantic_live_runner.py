@@ -657,17 +657,22 @@ def commit_live_shared_envelope(
     }
 
 
-def select_validated_cope_execution(
-    cope_arm: Mapping[str, Any], event_type: str
+def select_validated_live_execution(
+    arm_result: Mapping[str, Any], event_type: str
 ) -> dict[str, Any]:
-    """Derive the high-level executor command only from an accepted CoPE state."""
+    """Derive an executor command only from an accepted provider post-state."""
 
-    if cope_arm.get("arm") != "cope" or cope_arm.get("semantic_correct") is not True:
-        raise LearnedSemanticError("embodied execution requires an accepted CoPE arm")
-    state = cope_arm.get("trusted_after_state")
+    if (
+        arm_result.get("arm") not in LIVE_ARMS
+        or arm_result.get("semantic_correct") is not True
+    ):
+        raise LearnedSemanticError(
+            "embodied execution requires an accepted live semantic arm"
+        )
+    state = arm_result.get("trusted_after_state")
     if not isinstance(state, Mapping):
         raise LearnedSemanticError("accepted CoPE arm has no trusted post-state")
-    directive = cope_arm.get("compiled_directive")
+    directive = arm_result.get("compiled_directive")
     plan = state.get("plan")
     if not isinstance(plan, list):
         raise LearnedSemanticError("accepted CoPE state has no canonical plan")
@@ -697,6 +702,17 @@ def select_validated_cope_execution(
             "selection_source": "validated_provider_post_state",
         }
     raise LearnedSemanticError(f"unsupported embodied event family {event_type!r}")
+
+
+def select_validated_cope_execution(
+    cope_arm: Mapping[str, Any], event_type: str
+) -> dict[str, Any]:
+    if (
+        cope_arm.get("arm") != "cope"
+        or cope_arm.get("semantic_correct") is not True
+    ):
+        raise LearnedSemanticError("embodied execution requires an accepted CoPE arm")
+    return select_validated_live_execution(cope_arm, event_type)
 
 
 def build_expected_live_post_state(event: Mapping[str, Any]) -> dict[str, Any]:

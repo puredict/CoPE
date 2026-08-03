@@ -30,6 +30,7 @@ from cope.semantic_live_runner import (
     recorded_state0_expansion_allowed,
     run_learned_semantic_triplet,
     select_validated_cope_execution,
+    select_validated_live_execution,
     sha256_file,
     state0_expansion_allowed,
     validate_case_rows,
@@ -55,10 +56,16 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--resolution", type=int, default=64)
     parser.add_argument("--expand-states-1-4", action="store_true")
     parser.add_argument("--state0-results", type=Path)
-    parser.add_argument(
+    execution = parser.add_mutually_exclusive_group()
+    execution.add_argument(
         "--execute-cope",
         action="store_true",
         help="Phase B: execute only the accepted CoPE command with the qualified oracle substrate",
+    )
+    execution.add_argument(
+        "--execute-valid-arms",
+        action="store_true",
+        help="Matched Phase B: execute every semantically valid arm and fail-close invalid arms",
     )
     parser.add_argument("--provider", default="openrouter")
     parser.add_argument(
@@ -301,7 +308,8 @@ def main() -> int:
     flat_rows: list[dict[str, Any]] = []
     embodied_rows: list[dict[str, Any]] = []
     journal_path: Path | None = None
-    if args.execute_cope:
+    embodied_mode = bool(args.execute_cope or args.execute_valid_arms)
+    if embodied_mode:
         output_dir.mkdir(parents=True, exist_ok=False)
         journal_path = output_dir / "00_CASE_JOURNAL.txt"
 
@@ -310,7 +318,7 @@ def main() -> int:
             if state_id not in range(5):
                 raise RuntimeError("X15 attempted to leave development states 0--4")
             state_rows = [row for row in rows if int(row["state_id"]) == state_id]
-            if args.execute_cope:
+            if embodied_mode:
                 # HALT is evaluated first and emits no action, so both event
                 # families see the exact same physical milestone.
                 state_rows.sort(key=lambda row: row["event_type"] != "cancel_pending_goal")
@@ -417,7 +425,7 @@ def main() -> int:
                     case_flat_rows = _flatten(triplet, runtime)
                     flat_rows.extend(case_flat_rows)
                     embodied_row: dict[str, Any] | None = None
-                    if args.execute_cope:
+                    if embodied_mode:
                         if journal_path is None:
                             raise RuntimeError("Phase-B journal path was not initialized")
                         with journal_path.open("a", encoding="utf-8") as handle:
@@ -431,86 +439,260 @@ def main() -> int:
                                 )
                                 + "\n"
                             )
-                        cope_arm = next(
-                            item for item in triplet["arms"] if item["arm"] == "cope"
-                        )
-                        decision = select_validated_cope_execution(
-                            cope_arm, row["event_type"]
-                        )
-                        execution_actions_before = len(controller.action_history)
-                        execution_sim_before = simulator_state_hash(env)
-                        skill = (
-                            controller.pick_and_place(
-                                decision["selected_object"], RECEPTACLE
-                            )
-                            if decision["execution_kind"] == "pick_and_place"
-                            else None
-                        )
-                        execution_actions_after = len(controller.action_history)
-                        execution_sim_after = simulator_state_hash(env)
-                        predicates = {
-                            name: view.libero_predicate("in", (name, RECEPTACLE))
-                            for name in (
-                                row["done_object"],
-                                row["pending_object"],
-                                row["replacement_object"] or "alphabet_soup_1",
-                            )
-                        }
-                        terminal_goal_success = bool(
-                            predicates[row["done_object"]]
-                            and (
-                                predicates[row["replacement_object"]]
-                                if row["event_type"] == "replace_pending_goal"
-                                else not predicates[row["pending_object"]]
-                            )
-                        )
-                        suffix = controller.action_history[execution_actions_before:]
-                        embodied_row = {
-                            "case_id": row["case_id"],
-                            "state_id": state_id,
-                            "event_type": row["event_type"],
-                            "cope_semantic_correct": cope_arm["semantic_correct"],
-                            "shared_envelope_pass": triplet["shared_envelope"]["pass"],
-                            "selection_source": decision["selection_source"],
-                            "execution_kind": decision["execution_kind"],
-                            "selected_object": decision["selected_object"],
-                            "compiled_directive": decision["compiled_directive"],
-                            "low_level_controller": "privileged_simulator_geometry_oracle",
-                            "learned_policy_used": False,
-                            "provider_called": True,
-                            "skill_success": skill.success if skill is not None else True,
-                            "skill_failure_reason": (
-                                skill.failure_reason or "" if skill is not None else ""
-                            ),
-                            "terminal_goal_success": terminal_goal_success,
-                            "valid_progress_retained": predicates[row["done_object"]],
-                            "stale_pending_executed": predicates[row["pending_object"]],
-                            "replacement_object_in_region": predicates[
-                                row["replacement_object"] or "alphabet_soup_1"
-                            ],
-                            "post_event_action_count": (
-                                execution_actions_after - execution_actions_before
-                            ),
-                            "post_event_action_sha256": stable_hash(
-                                [list(action) for action in suffix]
-                            ),
-                            "simulator_state_before_execution": execution_sim_before,
-                            "simulator_state_after_execution": execution_sim_after,
-                            "runtime_git_commit": runtime_commit,
-                            "reserved_states_27_49_consumed": False,
-                        }
-                        embodied_rows.append(embodied_row)
-                        with journal_path.open("a", encoding="utf-8") as handle:
-                            handle.write(
-                                canonical_json(
-                                    {
-                                        "record_type": "embodied",
-                                        "case_id": row["case_id"],
-                                        "row": embodied_row,
-                                    }
+                        execution_arms = (
+                            [
+                                next(
+                                    item
+                                    for item in triplet["arms"]
+                                    if item["arm"] == "cope"
                                 )
-                                + "\n"
-                            )
+                            ]
+                            if args.execute_cope
+                            else list(triplet["arms"])
+                        )
+                        original_prefix_sha256 = controller.action_prefix_sha256()
+                        original_prefix_sim_sha256 = simulator_state_hash(env)
+                        used_primary_replacement_env = False
+
+                        def replay_prefix() -> tuple[Any, LiberoOracleSkillController, LiberoStateView]:
+                            set_seed(state_id)
+                            replay_env, replay_prompt = create_libero_env(task, cfg)
+                            try:
+                                replay_env.reset()
+                                replay_obs = replay_env.set_init_state(
+                                    initial_states[state_id]
+                                )
+                                replay_controller = LiberoOracleSkillController(
+                                    replay_env,
+                                    replay_obs,
+                                    config=controller_config,
+                                )
+                                replay_controller.warmup()
+                                replay_placement = replay_controller.pick_and_place(
+                                    "cream_cheese_1", RECEPTACLE
+                                )
+                                if not replay_placement.success:
+                                    raise RuntimeError(
+                                        "matched replay failed physical prefix: "
+                                        f"{replay_placement.failure_reason}"
+                                    )
+                                replay_view = LiberoStateView(replay_env)
+                                replay_trace = []
+                                for replay_index in range(5):
+                                    replay_controller.hold(
+                                        f"predicate_stability_{replay_index + 1}",
+                                        1,
+                                        gripper=-1.0,
+                                    )
+                                    replay_trace.append(
+                                        {
+                                            "cream_cheese_1": replay_view.libero_predicate(
+                                                "in",
+                                                ("cream_cheese_1", RECEPTACLE),
+                                            ),
+                                            "butter_1": replay_view.libero_predicate(
+                                                "in", ("butter_1", RECEPTACLE)
+                                            ),
+                                        }
+                                    )
+                                if (
+                                    replay_prompt != prompt
+                                    or replay_trace != stability_trace
+                                    or replay_controller.action_prefix_sha256()
+                                    != original_prefix_sha256
+                                    or simulator_state_hash(replay_env)
+                                    != original_prefix_sim_sha256
+                                ):
+                                    raise RuntimeError(
+                                        "matched arm replay diverged before execution"
+                                    )
+                                return replay_env, replay_controller, replay_view
+                            except Exception:
+                                replay_env.close()
+                                raise
+
+                        for arm_result in execution_arms:
+                            arm_name = str(arm_result["arm"])
+                            if arm_result["semantic_correct"] is not True:
+                                embodied_row = {
+                                    "case_id": row["case_id"],
+                                    "state_id": state_id,
+                                    "event_type": row["event_type"],
+                                    "arm": arm_name,
+                                    "semantic_correct": False,
+                                    "execution_attempted": False,
+                                    "matched_prefix_pass": True,
+                                    "shared_envelope_pass": "",
+                                    "selection_source": "",
+                                    "execution_kind": "fail_closed",
+                                    "selected_object": "",
+                                    "compiled_directive": "",
+                                    "low_level_controller": "not_invoked",
+                                    "learned_policy_used": False,
+                                    "provider_called": True,
+                                    "skill_success": False,
+                                    "skill_failure_reason": arm_result[
+                                        "parse_or_validation_error"
+                                    ],
+                                    "terminal_goal_success": False,
+                                    "valid_progress_retained": True,
+                                    "stale_pending_executed": False,
+                                    "replacement_object_in_region": False,
+                                    "post_event_action_count": 0,
+                                    "post_event_action_sha256": stable_hash([]),
+                                    "simulator_state_before_execution": original_prefix_sim_sha256,
+                                    "simulator_state_after_execution": original_prefix_sim_sha256,
+                                    "runtime_git_commit": runtime_commit,
+                                    "reserved_states_27_49_consumed": False,
+                                }
+                            else:
+                                decision = (
+                                    select_validated_cope_execution(
+                                        arm_result, row["event_type"]
+                                    )
+                                    if args.execute_cope
+                                    else select_validated_live_execution(
+                                        arm_result, row["event_type"]
+                                    )
+                                )
+                                replay_env = None
+                                if (
+                                    row["event_type"] == "replace_pending_goal"
+                                    and used_primary_replacement_env
+                                ):
+                                    replay_env, execution_controller, execution_view = (
+                                        replay_prefix()
+                                    )
+                                else:
+                                    execution_controller = controller
+                                    execution_view = view
+                                    if row["event_type"] == "replace_pending_goal":
+                                        used_primary_replacement_env = True
+                                try:
+                                    execution_actions_before = len(
+                                        execution_controller.action_history
+                                    )
+                                    execution_sim_before = simulator_state_hash(
+                                        replay_env
+                                        if replay_env is not None
+                                        else env
+                                    )
+                                    skill = (
+                                        execution_controller.pick_and_place(
+                                            decision["selected_object"], RECEPTACLE
+                                        )
+                                        if decision["execution_kind"]
+                                        == "pick_and_place"
+                                        else None
+                                    )
+                                    execution_actions_after = len(
+                                        execution_controller.action_history
+                                    )
+                                    execution_sim_after = simulator_state_hash(
+                                        replay_env
+                                        if replay_env is not None
+                                        else env
+                                    )
+                                    predicates = {
+                                        name: execution_view.libero_predicate(
+                                            "in", (name, RECEPTACLE)
+                                        )
+                                        for name in (
+                                            row["done_object"],
+                                            row["pending_object"],
+                                            row["replacement_object"]
+                                            or "alphabet_soup_1",
+                                        )
+                                    }
+                                    terminal_goal_success = bool(
+                                        predicates[row["done_object"]]
+                                        and (
+                                            predicates[row["replacement_object"]]
+                                            if row["event_type"]
+                                            == "replace_pending_goal"
+                                            else not predicates[row["pending_object"]]
+                                        )
+                                    )
+                                    suffix = execution_controller.action_history[
+                                        execution_actions_before:
+                                    ]
+                                    embodied_row = {
+                                        "case_id": row["case_id"],
+                                        "state_id": state_id,
+                                        "event_type": row["event_type"],
+                                        "arm": arm_name,
+                                        "semantic_correct": True,
+                                        "execution_attempted": True,
+                                        "matched_prefix_pass": True,
+                                        "shared_envelope_pass": (
+                                            triplet["shared_envelope"]["pass"]
+                                            if arm_name == "cope"
+                                            else ""
+                                        ),
+                                        "selection_source": decision[
+                                            "selection_source"
+                                        ],
+                                        "execution_kind": decision["execution_kind"],
+                                        "selected_object": decision[
+                                            "selected_object"
+                                        ],
+                                        "compiled_directive": decision[
+                                            "compiled_directive"
+                                        ],
+                                        "low_level_controller": "privileged_simulator_geometry_oracle",
+                                        "learned_policy_used": False,
+                                        "provider_called": True,
+                                        "skill_success": (
+                                            skill.success
+                                            if skill is not None
+                                            else True
+                                        ),
+                                        "skill_failure_reason": (
+                                            (skill.failure_reason or "")
+                                            if skill is not None
+                                            else ""
+                                        ),
+                                        "terminal_goal_success": terminal_goal_success,
+                                        "valid_progress_retained": predicates[
+                                            row["done_object"]
+                                        ],
+                                        "stale_pending_executed": predicates[
+                                            row["pending_object"]
+                                        ],
+                                        "replacement_object_in_region": predicates[
+                                            row["replacement_object"]
+                                            or "alphabet_soup_1"
+                                        ],
+                                        "post_event_action_count": (
+                                            execution_actions_after
+                                            - execution_actions_before
+                                        ),
+                                        "post_event_action_sha256": stable_hash(
+                                            [list(action) for action in suffix]
+                                        ),
+                                        "simulator_state_before_execution": execution_sim_before,
+                                        "simulator_state_after_execution": execution_sim_after,
+                                        "runtime_git_commit": runtime_commit,
+                                        "reserved_states_27_49_consumed": False,
+                                    }
+                                finally:
+                                    if replay_env is not None:
+                                        replay_env.close()
+                            embodied_rows.append(embodied_row)
+                            with journal_path.open(
+                                "a", encoding="utf-8"
+                            ) as handle:
+                                handle.write(
+                                    canonical_json(
+                                        {
+                                            "record_type": "embodied",
+                                            "case_id": row["case_id"],
+                                            "arm": arm_name,
+                                            "row": embodied_row,
+                                        }
+                                    )
+                                    + "\n"
+                                )
             finally:
                 if env is not None:
                     env.close()
@@ -533,11 +715,11 @@ def main() -> int:
         state0_triplets = [item for item in triplets if item["state_id"] == 0]
         expansion_allowed = state0_expansion_allowed(state0_triplets)
 
-    if not args.execute_cope:
+    if not embodied_mode:
         output_dir.mkdir(parents=True, exist_ok=False)
     _write_csv(output_dir / "01_PER_ARM_RESULTS.csv", flat_rows)
     _write_family_aggregate(output_dir / "02_FAMILY_ARM_AGGREGATE.csv", flat_rows)
-    if args.execute_cope:
+    if embodied_mode:
         _write_csv(output_dir / "03_EMBODIED_RESULTS.csv", embodied_rows)
     status = {
         "state0_triplets": len(state0_triplets),
@@ -550,10 +732,19 @@ def main() -> int:
         "post_interruption_action_delta": sum(
             int(item["post_interruption_action_delta"]) for item in triplets
         ),
-        "embodied_phase_b": bool(args.execute_cope),
+        "embodied_phase_b": embodied_mode,
+        "matched_valid_arm_execution": bool(args.execute_valid_arms),
         "embodied_cases": len(embodied_rows),
         "embodied_terminal_successes": sum(
             bool(item["terminal_goal_success"]) for item in embodied_rows
+        ),
+        "embodied_execution_attempts": sum(
+            bool(item["execution_attempted"]) for item in embodied_rows
+        ),
+        "embodied_fail_closed_cells": sum(
+            not bool(item["semantic_correct"])
+            and not bool(item["execution_attempted"])
+            for item in embodied_rows
         ),
         "embodied_post_event_actions": sum(
             int(item["post_event_action_count"]) for item in embodied_rows
@@ -577,19 +768,34 @@ def main() -> int:
         "runtime_git_commit": runtime_commit,
     }
     status_path = output_dir / (
-        "04_RUN_STATUS.txt" if args.execute_cope else "03_RUN_STATUS.txt"
+        "04_RUN_STATUS.txt" if embodied_mode else "03_RUN_STATUS.txt"
     )
     status_path.write_text(
         canonical_json(status) + "\n", encoding="utf-8"
     )
     print(canonical_json(status))
-    embodied_gate = (
-        not args.execute_cope
-        or (
-            len(embodied_rows) == len(triplets)
-            and all(item["terminal_goal_success"] for item in embodied_rows)
+    if args.execute_valid_arms:
+        embodied_gate = bool(embodied_rows) and all(
+            (
+                bool(item["semantic_correct"])
+                and bool(item["execution_attempted"])
+                and bool(item["terminal_goal_success"])
+            )
+            or (
+                not bool(item["semantic_correct"])
+                and not bool(item["execution_attempted"])
+                and not bool(item["terminal_goal_success"])
+            )
+            for item in embodied_rows
         )
-    )
+    else:
+        embodied_gate = (
+            not embodied_mode
+            or (
+                len(embodied_rows) == len(triplets)
+                and all(item["terminal_goal_success"] for item in embodied_rows)
+            )
+        )
     return 0 if expansion_allowed and embodied_gate else 1
 
 
