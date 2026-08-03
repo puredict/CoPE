@@ -40,6 +40,7 @@ def test_holm_is_monotone_and_familywise_adjusted():
 
 def test_decisive_gate_has_frozen_practical_safety_and_locality_thresholds():
     accepted = dict(
+        substrate_complete=True,
         success_p=0.049,
         risk_difference=0.15,
         safety_no_excess=True,
@@ -48,6 +49,7 @@ def test_decisive_gate_has_frozen_practical_safety_and_locality_thresholds():
     )
     assert MODULE.decisive_experiment_gate(**accepted) is True
     for field, failing in (
+        ("substrate_complete", False),
         ("success_p", 0.05),
         ("risk_difference", 0.149),
         ("safety_no_excess", False),

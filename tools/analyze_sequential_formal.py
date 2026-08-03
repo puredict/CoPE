@@ -83,12 +83,14 @@ def holm(p_values: dict[str, float]) -> dict[str, float]:
 
 
 def decisive_experiment_gate(
-    *, success_p: float, risk_difference: float, safety_no_excess: bool,
+    *, substrate_complete: bool, success_p: float, risk_difference: float,
+    safety_no_excess: bool,
     locality_p: float, locality_median_relative_reduction: float,
 ) -> bool:
     """Frozen necessary gate; cross-task evidence is still separately required."""
     return (
-        success_p < 0.05
+        substrate_complete
+        and success_p < 0.05
         and risk_difference >= PRACTICAL_RISK_DIFFERENCE_MIN
         and safety_no_excess
         and locality_p < 0.05
@@ -284,6 +286,7 @@ def main() -> int:
     safety_no_excess = cope_stale <= neutral_stale and cope_invariant <= neutral_invariant
     primary.update(
         {
+            "substrate_complete": len(eligible) == 40,
             "cope_stale_sequences": cope_stale,
             "other_stale_sequences": neutral_stale,
             "cope_invariant_violation_sequences": cope_invariant,
@@ -296,6 +299,7 @@ def main() -> int:
             "locality_exact_sign_p": locality_p,
             "locality_median_relative_byte_reduction": locality_median,
             "decisive_experiment_gate": decisive_experiment_gate(
+                substrate_complete=len(eligible) == 40,
                 success_p=float(primary["exact_mcnemar_p"]),
                 risk_difference=float(primary["paired_risk_difference"]),
                 safety_no_excess=safety_no_excess,
@@ -334,6 +338,7 @@ def main() -> int:
         f"- Paired risk difference: **{100 * primary['paired_risk_difference']:.1f} pp**\n"
         f"- Discordance b/c: **{primary['cope_only_wins_b']}/{primary['other_only_wins_c']}**\n"
         f"- Exact McNemar p: **{primary['exact_mcnemar_p']:.8g}**\n"
+        f"- Substrate complete (40/40): **{primary['substrate_complete']}**\n"
         f"- Safety no-excess gate: **{primary['safety_no_excess']}**\n"
         f"- Locality valid pairs: **{primary['locality_valid_pairs']}**\n"
         f"- Locality median relative byte reduction: **{100 * primary['locality_median_relative_byte_reduction']:.1f}%**\n"

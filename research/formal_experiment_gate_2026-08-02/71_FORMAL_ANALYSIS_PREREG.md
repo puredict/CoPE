@@ -56,12 +56,15 @@ descriptive only.
 Before learned outcomes, the necessary decisive-experiment gate is frozen as
 all of the following:
 
-1. CoPE versus neutral patch has two-sided exact McNemar `p < 0.05` and paired
+1. all 40 sequence units are substrate eligible; any physical-prefix loss is a
+   technical experiment failure and cannot be handled by shrinking the method
+   comparison denominator;
+2. CoPE versus neutral patch has two-sided exact McNemar `p < 0.05` and paired
    success-rate difference at least `+0.15`;
-2. CoPE has no greater count of stale-execution sequences and no greater count
+3. CoPE has no greater count of stale-execution sequences and no greater count
    of invariant-violation sequences, where invariant violation includes either
    intermediate invariant failure or revision/hash discontinuity;
-3. among sequence pairs where both methods produce parser-valid and
+4. among sequence pairs where both methods produce parser-valid and
    semantic-valid proposals on both events, CoPE has at least 20% median paired
    reduction in total proposal bytes and a two-sided exact sign-test `p < 0.05`
    after discarding byte ties.
