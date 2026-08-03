@@ -1,0 +1,5 @@
+arm,original_correct,corrected_correct,delta
+cope_semantic,36,36,0
+neutral_typed,34,34,0
+compact_semantic,29,32,3
+fsr_semantic,32,32,0
