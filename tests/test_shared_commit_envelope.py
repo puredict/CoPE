@@ -115,3 +115,19 @@ def test_compact_fact_add_replace_and_remove_follow_object_patch_semantics() -> 
     assert replaced["facts"][existing] is False
     removed = apply_compact_writes(pre, [{"op": "remove", "path": f"/facts/{existing}", "value": None}])
     assert existing not in removed["facts"]
+
+
+def test_semantic_stable_id_collections_are_order_insensitive() -> None:
+    case = build_development_cases()[0]
+    proposal = oracle_proposal(case, "fsr_semantic")
+    proposal["state"]["commitments"].reverse()
+    semantic, _meta = materialize_proposal(case, "fsr_semantic", proposal)
+    assert semantic["commitments"] == list(reversed(case.post_state["commitments"]))
+
+
+def test_semantic_stable_id_collections_reject_duplicate_ids() -> None:
+    case = build_development_cases()[0]
+    proposal = oracle_proposal(case, "fsr_semantic")
+    proposal["state"]["actions"].append(copy.deepcopy(proposal["state"]["actions"][0]))
+    with pytest.raises(SharedEnvelopeError, match="duplicate semantic record"):
+        materialize_proposal(case, "fsr_semantic", proposal)

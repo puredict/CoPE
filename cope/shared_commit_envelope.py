@@ -247,6 +247,22 @@ def compact_diff(pre_state: Mapping[str, Any], post_state: Mapping[str, Any]) ->
     return writes
 
 
+def normalize_semantic_state(state: Mapping[str, Any]) -> dict[str, Any]:
+    """Canonicalize stable-ID collections without accepting duplicate IDs."""
+    out = copy.deepcopy(dict(state))
+    for root in ("commitments", "actions", "progress", "restorations"):
+        rows = out.get(root)
+        if not isinstance(rows, list) or any(not isinstance(row, dict) or not isinstance(row.get("id"), str) for row in rows):
+            raise SharedEnvelopeError(f"invalid semantic collection {root}")
+        identifiers = [row["id"] for row in rows]
+        if len(identifiers) != len(set(identifiers)):
+            raise SharedEnvelopeError(f"duplicate semantic record in {root}")
+        out[root] = sorted(rows, key=lambda row: row["id"])
+    if not isinstance(out.get("facts"), dict):
+        raise SharedEnvelopeError("invalid semantic facts")
+    return out
+
+
 def commit_envelope(
     transaction_meta: Mapping[str, Any], event: Mapping[str, Any]
 ) -> dict[str, Any]:
@@ -503,7 +519,7 @@ def materialize_proposal(case: SharedEnvelopeCase, arm: str, proposal: Mapping[s
         semantic = apply_compact_writes(case.pre_state, proposal["writes"])
     else:
         semantic = copy.deepcopy(proposal["state"])
-    if semantic != case.post_state:
+    if normalize_semantic_state(semantic) != normalize_semantic_state(case.post_state):
         raise SharedEnvelopeError("semantic state differs from oracle")
     meta = commit_envelope(case.transaction_meta, case.event)
     return semantic, meta
