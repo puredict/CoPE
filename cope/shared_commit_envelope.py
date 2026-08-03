@@ -121,20 +121,31 @@ def apply_compact_writes(
 ) -> dict[str, Any]:
     out = copy.deepcopy(dict(pre_state))
     for write in writes:
-        if set(write) != {"op", "path", "value"} or write["op"] not in {"add", "replace"}:
+        if set(write) != {"op", "path", "value"} or write["op"] not in {"add", "replace", "remove"}:
             raise SharedEnvelopeError("compact write schema mismatch")
         parts = _split_path(str(write["path"]))
         root = parts[0]
         value = copy.deepcopy(write["value"])
         if root in {"commitments", "actions", "progress"}:
-            if len(parts) == 3 and parts[1] == "+":
-                if write["op"] != "add" or not isinstance(value, dict) or value.get("id") != parts[2]:
+            if len(parts) == 2:
+                if write["op"] == "add" and isinstance(value, dict) and value.get("id") == parts[1]:
+                    if any(row.get("id") == parts[1] for row in out[root]):
+                        raise SharedEnvelopeError("duplicate compact record")
+                    out[root].append(value)
+                elif write["op"] == "remove" and value is None:
+                    before = len(out[root])
+                    out[root] = [row for row in out[root] if row.get("id") != parts[1]]
+                    if len(out[root]) != before - 1:
+                        raise SharedEnvelopeError("compact record removal mismatch")
+                else:
                     raise SharedEnvelopeError("compact record insertion mismatch")
-                if any(row.get("id") == parts[2] for row in out[root]):
-                    raise SharedEnvelopeError("duplicate compact record")
-                out[root].append(value)
             elif len(parts) == 3:
                 row = _find(out[root], parts[1])
+                if write["op"] == "remove":
+                    if value is not None or parts[2] not in row:
+                        raise SharedEnvelopeError("compact field removal mismatch")
+                    del row[parts[2]]
+                    continue
                 if write["op"] == "replace" and parts[2] not in row:
                     raise SharedEnvelopeError("replace targets absent field")
                 row[parts[2]] = value
@@ -144,6 +155,26 @@ def apply_compact_writes(
             if write["op"] != "replace" or not isinstance(value, list):
                 raise SharedEnvelopeError("restoration replacement mismatch")
             out["restorations"] = value
+        elif root == "restorations" and len(parts) == 2:
+            if write["op"] == "add" and isinstance(value, dict) and value.get("id") == parts[1]:
+                if any(row.get("id") == parts[1] for row in out["restorations"]):
+                    raise SharedEnvelopeError("duplicate restoration")
+                out["restorations"].append(value)
+            elif write["op"] == "remove" and value is None:
+                before = len(out["restorations"])
+                out["restorations"] = [row for row in out["restorations"] if row.get("id") != parts[1]]
+                if len(out["restorations"]) != before - 1:
+                    raise SharedEnvelopeError("restoration removal mismatch")
+            else:
+                raise SharedEnvelopeError("restoration record write mismatch")
+        elif root == "restorations" and len(parts) == 3:
+            row = _find(out["restorations"], parts[1])
+            if write["op"] == "remove":
+                if value is not None or parts[2] not in row:
+                    raise SharedEnvelopeError("restoration field removal mismatch")
+                del row[parts[2]]
+            else:
+                row[parts[2]] = value
         elif root == "facts" and len(parts) == 2:
             if write["op"] == "replace" and parts[1] not in out["facts"]:
                 raise SharedEnvelopeError("replace targets absent fact")
@@ -162,7 +193,7 @@ def compact_diff(pre_state: Mapping[str, Any], post_state: Mapping[str, Any]) ->
             raise SharedEnvelopeError("compact semantic contract forbids record deletion")
         for identifier, row in after.items():
             if identifier not in before:
-                writes.append({"op": "add", "path": f"/{root}/+/{identifier}", "value": copy.deepcopy(row)})
+                writes.append({"op": "add", "path": f"/{root}/{identifier}", "value": copy.deepcopy(row)})
                 continue
             for field, value in row.items():
                 if before[identifier].get(field) != value:
@@ -174,8 +205,21 @@ def compact_diff(pre_state: Mapping[str, Any], post_state: Mapping[str, Any]) ->
         for identifier, row in before.items():
             if identifier in after and set(row) - set(after[identifier]):
                 raise SharedEnvelopeError("compact semantic contract forbids field deletion")
-    if pre_state["restorations"] != post_state["restorations"]:
-        writes.append({"op": "replace", "path": "/restorations", "value": copy.deepcopy(post_state["restorations"])})
+    before_rest = {row["id"]: row for row in pre_state["restorations"]}
+    after_rest = {row["id"]: row for row in post_state["restorations"]}
+    for identifier in sorted(set(before_rest) - set(after_rest)):
+        writes.append({"op": "remove", "path": f"/restorations/{identifier}", "value": None})
+    for identifier, row in after_rest.items():
+        if identifier not in before_rest:
+            writes.append({"op": "add", "path": f"/restorations/{identifier}", "value": copy.deepcopy(row)})
+            continue
+        for field, value in row.items():
+            if before_rest[identifier].get(field) != value:
+                writes.append({
+                    "op": "replace" if field in before_rest[identifier] else "add",
+                    "path": f"/restorations/{identifier}/{field}",
+                    "value": copy.deepcopy(value),
+                })
     before_facts, after_facts = pre_state["facts"], post_state["facts"]
     if set(before_facts) - set(after_facts):
         raise SharedEnvelopeError("compact semantic contract forbids fact deletion")

@@ -87,9 +87,9 @@ def contracts(arm_schemas: dict[str, dict[str, Any]]) -> dict[str, str]:
             "SetCommitmentStatus", "N01"
         ) + "\nJSON_SCHEMA\n" + canonical_json(arm_schemas["neutral_typed"]),
         "compact_semantic": prefix + (
-            "Each write is exactly {op,path,value}; op is add or replace. Allowed semantic paths are "
-            "/commitments/<id>/<field>, /commitments/+/<id>, /actions/<id>/<field>, "
-            "/actions/+/<id>, /progress/<id>/<field>, /progress/+/<id>, /restorations, and /facts/<key>. "
+            "Each write is exactly {op,path,value}; op is add, replace, or remove. For remove, value is null. Allowed semantic paths are "
+            "/commitments/<id>, /commitments/<id>/<field>, /actions/<id>, /actions/<id>/<field>, "
+            "/progress/<id>, /progress/<id>/<field>, /restorations/<id>, /restorations/<id>/<field>, and /facts/<key>. "
             "Transaction metadata paths are forbidden.\nJSON_SCHEMA\n"
         ) + canonical_json(arm_schemas["compact_semantic"]),
         "fsr_semantic": prefix + (

@@ -78,3 +78,11 @@ def test_compact_metadata_paths_are_forbidden() -> None:
     proposal["writes"].append({"op": "replace", "path": "/state_version", "value": 99})
     with pytest.raises(SharedEnvelopeError, match="metadata"):
         materialize_proposal(case, "compact_semantic", proposal)
+
+
+def test_compact_oracle_uses_natural_record_paths_and_remove() -> None:
+    cases = build_development_cases()
+    replacement = oracle_proposal(cases[1], "compact_semantic")
+    assert any(write["path"] == "/commitments/new_part" for write in replacement["writes"])
+    release = oracle_proposal(cases[3], "compact_semantic")
+    assert {"op": "remove", "path": "/restorations/restore_base", "value": None} in release["writes"]
