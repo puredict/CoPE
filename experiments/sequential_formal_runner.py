@@ -434,10 +434,21 @@ def main() -> int:
                 except Exception as exc:
                     if isinstance(exc, FormalTransitionError):
                         diagnostics1 = exc.diagnostics
+                    parsed1 = diagnostics1.get("parsed_output")
                     event1_result.update(
                         {
                             "provider_called": bool(diagnostics1.get("provider_called", False)),
                             "retry_count": int(diagnostics1.get("retry_count", 0)),
+                            "parser_valid": isinstance(parsed1, Mapping),
+                            "proposal_bytes": (
+                                len(canonical_json(parsed1).encode("utf-8"))
+                                if isinstance(parsed1, Mapping) else 0
+                            ),
+                            "prompt_tokens": int(diagnostics1.get("prompt_tokens", 0)),
+                            "completion_tokens": int(diagnostics1.get("completion_tokens", 0)),
+                            "latency_seconds": float(diagnostics1.get("latency_seconds", 0.0)),
+                            "proposal_sha256": stable_hash(parsed1) if isinstance(parsed1, Mapping) else "",
+                            "response_sha256": str(diagnostics1.get("response_sha256", "")),
                             "failure_class": f"event1:{type(exc).__name__}:{exc}",
                             "call_budget_respected": int(diagnostics1.get("retry_count", 0)) == 0,
                         }
@@ -532,10 +543,21 @@ def main() -> int:
                 except Exception as exc:
                     if isinstance(exc, FormalTransitionError):
                         diagnostics2 = exc.diagnostics
+                    parsed2 = diagnostics2.get("parsed_output")
                     event2_result.update(
                         {
                             "provider_called": bool(diagnostics2.get("provider_called", False)),
                             "retry_count": int(diagnostics2.get("retry_count", 0)),
+                            "parser_valid": isinstance(parsed2, Mapping),
+                            "proposal_bytes": (
+                                len(canonical_json(parsed2).encode("utf-8"))
+                                if isinstance(parsed2, Mapping) else 0
+                            ),
+                            "prompt_tokens": int(diagnostics2.get("prompt_tokens", 0)),
+                            "completion_tokens": int(diagnostics2.get("completion_tokens", 0)),
+                            "latency_seconds": float(diagnostics2.get("latency_seconds", 0.0)),
+                            "proposal_sha256": stable_hash(parsed2) if isinstance(parsed2, Mapping) else "",
+                            "response_sha256": str(diagnostics2.get("response_sha256", "")),
                             "failure_class": f"event2:{type(exc).__name__}:{exc}",
                             "call_budget_respected": int(diagnostics2.get("retry_count", 0)) == 0,
                         }
