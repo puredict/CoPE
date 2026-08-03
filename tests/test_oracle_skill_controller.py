@@ -4,7 +4,10 @@ from types import SimpleNamespace
 
 import numpy as np
 
-from cope_benchmark.oracle_skill_controller import LiberoOracleSkillController
+from cope_benchmark.oracle_skill_controller import (
+    LiberoOracleSkillController,
+    OracleSkillConfig,
+)
 
 
 class FakeState:
@@ -47,6 +50,20 @@ class FakeEnv:
         obj = self.object_states_dict["can"].position
         target = self.object_states_dict["basket_region"].position
         return np.linalg.norm(obj[:2] - target[:2]) < 0.04
+
+
+class FirstCheckMissFakeEnv(FakeEnv):
+    """Inject one false grasp observation without changing the motion model."""
+
+    def __init__(self):
+        super().__init__()
+        self.grasp_checks = 0
+
+    def _check_grasp(self, gripper, obj):
+        self.grasp_checks += 1
+        if self.grasp_checks == 1:
+            return False
+        return super()._check_grasp(gripper, obj)
 
 
 def test_move_to_scales_cartesian_delta_and_converges():
@@ -98,3 +115,43 @@ def test_pick_checkpoint_can_resume_into_place():
     placed = controller.place_held(checkpoint, "basket_region")
     assert placed.success
     assert placed.target_predicate
+
+
+def test_default_grasp_protocol_preserves_single_historical_attempt():
+    env = FirstCheckMissFakeEnv()
+    controller = LiberoOracleSkillController(
+        env, {"robot0_eef_pos": env.eef.copy()}
+    )
+    result = controller.pick_object("can")
+    assert not result.success
+    assert result.failure_reason == "grasp_not_acquired"
+    assert [phase.phase for phase in result.phases] == [
+        "approach_object",
+        "descend_to_grasp",
+        "close_gripper",
+    ]
+
+
+def test_opt_in_regrasp_recovers_after_failed_center_attempt():
+    env = FirstCheckMissFakeEnv()
+    config = OracleSkillConfig(
+        grasp_attempt_xy_offsets_m=((0.0, 0.0), (0.0, 0.0))
+    )
+    controller = LiberoOracleSkillController(
+        env, {"robot0_eef_pos": env.eef.copy()}, config=config
+    )
+    result = controller.pick_object("can")
+    assert result.success
+    assert result.grasp_acquired
+    assert "regrasp_1_open_gripper" in [phase.phase for phase in result.phases]
+    assert "regrasp_1_close_gripper" in [phase.phase for phase in result.phases]
+
+
+def test_grasp_offset_protocol_rejects_empty_or_non_finite_values():
+    for offsets in ((), ((float("nan"), 0.0),)):
+        try:
+            OracleSkillConfig(grasp_attempt_xy_offsets_m=offsets)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("invalid grasp attempt offsets must fail closed")

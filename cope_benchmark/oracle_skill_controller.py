@@ -32,6 +32,18 @@ class OracleSkillConfig:
     retreat_height_m: float = 0.15
     settle_steps: int = 20
     minimum_lift_m: float = 0.08
+    # Absolute world-frame XY offsets used for bounded grasp acquisition.
+    # The default contains only the historical centered grasp and therefore
+    # preserves the exact legacy action trace.  Robustness experiments must
+    # opt into additional attempts explicitly.
+    grasp_attempt_xy_offsets_m: tuple[tuple[float, float], ...] = ((0.0, 0.0),)
+
+    def __post_init__(self) -> None:
+        if not self.grasp_attempt_xy_offsets_m:
+            raise ValueError("at least one grasp attempt offset is required")
+        for offset in self.grasp_attempt_xy_offsets_m:
+            if len(offset) != 2 or not all(np.isfinite(value) for value in offset):
+                raise ValueError("grasp attempt offsets must be finite XY pairs")
 
 
 @dataclass
@@ -212,6 +224,56 @@ class LiberoOracleSkillController:
     def warmup(self) -> PhaseRecord:
         return self.hold("warmup", self.config.warmup_steps, gripper=-1.0)
 
+    def acquire_grasp(
+        self,
+        object_name: str,
+        object_start: np.ndarray,
+    ) -> tuple[bool, list[PhaseRecord]]:
+        """Try the frozen centered grasp, then optional bounded XY alternatives."""
+
+        cfg = self.config
+        phases: list[PhaseRecord] = []
+        for attempt_index, (dx, dy) in enumerate(cfg.grasp_attempt_xy_offsets_m):
+            if attempt_index:
+                phases.append(
+                    self.hold(
+                        f"regrasp_{attempt_index}_open_gripper",
+                        cfg.open_steps,
+                        gripper=-1.0,
+                    )
+                )
+            # A failed close can displace the object.  Every alternative is
+            # relative to the current oracle geometry, not stale start state.
+            object_now = object_start if attempt_index == 0 else self.position(object_name)
+            offset = np.array([float(dx), float(dy), 0.0])
+            prefix = "" if attempt_index == 0 else f"regrasp_{attempt_index}_"
+            phases.append(
+                self.move_to(
+                    f"{prefix}approach_object",
+                    object_now
+                    + offset
+                    + np.array([0.0, 0.0, cfg.approach_height_m]),
+                    gripper=-1.0,
+                )
+            )
+            phases.append(
+                self.move_to(
+                    f"{prefix}descend_to_grasp",
+                    object_now
+                    + offset
+                    + np.array([0.0, 0.0, cfg.grasp_offset_m]),
+                    gripper=-1.0,
+                )
+            )
+            phases.append(
+                self.hold(
+                    f"{prefix}close_gripper", cfg.close_steps, gripper=1.0
+                )
+            )
+            if self.is_grasping(object_name):
+                return True, phases
+        return False, phases
+
     def pick_object(self, object_name: str) -> HeldObjectCheckpoint:
         """Pick and lift an object, returning a resumable physical checkpoint."""
 
@@ -219,22 +281,8 @@ class LiberoOracleSkillController:
         phases: list[PhaseRecord] = []
         start_steps = self.total_steps
         object_start = self.position(object_name)
-        phases.append(
-            self.move_to(
-                "approach_object",
-                object_start + np.array([0.0, 0.0, cfg.approach_height_m]),
-                gripper=-1.0,
-            )
-        )
-        phases.append(
-            self.move_to(
-                "descend_to_grasp",
-                object_start + np.array([0.0, 0.0, cfg.grasp_offset_m]),
-                gripper=-1.0,
-            )
-        )
-        phases.append(self.hold("close_gripper", cfg.close_steps, gripper=1.0))
-        grasp = self.is_grasping(object_name)
+        grasp, grasp_phases = self.acquire_grasp(object_name, object_start)
+        phases.extend(grasp_phases)
         if grasp:
             lift_target = np.asarray(
                 self.observation["robot0_eef_pos"], dtype=float
@@ -410,23 +458,8 @@ class LiberoOracleSkillController:
         object_start = self.position(object_name)
         region = self.position(target_region_name)
 
-        phases.append(
-            self.move_to(
-                "approach_object",
-                object_start + np.array([0.0, 0.0, cfg.approach_height_m]),
-                gripper=-1.0,
-            )
-        )
-        phases.append(
-            self.move_to(
-                "descend_to_grasp",
-                object_start + np.array([0.0, 0.0, cfg.grasp_offset_m]),
-                gripper=-1.0,
-            )
-        )
-        phases.append(self.hold("close_gripper", cfg.close_steps, gripper=1.0))
-
-        grasp = self.is_grasping(object_name)
+        grasp, grasp_phases = self.acquire_grasp(object_name, object_start)
+        phases.extend(grasp_phases)
         if not grasp:
             return OracleSkillResult(
                 object_name=object_name,
