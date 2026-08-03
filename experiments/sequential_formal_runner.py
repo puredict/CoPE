@@ -314,9 +314,13 @@ def main() -> int:
         results.append(result)
         with journal.open("a", encoding="utf-8") as handle:
             handle.write(canonical_json(result) + "\n")
+            handle.flush()
+            os.fsync(handle.fileno())
         if trace is not None:
             with trace_journal.open("a", encoding="utf-8") as handle:
                 handle.write(canonical_json(trace) + "\n")
+                handle.flush()
+                os.fsync(handle.fileno())
         print(canonical_json(result), flush=True)
 
     for row in rows:
