@@ -31,10 +31,10 @@ from cope.types import canonical_json, stable_hash
 
 ARMS = ("cope", "neutral_patch", "fsr_pc", "full_replan")
 EXPECTED_CASES = {
-    "task0_replace_cancel",
-    "task0_replace_replace",
-    "task7_replace_cancel",
-    "task7_replace_replace",
+    "task0_forward_replace_cancel",
+    "task0_forward_replace_replace",
+    "task0_reverse_replace_cancel",
+    "task0_reverse_replace_replace",
 }
 PROVIDER_ENV_NAMES = (
     "OPENROUTER_API_KEY",
