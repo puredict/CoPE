@@ -1,0 +1,16 @@
+check_id,scope,criterion,observed,pass,evidence
+1,assignment,"exactly two state-0 cases and three arms per case","6 rows; state0_replace and state0_cancel; 2 rows per arm",true,01_PER_ARM_RESULTS.csv
+2,provider,"all assigned calls returned and no retries occurred","6/6 provider_status=ok; 6/6 retry_count=0",true,01_PER_ARM_RESULTS.csv
+3,fairness,"same recovery input and settings within each triplet","2/2 triplets have one input_hash common_input_bytes_sha256 normalized_request_sha256 and settings_sha256; fairness_pass 6/6",true,01_PER_ARM_RESULTS.csv
+4,cope_semantics,"CoPE parses validates and matches the trusted transition","2/2 CoPE rows parser_valid semantic_valid semantic_correct",true,01_PER_ARM_RESULTS.csv
+5,shared_envelope,"trusted envelope postconditions pass","2/2 event envelopes pass; pass field repeated on 6/6 arm rows",true,01_PER_ARM_RESULTS.csv
+6,metadata_ownership,"transaction metadata is not model generated","6/6 false; one shared transaction hash per event",true,01_PER_ARM_RESULTS.csv
+7,predicate,"live predicate outcome is canonical","6/6 done=true and pending=false",true,01_PER_ARM_RESULTS.csv
+8,phase_a_safety,"no post-event action or simulator mutation","6/6 action delta 0 and simulator before hash equals after hash",true,01_PER_ARM_RESULTS.csv
+9,substitution,"no fallback or oracle substitution","6/6 fallback=false and oracle_substitution=false",true,01_PER_ARM_RESULTS.csv
+10,reserve,"only development state 0 was indexed","state_ids={0}; reserved_states_27_49_consumed=false on 6/6",true,01_PER_ARM_RESULTS.csv
+11,response_identity,"every assigned response has an immutable distinct digest","6/6 nonempty response hashes; 6 unique",true,01_PER_ARM_RESULTS.csv
+12,runtime,"all rows bind to the preregistered clean runtime commit","378168fe625b81c3d948d09b868da12b701780ad on 6/6",true,01_PER_ARM_RESULTS.csv
+13,credential,"no credential pattern occurs in retained result files","0 matching files",true,post-run file-name-only secret scan
+14,claim_boundary,"canary is Phase A and not end-to-end recovery","zero post-event actions by construction and observation",true,43_SHARED_ENVELOPE_LIVE_CANARY_PREREG.md
+15,formal_provenance,"explicit transaction postcondition columns retained","only transaction and semantic hashes retained; content checked inside runtime but not serialized",false,formal experiment must add explicit audit fields before reserved-state use
