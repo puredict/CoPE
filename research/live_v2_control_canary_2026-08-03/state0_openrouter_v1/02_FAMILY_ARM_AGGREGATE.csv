@@ -1,0 +1,9 @@
+event_type,arm,assigned,provider_ok,semantic_correct,parser_valid,fallback_count,oracle_substitution_count,action_delta_sum
+replace_pending_goal,cope,1,1,1,1,0,0,0
+replace_pending_goal,neutral_patch,1,1,1,1,0,0,0
+replace_pending_goal,compact_tx,1,1,0,0,0,0,0
+replace_pending_goal,fsr_pc,1,1,0,1,0,0,0
+cancel_pending_goal,cope,1,1,1,1,0,0,0
+cancel_pending_goal,neutral_patch,1,1,1,1,0,0,0
+cancel_pending_goal,compact_tx,1,1,0,0,0,0,0
+cancel_pending_goal,fsr_pc,1,1,0,1,0,0,0
