@@ -3,9 +3,12 @@
 Date: 2026-08-03 (Asia/Shanghai)
 
 Stage A is exploratory interface qualification and cannot alter X16's negative
-confirmatory result. It deterministically selects the first six APPLY templates
-in the frozen X16 manifest order. These cases are development cases and are
-excluded from any future X17 confirmatory holdout.
+confirmatory result. It deterministically selects the first APPLY template from
+each of the first six distinct APPLY event families encountered in the frozen
+X16 manifest order. This rule was frozen before any Stage-A provider call. A
+superseded zero-call v1 preflight used the first six APPLY rows and was rejected
+because it covered only three families. These cases are development cases and
+are excluded from any future X17 confirmatory holdout.
 
 Four arms receive identical common input:
 

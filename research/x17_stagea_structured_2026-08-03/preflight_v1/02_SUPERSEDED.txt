@@ -1,0 +1,4 @@
+decision=SUPERSEDED_BEFORE_PROVIDER_CALLS
+provider_calls=0
+reason=the first-six-APPLY rule covered only cancellation, override, and release; v2 uses the first APPLY case from each of the first six distinct APPLY families
+result_eligible=false

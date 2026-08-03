@@ -299,7 +299,15 @@ def main() -> int:
     ).stdout.strip()
     freeze_hashes = verify_freeze(freeze_dir)
     module = load_qualification(freeze_dir)
-    selected = [case for case in module.CASES if case["disposition"] == "APPLY"][:6]
+    selected: list[Any] = []
+    selected_families: set[str] = set()
+    for case in module.CASES:
+        family = str(case["primary_family"])
+        if case["disposition"] == "APPLY" and family not in selected_families:
+            selected.append(case)
+            selected_families.add(family)
+        if len(selected) == 6:
+            break
     if len(selected) != 6:
         raise RuntimeError("Stage A selection did not produce six APPLY cases")
     schemas, mapping = schemas_and_mapping(module)

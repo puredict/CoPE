@@ -1,0 +1,13 @@
+case_id,family,mode,arm_cells,fairness_pass,normalized_request_sha256,order
+X16-C01,cancellation,plain,4,True,848fa17eca3e33f9ce396751baafe91314050f9aba2e56ca3229c817b36f58b8,"[""cope"",""neutral_typed"",""compact_tx"",""fsr_pc""]"
+X16-C01,cancellation,structured,4,True,3a4771ebb06835e70d1ea94bbabec086b13e3a6f59f3d881a9a70dc7a7ab51a5,"[""cope"",""neutral_typed"",""compact_tx"",""fsr_pc""]"
+X16-C02,cancellation,plain,4,True,88948abd813648e2702057b4adf78eb5d0bd5326e64ea89783c27faf349e07c0,"[""neutral_typed"",""compact_tx"",""fsr_pc"",""cope""]"
+X16-C02,cancellation,structured,4,True,b4adfc1a2af2dfaa45720ab59c61147ee8e95f793d6c7d720dae2d5a7e5e57a1,"[""neutral_typed"",""compact_tx"",""fsr_pc"",""cope""]"
+X16-O01,override,plain,4,True,ff4e9b2beef986379eb3836fa8931f416226ac4ab7be75b114f08155ef688add,"[""compact_tx"",""fsr_pc"",""cope"",""neutral_typed""]"
+X16-O01,override,structured,4,True,1abd600cee2a0b92bf88dec710cf02e3e08bddc626d77da1df16e9d06ebb5f5c,"[""compact_tx"",""fsr_pc"",""cope"",""neutral_typed""]"
+X16-O02,override,plain,4,True,d0d33378b0302176d2e36fea904f091af2281595b4723bb2bb81a4cf576697ed,"[""fsr_pc"",""cope"",""neutral_typed"",""compact_tx""]"
+X16-O02,override,structured,4,True,38d7a17a0d1acf477d68a0b7a312647d73b679f78497fddf0ccd2a96812041bc,"[""fsr_pc"",""cope"",""neutral_typed"",""compact_tx""]"
+X16-R01,release,plain,4,True,ece8dbf163ffe11ba1d77494430d3dd448528601494cf98f19352430986ad1e4,"[""cope"",""neutral_typed"",""compact_tx"",""fsr_pc""]"
+X16-R01,release,structured,4,True,b231a85eb5552084675a2f7f8318310af92dcdef591dffed1ac0d906e079ba94,"[""cope"",""neutral_typed"",""compact_tx"",""fsr_pc""]"
+X16-R02,release,plain,4,True,fd0e45930480cbdbe000b3c252faeaed448e4ec0c67f34d2f7a55e15f962404c,"[""neutral_typed"",""compact_tx"",""fsr_pc"",""cope""]"
+X16-R02,release,structured,4,True,d08be10291273926935208774f3efc0bb5b2cd6ef1855819049e65794c101d69,"[""neutral_typed"",""compact_tx"",""fsr_pc"",""cope""]"
