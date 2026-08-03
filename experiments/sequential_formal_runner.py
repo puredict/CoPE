@@ -52,6 +52,12 @@ from libero_experiment_core import (
 
 EXPECTED_MANIFEST_SHA256 = "1fe0b231bb17e9ed0711c76ee440928faccf84696043ac0a84ddd9645bf6b7ec"
 EXPECTED_CONTROLLER_SHA256 = "56171aef20a9f60e335259ff10abe7c211f6594a98b52b09864effcc7b1d988a"
+EXPECTED_CONTRACT_HASHES = {
+    "cope": "da14a3c2f2e25465c331d857e5b1426e785c0e1e69d428de3e42db72995e5c63",
+    "neutral_patch": "5d5ea92dcc3782b3a59504b067b19dcfa600edf22f7cdff9d8c70cc0a6cda454",
+    "fsr_pc": "2675a262a2c8e60f8775efe7c23df13facc4eed8a95cc3fda5ef84d61b633451",
+    "full_replan": "7979e131875303efb0340e78d74b9329d6e758664755517c91611ab314246ecf",
+}
 RESULT_FIELDS = (
     "sequence_id", "arm", "event_index", "task_id", "state_id",
     "prefix_orientation", "sequence_type", "substrate_eligible",
@@ -286,6 +292,8 @@ def main() -> int:
     validate_manifest(rows)
     if stable_hash(asdict(CONTROLLER_CONFIG)) != EXPECTED_CONTROLLER_SHA256:
         raise RuntimeError("controller configuration hash drift")
+    if {arm: stable_hash(CONTRACTS[arm]) for arm in ARMS} != EXPECTED_CONTRACT_HASHES:
+        raise RuntimeError("formal output contract hash drift")
     if not os.environ.get(args.api_key_env):
         args.output_dir.mkdir(parents=True, exist_ok=False)
         blocked = {
