@@ -49,7 +49,22 @@ are adjusted together by Holm's method.  No subgroup test changes the primary
 decision.  Forward/reverse prefix and cancel/double-replace tables are
 descriptive only.
 
-Submission GO requires a statistically and practically meaningful CoPE gain
-over neutral patch plus no excess stale execution/invariant violation and at
-least one efficiency/locality advantage.  A tie or loss triggers the previously
-specified assurance-framework reframe; it is not rescued by secondary tests.
+Before learned outcomes, the necessary decisive-experiment gate is frozen as
+all of the following:
+
+1. CoPE versus neutral patch has two-sided exact McNemar `p < 0.05` and paired
+   success-rate difference at least `+0.15`;
+2. CoPE has no greater count of stale-execution sequences and no greater count
+   of invariant-violation sequences, where invariant violation includes either
+   intermediate invariant failure or revision/hash discontinuity;
+3. among sequence pairs where both methods produce parser-valid and
+   semantic-valid proposals on both events, CoPE has at least 20% median paired
+   reduction in total proposal bytes and a two-sided exact sign-test `p < 0.05`
+   after discarding byte ties.
+
+This gate is necessary but not sufficient for submission because the locked
+study contains one task identity.  A success tie/loss, safety excess, or missing
+locality gate triggers the assurance-framework reframe and is not rescued by
+secondary comparisons.  Prompt tokens and latency are reported but cannot
+satisfy the locality gate because arm contracts differ in length and provider
+latency is noisy.
