@@ -58,6 +58,7 @@ EXPECTED_CONTRACT_HASHES = {
     "fsr_pc": "2675a262a2c8e60f8775efe7c23df13facc4eed8a95cc3fda5ef84d61b633451",
     "full_replan": "7979e131875303efb0340e78d74b9329d6e758664755517c91611ab314246ecf",
 }
+EXPECTED_PROTOCOL_SHA256 = "9ec3a022739e30798468c8278c1e14d438472392c757a3e7c9721e2b1aef3eab"
 RESULT_FIELDS = (
     "sequence_id", "arm", "event_index", "task_id", "state_id",
     "prefix_orientation", "sequence_type", "substrate_eligible",
@@ -87,6 +88,21 @@ def parse_args() -> argparse.Namespace:
 
 def sha256_bytes(value: bytes) -> str:
     return hashlib.sha256(value).hexdigest()
+
+
+def formal_protocol_config() -> dict[str, Any]:
+    """Return every provider-side setting frozen before formal outcomes."""
+    return {
+        "provider": "openrouter",
+        "model": MODEL,
+        "reasoning_effort": REASONING_EFFORT,
+        "temperature": TEMPERATURE,
+        "max_prompt_tokens": MAX_PROMPT_TOKENS,
+        "max_completion_tokens": MAX_COMPLETION_TOKENS,
+        "max_retries": 0,
+        "timeout_seconds": TIMEOUT_SECONDS,
+        "arms": list(ARMS),
+    }
 
 
 def simulator_hash(env: Any) -> str:
@@ -294,6 +310,8 @@ def main() -> int:
         raise RuntimeError("controller configuration hash drift")
     if {arm: stable_hash(CONTRACTS[arm]) for arm in ARMS} != EXPECTED_CONTRACT_HASHES:
         raise RuntimeError("formal output contract hash drift")
+    if stable_hash(formal_protocol_config()) != EXPECTED_PROTOCOL_SHA256:
+        raise RuntimeError("formal provider protocol hash drift")
     if not os.environ.get(args.api_key_env):
         args.output_dir.mkdir(parents=True, exist_ok=False)
         blocked = {

@@ -23,7 +23,8 @@ from cope.sequential_semantics import (
 )
 from cope.types import canonical_json, stable_hash
 from experiments.sequential_formal_runner import (
-    EXPECTED_CONTRACT_HASHES, FormalTransitionError, call_and_transition,
+    EXPECTED_CONTRACT_HASHES, EXPECTED_PROTOCOL_SHA256, FormalTransitionError,
+    call_and_transition, formal_protocol_config,
 )
 
 
@@ -31,6 +32,7 @@ EXPECTED_CASES = {
     "task0_forward_replace_cancel", "task0_forward_replace_replace",
     "task0_reverse_replace_cancel", "task0_reverse_replace_replace",
 }
+EXPECTED_CASE_MANIFEST_SHA256 = "3c97c85cb66d048e39e575e4cce56a8d76a699471ecd462df60c37175d0bfa49"
 
 
 def parse_args() -> argparse.Namespace:
@@ -56,12 +58,16 @@ def main() -> int:
     ).stdout.strip()
     if args.output_dir.exists():
         raise FileExistsError(args.output_dir)
+    if hashlib.sha256(args.case_manifest.read_bytes()).hexdigest() != EXPECTED_CASE_MANIFEST_SHA256:
+        raise RuntimeError("development smoke case manifest hash drift")
     with args.case_manifest.open(newline="", encoding="utf-8") as handle:
         cases = list(csv.DictReader(handle))
     if len(cases) != 4 or {row["case_id"] for row in cases} != EXPECTED_CASES:
         raise ValueError("development smoke case manifest drift")
     if {arm: stable_hash(CONTRACTS[arm]) for arm in ARMS} != EXPECTED_CONTRACT_HASHES:
         raise RuntimeError("output contract hash drift")
+    if stable_hash(formal_protocol_config()) != EXPECTED_PROTOCOL_SHA256:
+        raise RuntimeError("provider protocol hash drift")
     if not os.environ.get(args.api_key_env):
         args.output_dir.mkdir(parents=True, exist_ok=False)
         status = {

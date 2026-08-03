@@ -45,6 +45,11 @@ is never written to git, command artifacts, or result logs.
   `1fe0b231bb17e9ed0711c76ee440928faccf84696043ac0a84ddd9645bf6b7ec`;
 - contract manifest:
   `manifests/sequential_formal_contract_hashes_v1.csv`;
+- provider protocol (model, decoding, budgets, timeout, zero retry, arm set):
+  SHA-256 `9ec3a022739e30798468c8278c1e14d438472392c757a3e7c9721e2b1aef3eab`;
+- development smoke case manifest:
+  `manifests/sequential_persistence_gate_v2.csv`, SHA-256
+  `3c97c85cb66d048e39e575e4cce56a8d76a699471ecd462df60c37175d0bfa49`;
 - final oracle gate:
   `research/sequential_persistence_gate_2026-08-04/oracle_correct_v4`;
 - final cold preflight:
