@@ -128,17 +128,21 @@ def apply_compact_writes(
         value = copy.deepcopy(write["value"])
         if root in {"commitments", "actions", "progress"}:
             if len(parts) == 2:
-                if write["op"] == "add" and isinstance(value, dict) and value.get("id") == parts[1]:
-                    if any(row.get("id") == parts[1] for row in out[root]):
-                        raise SharedEnvelopeError("duplicate compact record")
-                    out[root].append(value)
+                matches = [index for index, row in enumerate(out[root]) if row.get("id") == parts[1]]
+                if write["op"] in {"add", "replace"} and isinstance(value, dict) and value.get("id") == parts[1]:
+                    if write["op"] == "replace" and not matches:
+                        raise SharedEnvelopeError("replace targets absent record")
+                    if matches:
+                        out[root][matches[0]] = value
+                    else:
+                        out[root].append(value)
                 elif write["op"] == "remove" and value is None:
                     before = len(out[root])
                     out[root] = [row for row in out[root] if row.get("id") != parts[1]]
                     if len(out[root]) != before - 1:
                         raise SharedEnvelopeError("compact record removal mismatch")
                 else:
-                    raise SharedEnvelopeError("compact record insertion mismatch")
+                    raise SharedEnvelopeError("compact record write mismatch")
             elif len(parts) == 3:
                 row = _find(out[root], parts[1])
                 if write["op"] == "remove":
@@ -156,10 +160,14 @@ def apply_compact_writes(
                 raise SharedEnvelopeError("restoration replacement mismatch")
             out["restorations"] = value
         elif root == "restorations" and len(parts) == 2:
-            if write["op"] == "add" and isinstance(value, dict) and value.get("id") == parts[1]:
-                if any(row.get("id") == parts[1] for row in out["restorations"]):
-                    raise SharedEnvelopeError("duplicate restoration")
-                out["restorations"].append(value)
+            matches = [index for index, row in enumerate(out["restorations"]) if row.get("id") == parts[1]]
+            if write["op"] in {"add", "replace"} and isinstance(value, dict) and value.get("id") == parts[1]:
+                if write["op"] == "replace" and not matches:
+                    raise SharedEnvelopeError("replace targets absent restoration")
+                if matches:
+                    out["restorations"][matches[0]] = value
+                else:
+                    out["restorations"].append(value)
             elif write["op"] == "remove" and value is None:
                 before = len(out["restorations"])
                 out["restorations"] = [row for row in out["restorations"] if row.get("id") != parts[1]]
@@ -173,9 +181,16 @@ def apply_compact_writes(
                 if value is not None or parts[2] not in row:
                     raise SharedEnvelopeError("restoration field removal mismatch")
                 del row[parts[2]]
-            else:
-                row[parts[2]] = value
+                continue
+            if write["op"] == "replace" and parts[2] not in row:
+                raise SharedEnvelopeError("replace targets absent restoration field")
+            row[parts[2]] = value
         elif root == "facts" and len(parts) == 2:
+            if write["op"] == "remove":
+                if value is not None or parts[1] not in out["facts"]:
+                    raise SharedEnvelopeError("compact fact removal mismatch")
+                del out["facts"][parts[1]]
+                continue
             if write["op"] == "replace" and parts[1] not in out["facts"]:
                 raise SharedEnvelopeError("replace targets absent fact")
             out["facts"][parts[1]] = value

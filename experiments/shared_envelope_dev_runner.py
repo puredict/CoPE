@@ -92,6 +92,8 @@ def contracts(arm_schemas: dict[str, dict[str, Any]]) -> dict[str, str]:
             "Each write is exactly {op,path,value}; op is add, replace, or remove. For remove, value is null. Allowed semantic paths are "
             "/commitments/<id>, /commitments/<id>/<field>, /actions/<id>, /actions/<id>/<field>, "
             "/progress/<id>, /progress/<id>/<field>, /restorations/<id>, /restorations/<id>/<field>, and /facts/<key>. "
+            "Use JSON Patch object-member semantics: add creates an absent member or replaces an existing member; replace requires an existing "
+            "member; remove requires an existing member. A whole-record add/replace value must be the complete record and its id must match the path. "
             "Transaction metadata paths are forbidden.\nJSON_SCHEMA\n"
         ) + canonical_json(arm_schemas["compact_semantic"]),
         "fsr_semantic": prefix + (
@@ -279,8 +281,20 @@ def main() -> int:
     }
     passed = all(value >= 4 for value in sparse.values()) if parsed.case_set == "development" else False
     by_case: dict[str, dict[str, bool]] = {}
+    rows_by_case: dict[str, list[dict[str, Any]]] = {}
     for row in rows:
         by_case.setdefault(str(row["case_id"]), {})[str(row["arm"])] = bool(row["semantic_correct"])
+        rows_by_case.setdefault(str(row["case_id"]), []).append(row)
+    fair_quadruplets = sum(
+        len(group) == len(ARMS) and all(bool(row["fairness_pass"]) for row in group)
+        for group in rows_by_case.values()
+    )
+    assignment_integrity_pass = bool(
+        len(rows) == len(cases) * len(ARMS)
+        and set(rows_by_case) == {case.case_id for case in cases}
+        and all({str(row["arm"]) for row in group} == set(ARMS) for group in rows_by_case.values())
+    )
+    fairness_integrity_pass = fair_quadruplets == len(cases)
     comparisons = []
     for other in ("compact_semantic", "neutral_typed"):
         cope_only = sum(value["cope_semantic"] and not value[other] for value in by_case.values())
@@ -304,7 +318,11 @@ def main() -> int:
             and contrast["holm_p"] < 0.05
             and sparse["cope_semantic"] >= 18
             and (len(cases) - sparse["cope_semantic"]) <= (len(cases) - sparse["compact_semantic"])
+            and assignment_integrity_pass
+            and fairness_integrity_pass
         )
+    else:
+        passed = bool(passed and assignment_integrity_pass and fairness_integrity_pass)
     (output_dir / "06_RUN_STATUS.txt").write_text(
         canonical_json({
             "decision": "PASS" if passed else "FAIL",
@@ -314,7 +332,10 @@ def main() -> int:
                 else "Holm-adjusted CoPE-vs-compact p<0.05, positive direction, CoPE>=18/36, no excess incorrect semantic attempts"
             ),
             "sparse_correct": sparse,
-            "provider_calls": len(rows), "fair_quadruplets": 6,
+            "provider_calls": len(rows), "provider_ok": sum(row["provider_status"] == "ok" for row in rows),
+            "fair_quadruplets": fair_quadruplets,
+            "assignment_integrity_pass": assignment_integrity_pass,
+            "fairness_integrity_pass": fairness_integrity_pass,
             "transaction_metadata_model_generated": False,
             "retry_budget": 0, "repair_budget": 0, "fallback_used": False,
             "oracle_substitution": False, "reserved_states_read": False,
