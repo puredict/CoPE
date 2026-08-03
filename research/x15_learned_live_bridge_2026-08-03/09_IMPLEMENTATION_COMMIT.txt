@@ -1,0 +1,11 @@
+X15 implementation commit
+2d4d6ae6af6274def327fdc8dc7eabf84ae816b2
+
+Credential preflight
+exit_code=3
+provider_calls=0
+state_ids_indexed=[]
+controller_actions=0
+fallback_used=false
+oracle_substitution=false
+reserved_states_27_49_consumed=false
