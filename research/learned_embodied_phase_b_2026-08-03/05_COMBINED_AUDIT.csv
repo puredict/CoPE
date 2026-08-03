@@ -1,0 +1,21 @@
+check_id,criterion,observed,pass,claim_effect
+1,assigned development states,"0;1;2;3;4 exactly",true,all staged development states covered
+2,assigned event families,"5 cancellation and 5 replacement",true,both scoped families covered
+3,provider completion,"30/30 status ok",true,no outage censoring
+4,retry policy,"30/30 retry_count=0",true,single draw retained
+5,within-triplet fairness,"30/30 fairness pass; 10/10 groups share input and settings hashes",true,matched semantic generation
+6,CoPE semantic validity,"10/10 parser semantic and oracle-equivalence pass",true,provider output drives accepted state
+7,shared transaction envelope,"10/10 pass",true,trusted transaction commit succeeds
+8,explicit transaction provenance,"10/10 base=pre post=pre+1 event and payload bindings pass",true,formal audit blocker closed
+9,cancellation execution,"5/5 HALT and zero post-event actions",true,cancelled commitment not executed
+10,replacement selection,"5/5 selected alphabet_soup_1 from validated provider post-state",true,high-level action is provider-derived
+11,replacement execution,"5/5 privileged skill success and replacement in basket",true,accepted edit reaches modified physical goal
+12,terminal recovery,"10/10 terminal_goal_success",true,development Phase-B gate passes
+13,progress retention,"10/10 cream-cheese progress retained",true,persistent commitment is preserved
+14,stale suppression,"0/10 butter executed",true,obsolete commitment is suppressed
+15,substitution and fallback,"0/30 semantic oracle substitution; 0/30 fallback",true,no hidden semantic rescue
+16,response identity,"30 nonempty unique response hashes",true,all provider draws independently retained
+17,reserved-state safety,"0 reserved state rows; states 27--49 not consumed",true,formal reserve intact
+18,credential retention,"0 result files match credential pattern",true,secret absent from evidence
+19,low-level policy boundary,"privileged simulator-geometry controller; learned_policy_used=false 10/10",true,mechanism result only
+20,comparative method claim,"live compact and FSR invalid on these cases; neutral corrected control absent",false,do not claim CoPE superiority from Phase B
