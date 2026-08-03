@@ -1,0 +1,37 @@
+case_id,logic_signature_unique,closest_X14_template,same_transition_logic_as_X14,hidden_answer_key_scan_pass,why_not_overlap
+X16-C01,True,cancel_sibling,False,True,X14 cancellation changed one pending sibling only; it had no transitive AND cascade or blocked descendants.
+X16-C02,True,cancel_sibling,False,True,X14 had no OR dependency or support-set rebinding; cancelling its sibling removed a flat goal.
+X16-O01,True,activate_override,False,True,"X14 override was a flat no-touch prohibition; this case scopes a shared resource, preserves a prerequisite, and cancels a partially executed action."
+X16-O02,True,activate_override,False,True,X14 added an override and suspended one target; it did not insert an approved substitute or rebind a composite dependency.
+X16-R01,True,release_override,False,True,X14 released one override but did not require exact token consumption or an explicit no-other-override guard.
+X16-R02,True,release_override,False,True,X14 had exactly one override and always restored the target; it did not test non-LIFO release with a surviving override.
+X16-W01,True,world_change_release,False,True,"X14 world-change release only regrounded one package destination; this case synchronizes object location, commitment grounding, and a newly inserted fetch action."
+X16-W02,True,world_change_release,False,True,"X14 never handled a release where restoration is impossible and a dormant, pre-authorized fallback must be activated."
+X16-P01,True,replace_pending_target,False,True,X14 replacement had no dependent verification commitment and did not retarget an existing unstarted action.
+X16-P02,True,replace_pending_target,False,True,X14 replacement was a flat pending sibling; this case requires local graph surgery while proving that deeper edges remain untouched.
+X16-S01,True,stale_version,False,True,X14 stale control only used cancellation on its flat delivery state; this task binds a safety closure commitment and tests stale mutation independently of sibling progress.
+X16-S02,True,stale_version,False,True,X14 tested only one-revision-old input; it did not test a future version gap implying missing concurrent history.
+X16-I01,True,idempotence,False,True,X14 used a duplicate flag supplied by the event; this case derives idempotence from the processed-event payload hash and already-committed value.
+X16-I02,True,idempotence,False,True,X14 marked duplicates with a Boolean and never distinguished exact replay from an event-ID collision attack.
+X16-U01,True,wrong_source_revoke,False,True,"X14 used an observer on a package commitment; this case adds a distinct owner and a protected clinical commitment, separating role threshold from version logic."
+X16-U02,True,wrong_source_revoke,False,True,X14 had one global task_owner and only tested low authority; it did not test sufficient authority applied outside ownership scope.
+X16-CC01,True,continuity_invalid,False,True,X14 conflict had no reversibility or quantitative partial progress; this case requires stopping while retaining a 55% progress observation.
+X16-CC02,True,continuity_invalid,False,True,"X14 always had a deterministic cancellation path; it did not contain an irreversible in-flight action with two unsafe, underdetermined continuations."
+X16-CV01,True,continuity_valid,False,True,X14 valid continuity only acknowledged an irrelevant world change; this case applies a binding deadline mutation and proves the current action remains feasible.
+X16-CV02,True,continuity_valid,False,True,X14 did not combine replacement with a valid executing prerequisite; its replacement plan was wholly regenerated.
+X16-M01,True,none,False,True,X14 never invalidated a prerequisite or propagated blocking through an AND graph.
+X16-M02,True,none,False,True,X14 had at most one added dependency on an already satisfied noise node; it did not reason over OR support or prune an invalid edge.
+X16-PP01,True,none,False,True,X14 preserved one completed sibling; this case preserves a two-step causal prefix while cancelling only the terminal suffix.
+X16-PP02,True,none,False,True,X14 never invalidated one achieved milestone while preserving an earlier achieved prerequisite during replacement.
+X16-E01,True,none,False,True,X14 processed one event at a time and had no commutativity test or atomic merge of two external edits.
+X16-E02,True,none,False,True,X14 supplied a single totally ordered event; it never required detecting noncommutativity or withholding both edits.
+X16-OR01,True,none,False,True,X14 replacement always targeted an active pending commitment; it did not test lineage-aware recognition of an already-current replacement.
+X16-OR02,True,none,False,True,X14 assumed the replacement entity was valid and available; it never qualified the candidate against same-version world evidence.
+X16-AS01,True,none,False,True,X14 no-op was an explicit no_op event; this task derives no-op from agreement between a satisfied commitment and current world fact.
+X16-AS02,True,none,False,True,X14 replacement always inserted an active goal and pending action; it did not separate semantic lineage change from zero required physical work.
+X16-CO01,True,none,False,True,X14 world facts were single-valued and authoritative; it never exposed equal-trust mutually exclusive observations.
+X16-CO02,True,none,False,True,X14 cancellation was unconditional and its observations never contradicted the event premise.
+X16-IS01,True,irrelevant_sibling_change,False,True,X14 appended homogeneous satisfied noise bundles; this task uses a mixed-status dependency graph and edits one relevant field without copying or flattening it.
+X16-IS02,True,irrelevant_sibling_change,False,True,X14 irrelevant change named an unrelated sibling and advanced evidence; this case requires an aggregate capacity proof across 20 dependents and correctly avoids a revision.
+X16-X01,True,none,False,True,No X14 template combined two authorized semantic operations in one atomic event or tested all-or-nothing multi-target commitment editing.
+X16-X02,True,none,False,True,"No X14 template combined override, replacement, dependency rebinding, old-action cancellation, and new-action insertion in one atomic transition."

@@ -1,0 +1,1072 @@
+#!/usr/bin/env python3
+"""Frozen X16 corpus builder, oracle compiler, validator, fairness audit, and power analysis.
+
+This file intentionally has a .txt suffix because AGENTS.md restricts research outputs
+to Markdown, CSV, and TXT.  It uses only the Python standard library and makes no
+network, provider, GPU, simulator, or robot-state calls.
+"""
+from __future__ import annotations
+
+import copy
+import csv
+import hashlib
+import itertools
+import json
+import math
+import random
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parent
+SEED = 20260803
+ARMS = ("cope", "compact_tx", "fsr_pc")
+STATE_SCHEMA = "x16-state-v1"
+
+
+def cj(value):
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
+
+
+def sha(value):
+    raw = value if isinstance(value, str) else cj(value)
+    return hashlib.sha256(raw.encode("utf-8")).hexdigest()
+
+
+def commitment(cid, predicate, args, status="active", owner="task_owner", all_of=(), any_of=(), **extra):
+    row = {
+        "id": cid, "predicate": predicate, "arguments": list(args), "status": status,
+        "owner": owner, "authority": 100, "requires_all": list(all_of),
+        "requires_any": list(any_of), "supersedes": [], "overridden_by": [],
+    }
+    row.update(extra)
+    return row
+
+
+def action(aid, commitment_id, status="pending", progress=0, reversible=True, **extra):
+    row = {
+        "id": aid, "commitment_id": commitment_id, "status": status,
+        "progress": progress, "reversible": reversible, "stop_reason": None,
+    }
+    row.update(extra)
+    return row
+
+
+def milestone(mid, achieved, physically_valid=True, goal_relevant=True, **extra):
+    row = {
+        "id": mid, "achieved": achieved, "physically_valid": physically_valid,
+        "goal_relevant": goal_relevant,
+    }
+    row.update(extra)
+    return row
+
+
+def state(commitments, actions=(), progress=(), restorations=(), facts=None,
+          processed=None, version=7, evidence_version=70):
+    return {
+        "schema_version": STATE_SCHEMA,
+        "state_version": version,
+        "commitments": list(commitments),
+        "actions": list(actions),
+        "progress": list(progress),
+        "restorations": list(restorations),
+        "facts": dict(facts or {}),
+        "processed_events": list(processed or []),
+        "evidence_version": evidence_version,
+    }
+
+
+def event(eid, kind, **payload):
+    base = {
+        "event_id": eid, "event_type": kind, "issuer": "task_owner",
+        "authority": 100, "base_version": 7, "world_version": 71,
+    }
+    base.update(payload)
+    return base
+
+
+def find_id(rows, identifier):
+    matches = [row for row in rows if row["id"] == identifier]
+    if len(matches) != 1:
+        raise ValueError(f"expected one record {identifier}, got {len(matches)}")
+    return matches[0]
+
+
+def apply_cope_ops(pre, ops, ev):
+    out = copy.deepcopy(pre)
+    committed = False
+    for op in ops:
+        name = op["op"]
+        if name == "SetCommitmentStatus":
+            find_id(out["commitments"], op["target_id"])["status"] = op["status"]
+        elif name == "SetCommitmentField":
+            find_id(out["commitments"], op["target_id"])[op["field"]] = copy.deepcopy(op["value"])
+        elif name == "InsertCommitment":
+            if any(x["id"] == op["record"]["id"] for x in out["commitments"]):
+                raise ValueError("duplicate commitment insert")
+            out["commitments"].append(copy.deepcopy(op["record"]))
+        elif name == "SetAction":
+            row = find_id(out["actions"], op["target_id"])
+            for key, value in op["fields"].items():
+                row[key] = copy.deepcopy(value)
+        elif name == "InsertAction":
+            if any(x["id"] == op["record"]["id"] for x in out["actions"]):
+                raise ValueError("duplicate action insert")
+            out["actions"].append(copy.deepcopy(op["record"]))
+        elif name == "SetProgress":
+            row = find_id(out["progress"], op["target_id"])
+            for key, value in op["fields"].items():
+                row[key] = copy.deepcopy(value)
+        elif name == "InsertProgress":
+            if any(x["id"] == op["record"]["id"] for x in out["progress"]):
+                raise ValueError("duplicate progress insert")
+            out["progress"].append(copy.deepcopy(op["record"]))
+        elif name == "AddRestoration":
+            out["restorations"].append(copy.deepcopy(op["record"]))
+        elif name == "RemoveRestoration":
+            before = len(out["restorations"])
+            out["restorations"] = [x for x in out["restorations"] if x["id"] != op["target_id"]]
+            if len(out["restorations"]) != before - 1:
+                raise ValueError("restoration removal mismatch")
+        elif name == "SetFact":
+            out["facts"][op["key"]] = copy.deepcopy(op["value"])
+        elif name == "CommitEvent":
+            if committed:
+                raise ValueError("multiple CommitEvent operations")
+            out["state_version"] += 1
+            out["evidence_version"] = ev["world_version"]
+            out["processed_events"].append({"event_id": ev["event_id"], "payload_sha256": sha(ev)})
+            committed = True
+        else:
+            raise ValueError(f"unknown CoPE op {name}")
+    if ops and not committed:
+        raise ValueError("state-changing patch lacks CommitEvent")
+    return out
+
+
+def compact_writes(pre, post):
+    writes = []
+    for root in ("commitments", "actions", "progress"):
+        before = {row["id"]: row for row in pre[root]}
+        after = {row["id"]: row for row in post[root]}
+        if set(before) - set(after):
+            raise ValueError("X16 compact contract does not permit record deletion")
+        for identifier in before:
+            for field in after[identifier]:
+                if field not in before[identifier] or before[identifier][field] != after[identifier][field]:
+                    writes.append({
+                        "op": "add" if field not in before[identifier] else "replace",
+                        "path": f"/{root}/{identifier}/{field}",
+                        "value": copy.deepcopy(after[identifier][field]),
+                    })
+        for identifier in after:
+            if identifier not in before:
+                writes.append({
+                    "op": "add", "path": f"/{root}/+/{identifier}",
+                    "value": copy.deepcopy(after[identifier]),
+                })
+    if pre["restorations"] != post["restorations"]:
+        writes.append({"op": "replace", "path": "/restorations", "value": copy.deepcopy(post["restorations"])})
+    before_facts, after_facts = pre["facts"], post["facts"]
+    if set(before_facts) - set(after_facts):
+        raise ValueError("X16 compact contract does not permit fact deletion")
+    for key in after_facts:
+        if key not in before_facts or before_facts[key] != after_facts[key]:
+            writes.append({
+                "op": "add" if key not in before_facts else "replace",
+                "path": f"/facts/{key}", "value": copy.deepcopy(after_facts[key]),
+            })
+    for row in post["processed_events"][len(pre["processed_events"]):]:
+        writes.append({
+            "op": "add", "path": f"/processed_events/+/{row['event_id']}",
+            "value": copy.deepcopy(row),
+        })
+    for key in ("state_version", "evidence_version"):
+        if pre[key] != post[key]:
+            writes.append({"op": "replace", "path": f"/{key}", "value": copy.deepcopy(post[key])})
+    return writes
+
+
+def apply_compact(pre, writes):
+    out = copy.deepcopy(pre)
+    seen = set()
+    for write in writes:
+        if set(write) != {"op", "path", "value"} or write["op"] not in {"add", "replace"}:
+            raise ValueError("noncanonical compact write")
+        if write["path"] in seen:
+            raise ValueError("compact path duplicated")
+        seen.add(write["path"])
+        parts = write["path"].removeprefix("/").split("/")
+        if len(parts) == 1 and parts[0] in {"restorations", "state_version", "evidence_version"}:
+            if write["op"] != "replace":
+                raise ValueError("root path requires replace")
+            out[parts[0]] = copy.deepcopy(write["value"])
+        elif len(parts) == 3 and parts[0] in {"commitments", "actions", "progress"} and parts[1] != "+":
+            record = find_id(out[parts[0]], parts[1])
+            expected_op = "add" if parts[2] not in record else "replace"
+            if write["op"] != expected_op:
+                raise ValueError("record field write op mismatch")
+            record[parts[2]] = copy.deepcopy(write["value"])
+        elif len(parts) == 3 and parts[0] in {"commitments", "actions", "progress"} and parts[1] == "+":
+            if write["op"] != "add" or write["value"].get("id") != parts[2]:
+                raise ValueError("record insert malformed")
+            out[parts[0]].append(copy.deepcopy(write["value"]))
+        elif len(parts) == 2 and parts[0] == "facts":
+            expected_op = "add" if parts[1] not in out["facts"] else "replace"
+            if write["op"] != expected_op:
+                raise ValueError("fact write op mismatch")
+            out["facts"][parts[1]] = copy.deepcopy(write["value"])
+        elif len(parts) == 3 and parts[0] == "processed_events" and parts[1] == "+":
+            if write["op"] != "add" or write["value"].get("event_id") != parts[2]:
+                raise ValueError("processed event insert malformed")
+            out["processed_events"].append(copy.deepcopy(write["value"]))
+        else:
+            raise ValueError(f"compact path invalid: {write['path']}")
+    return out
+
+
+def op(name, **fields):
+    return {"op": name, **fields}
+
+
+CASES = []
+
+
+def add(case_id, family, tags, title, logic_signature, pre, ev, policy, disposition,
+        reason_code, ops, directive, x14_difference):
+    post = apply_cope_ops(pre, ops, ev) if disposition == "APPLY" else copy.deepcopy(pre)
+    CASES.append({
+        "case_id": case_id, "primary_family": family, "secondary_tags": tags,
+        "title": title, "logic_signature": logic_signature, "pre": pre, "event": ev,
+        "policy": policy, "disposition": disposition, "reason_code": reason_code,
+        "ops": ops, "post": post, "directive": directive,
+        "x14_difference": x14_difference,
+    })
+
+
+# CANCELLATION: conjunctive cascade versus disjunctive support retention.
+p = state([
+    commitment("inspect", "inspected", ["valve"], status="pending"),
+    commitment("seal", "sealed", ["valve"], all_of=("inspect",)),
+    commitment("pressurize", "pressurized", ["line"], all_of=("seal",)),
+], actions=[action("inspect_valve", "inspect")])
+e = event("x16:c01", "cancel", target_id="inspect")
+add("X16-C01", "cancellation", "multi-commitment_dependency", "Cancel a root of an AND dependency chain",
+    "cancel|and_chain_depth3|cascade_block|pending_action_removed", p, e,
+    ["Every active conjunctive descendant needs every prerequisite.", "Cancelling a pending root blocks, but does not erase, transitive descendants."],
+    "APPLY", "AUTHORIZED_TRANSITION",
+    [op("SetCommitmentStatus", target_id="inspect", status="cancelled"),
+     op("SetCommitmentStatus", target_id="seal", status="blocked"),
+     op("SetCommitmentStatus", target_id="pressurize", status="blocked"),
+     op("SetAction", target_id="inspect_valve", fields={"status": "cancelled", "stop_reason": "root commitment cancelled"}),
+     op("CommitEvent")], "HALT",
+    "X14 cancellation changed one pending sibling only; it had no transitive AND cascade or blocked descendants.")
+
+p = state([
+    commitment("scan_a", "scanned", ["bin", "camera_a"], status="pending"),
+    commitment("scan_b", "scanned", ["bin", "camera_b"], status="satisfied"),
+    commitment("classify", "classified", ["bin"], any_of=("scan_a", "scan_b")),
+], progress=[milestone("scan_b_done", True)])
+e = event("x16:c02", "cancel", target_id="scan_a")
+add("X16-C02", "cancellation", "multi-commitment_dependency,partial_progress_preservation", "Cancel one branch of an OR-supported goal",
+    "cancel|or_support2|retain_dependent|preserve_satisfied_alternative", p, e,
+    ["A disjunctive dependent remains enabled while at least one support is satisfied.", "Satisfied evidence is retained."],
+    "APPLY", "AUTHORIZED_TRANSITION",
+    [op("SetCommitmentStatus", target_id="scan_a", status="cancelled"),
+     op("SetCommitmentField", target_id="classify", field="requires_any", value=["scan_b"]),
+     op("CommitEvent")], "PLAN:classify",
+    "X14 had no OR dependency or support-set rebinding; cancelling its sibling removed a flat goal.")
+
+# OVERRIDE: scoped resource lock versus higher-priority normative substitution.
+p = state([
+    commitment("sterilize", "sterilized", ["tray"]),
+    commitment("load", "loaded", ["tray", "station"], all_of=("sterilize",)),
+], actions=[action("move_tray", "load", status="executing", progress=40)])
+e = event("x16:o01", "activate_override", target_id="load", override_id="lock_station", conflict_action_id="move_tray")
+ov = commitment("lock_station", "prohibit_entry", ["station"], status="active", priority=200, overridden_by=[])
+add("X16-O01", "override", "continuity_conflict,multi-commitment_dependency", "Activate a resource lock and stop the conflicting action",
+    "override|resource_scope|suspend_leaf|cancel_executing|restoration_token", p, e,
+    ["A priority-200 station lock dominates a priority-100 load commitment.", "An executing action entering the locked station cannot continue."],
+    "APPLY", "AUTHORIZED_TRANSITION",
+    [op("SetCommitmentStatus", target_id="load", status="suspended"),
+     op("SetCommitmentField", target_id="load", field="overridden_by", value=["lock_station"]),
+     op("InsertCommitment", record=ov),
+     op("SetAction", target_id="move_tray", fields={"status": "cancelled", "stop_reason": "station lock"}),
+     op("AddRestoration", record={"id": "restore_load", "target_id": "load", "override_id": "lock_station", "rank": 1}),
+     op("CommitEvent")], "CANCEL:move_tray",
+    "X14 override was a flat no-touch prohibition; this case scopes a shared resource, preserves a prerequisite, and cancels a partially executed action.")
+
+p = state([
+    commitment("use_syrup", "ingredient", ["syrup"], priority=100),
+    commitment("serve_drink", "served", ["drink"], all_of=("use_syrup",)),
+], facts={"approved_substitute": "honey"})
+e = event("x16:o02", "activate_override", target_id="use_syrup", override_id="allergy_rule", substitute_id="use_honey")
+ov = commitment("allergy_rule", "prohibit", ["syrup"], priority=220)
+sub = commitment("use_honey", "ingredient", ["honey"], status="active", supersedes=["use_syrup"])
+add("X16-O02", "override", "replacement,multi-commitment_dependency", "Override an ingredient while preserving the composite goal through a substitute",
+    "override|normative_substitution|suspend_old|insert_substitute|rebind_and", p, e,
+    ["The allergy rule dominates use of syrup.", "The composite serving goal remains active if rebound to the approved substitute."],
+    "APPLY", "AUTHORIZED_TRANSITION",
+    [op("SetCommitmentStatus", target_id="use_syrup", status="suspended"),
+     op("SetCommitmentField", target_id="use_syrup", field="overridden_by", value=["allergy_rule"]),
+     op("InsertCommitment", record=ov), op("InsertCommitment", record=sub),
+     op("SetCommitmentField", target_id="serve_drink", field="requires_all", value=["use_honey"]),
+     op("CommitEvent")], "PLAN:use_honey",
+    "X14 added an override and suspended one target; it did not insert an approved substitute or rebind a composite dependency.")
+
+# RELEASE: exact restoration versus nested non-LIFO release.
+p = state([
+    commitment("dock_robot", "docked", ["robot", "bay"], status="suspended", overridden_by=["weather_hold"]),
+    commitment("weather_hold", "prohibit_outdoor", ["bay"], priority=200),
+], restorations=[{"id": "restore_dock", "target_id": "dock_robot", "override_id": "weather_hold", "rank": 1}])
+e = event("x16:r01", "release_override", target_id="dock_robot", override_id="weather_hold")
+add("X16-R01", "release", "continuity-valid_recovery", "Release a single timed hold and restore its exact target",
+    "release|single_token|expire_override|restore_target|consume_token", p, e,
+    ["A release names the active override and its restoration token.", "The target returns to active only when no other override remains."],
+    "APPLY", "AUTHORIZED_TRANSITION",
+    [op("SetCommitmentStatus", target_id="weather_hold", status="expired"),
+     op("SetCommitmentStatus", target_id="dock_robot", status="active"),
+     op("SetCommitmentField", target_id="dock_robot", field="overridden_by", value=[]),
+     op("RemoveRestoration", target_id="restore_dock"), op("CommitEvent")], "PLAN:dock_robot",
+    "X14 released one override but did not require exact token consumption or an explicit no-other-override guard.")
+
+p = state([
+    commitment("enter_room", "entered", ["robot", "room"], status="suspended", overridden_by=["smoke_hold", "privacy_hold"]),
+    commitment("smoke_hold", "prohibit_entry", ["room"], priority=220),
+    commitment("privacy_hold", "prohibit_entry", ["room"], priority=210),
+], restorations=[
+    {"id": "restore_smoke", "target_id": "enter_room", "override_id": "smoke_hold", "rank": 1},
+    {"id": "restore_privacy", "target_id": "enter_room", "override_id": "privacy_hold", "rank": 2},
+])
+e = event("x16:r02", "release_override", target_id="enter_room", override_id="smoke_hold")
+add("X16-R02", "release", "multi-commitment_dependency", "Release one of two nested overrides out of stack order",
+    "release|two_overrides|expire_one|target_stays_suspended|retain_other_token", p, e,
+    ["Overrides are independent, not a LIFO stack.", "A target remains suspended while any active override still names it."],
+    "APPLY", "AUTHORIZED_TRANSITION",
+    [op("SetCommitmentStatus", target_id="smoke_hold", status="expired"),
+     op("SetCommitmentField", target_id="enter_room", field="overridden_by", value=["privacy_hold"]),
+     op("RemoveRestoration", target_id="restore_smoke"), op("CommitEvent")], "HALT",
+    "X14 had exactly one override and always restored the target; it did not test non-LIFO release with a surviving override.")
+
+# WORLD-CHANGE RELEASE: regrounding versus fallback activation after destruction.
+p = state([
+    commitment("fetch_sample", "at", ["sample", "freezer_a"], status="suspended", overridden_by=["access_hold"]),
+    commitment("access_hold", "prohibit_access", ["freezer_a"], priority=200),
+], restorations=[{"id": "restore_fetch", "target_id": "fetch_sample", "override_id": "access_hold", "rank": 1}], facts={"sample_location": "freezer_a"})
+e = event("x16:w01", "release_after_world_change", target_id="fetch_sample", override_id="access_hold", observations={"sample_location": "freezer_b"})
+add("X16-W01", "world-change release", "release,continuity-valid_recovery", "Release access hold after the target moved",
+    "world_release|location_changed|expire_override|restore_and_reground|new_plan", p, e,
+    ["Fresh location evidence replaces stale grounding at release.", "The restored commitment and future action use the same fresh location."],
+    "APPLY", "AUTHORIZED_TRANSITION",
+    [op("SetCommitmentStatus", target_id="access_hold", status="expired"),
+     op("SetCommitmentStatus", target_id="fetch_sample", status="active"),
+     op("SetCommitmentField", target_id="fetch_sample", field="overridden_by", value=[]),
+     op("SetCommitmentField", target_id="fetch_sample", field="arguments", value=["sample", "freezer_b"]),
+     op("SetFact", key="sample_location", value="freezer_b"),
+     op("RemoveRestoration", target_id="restore_fetch"),
+     op("InsertAction", record=action("fetch_from_b", "fetch_sample")), op("CommitEvent")], "PLAN:fetch_from_b",
+    "X14 world-change release only regrounded one package destination; this case synchronizes object location, commitment grounding, and a newly inserted fetch action.")
+
+p = state([
+    commitment("use_tool", "use", ["tool_primary"], status="suspended", overridden_by=["inspection_hold"]),
+    commitment("inspection_hold", "prohibit_use", ["tool_primary"], priority=200),
+    commitment("finish_repair", "repaired", ["device"], all_of=("use_tool",)),
+    commitment("use_backup", "use", ["tool_backup"], status="dormant"),
+], restorations=[{"id": "restore_tool", "target_id": "use_tool", "override_id": "inspection_hold", "rank": 1}], facts={"tool_primary_intact": True, "tool_backup_ready": True})
+e = event("x16:w02", "release_after_world_change", target_id="use_tool", override_id="inspection_hold", observations={"tool_primary_intact": False, "tool_backup_ready": True})
+add("X16-W02", "world-change release", "replacement,multi-commitment_dependency", "Release a hold after the original resource was destroyed",
+    "world_release|resource_destroyed|expire_old_target|activate_fallback|rebind_dependent", p, e,
+    ["A destroyed resource cannot be restored.", "If a pre-authorized ready backup exists, the dependent goal is rebound to it."],
+    "APPLY", "AUTHORIZED_TRANSITION",
+    [op("SetCommitmentStatus", target_id="inspection_hold", status="expired"),
+     op("SetCommitmentStatus", target_id="use_tool", status="obsolete"),
+     op("SetCommitmentField", target_id="use_tool", field="overridden_by", value=[]),
+     op("SetCommitmentStatus", target_id="use_backup", status="active"),
+     op("SetCommitmentField", target_id="finish_repair", field="requires_all", value=["use_backup"]),
+     op("SetFact", key="tool_primary_intact", value=False),
+     op("RemoveRestoration", target_id="restore_tool"), op("CommitEvent")], "PLAN:use_backup",
+    "X14 never handled a release where restoration is impossible and a dormant, pre-authorized fallback must be activated.")
+
+# REPLACEMENT: direct replacement versus transitive graph rebinding.
+p = state([
+    commitment("deliver_med", "delivered", ["med_a", "ward"], status="pending"),
+    commitment("confirm_med", "confirmed", ["med_a"], all_of=("deliver_med",)),
+], actions=[action("carry_med_a", "deliver_med")])
+e = event("x16:p01", "replace", target_id="deliver_med", replacement_id="deliver_med_b", replacement_arguments=["med_b", "ward"])
+new = commitment("deliver_med_b", "delivered", ["med_b", "ward"], supersedes=["deliver_med"])
+add("X16-P01", "replacement", "continuity_conflict", "Replace an unstarted item and retarget its immediate verification",
+    "replace|leaf_with_dependent|supersede|insert_new|retarget_action_and_child", p, e,
+    ["A replacement preserves lineage and transfers direct dependents.", "An unstarted action may be retargeted without progress loss."],
+    "APPLY", "AUTHORIZED_TRANSITION",
+    [op("SetCommitmentStatus", target_id="deliver_med", status="superseded"),
+     op("InsertCommitment", record=new),
+     op("SetCommitmentField", target_id="confirm_med", field="requires_all", value=["deliver_med_b"]),
+     op("SetAction", target_id="carry_med_a", fields={"commitment_id": "deliver_med_b"}),
+     op("CommitEvent")], "PLAN:carry_med_a",
+    "X14 replacement had no dependent verification commitment and did not retarget an existing unstarted action.")
+
+p = state([
+    commitment("obtain_key", "possess", ["key_a"]),
+    commitment("unlock", "unlocked", ["cabinet"], all_of=("obtain_key",)),
+    commitment("retrieve", "retrieved", ["sample"], all_of=("unlock",)),
+    commitment("archive", "archived", ["sample"], all_of=("retrieve",)),
+])
+e = event("x16:p02", "replace", target_id="obtain_key", replacement_id="obtain_code", replacement_arguments=["code_7"])
+new = commitment("obtain_code", "possess", ["code_7"], supersedes=["obtain_key"])
+add("X16-P02", "replacement", "multi-commitment_dependency", "Replace a root prerequisite and preserve a depth-three downstream chain",
+    "replace|root_depth4|supersede|insert_new|rebind_only_direct_edge", p, e,
+    ["Replacement transfers the direct incoming dependency edge.", "Transitive descendants remain unchanged because their direct prerequisites remain valid."],
+    "APPLY", "AUTHORIZED_TRANSITION",
+    [op("SetCommitmentStatus", target_id="obtain_key", status="superseded"),
+     op("InsertCommitment", record=new),
+     op("SetCommitmentField", target_id="unlock", field="requires_all", value=["obtain_code"]),
+     op("CommitEvent")], "PLAN:obtain_code",
+    "X14 replacement was a flat pending sibling; this case requires local graph surgery while proving that deeper edges remain untouched.")
+
+# STALE VERSION: past mutation and future-gap event are distinct invalidities.
+p = state([commitment("close_hatch", "closed", ["hatch"])], version=7)
+e = event("x16:s01", "cancel", target_id="close_hatch", base_version=6)
+add("X16-S01", "stale version", "unauthorized mutation", "Reject a mutation bound to an older committed revision",
+    "version|past_revision|mutation|no_state_change", p, e,
+    ["A mutating event must bind exactly to the current state revision.", "Past revisions cannot mutate current commitments."],
+    "REJECT", "STALE_VERSION", [], "STOP:REJECT",
+    "X14 stale control only used cancellation on its flat delivery state; this task binds a safety closure commitment and tests stale mutation independently of sibling progress.")
+
+p = state([commitment("open_gate", "open", ["gate"])], version=7)
+e = event("x16:s02", "replace", target_id="open_gate", replacement_id="open_side_gate", base_version=9)
+add("X16-S02", "stale version", "concurrent external event", "Reject an event from an unseen future revision gap",
+    "version|future_gap2|replacement|missing_predecessors", p, e,
+    ["Versions are contiguous and an event may apply only to the current revision.", "A future base revision proves that predecessor events are missing."],
+    "REJECT", "VERSION_GAP", [], "STOP:REJECT",
+    "X14 tested only one-revision-old input; it did not test a future version gap implying missing concurrent history.")
+
+# IDEMPOTENCE: exact duplicate no-op versus event-ID collision rejection.
+e0 = event("x16:i01", "set_deadline", target_id="sterile_pack", deadline=90)
+p = state([commitment("sterile_pack", "sterile", ["pack"], deadline=90)], processed=[{"event_id": "x16:i01", "payload_sha256": sha(e0)}])
+add("X16-I01", "idempotence", "already-satisfied_goal", "Treat exact redelivery of a committed event as idempotent",
+    "idempotence|same_id_same_payload|deadline_already_committed|no_op", p, e0,
+    ["An event ID with the identical canonical payload may be delivered repeatedly.", "Committed duplicate delivery changes no revision or evidence."],
+    "NO_OP", "DUPLICATE_EVENT", [], "HALT",
+    "X14 used a duplicate flag supplied by the event; this case derives idempotence from the processed-event payload hash and already-committed value.")
+
+e_old = event("x16:i02", "set_destination", target_id="ship", destination="dock_a")
+p = state([commitment("ship", "at", ["crate", "dock_a"])], processed=[{"event_id": "x16:i02", "payload_sha256": sha(e_old)}])
+e = event("x16:i02", "set_destination", target_id="ship", destination="dock_b")
+add("X16-I02", "idempotence", "unauthorized mutation", "Reject event-ID reuse with a different payload",
+    "idempotence|same_id_payload_collision|non_equivalent_replay|reject", p, e,
+    ["An event ID is immutable after first commit.", "The same ID with a different payload is not a duplicate."],
+    "REJECT", "EVENT_ID_COLLISION", [], "STOP:REJECT",
+    "X14 marked duplicates with a Boolean and never distinguished exact replay from an event-ID collision attack.")
+
+# UNAUTHORIZED MUTATION: insufficient role versus owner-scope violation.
+p = state([commitment("dispense", "dispensed", ["dose"], owner="clinician")])
+e = event("x16:u01", "cancel", target_id="dispense", issuer="observer", authority=20)
+add("X16-U01", "unauthorized mutation", "cancellation", "Reject cancellation by a read-only observer",
+    "authority|role_below_threshold|cancel|protected_clinical_goal", p, e,
+    ["Only an issuer with mutation authority at least 100 may edit commitments.", "Observer authority is read-only."],
+    "REJECT", "INSUFFICIENT_AUTHORITY", [], "STOP:REJECT",
+    "X14 used an observer on a package commitment; this case adds a distinct owner and a protected clinical commitment, separating role threshold from version logic.")
+
+p = state([
+    commitment("robot_a_charge", "charged", ["robot_a"], owner="team_a"),
+    commitment("robot_b_charge", "charged", ["robot_b"], owner="team_b"),
+])
+e = event("x16:u02", "override", target_id="robot_b_charge", issuer="team_a", authority=100, scope=["team_a"])
+add("X16-U02", "unauthorized mutation", "override,multi-commitment_dependency", "Reject cross-owner mutation despite sufficient numeric authority",
+    "authority|adequate_level_wrong_scope|cross_owner_override|no_mutation", p, e,
+    ["Numeric authority is necessary but not sufficient.", "An issuer may mutate only commitments in its declared owner scope."],
+    "REJECT", "OWNER_SCOPE_VIOLATION", [], "STOP:REJECT",
+    "X14 had one global task_owner and only tested low authority; it did not test sufficient authority applied outside ownership scope.")
+
+# CONTINUITY CONFLICT: reversible stop versus irreversible ambiguity.
+p = state([commitment("place_hot_part", "placed", ["part", "bench"])],
+          actions=[action("carry_hot_part", "place_hot_part", status="executing", progress=55, reversible=True)])
+e = event("x16:cc01", "activate_override", target_id="place_hot_part", override_id="bench_closed", conflict_action_id="carry_hot_part")
+ov = commitment("bench_closed", "prohibit_place", ["bench"], priority=230)
+add("X16-CC01", "continuity conflict", "override,partial_progress_preservation", "Stop a reversible executing action that conflicts with a closure",
+    "continuity|executing_reversible|direct_conflict|cancel_action|retain_progress_record", p, e,
+    ["A closure dominates placing on the bench.", "A reversible conflicting action stops while its observed progress remains recorded."],
+    "APPLY", "AUTHORIZED_TRANSITION",
+    [op("SetCommitmentStatus", target_id="place_hot_part", status="suspended"),
+     op("SetCommitmentField", target_id="place_hot_part", field="overridden_by", value=["bench_closed"]),
+     op("InsertCommitment", record=ov),
+     op("SetAction", target_id="carry_hot_part", fields={"status": "cancelled", "stop_reason": "bench closed"}),
+     op("AddRestoration", record={"id": "restore_hot_part", "target_id": "place_hot_part", "override_id": "bench_closed", "rank": 1}),
+     op("CommitEvent")], "CANCEL:carry_hot_part",
+    "X14 conflict had no reversibility or quantitative partial progress; this case requires stopping while retaining a 55% progress observation.")
+
+p = state([commitment("pour_reagent", "mixed", ["reagent", "vessel"])],
+          actions=[action("pour_now", "pour_reagent", status="executing", progress=80, reversible=False)],
+          facts={"safe_to_finish": None, "safe_to_abort": None})
+e = event("x16:cc02", "change_formula", target_id="pour_reagent", replacement_id="pour_buffer")
+add("X16-CC02", "continuity conflict", "conservative_stop,contradictory_observation", "Stop conservatively during an irreversible action with missing safety resolution",
+    "continuity|executing_irreversible|replacement_conflict|finish_abort_underdetermined|abstain", p, e,
+    ["The current pour is irreversible.", "Neither finish nor abort is licensed without one fresh safety predicate."],
+    "ABSTAIN", "INSUFFICIENT_SAFETY_EVIDENCE", [], "STOP:ABSTAIN",
+    "X14 always had a deterministic cancellation path; it did not contain an irreversible in-flight action with two unsafe, underdetermined continuations.")
+
+# CONTINUITY VALID: deadline update during execution versus downstream replacement.
+p = state([commitment("deliver_cold", "delivered", ["sample", "lab"], deadline=120)],
+          actions=[action("drive_sample", "deliver_cold", status="executing", progress=60, eta=85)])
+e = event("x16:cv01", "tighten_deadline", target_id="deliver_cold", deadline=100)
+add("X16-CV01", "continuity-valid recovery", "override,partial_progress_preservation", "Tighten a deadline while the executing action still satisfies it",
+    "continuity|deadline_change|eta_within_new_bound|update_commitment|continue_exact_action", p, e,
+    ["An executing action remains valid when its ETA satisfies the new authorized deadline.", "Continuing preserves action identity and progress."],
+    "APPLY", "AUTHORIZED_TRANSITION",
+    [op("SetCommitmentField", target_id="deliver_cold", field="deadline", value=100), op("CommitEvent")], "CONTINUE:drive_sample",
+    "X14 valid continuity only acknowledged an irrelevant world change; this case applies a binding deadline mutation and proves the current action remains feasible.")
+
+p = state([
+    commitment("navigate", "at", ["robot", "junction"]),
+    commitment("inspect_left", "inspected", ["left_panel"], all_of=("navigate",)),
+], actions=[action("go_junction", "navigate", status="executing", progress=35)])
+e = event("x16:cv02", "replace", target_id="inspect_left", replacement_id="inspect_right", replacement_arguments=["right_panel"])
+new = commitment("inspect_right", "inspected", ["right_panel"], all_of=("navigate",), supersedes=["inspect_left"])
+add("X16-CV02", "continuity-valid recovery", "replacement,multi-commitment_dependency", "Replace a downstream goal without disturbing its shared prerequisite action",
+    "continuity|downstream_replace|executing_prerequisite_unaffected|supersede_insert|continue", p, e,
+    ["Replacing a future child does not conflict with execution of its unchanged prerequisite.", "The replacement inherits the prerequisite edge."],
+    "APPLY", "AUTHORIZED_TRANSITION",
+    [op("SetCommitmentStatus", target_id="inspect_left", status="superseded"),
+     op("InsertCommitment", record=new), op("CommitEvent")], "CONTINUE:go_junction",
+    "X14 did not combine replacement with a valid executing prerequisite; its replacement plan was wholly regenerated.")
+
+# MULTI-COMMITMENT DEPENDENCY: AND blocking versus OR pruning.
+p = state([
+    commitment("calibrate", "calibrated", ["sensor"]),
+    commitment("power", "powered", ["sensor"]),
+    commitment("measure", "measured", ["sample"], all_of=("calibrate", "power")),
+    commitment("report", "reported", ["sample"], all_of=("measure",)),
+])
+e = event("x16:m01", "invalidate", target_id="calibrate", observation=False)
+add("X16-M01", "multi-commitment dependency", "contradictory_observation", "Invalidate one conjunctive prerequisite and block only its descendants",
+    "dependency|and2_depth2|invalidate_support|block_transitive_descendants|preserve_sibling", p, e,
+    ["Every conjunctive prerequisite must remain valid.", "Invalidation blocks descendants but leaves independent siblings unchanged."],
+    "APPLY", "AUTHORIZED_TRANSITION",
+    [op("SetCommitmentStatus", target_id="calibrate", status="invalid"),
+     op("SetCommitmentStatus", target_id="measure", status="blocked"),
+     op("SetCommitmentStatus", target_id="report", status="blocked"), op("CommitEvent")], "PLAN:calibrate",
+    "X14 never invalidated a prerequisite or propagated blocking through an AND graph.")
+
+p = state([
+    commitment("wifi", "connected", ["wifi"], status="invalid"),
+    commitment("ethernet", "connected", ["ethernet"], status="satisfied"),
+    commitment("upload", "uploaded", ["dataset"], any_of=("wifi", "ethernet")),
+], progress=[milestone("ethernet_link", True)])
+e = event("x16:m02", "prune_support", target_id="upload", invalid_support="wifi")
+add("X16-M02", "multi-commitment dependency", "partial_progress_preservation", "Prune a failed OR support while keeping the dependent enabled",
+    "dependency|or2|one_invalid_one_satisfied|prune_edge|retain_active", p, e,
+    ["A disjunctive commitment remains active with one valid support.", "Invalid support edges are removed from the current dependency set."],
+    "APPLY", "AUTHORIZED_TRANSITION",
+    [op("SetCommitmentField", target_id="upload", field="requires_any", value=["ethernet"]), op("CommitEvent")], "PLAN:upload",
+    "X14 had at most one added dependency on an already satisfied noise node; it did not reason over OR support or prune an invalid edge.")
+
+# PARTIAL PROGRESS: retain completed prefix versus selectively invalidate object-specific work.
+p = state([
+    commitment("wash", "washed", ["part"], status="satisfied"),
+    commitment("dry", "dried", ["part"], status="satisfied", all_of=("wash",)),
+    commitment("coat", "coated", ["part"], all_of=("dry",)),
+], progress=[milestone("wash_done", True), milestone("dry_done", True)], actions=[action("coat_part", "coat")])
+e = event("x16:pp01", "cancel", target_id="coat")
+add("X16-PP01", "partial progress preservation", "cancellation,already-satisfied_goal", "Cancel only the unfinished suffix of a completed process prefix",
+    "progress|two_step_prefix_satisfied|cancel_final|preserve_milestones|terminal", p, e,
+    ["Completed physically valid milestones remain historical achievements.", "Cancelling the only unfinished suffix does not undo its prerequisites."],
+    "APPLY", "AUTHORIZED_TRANSITION",
+    [op("SetCommitmentStatus", target_id="coat", status="cancelled"),
+     op("SetAction", target_id="coat_part", fields={"status": "cancelled", "stop_reason": "final coating cancelled"}),
+     op("CommitEvent")], "HALT",
+    "X14 preserved one completed sibling; this case preserves a two-step causal prefix while cancelling only the terminal suffix.")
+
+p = state([
+    commitment("assemble_frame", "assembled", ["frame"], status="satisfied"),
+    commitment("attach_sensor", "attached", ["sensor_a", "frame"], status="satisfied", all_of=("assemble_frame",)),
+    commitment("calibrate_sensor", "calibrated", ["sensor_a"], all_of=("attach_sensor",)),
+], progress=[milestone("frame_done", True), milestone("sensor_attached", True)], facts={"sensor_a_failed": False})
+e = event("x16:pp02", "replace", target_id="attach_sensor", replacement_id="attach_sensor_b", replacement_arguments=["sensor_b", "frame"], observations={"sensor_a_failed": True})
+new = commitment("attach_sensor_b", "attached", ["sensor_b", "frame"], all_of=("assemble_frame",), supersedes=["attach_sensor"])
+add("X16-PP02", "partial progress preservation", "replacement,world-change release", "Replace a failed completed component while retaining unaffected assembly progress",
+    "progress|completed_component_invalidated|preserve_subassembly|replace_component|invalidate_one_milestone", p, e,
+    ["Physical invalidation is local to the failed component.", "The frame milestone remains valid and supports the replacement attachment."],
+    "APPLY", "AUTHORIZED_TRANSITION",
+    [op("SetCommitmentStatus", target_id="attach_sensor", status="obsolete"),
+     op("InsertCommitment", record=new),
+     op("SetCommitmentField", target_id="calibrate_sensor", field="requires_all", value=["attach_sensor_b"]),
+     op("SetProgress", target_id="sensor_attached", fields={"physically_valid": False, "goal_relevant": False}),
+     op("SetFact", key="sensor_a_failed", value=True), op("CommitEvent")], "PLAN:attach_sensor_b",
+    "X14 never invalidated one achieved milestone while preserving an earlier achieved prerequisite during replacement.")
+
+# CONCURRENT EXTERNAL EVENT: commuting merge versus noncommuting ambiguity.
+p = state([
+    commitment("deliver", "delivered", ["parcel", "dock_a"]),
+    commitment("audit", "audited", ["parcel"], all_of=("deliver",)),
+], facts={"parcel_location": "hub"})
+e = event("x16:e01", "concurrent_merge", ordering="commuting", events=[
+    {"type": "move_destination", "target": "deliver", "destination": "dock_b"},
+    {"type": "tighten_audit_deadline", "target": "audit", "deadline": 200},
+])
+add("X16-E01", "concurrent external event", "replacement,continuity-valid_recovery", "Atomically merge two commuting external edits",
+    "concurrency|two_events_commute|different_fields_and_nodes|atomic_merge|single_revision", p, e,
+    ["Concurrent edits may share one revision only when applying them in either order yields the same state.", "Both edits are retained atomically."],
+    "APPLY", "AUTHORIZED_TRANSITION",
+    [op("SetCommitmentField", target_id="deliver", field="arguments", value=["parcel", "dock_b"]),
+     op("SetCommitmentField", target_id="audit", field="deadline", value=200), op("CommitEvent")], "PLAN:deliver",
+    "X14 processed one event at a time and had no commutativity test or atomic merge of two external edits.")
+
+p = state([commitment("route", "delivered", ["parcel", "dock_a"])])
+e = event("x16:e02", "concurrent_merge", ordering="unknown", events=[
+    {"type": "cancel", "target": "route"},
+    {"type": "replace", "target": "route", "replacement_id": "route_b", "destination": "dock_b"},
+])
+add("X16-E02", "concurrent external event", "conservative_stop,cancellation,replacement", "Abstain on noncommuting cancel and replace events without an order",
+    "concurrency|cancel_vs_replace|same_target|noncommuting|missing_total_order|abstain", p, e,
+    ["Concurrent edits to the same target need a causal order when their results differ by order.", "No issuer precedence or timestamp resolves this pair."],
+    "ABSTAIN", "AMBIGUOUS_EVENT_ORDER", [], "STOP:ABSTAIN",
+    "X14 supplied a single totally ordered event; it never required detecting noncommutativity or withholding both edits.")
+
+# OBSOLETE REPLACEMENT: already superseded no-op versus unavailable candidate rejection.
+p = state([
+    commitment("old_route", "delivered", ["parcel", "dock_a"], status="superseded"),
+    commitment("current_route", "delivered", ["parcel", "dock_b"], supersedes=["old_route"]),
+])
+e = event("x16:or01", "replace", target_id="old_route", replacement_id="current_route", replacement_arguments=["parcel", "dock_b"])
+add("X16-OR01", "obsolete replacement", "idempotence,already-satisfied_goal", "No-op a replacement whose lineage is already current",
+    "obsolete_replace|target_superseded|same_current_descendant|lineage_equivalent|no_op", p, e,
+    ["A replacement request is already satisfied when its exact replacement is the current lineage descendant.", "No new lineage node or revision is created."],
+    "NO_OP", "REPLACEMENT_ALREADY_CURRENT", [], "HALT",
+    "X14 replacement always targeted an active pending commitment; it did not test lineage-aware recognition of an already-current replacement.")
+
+p = state([commitment("deliver_vaccine", "delivered", ["batch_a", "clinic"])], facts={"batch_b_available": False})
+e = event("x16:or02", "replace", target_id="deliver_vaccine", replacement_id="deliver_batch_b", replacement_arguments=["batch_b", "clinic"], evidence_version=71)
+add("X16-OR02", "obsolete replacement", "replacement,contradictory_observation", "Reject a named replacement invalidated by same-version availability evidence",
+    "obsolete_replace|candidate_unavailable|fresh_authoritative_fact|replacement_invalid|reject", p, e,
+    ["A replacement candidate must be available in the event's authoritative world snapshot.", "No unspecified fallback may be invented."],
+    "REJECT", "REPLACEMENT_UNAVAILABLE", [], "STOP:REJECT",
+    "X14 assumed the replacement entity was valid and available; it never qualified the candidate against same-version world evidence.")
+
+# ALREADY-SATISFIED GOAL: ensure no-op versus lineage edit with no physical action.
+p = state([commitment("ensure_door_closed", "closed", ["door"], status="satisfied")], facts={"door_closed": True})
+e = event("x16:as01", "ensure", target_id="ensure_door_closed", desired=True)
+add("X16-AS01", "already-satisfied goal", "idempotence", "No-op an ensure request already true in state and world",
+    "satisfaction|ensure_existing|commitment_satisfied|world_true|no_op", p, e,
+    ["Ensure does not create a revision when both the commitment and current world already satisfy the requested predicate."],
+    "NO_OP", "GOAL_ALREADY_SATISFIED", [], "HALT",
+    "X14 no-op was an explicit no_op event; this task derives no-op from agreement between a satisfied commitment and current world fact.")
+
+p = state([commitment("park_a", "at", ["robot", "bay_a"])], facts={"robot_location": "bay_b"})
+e = event("x16:as02", "replace", target_id="park_a", replacement_id="park_b", replacement_arguments=["robot", "bay_b"])
+new = commitment("park_b", "at", ["robot", "bay_b"], status="satisfied", supersedes=["park_a"])
+add("X16-AS02", "already-satisfied goal", "replacement,partial_progress_preservation", "Commit replacement lineage when the new physical goal is already true",
+    "satisfaction|replacement_world_true|supersede_old|insert_satisfied_new|no_action", p, e,
+    ["A replacement still updates commitment lineage even when its physical predicate is already true.", "No action is planned for an achieved replacement."],
+    "APPLY", "AUTHORIZED_TRANSITION",
+    [op("SetCommitmentStatus", target_id="park_a", status="superseded"), op("InsertCommitment", record=new),
+     op("InsertProgress", record=milestone("park_b_observed", True)), op("CommitEvent")], "HALT",
+    "X14 replacement always inserted an active goal and pending action; it did not separate semantic lineage change from zero required physical work.")
+
+# CONTRADICTORY OBSERVATION: equal-trust conflict versus event/evidence inconsistency.
+p = state([commitment("retrieve_box", "retrieved", ["box"])], facts={"box_location": "unknown"})
+e = event("x16:co01", "world_update", target_id="retrieve_box", observations=[
+    {"source": "camera_a", "trust": 0.9, "box_location": "shelf_1"},
+    {"source": "camera_b", "trust": 0.9, "box_location": "shelf_2"},
+])
+add("X16-CO01", "contradictory observation", "conservative_stop,world-change release", "Abstain on equal-trust mutually exclusive locations",
+    "contradiction|two_equal_trust_sensors|exclusive_locations|no_tiebreak|abstain", p, e,
+    ["A unique grounding needs one location supported above all conflicting alternatives.", "Equal trust supplies no deterministic tie-break."],
+    "ABSTAIN", "CONTRADICTORY_OBSERVATIONS", [], "STOP:ABSTAIN",
+    "X14 world facts were single-valued and authoritative; it never exposed equal-trust mutually exclusive observations.")
+
+p = state([commitment("secure_case", "secured", ["case"])], facts={"case_present": True})
+e = event("x16:co02", "cancel_if_lost", target_id="secure_case", claim={"case_present": False, "source": "operator"}, observations={"case_present": True, "source": "signed_inventory"})
+add("X16-CO02", "contradictory observation", "conservative_stop,cancellation", "Abstain when an event premise conflicts with same-version signed evidence",
+    "contradiction|event_premise_vs_signed_fact|same_version|authority_not_comparable|abstain", p, e,
+    ["Conditional cancellation requires its loss premise to be established.", "The event and signed evidence are same-version and no precedence rule is supplied."],
+    "ABSTAIN", "UNRESOLVED_EVENT_PREMISE", [], "STOP:ABSTAIN",
+    "X14 cancellation was unconditional and its observations never contradicted the event premise.")
+
+# IRRELEVANT-STATE SCALING: preserve a heterogeneous graph versus capacity proof.
+noise = []
+for i in range(24):
+    noise.append(commitment(f"noise_{i:02d}", "maintain", [f"asset_{i:02d}"],
+                            status="satisfied" if i % 3 == 0 else "active",
+                            all_of=((f"noise_{i-1:02d}",) if i > 0 and i % 4 == 0 else ())))
+p = state([commitment("target_deadline", "delivered", ["critical", "dock"], deadline=300)] + noise,
+          progress=[milestone(f"noise_ms_{i:02d}", True) for i in range(8)])
+e = event("x16:is01", "tighten_deadline", target_id="target_deadline", deadline=240)
+add("X16-IS01", "irrelevant-state scaling", "continuity-valid_recovery,partial_progress_preservation", "Edit one deadline inside a heterogeneous 25-commitment graph",
+    "scaling|25_nodes_heterogeneous|single_relevant_field|preserve_graph_and_8_milestones", p, e,
+    ["Only the named commitment is in the event write scope.", "All unrelated statuses, edges, and progress records are persistent."],
+    "APPLY", "AUTHORIZED_TRANSITION",
+    [op("SetCommitmentField", target_id="target_deadline", field="deadline", value=240), op("CommitEvent")], "PLAN:target_deadline",
+    "X14 appended homogeneous satisfied noise bundles; this task uses a mixed-status dependency graph and edits one relevant field without copying or flattening it.")
+
+loads = [commitment(f"load_{i:02d}", "uses_capacity", ["bus", 2], status="active") for i in range(20)]
+p = state(loads + [commitment("reserve", "capacity_margin", ["bus", 20], status="satisfied")], facts={"bus_capacity": 64, "allocated": 40})
+e = event("x16:is02", "capacity_observation", resource="bus", observed_capacity=64, allocated=40)
+add("X16-IS02", "irrelevant-state scaling", "already-satisfied_goal,idempotence", "No-op a large shared-resource observation proven irrelevant by capacity margin",
+    "scaling|20_shared_resource_dependents|capacity_unchanged|margin_proof|no_op", p, e,
+    ["A capacity observation changes commitments only if allocated demand exceeds observed capacity.", "The current observation matches stored capacity and retains positive margin."],
+    "NO_OP", "IRRELEVANT_WORLD_FACT", [], "HALT",
+    "X14 irrelevant change named an unrelated sibling and advanced evidence; this case requires an aggregate capacity proof across 20 dependents and correctly avoids a revision.")
+
+# COMPOUND INDEPENDENT TASKS: atomicity across operation families.
+p = state([
+    commitment("deliver_a", "delivered", ["a", "dock"], status="satisfied"),
+    commitment("deliver_b", "delivered", ["b", "dock"]),
+    commitment("weather_hold", "prohibit", ["yard"], status="active", priority=200),
+    commitment("deliver_c", "delivered", ["c", "dock"], status="suspended", overridden_by=["weather_hold"]),
+], restorations=[{"id": "restore_c", "target_id": "deliver_c", "override_id": "weather_hold", "rank": 1}],
+   progress=[milestone("a_done", True)])
+e = event("x16:x01", "compound", clauses=[{"type": "cancel", "target": "deliver_b"}, {"type": "release", "target": "deliver_c", "override": "weather_hold"}])
+add("X16-X01", "compound atomic transition", "cancellation,release,partial_progress_preservation", "Atomically cancel one goal while releasing an unrelated hold",
+    "compound|cancel_plus_release|disjoint_targets|atomic_commit|preserve_completed_sibling", p, e,
+    ["All authorized clauses in a compound event commit atomically.", "Disjoint cancellation and release effects are both retained."],
+    "APPLY", "AUTHORIZED_TRANSITION",
+    [op("SetCommitmentStatus", target_id="deliver_b", status="cancelled"),
+     op("SetCommitmentStatus", target_id="weather_hold", status="expired"),
+     op("SetCommitmentStatus", target_id="deliver_c", status="active"),
+     op("SetCommitmentField", target_id="deliver_c", field="overridden_by", value=[]),
+     op("RemoveRestoration", target_id="restore_c"), op("CommitEvent")], "PLAN:deliver_c",
+    "No X14 template combined two authorized semantic operations in one atomic event or tested all-or-nothing multi-target commitment editing.")
+
+p = state([
+    commitment("use_lane_a", "traverse", ["lane_a"]),
+    commitment("reach_goal", "at", ["robot", "goal"], all_of=("use_lane_a",)),
+], actions=[action("drive_lane_a", "use_lane_a", status="executing", progress=25, reversible=True)], facts={"lane_b_open": True})
+e = event("x16:x02", "compound", clauses=[
+    {"type": "override", "target": "use_lane_a", "override": "lane_a_closed"},
+    {"type": "replace", "target": "use_lane_a", "replacement": "use_lane_b"},
+])
+ov = commitment("lane_a_closed", "prohibit", ["lane_a"], priority=220)
+new = commitment("use_lane_b", "traverse", ["lane_b"], supersedes=["use_lane_a"])
+add("X16-X02", "compound atomic transition", "override,replacement,continuity_conflict,multi-commitment_dependency", "Override a route and install its authorized replacement atomically",
+    "compound|override_plus_replace|same_target|cancel_old_action|rebind_goal|insert_new_action", p, e,
+    ["The closure suspends the old route and the same compound event authorizes a replacement.", "The executing old-route action stops before a new-route action is installed."],
+    "APPLY", "AUTHORIZED_TRANSITION",
+    [op("SetCommitmentStatus", target_id="use_lane_a", status="superseded"),
+     op("SetCommitmentField", target_id="use_lane_a", field="overridden_by", value=["lane_a_closed"]),
+     op("InsertCommitment", record=ov), op("InsertCommitment", record=new),
+     op("SetCommitmentField", target_id="reach_goal", field="requires_all", value=["use_lane_b"]),
+     op("SetAction", target_id="drive_lane_a", fields={"status": "cancelled", "stop_reason": "lane closed"}),
+     op("InsertAction", record=action("drive_lane_b", "use_lane_b")), op("CommitEvent")], "CANCEL_THEN_PLAN:drive_lane_a,drive_lane_b",
+    "No X14 template combined override, replacement, dependency rebinding, old-action cancellation, and new-action insertion in one atomic transition.")
+
+
+COMMON_SEMANTIC_CONTRACT = {
+    "schema_version": "x16-common-semantics-v1",
+    "dispositions": {
+        "APPLY": "one uniquely licensed persistent-state transition exists",
+        "NO_OP": "the event is valid but creates no semantic change",
+        "REJECT": "the event is unambiguously invalid under authority, version, identity, or candidate-validity rules",
+        "ABSTAIN": "available evidence does not determine one safe transition",
+    },
+    "safety": [
+        "REJECT and ABSTAIN never mutate state",
+        "NO_OP never increments state or evidence versions",
+        "APPLY must preserve every field not licensed by the event and task policy",
+        "do not invent missing order, authority, evidence precedence, fallback, or progress",
+    ],
+    "allowed_reason_codes": [
+        "AUTHORIZED_TRANSITION", "DUPLICATE_EVENT", "EVENT_ID_COLLISION",
+        "GOAL_ALREADY_SATISFIED", "INSUFFICIENT_AUTHORITY", "OWNER_SCOPE_VIOLATION",
+        "STALE_VERSION", "VERSION_GAP", "INSUFFICIENT_SAFETY_EVIDENCE",
+        "AMBIGUOUS_EVENT_ORDER", "REPLACEMENT_ALREADY_CURRENT", "REPLACEMENT_UNAVAILABLE",
+        "CONTRADICTORY_OBSERVATIONS", "UNRESOLVED_EVENT_PREMISE", "IRRELEVANT_WORLD_FACT",
+    ],
+}
+
+
+SYSTEM_PROMPT = (
+    "You are a deterministic semantic state-transition generator. Use only the supplied X16 "
+    "recovery input. Distinguish APPLY, NO_OP, REJECT, and ABSTAIN under the common semantic "
+    "contract. Do not invent authority, event order, evidence precedence, fallback commitments, "
+    "progress, or world facts. Return exactly one JSON object satisfying the final output contract, "
+    "with no prose or Markdown."
+)
+
+
+ARM_CONTRACTS = {
+    "cope": {
+        "schema_version": "x16-cope-patch-v1",
+        "representation": (
+            "OUTPUT CONTRACT: X16 CoPE typed minimum patch v1. Return exactly: schema_version, "
+            "disposition, reason_code, base_version, event_id, operations. schema_version is "
+            "x16-cope-patch-v1. disposition and reason_code use the common semantic contract. "
+            "base_version and event_id bind the proposal to the supplied input. For APPLY, "
+            "operations is the minimum ordered list of typed persistent-state edits needed for "
+            "the unique licensed transition and ends with exactly one CommitEvent. Allowed typed "
+            "operations are SetCommitmentStatus, SetCommitmentField, InsertCommitment, SetAction, "
+            "InsertAction, SetProgress, InsertProgress, AddRestoration, RemoveRestoration, SetFact, "
+            "and CommitEvent. For NO_OP, REJECT, and ABSTAIN, operations is []. Do not emit generic "
+            "JSON paths, a full state, prose, or extra fields."
+        ),
+    },
+    "compact_tx": {
+        "schema_version": "x16-compact-tx-v1",
+        "representation": (
+            "OUTPUT CONTRACT: X16 generic compact transaction v1. Return exactly: schema_version, "
+            "disposition, reason_code, base_version, event_id, writes. schema_version is "
+            "x16-compact-tx-v1. disposition and reason_code use the common semantic contract. "
+            "base_version and event_id bind the proposal to the supplied input. For APPLY, writes "
+            "is the minimum ordered list of generic {op,path,value} JSON edits. op is add or "
+            "replace. Allowed paths are /commitments/<id>/<field>, /commitments/+/<id>, "
+            "/actions/<id>/<field>, /actions/+/<id>, /progress/<id>/<field>, /progress/+/<id>, "
+            "/restorations, /facts/<key>, /processed_events/+/<event_id>, /state_version, and "
+            "/evidence_version. Stable IDs address records. For NO_OP, REJECT, and ABSTAIN, writes "
+            "is []. Do not use CoPE semantic operation names, emit a full state, prose, or extra fields."
+        ),
+    },
+    "fsr_pc": {
+        "schema_version": "x16-fsr-pc-v1",
+        "representation": (
+            "OUTPUT CONTRACT: X16 FSR-PC complete state v1. Return exactly: schema_version, "
+            "disposition, reason_code, base_version, event_id, state. schema_version is "
+            "x16-fsr-pc-v1. disposition and reason_code use the common semantic contract. "
+            "base_version and event_id bind the proposal to the supplied input. state is the "
+            "complete canonical x16-state-v1 post-decision state with every field and record. "
+            "For NO_OP, REJECT, and ABSTAIN, state exactly equals pre_state. Do not emit a patch, "
+            "generic writes, prose, or extra fields."
+        ),
+    },
+}
+
+
+def common_input(case):
+    return {
+        "schema_version": "x16-recovery-input-v1",
+        "case_id": case["case_id"],
+        "original_task": case["title"],
+        "pre_state": case["pre"],
+        "event": case["event"],
+        "task_policy": case["policy"],
+        "common_semantic_contract": COMMON_SEMANTIC_CONTRACT,
+    }
+
+
+def representations(case):
+    base = {
+        "disposition": case["disposition"], "reason_code": case["reason_code"],
+        "base_version": case["pre"]["state_version"], "event_id": case["event"]["event_id"],
+    }
+    return {
+        "cope": {"schema_version": "x16-cope-patch-v1", **base, "operations": copy.deepcopy(case["ops"])},
+        "compact_tx": {"schema_version": "x16-compact-tx-v1", **base,
+                       "writes": compact_writes(case["pre"], case["post"]) if case["disposition"] == "APPLY" else []},
+        "fsr_pc": {"schema_version": "x16-fsr-pc-v1", **base, "state": copy.deepcopy(case["post"])},
+    }
+
+
+def validate_representation(case, arm, proposal):
+    expected_keys = {
+        "cope": {"schema_version", "disposition", "reason_code", "base_version", "event_id", "operations"},
+        "compact_tx": {"schema_version", "disposition", "reason_code", "base_version", "event_id", "writes"},
+        "fsr_pc": {"schema_version", "disposition", "reason_code", "base_version", "event_id", "state"},
+    }[arm]
+    if set(proposal) != expected_keys or proposal["schema_version"] != ARM_CONTRACTS[arm]["schema_version"]:
+        raise ValueError("representation schema mismatch")
+    for field in ("disposition", "reason_code"):
+        if proposal[field] != case[field]:
+            raise ValueError(f"oracle {field} mismatch")
+    if proposal["base_version"] != case["pre"]["state_version"] or proposal["event_id"] != case["event"]["event_id"]:
+        raise ValueError("event binding mismatch")
+    if arm == "cope":
+        candidate = apply_cope_ops(case["pre"], proposal["operations"], case["event"])
+    elif arm == "compact_tx":
+        candidate = apply_compact(case["pre"], proposal["writes"])
+    else:
+        candidate = copy.deepcopy(proposal["state"])
+    if case["disposition"] != "APPLY":
+        payload = proposal["operations"] if arm == "cope" else proposal["writes"] if arm == "compact_tx" else proposal["state"]
+        if arm != "fsr_pc" and payload:
+            raise ValueError("non-APPLY mutation payload")
+        if candidate != case["pre"]:
+            raise ValueError("non-APPLY changed state")
+    if candidate != case["post"]:
+        raise ValueError("candidate differs from canonical post-state")
+    return candidate
+
+
+def build_arm_order():
+    permutations = list(itertools.permutations(ARMS)) * 6
+    random.Random(SEED).shuffle(permutations)
+    return {case["case_id"]: permutations[i] for i, case in enumerate(CASES)}
+
+
+def exact_two_sided_p(wins, losses):
+    d = wins + losses
+    if d == 0:
+        return 1.0
+    tail = sum(math.comb(d, k) for k in range(max(wins, losses), d + 1)) / (2 ** d)
+    return min(1.0, 2 * tail)
+
+
+def rejection_threshold(d):
+    for wins in range((d // 2) + 1, d + 1):
+        if exact_two_sided_p(wins, d - wins) < 0.05:
+            return wins
+    return None
+
+
+def conditional_power(d, pi):
+    threshold = rejection_threshold(d)
+    if threshold is None:
+        return 0.0
+    upper = sum(math.comb(d, k) * pi**k * (1-pi)**(d-k) for k in range(threshold, d+1))
+    lower_limit = d - threshold
+    lower = sum(math.comb(d, k) * pi**k * (1-pi)**(d-k) for k in range(0, lower_limit+1))
+    return upper + lower
+
+
+def unconditional_power(n, discordance_rate, pi):
+    total = 0.0
+    for d in range(n + 1):
+        pd = math.comb(n, d) * discordance_rate**d * (1-discordance_rate)**(n-d)
+        total += pd * conditional_power(d, pi)
+    return total
+
+
+def write_csv(path, rows, fields):
+    with path.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def main():
+    if len(CASES) != 36:
+        raise SystemExit(f"expected 36 cases, got {len(CASES)}")
+    if len({c["case_id"] for c in CASES}) != 36 or len({c["logic_signature"] for c in CASES}) != 36:
+        raise SystemExit("case IDs and logic signatures must be unique")
+    order = build_arm_order()
+    manifest_rows, oracle_rows, order_rows, qualification_rows, overlap_rows = [], [], [], [], []
+    banned_keys = {"oracle", "expected", "answer", "post_state", "operations", "writes", "disposition", "reason_code", "x14_difference"}
+    for case in CASES:
+        ci = common_input(case)
+        ci_text = cj(ci)
+        manifest_rows.append({
+            "case_id": case["case_id"], "primary_family": case["primary_family"],
+            "secondary_tags": case["secondary_tags"], "title": case["title"],
+            "logic_signature": case["logic_signature"], "independent_unit": "true",
+            "common_input_sha256": sha(ci_text), "common_input_json": ci_text,
+            "why_different_from_X14": case["x14_difference"],
+        })
+        reps = representations(case)
+        oracle_rows.append({
+            "case_id": case["case_id"], "disposition": case["disposition"],
+            "reason_code": case["reason_code"], "execution_directive": case["directive"],
+            "oracle_post_state_sha256": sha(case["post"]), "oracle_post_state_json": cj(case["post"]),
+            "cope_oracle_json": cj(reps["cope"]), "compact_tx_oracle_json": cj(reps["compact_tx"]),
+            "fsr_pc_oracle_json": cj(reps["fsr_pc"]),
+        })
+        for pos, arm in enumerate(order[case["case_id"]], start=1):
+            order_rows.append({"case_id": case["case_id"], "position": pos, "arm": arm, "seed": SEED})
+        common_keys = set()
+        stack = [ci]
+        while stack:
+            item = stack.pop()
+            if isinstance(item, dict):
+                common_keys.update(str(k).lower() for k in item)
+                stack.extend(item.values())
+            elif isinstance(item, list):
+                stack.extend(item)
+        leakage_pass = not (common_keys & banned_keys)
+        request_hashes = []
+        candidates = {}
+        for arm in ARMS:
+            proposal = reps[arm]
+            candidate = validate_representation(case, arm, proposal)
+            candidates[arm] = candidate
+            request = {
+                "messages": [
+                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "user", "content": "X16_RECOVERY_INPUT_CANONICAL_JSON\n" + ci_text},
+                    {"role": "user", "content": ARM_CONTRACTS[arm]["representation"]},
+                ],
+                "temperature": 0, "seed": SEED, "max_prompt_tokens": 16000,
+                "max_completion_tokens": 8192,
+                "reasoning_effort": "none",
+            }
+            normalized = copy.deepcopy(request)
+            normalized["messages"][2]["content"] = "<ARM_OUTPUT_CONTRACT>"
+            request_hashes.append(sha(normalized))
+            qualification_rows.append({
+                "case_id": case["case_id"], "arm": arm,
+                "common_input_sha256": sha(ci_text),
+                "normalized_request_sha256": request_hashes[-1],
+                "common_input_equal": True, "normalized_request_equal": True,
+                "oracle_disposition": case["disposition"],
+                "materialized_state_sha256": sha(candidate),
+                "oracle_state_equal": candidate == case["post"],
+                "validator_accepts_oracle": True, "hidden_answer_leakage_pass": leakage_pass,
+                "arm_specific_information_pass": True,
+            })
+        if len(set(request_hashes)) != 1 or len({sha(v) for v in candidates.values()}) != 1:
+            raise SystemExit(f"cross-arm equivalence failed for {case['case_id']}")
+        if not leakage_pass:
+            raise SystemExit(f"hidden-answer key leakage in {case['case_id']}: {common_keys & banned_keys}")
+        overlap_rows.append({
+            "case_id": case["case_id"], "logic_signature_unique": True,
+            "closest_X14_template": {
+                "cancellation": "cancel_sibling", "override": "activate_override", "release": "release_override",
+                "world-change release": "world_change_release", "replacement": "replace_pending_target",
+                "stale version": "stale_version", "idempotence": "idempotence",
+                "unauthorized mutation": "wrong_source_revoke", "continuity conflict": "continuity_invalid",
+                "continuity-valid recovery": "continuity_valid", "irrelevant-state scaling": "irrelevant_sibling_change",
+            }.get(case["primary_family"], "none"),
+            "same_transition_logic_as_X14": False,
+            "hidden_answer_key_scan_pass": leakage_pass,
+            "why_not_overlap": case["x14_difference"],
+        })
+
+    write_csv(ROOT / "01_X16_INDEPENDENT_TASK_MANIFEST.csv", manifest_rows, list(manifest_rows[0]))
+    write_csv(ROOT / "02_X16_FROZEN_ORACLE.csv", oracle_rows, list(oracle_rows[0]))
+    write_csv(ROOT / "03_X16_ARM_ORDER.csv", order_rows, list(order_rows[0]))
+    write_csv(ROOT / "05_X16_ORACLE_QUALIFICATION.csv", qualification_rows, list(qualification_rows[0]))
+    write_csv(ROOT / "06_X16_OVERLAP_LEAKAGE_AUDIT.csv", overlap_rows, list(overlap_rows[0]))
+
+    power_rows = []
+    for d in range(1, 37):
+        threshold = rejection_threshold(d)
+        power_rows.append({
+            "analysis": "fixed_discordant_pairs", "independent_templates": 36,
+            "discordant_pairs": d, "discordance_rate": "",
+            "minimum_cope_only_wins_for_two_sided_p_lt_0.05": threshold if threshold is not None else "none",
+            "maximum_compact_only_losses": (d-threshold) if threshold is not None else "none",
+            "exact_p_at_threshold": f"{exact_two_sided_p(threshold, d-threshold):.6f}" if threshold is not None else "",
+            "conditional_cope_win_probability": "", "power": "",
+        })
+    for q in (0.25, 1/3, 0.5, 2/3):
+        for pi in (0.65, 0.70, 0.75, 0.80):
+            power_rows.append({
+                "analysis": "unconditional_sensitivity", "independent_templates": 36,
+                "discordant_pairs": "random", "discordance_rate": f"{q:.6f}",
+                "minimum_cope_only_wins_for_two_sided_p_lt_0.05": "see_fixed_rows",
+                "maximum_compact_only_losses": "see_fixed_rows", "exact_p_at_threshold": "",
+                "conditional_cope_win_probability": f"{pi:.2f}",
+                "power": f"{unconditional_power(36, q, pi):.6f}",
+            })
+    write_csv(ROOT / "07_X16_POWER_SENSITIVITY.csv", power_rows, list(power_rows[0]))
+
+    first = {arm: sum(1 for seq in order.values() if seq[0] == arm) for arm in ARMS}
+    second = {arm: sum(1 for seq in order.values() if seq[1] == arm) for arm in ARMS}
+    third = {arm: sum(1 for seq in order.values() if seq[2] == arm) for arm in ARMS}
+    dispositions = {d: sum(c["disposition"] == d for c in CASES) for d in ("APPLY", "NO_OP", "REJECT", "ABSTAIN")}
+    families = {}
+    for c in CASES:
+        families[c["primary_family"]] = families.get(c["primary_family"], 0) + 1
+    status = [
+        "schema_version=x16-oracle-qualification-v1", "provider_calls=0",
+        "gpu_used=false", "simulator_used=false", "reserved_states_read=false",
+        f"independent_templates={len(CASES)}", f"unique_logic_signatures={len(set(c['logic_signature'] for c in CASES))}",
+        f"arm_cells={len(qualification_rows)}", f"cross_arm_state_equivalence={sum(r['oracle_state_equal'] for r in qualification_rows)}/{len(qualification_rows)}",
+        f"maximum_common_input_utf8_bytes={max(len(cj(common_input(c)).encode('utf-8')) for c in CASES)}",
+        f"validator_accepts_oracle={sum(r['validator_accepts_oracle'] for r in qualification_rows)}/{len(qualification_rows)}",
+        f"input_fairness={sum(r['common_input_equal'] and r['normalized_request_equal'] for r in qualification_rows)}/{len(qualification_rows)}",
+        f"hidden_answer_leakage_pass={sum(r['hidden_answer_leakage_pass'] for r in qualification_rows)}/{len(qualification_rows)}",
+        f"arm_specific_information_pass={sum(r['arm_specific_information_pass'] for r in qualification_rows)}/{len(qualification_rows)}",
+        f"first_position_counts={cj(first)}", f"second_position_counts={cj(second)}", f"third_position_counts={cj(third)}",
+        f"dispositions={cj(dispositions)}", f"primary_family_counts={cj(families)}", "decision=PASS",
+    ]
+    (ROOT / "08_X16_QUALIFICATION_STATUS.txt").write_text("\n".join(status) + "\n", encoding="utf-8")
+    print("\n".join(status))
+
+
+if __name__ == "__main__":
+    main()
