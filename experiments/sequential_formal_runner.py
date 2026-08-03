@@ -34,6 +34,7 @@ from cope.sequential_semantics import (
     initialize_typed_sequence_state,
     materialize_fsr_proposal,
     materialize_full_replan_proposal,
+    materialize_neutral_json_patch,
     sequence_state_hash,
 )
 from cope.types import canonical_json, stable_hash
@@ -215,7 +216,7 @@ def call_and_transition(
     typed_state: Any,
     physically_true: tuple[str, ...],
 ) -> tuple[dict[str, Any], Any, dict[str, Any], str, dict[str, Any]]:
-    mode = "patch" if arm in {"cope", "neutral_patch"} else "regenerate"
+    mode = "patch" if arm == "cope" else "compact" if arm == "neutral_patch" else "regenerate"
     invocation = provider.call_contract(mode, recovery_input, CONTRACTS[arm])
     diagnostics = {
         "provider_called": True,
@@ -236,11 +237,15 @@ def call_and_transition(
     proposal = invocation.parsed_output
     assert proposal is not None
     try:
-        if arm in {"cope", "neutral_patch"}:
+        if arm == "cope":
             typed_state, candidate, receipt, directive = execute_typed_sparse_transition(
                 typed_state, logical_state, event, proposal,
                 neutral=arm == "neutral_patch",
                 physically_true_objects=physically_true,
+            )
+        elif arm == "neutral_patch":
+            candidate, receipt, directive = materialize_neutral_json_patch(
+                proposal, logical_state, event, physically_true
             )
         elif arm == "fsr_pc":
             candidate, directive = materialize_fsr_proposal(
@@ -374,7 +379,7 @@ def main() -> int:
                         sequence_id=row["sequence_id"],
                         done_object=row["done_object"],
                         pending_object=row["initial_pending_object"],
-                    ) if arm in {"cope", "neutral_patch"} else None
+                    ) if arm == "cope" else None
                 )
                 event1 = build_sequence_event(
                     logical, sequence_id=row["sequence_id"], step_index=1,
@@ -500,7 +505,7 @@ def main() -> int:
                         physically_true=(row["done_object"],),
                     )
                     continuity = event1_result["logical_after_sha256"] == sequence_state_hash(logical)
-                    if arm in {"cope", "neutral_patch"}:
+                    if arm == "cope":
                         continuity = continuity and receipt1["after_hash"] == receipt2["before_hash"]
                     if directive != "HALT":
                         placement = controller.pick_and_place(row["replacement_d"], RECEPTACLE)

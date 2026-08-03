@@ -27,14 +27,18 @@ Copy event_id, target_id and base_version from the event. replacement_id is the
 stable goal commitment ID for event.replacement_object. patch_id is fresh and
 nonempty. Edit only the active target. Do not return state, receipt, history,
 hashes, controller actions, transaction metadata, or extra fields.""",
-    "neutral_patch": """OUTPUT CONTRACT: neutral sequential sparse patch.
-Return exactly one JSON object and no prose. Exact fields are event_id,
-operation, patch_id, target_id, base_version, plus replacement_id only for a
-replacement. operation is N01 for replacement and N02 for cancellation. N01
-deactivates the named active target and activates the named replacement; N02
-deactivates the named active target without replacement. Copy IDs and version
-from the event. Do not emit CoPE names, state, receipt, history, hashes,
-controller actions, transaction metadata, or extra fields.""",
+    "neutral_patch": """OUTPUT CONTRACT: method-neutral generic JSON-path transaction.
+Return exactly one JSON object with schema_version, base_version, event_id,
+writes. schema_version is generic-compact-transaction-v1; base_version equals
+task_progress.pre_state.state_version; event_id equals event.event_id. writes
+is the minimum list of objects with exactly op, path, value. op is add or
+replace. Legal paths are /current_goal, /plan, /pending_restorations,
+/commitments/<stable-id>/<existing-field>, and
+/commitments/+/<new-stable-id>. Root writes replace the complete value; a new
+commitment add supplies the complete record. Produce the authorized post-event
+state while preserving completed and historical records. Trusted code supplies
+schema/state/evidence versions. Do not emit CoPE operation names, receipts,
+hashes, controller actions, prose, or extra fields.""",
     "fsr_pc": """OUTPUT CONTRACT: sequential FSR-PC complete semantic state.
 Return exactly one JSON object with exactly current_goal, entities, commitments,
 progress_ledger, plan, pending_restorations. Regenerate the complete post-event

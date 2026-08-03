@@ -22,6 +22,8 @@ from cope.sequential_semantics import (
     initialize_typed_sequence_state,
     materialize_fsr_proposal,
     materialize_full_replan_proposal,
+    materialize_neutral_json_patch,
+    neutral_json_oracle_proposal,
     sequence_state_hash,
     sparse_oracle_proposal,
     validate_sequence_transition,
@@ -132,7 +134,7 @@ def run_arm(
             done_object=row["done_object"],
             pending_object=row["initial_pending_object"],
         )
-        if arm in {"cope", "neutral_patch"}
+        if arm == "cope"
         else None
     )
     receipts: list[dict[str, Any]] = []
@@ -140,16 +142,21 @@ def run_arm(
     for event in (event1, event2):
         before_hash = sequence_state_hash(state)
         expected = build_expected_next_state(state, event)
-        if arm in {"cope", "neutral_patch"}:
-            proposal = sparse_oracle_proposal(event, neutral=arm == "neutral_patch")
+        if arm == "cope":
+            proposal = sparse_oracle_proposal(event, neutral=False)
             assert typed_state is not None
             typed_state, candidate, receipt, directive = execute_typed_sparse_transition(
                 typed_state,
                 state,
                 event,
                 proposal,
-                neutral=arm == "neutral_patch",
+                neutral=False,
                 physically_true_objects=physically_true,
+            )
+        elif arm == "neutral_patch":
+            proposal = neutral_json_oracle_proposal(state, expected, event)
+            candidate, receipt, directive = materialize_neutral_json_patch(
+                proposal, state, event, physically_true
             )
         elif arm == "fsr_pc":
             proposal = fsr_oracle_proposal(expected)
@@ -210,7 +217,7 @@ def main() -> int:
                 )
                 typed_continuity = (
                     receipts[0].get("after_hash") == receipts[1].get("before_hash")
-                    if arm in {"cope", "neutral_patch"}
+                    if arm == "cope"
                     else True
                 )
                 revisions = [

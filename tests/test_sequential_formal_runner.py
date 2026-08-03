@@ -10,6 +10,7 @@ from cope.sequential_semantics import (
     fsr_oracle_proposal,
     full_replan_oracle_proposal,
     initialize_typed_sequence_state,
+    neutral_json_oracle_proposal,
     sparse_oracle_proposal,
 )
 from cope.types import ProviderInvocation, TokenUsage
@@ -69,13 +70,16 @@ def fixture():
 def test_formal_transition_bridge_accepts_oracle_correct_arm_output(arm):
     state, event, recovery = fixture()
     expected = build_expected_next_state(state, event)
-    if arm in {"cope", "neutral_patch"}:
-        proposal = sparse_oracle_proposal(event, neutral=arm == "neutral_patch")
+    if arm == "cope":
+        proposal = sparse_oracle_proposal(event, neutral=False)
         typed = initialize_typed_sequence_state(
             sequence_id="runner-unit",
             done_object="alphabet_soup_1",
             pending_object="tomato_sauce_1",
         )
+    elif arm == "neutral_patch":
+        proposal = neutral_json_oracle_proposal(state, expected, event)
+        typed = None
     elif arm == "fsr_pc":
         proposal = fsr_oracle_proposal(expected)
         typed = None
@@ -92,7 +96,7 @@ def test_formal_transition_bridge_accepts_oracle_correct_arm_output(arm):
         physically_true=("alphabet_soup_1",),
     )
     assert candidate == expected
-    assert receipt["accepted"] is True
+    assert receipt.get("accepted", receipt.get("published")) is True
     assert directive == "place_in(cream_cheese_1, basket_1_contain_region)"
     assert diagnostics["provider_called"] is True
     assert diagnostics["prompt_tokens"] == 100

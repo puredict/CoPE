@@ -6,6 +6,7 @@ import copy
 from typing import Any, Mapping, Sequence
 
 from cope.operations import apply_patch
+from cope.compact_tx import execute_compact_transaction, parse_proposal
 from cope.schema import (
     ConstraintSlot,
     ConstraintState,
@@ -549,3 +550,74 @@ def materialize_full_replan_proposal(
 
 def sequence_state_hash(state: Mapping[str, Any]) -> str:
     return stable_hash(state)
+
+
+def neutral_json_oracle_proposal(
+    pre_state: Mapping[str, Any],
+    expected: Mapping[str, Any],
+    event: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Construct the canonical generic JSON-path baseline fixture."""
+
+    writes: list[dict[str, Any]] = []
+    for root in ("current_goal", "plan", "pending_restorations"):
+        if canonical_json(pre_state[root]) != canonical_json(expected[root]):
+            writes.append(
+                {"op": "replace", "path": f"/{root}", "value": copy.deepcopy(expected[root])}
+            )
+    before = {row["id"]: row for row in pre_state["commitments"]}
+    for record in expected["commitments"]:
+        record_id = str(record["id"])
+        if record_id not in before:
+            writes.append(
+                {
+                    "op": "add",
+                    "path": f"/commitments/+/{record_id}",
+                    "value": copy.deepcopy(record),
+                }
+            )
+            continue
+        for field, value in record.items():
+            if canonical_json(before[record_id][field]) != canonical_json(value):
+                writes.append(
+                    {
+                        "op": "replace",
+                        "path": f"/commitments/{record_id}/{field}",
+                        "value": copy.deepcopy(value),
+                    }
+                )
+    return {
+        "schema_version": "generic-compact-transaction-v1",
+        "base_version": int(pre_state["state_version"]),
+        "event_id": str(event["event_id"]),
+        "writes": writes,
+    }
+
+
+def materialize_neutral_json_patch(
+    proposal: Any,
+    pre_state: Mapping[str, Any],
+    event: Mapping[str, Any],
+    physically_true_objects: Sequence[str],
+) -> tuple[dict[str, Any], dict[str, Any], str]:
+    """Execute a method-neutral JSON-path transaction, then share validation."""
+
+    parsed = parse_proposal(proposal, pre_state, event)
+    expected = build_expected_next_state(pre_state, event)
+
+    def finalize(staged: Mapping[str, Any], _event: Mapping[str, Any]) -> dict[str, Any]:
+        out = copy.deepcopy(dict(staged))
+        for key in STATE_FIELDS - SEMANTIC_FIELDS:
+            out[key] = copy.deepcopy(expected[key])
+        return out
+
+    result = execute_compact_transaction(
+        parsed,
+        pre_state,
+        event,
+        lambda staged, _state, current_event: validate_sequence_transition(
+            pre_state, staged, current_event, physically_true_objects
+        ),
+        trusted_finalize=finalize,
+    )
+    return result.post_state, result.receipt, result.directive

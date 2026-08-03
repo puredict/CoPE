@@ -144,7 +144,7 @@ def main() -> int:
                     physically_true_objects=(row["done_object"],),
                     processed_event_ids=processed, event_index=event_index,
                 )
-                mode = "patch" if arm in {"cope", "neutral_patch"} else "regenerate"
+                mode = "patch" if arm == "cope" else "compact" if arm == "neutral_patch" else "regenerate"
                 audited = provider.build_audited_request(mode, recovery_input, CONTRACTS[arm])
                 requests.append(
                     {
