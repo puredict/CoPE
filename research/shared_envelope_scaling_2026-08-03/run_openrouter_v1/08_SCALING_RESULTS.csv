@@ -1,0 +1,13 @@
+state_size,arm,assigned,provider_ok,parser_valid,semantic_correct,completion_tokens,proposal_bytes,latency_seconds
+4,cope_semantic,36,36,36,35,6866,13023,56.232424
+4,neutral_typed,36,36,36,34,6944,12117,55.333209
+4,compact_semantic,36,36,36,32,7057,13484,57.272162
+4,fsr_semantic,36,36,36,30,26421,45902,147.995195
+16,cope_semantic,36,36,36,36,6891,13050,66.009469
+16,neutral_typed,36,36,36,34,6959,12111,62.069859
+16,compact_semantic,36,36,36,33,7021,13402,69.528361
+16,fsr_semantic,36,36,36,12,111982,186673,576.131499
+32,cope_semantic,36,36,36,36,6891,13050,68.402482
+32,neutral_typed,36,36,36,34,6959,12111,65.517779
+32,compact_semantic,36,36,36,33,7200,13666,65.661569
+32,fsr_semantic,36,36,36,7,191787,353440,996.882767
