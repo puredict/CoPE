@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import math
 import os
 import subprocess
 from pathlib import Path
@@ -17,6 +18,7 @@ from cope.shared_commit_envelope import (
     oracle_proposal,
     qualification_rows,
 )
+from cope.shared_envelope_holdout import build_holdout_cases
 from cope.types import canonical_json, stable_hash
 from x16_provider_runner import X16Input, provider_status, response_hash
 from x17_stagea_runner import StageAProvider, infer_schema, normalized_hash
@@ -52,13 +54,13 @@ def args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Shared commit-envelope development gate")
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--preflight-only", action="store_true")
+    parser.add_argument("--case-set", choices=("development", "holdout"), default="development")
     parser.add_argument("--endpoint", default="https://openrouter.ai/api/v1/chat/completions")
     parser.add_argument("--api-key-env", default="OPENROUTER_API_KEY")
     return parser.parse_args()
 
 
-def schemas() -> dict[str, dict[str, Any]]:
-    cases = build_development_cases()
+def schemas(cases: list[Any]) -> dict[str, dict[str, Any]]:
     return {
         arm: infer_schema([oracle_proposal(case, arm) for case in cases])
         for arm in ARMS
@@ -105,6 +107,14 @@ def write_csv(path: Path, rows: list[dict[str, Any]], fields: Iterable[str]) -> 
         writer.writerows(rows)
 
 
+def exact_two_sided(wins: int, losses: int) -> float:
+    discordant = wins + losses
+    if discordant == 0:
+        return 1.0
+    tail = sum(math.comb(discordant, value) for value in range(max(wins, losses), discordant + 1)) / (2 ** discordant)
+    return min(1.0, 2.0 * tail)
+
+
 def main() -> int:
     parsed = args()
     repo_root = Path(__file__).resolve().parents[1]
@@ -123,11 +133,25 @@ def main() -> int:
         ["git", "rev-parse", "HEAD"], cwd=repo_root, check=True,
         capture_output=True, text=True,
     ).stdout.strip()
-    cases = build_development_cases()
-    oracle_rows = qualification_rows()
-    if len(oracle_rows) != 24 or not all(row["oracle_accepted"] for row in oracle_rows):
+    cases = build_development_cases() if parsed.case_set == "development" else build_holdout_cases()
+    oracle_rows: list[dict[str, Any]] = []
+    for case in cases:
+        results = []
+        for arm in ARMS:
+            semantic, meta = materialize_proposal(case, arm, oracle_proposal(case, arm))
+            results.append((semantic, meta))
+            oracle_rows.append({
+                "case_id": case.case_id, "family": case.family, "arm": arm,
+                "oracle_accepted": True, "semantic_state_sha256": stable_hash(semantic),
+                "transaction_meta_sha256": stable_hash(meta),
+                "common_input_sha256": stable_hash(case.common_input),
+                "rule_clause_count": len(case.rule_clauses),
+            })
+        if len({stable_hash(value) for value in results}) != 1:
+            raise RuntimeError(f"cross-arm oracle mismatch: {case.case_id}")
+    if len(oracle_rows) != 4 * len(cases) or not all(row["oracle_accepted"] for row in oracle_rows):
         raise RuntimeError("oracle qualification failed")
-    arm_schemas = schemas()
+    arm_schemas = schemas(cases)
     arm_contracts = contracts(arm_schemas)
     contract_to_arm = {stable_hash(text): arm for arm, text in arm_contracts.items()}
     provider = StageAProvider(
@@ -172,6 +196,7 @@ def main() -> int:
             "common_input_sha256": {case.case_id: stable_hash(case.common_input) for case in cases},
             "oracle_sha256": {case.case_id: stable_hash(case.post_state) for case in cases},
             "runtime_git_commit": runtime_commit, "provider_calls": 0,
+            "case_set": parsed.case_set,
         }) + "\n", encoding="utf-8",
     )
     if parsed.preflight_only:
@@ -252,11 +277,43 @@ def main() -> int:
         row["arm"]: int(row["semantic_correct"])
         for row in aggregate if row["arm"] in {"cope_semantic", "neutral_typed", "compact_semantic"}
     }
-    passed = all(value >= 4 for value in sparse.values())
+    passed = all(value >= 4 for value in sparse.values()) if parsed.case_set == "development" else False
+    by_case: dict[str, dict[str, bool]] = {}
+    for row in rows:
+        by_case.setdefault(str(row["case_id"]), {})[str(row["arm"])] = bool(row["semantic_correct"])
+    comparisons = []
+    for other in ("compact_semantic", "neutral_typed"):
+        cope_only = sum(value["cope_semantic"] and not value[other] for value in by_case.values())
+        other_only = sum(value[other] and not value["cope_semantic"] for value in by_case.values())
+        comparisons.append({
+            "contrast": f"cope_semantic_vs_{other}", "cope_only": cope_only,
+            "other_only": other_only, "discordant": cope_only + other_only,
+            "raw_p": exact_two_sided(cope_only, other_only),
+        })
+    ordered = sorted(comparisons, key=lambda row: row["raw_p"])
+    running = 0.0
+    for index, comparison in enumerate(ordered):
+        adjusted = min(1.0, comparison["raw_p"] * (len(ordered) - index))
+        running = max(running, adjusted)
+        comparison["holm_p"] = running
+    write_csv(output_dir / "07_PRIMARY_COMPARISONS.csv", comparisons, list(comparisons[0]))
+    contrast = next(row for row in comparisons if row["contrast"] == "cope_semantic_vs_compact_semantic")
+    if parsed.case_set == "holdout":
+        passed = bool(
+            contrast["cope_only"] > contrast["other_only"]
+            and contrast["holm_p"] < 0.05
+            and sparse["cope_semantic"] >= 18
+            and (len(cases) - sparse["cope_semantic"]) <= (len(cases) - sparse["compact_semantic"])
+        )
     (output_dir / "06_RUN_STATUS.txt").write_text(
         canonical_json({
             "decision": "PASS" if passed else "FAIL",
-            "threshold": "each sparse arm >=4/6", "sparse_correct": sparse,
+            "case_set": parsed.case_set,
+            "threshold": (
+                "each sparse arm >=4/6" if parsed.case_set == "development"
+                else "Holm-adjusted CoPE-vs-compact p<0.05, positive direction, CoPE>=18/36, no excess incorrect semantic attempts"
+            ),
+            "sparse_correct": sparse,
             "provider_calls": len(rows), "fair_quadruplets": 6,
             "transaction_metadata_model_generated": False,
             "retry_budget": 0, "repair_budget": 0, "fallback_used": False,
