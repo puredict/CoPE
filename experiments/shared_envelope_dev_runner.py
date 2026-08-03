@@ -19,6 +19,7 @@ from cope.shared_commit_envelope import (
     qualification_rows,
 )
 from cope.shared_envelope_holdout import build_holdout_cases
+from cope.shared_envelope_scaling import build_scaling_cases
 from cope.types import canonical_json, stable_hash
 from x16_provider_runner import X16Input, provider_status, response_hash
 from x17_stagea_runner import StageAProvider, infer_schema, normalized_hash
@@ -39,7 +40,7 @@ VERSIONS = {
     "fsr_semantic": "fsr-semantic-state-v1",
 }
 FIELDS = (
-    "case_id", "family", "arm", "call_order_position", "provider_status",
+    "case_id", "family", "state_size", "arm", "call_order_position", "provider_status",
     "provider_error", "parser_valid", "semantic_correct", "input_hash",
     "common_input_bytes_sha256", "normalized_request_sha256", "fairness_pass",
     "response_sha256", "prompt_tokens", "completion_tokens", "proposal_bytes",
@@ -54,7 +55,7 @@ def args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Shared commit-envelope development gate")
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--preflight-only", action="store_true")
-    parser.add_argument("--case-set", choices=("development", "holdout"), default="development")
+    parser.add_argument("--case-set", choices=("development", "holdout", "scaling"), default="development")
     parser.add_argument("--endpoint", default="https://openrouter.ai/api/v1/chat/completions")
     parser.add_argument("--api-key-env", default="OPENROUTER_API_KEY")
     return parser.parse_args()
@@ -135,7 +136,12 @@ def main() -> int:
         ["git", "rev-parse", "HEAD"], cwd=repo_root, check=True,
         capture_output=True, text=True,
     ).stdout.strip()
-    cases = build_development_cases() if parsed.case_set == "development" else build_holdout_cases()
+    if parsed.case_set == "development":
+        cases = build_development_cases()
+    elif parsed.case_set == "holdout":
+        cases = build_holdout_cases()
+    else:
+        cases = build_scaling_cases()
     oracle_rows: list[dict[str, Any]] = []
     for case in cases:
         results = []
@@ -156,12 +162,14 @@ def main() -> int:
     arm_schemas = schemas(cases)
     arm_contracts = contracts(arm_schemas)
     contract_to_arm = {stable_hash(text): arm for arm, text in arm_contracts.items()}
+    max_prompt_tokens = 32000 if parsed.case_set == "scaling" else 16000
+    max_completion_tokens = 16384 if parsed.case_set == "scaling" else 8192
     provider = StageAProvider(
         {
             "provider": "openrouter", "endpoint": parsed.endpoint,
             "api_key_env": parsed.api_key_env, "model": MODEL,
             "reasoning_effort": "none", "temperature": 0.0, "seed": SEED,
-            "max_prompt_tokens": 16000, "max_completion_tokens": 8192,
+            "max_prompt_tokens": max_prompt_tokens, "max_completion_tokens": max_completion_tokens,
             "max_retries": 0, "timeout_seconds": 90.0,
         },
         system_prompt=(
@@ -179,6 +187,7 @@ def main() -> int:
         order = ARMS[index % 4:] + ARMS[:index % 4]
         preflight.append({
             "case_id": case.case_id, "family": case.family,
+            "state_size": len(case.pre_state["commitments"]),
             "rule_clause_count": len(case.rule_clauses), "arm_cells": 4,
             "fairness_pass": len(set(hashes)) == 1,
             "normalized_request_sha256": hashes[0] if len(set(hashes)) == 1 else "",
@@ -230,6 +239,7 @@ def main() -> int:
                     validation_error = "proposal object or schema version mismatch"
                 row = {
                     "case_id": case.case_id, "family": case.family, "arm": arm,
+                    "state_size": len(case.pre_state["commitments"]),
                     "call_order_position": position, "provider_status": pstatus,
                     "provider_error": perror, "parser_valid": parser_valid,
                     "semantic_correct": correct, "input_hash": stable_hash(case.common_input),
@@ -275,6 +285,21 @@ def main() -> int:
             "latency_seconds": f"{sum(float(row['latency_seconds']) for row in chosen):.6f}",
         })
     write_csv(output_dir / "05_AGGREGATE.csv", aggregate, list(aggregate[0]))
+    if parsed.case_set == "scaling":
+        scaling_rows = []
+        for state_size in sorted({int(row["state_size"]) for row in rows}):
+            for arm in ARMS:
+                chosen = [row for row in rows if int(row["state_size"]) == state_size and row["arm"] == arm]
+                scaling_rows.append({
+                    "state_size": state_size, "arm": arm, "assigned": len(chosen),
+                    "provider_ok": sum(row["provider_status"] == "ok" for row in chosen),
+                    "parser_valid": sum(bool(row["parser_valid"]) for row in chosen),
+                    "semantic_correct": sum(bool(row["semantic_correct"]) for row in chosen),
+                    "completion_tokens": sum(int(row["completion_tokens"]) for row in chosen),
+                    "proposal_bytes": sum(int(row["proposal_bytes"]) for row in chosen),
+                    "latency_seconds": f"{sum(float(row['latency_seconds']) for row in chosen):.6f}",
+                })
+        write_csv(output_dir / "08_SCALING_RESULTS.csv", scaling_rows, list(scaling_rows[0]))
     sparse = {
         row["arm"]: int(row["semantic_correct"])
         for row in aggregate if row["arm"] in {"cope_semantic", "neutral_typed", "compact_semantic"}
@@ -296,28 +321,60 @@ def main() -> int:
     )
     fairness_integrity_pass = fair_quadruplets == len(cases)
     comparisons = []
-    for other in ("compact_semantic", "neutral_typed"):
-        cope_only = sum(value["cope_semantic"] and not value[other] for value in by_case.values())
-        other_only = sum(value[other] and not value["cope_semantic"] for value in by_case.values())
+    comparison_arms = (
+        ("fsr_semantic", "largest_state"),
+        ("compact_semantic", "largest_state"),
+        ("neutral_typed", "largest_state"),
+    ) if parsed.case_set == "scaling" else (
+        ("compact_semantic", "all_cases"),
+        ("neutral_typed", "all_cases"),
+    )
+    largest_size = max(int(row["state_size"]) for row in rows)
+    for other, scope in comparison_arms:
+        selected = {
+            case_id: value for case_id, value in by_case.items()
+            if scope == "all_cases" or any(
+                str(row["case_id"]) == case_id and int(row["state_size"]) == largest_size for row in rows
+            )
+        }
+        cope_only = sum(value["cope_semantic"] and not value[other] for value in selected.values())
+        other_only = sum(value[other] and not value["cope_semantic"] for value in selected.values())
         comparisons.append({
-            "contrast": f"cope_semantic_vs_{other}", "cope_only": cope_only,
+            "contrast": f"cope_semantic_vs_{other}", "scope": scope, "cope_only": cope_only,
             "other_only": other_only, "discordant": cope_only + other_only,
             "raw_p": exact_two_sided(cope_only, other_only),
         })
-    ordered = sorted(comparisons, key=lambda row: row["raw_p"])
-    running = 0.0
-    for index, comparison in enumerate(ordered):
-        adjusted = min(1.0, comparison["raw_p"] * (len(ordered) - index))
-        running = max(running, adjusted)
-        comparison["holm_p"] = running
+    if parsed.case_set == "scaling":
+        for comparison in comparisons:
+            comparison["holm_p"] = comparison["raw_p"]
+    else:
+        ordered = sorted(comparisons, key=lambda row: row["raw_p"])
+        running = 0.0
+        for index, comparison in enumerate(ordered):
+            adjusted = min(1.0, comparison["raw_p"] * (len(ordered) - index))
+            running = max(running, adjusted)
+            comparison["holm_p"] = running
     write_csv(output_dir / "07_PRIMARY_COMPARISONS.csv", comparisons, list(comparisons[0]))
-    contrast = next(row for row in comparisons if row["contrast"] == "cope_semantic_vs_compact_semantic")
+    contrast_name = "cope_semantic_vs_fsr_semantic" if parsed.case_set == "scaling" else "cope_semantic_vs_compact_semantic"
+    contrast = next(row for row in comparisons if row["contrast"] == contrast_name)
     if parsed.case_set == "holdout":
         passed = bool(
             contrast["cope_only"] > contrast["other_only"]
             and contrast["holm_p"] < 0.05
             and sparse["cope_semantic"] >= 18
             and (len(cases) - sparse["cope_semantic"]) <= (len(cases) - sparse["compact_semantic"])
+            and assignment_integrity_pass
+            and fairness_integrity_pass
+        )
+    elif parsed.case_set == "scaling":
+        large_cope_correct = sum(
+            value["cope_semantic"] for case_id, value in by_case.items()
+            if any(str(row["case_id"]) == case_id and int(row["state_size"]) == largest_size for row in rows)
+        )
+        passed = bool(
+            contrast["cope_only"] > contrast["other_only"]
+            and contrast["raw_p"] < 0.05
+            and large_cope_correct >= 18
             and assignment_integrity_pass
             and fairness_integrity_pass
         )
@@ -328,8 +385,9 @@ def main() -> int:
             "decision": "PASS" if passed else "FAIL",
             "case_set": parsed.case_set,
             "threshold": (
-                "each sparse arm >=4/6" if parsed.case_set == "development"
-                else "Holm-adjusted CoPE-vs-compact p<0.05, positive direction, CoPE>=18/36, no excess incorrect semantic attempts"
+                "each sparse arm >=4/6" if parsed.case_set == "development" else
+                "largest-state CoPE-vs-FSR exact p<0.05, positive direction, CoPE>=18/36" if parsed.case_set == "scaling" else
+                "Holm-adjusted CoPE-vs-compact p<0.05, positive direction, CoPE>=18/36, no excess incorrect semantic attempts"
             ),
             "sparse_correct": sparse,
             "provider_calls": len(rows), "provider_ok": sum(row["provider_status"] == "ok" for row in rows),
