@@ -1,0 +1,1 @@
+{"decision":"FAIL","fair_quadruplets":12,"fallback_used":false,"oracle_substitution":false,"provider_calls":48,"repair_budget":0,"reserved_states_read":false,"retry_budget":0,"runtime_git_commit":"065f2b57a3ac91a6ceeb0074df31152a7a4c059d","stage_a_threshold":"each structured sparse arm >=4/6","structured_sparse_correct":{"compact_tx":0,"cope":0,"neutral_typed":0}}
