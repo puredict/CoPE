@@ -6,6 +6,7 @@ import base64
 import csv
 import hashlib
 import io
+import json
 import os
 import subprocess
 from dataclasses import asdict
@@ -52,6 +53,13 @@ from libero_experiment_core import (
 )
 
 
+FORMAL_CONTINUATION_START = 33
+FORMAL_RETAINED_JOURNAL_SHA256 = (
+    "36f6450761bb01442660f59f8bfaf5977cc961cdb19bb263bcdf53c4170f96eb"
+)
+FORMAL_RETAINED_RUNTIME_COMMIT = "3d396fdbdd045602357e4dc5530c732c83b67ed0"
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="X15 provider-driven live semantic Phase A")
     parser.add_argument("--case-manifest", type=Path, required=True)
@@ -66,6 +74,8 @@ def parse_args() -> argparse.Namespace:
         help="Run the preregistered formal states 27--46; never index 47--49",
     )
     parser.add_argument("--state0-results", type=Path)
+    parser.add_argument("--formal-continuation-start", type=int)
+    parser.add_argument("--retained-formal-journal", type=Path)
     execution = parser.add_mutually_exclusive_group()
     execution.add_argument(
         "--execute-cope",
@@ -114,6 +124,39 @@ def simulator_state_hash(env: Any) -> str:
         ]
     )
     return hashlib.sha256(payload.tobytes()).hexdigest()
+
+
+def validate_retained_formal_journal(path: Path) -> None:
+    if not path.is_file() or sha256_file(path) != FORMAL_RETAINED_JOURNAL_SHA256:
+        raise RuntimeError("retained formal journal hash mismatch")
+    records = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()]
+    if len(records) != 60:
+        raise RuntimeError("retained formal journal row count mismatch")
+    expected_cases = {
+        f"formal_state{state_id}_{suffix}"
+        for state_id in range(27, FORMAL_CONTINUATION_START)
+        for suffix in ("cancel", "replace")
+    }
+    semantic = [item for item in records if item.get("record_type") == "semantic"]
+    embodied = [item for item in records if item.get("record_type") == "embodied"]
+    if {item.get("case_id") for item in semantic} != expected_cases or len(semantic) != 12:
+        raise RuntimeError("retained formal journal semantic cases mismatch")
+    if len(embodied) != 48 or any(
+        item.get("case_id") not in expected_cases for item in embodied
+    ):
+        raise RuntimeError("retained formal journal embodied cases mismatch")
+    if any(
+        len(item.get("rows", ())) != len(LIVE_ARMS)
+        or {row.get("arm") for row in item["rows"]} != set(LIVE_ARMS)
+        or any(row.get("provider_status") != "ok" for row in item["rows"])
+        or any(int(row.get("retry_count", -1)) != 0 for row in item["rows"])
+        or any(
+            row.get("runtime_git_commit") != FORMAL_RETAINED_RUNTIME_COMMIT
+            for row in item["rows"]
+        )
+        for item in semantic
+    ):
+        raise RuntimeError("retained formal journal provider or provenance mismatch")
 
 
 def observation_packet(obs: dict[str, Any], *, resolution: int) -> dict[str, Any]:
@@ -268,6 +311,13 @@ def main() -> int:
         raise RuntimeError("formal reserved mode requires --execute-valid-arms")
     if args.formal_reserved and args.state0_results is not None:
         raise RuntimeError("formal reserved mode forbids retained development results")
+    continuation_requested = args.formal_continuation_start is not None
+    if continuation_requested != (args.retained_formal_journal is not None):
+        raise RuntimeError("formal continuation requires both start and retained journal")
+    if continuation_requested:
+        if not args.formal_reserved or args.formal_continuation_start != FORMAL_CONTINUATION_START:
+            raise RuntimeError("only the preregistered state-33 formal continuation is allowed")
+        validate_retained_formal_journal(args.retained_formal_journal)
     authorized_state_ids = FORMAL_STATE_IDS if args.formal_reserved else None
     with args.case_manifest.open(newline="", encoding="utf-8") as handle:
         rows = list(csv.DictReader(handle))
@@ -729,7 +779,10 @@ def main() -> int:
 
     state0_triplets: list[dict[str, Any]] = []
     if args.formal_reserved:
-        run_states(tuple(sorted(FORMAL_STATE_IDS)))
+        formal_start = (
+            FORMAL_CONTINUATION_START if continuation_requested else min(FORMAL_STATE_IDS)
+        )
+        run_states(tuple(range(formal_start, max(FORMAL_STATE_IDS) + 1)))
         expansion_allowed = True
     elif args.expand_states_1_4:
         if args.state0_results is None:
@@ -760,6 +813,12 @@ def main() -> int:
         "states_1_4_requested": bool(args.expand_states_1_4),
         "states_1_4_executed": any(1 <= item["state_id"] <= 4 for item in triplets),
         "formal_reserved_requested": bool(args.formal_reserved),
+        "formal_continuation_start": (
+            args.formal_continuation_start if continuation_requested else ""
+        ),
+        "retained_formal_journal_sha256": (
+            FORMAL_RETAINED_JOURNAL_SHA256 if continuation_requested else ""
+        ),
         "formal_state_ids_indexed": sorted(
             {item["state_id"] for item in triplets if item["state_id"] in FORMAL_STATE_IDS}
         ),
