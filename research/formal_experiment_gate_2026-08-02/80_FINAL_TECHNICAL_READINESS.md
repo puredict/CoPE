@@ -15,7 +15,7 @@ is never written to git, command artifacts, or result logs.
 ## Closed technical gates
 
 - task-1 common-prefix controller diagnosis and bounded-regrasp repair;
-- independent task-1 validation and 525-test regression;
+- independent task-1 validation and final 526-test regression (48.80 s);
 - task-0 forward prefix: 10/10 development states;
 - task-0 reverse prefix: 10/10 development states;
 - full task-0 terminal butter action after both prefixes: 20/20, 0 regrasp,
