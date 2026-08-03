@@ -19,7 +19,7 @@ from cope.semantic_live_runner import (
     LoadedSemanticConfig,
     finalize_mutation_accounting,
     load_semantic_config,
-    run_semantic_wiring,
+    run_oracle_semantic_fixture,
     sha256_file,
 )
 from cope.semantic_replacement import RECEPTACLE
@@ -363,7 +363,8 @@ def run_arm(
             "stable_steps": case["stable_steps"],
         }
 
-        # Build the event once to bind the live packet. run_semantic_wiring
+        # Build the event once to bind the live packet. The explicitly named
+        # oracle fixture below is isolated from the X15 production runner.
         # deterministically rebuilds the same event from semantic_row.
         from cope.semantic_cancellation import build_cancellation_event
         from cope.semantic_replacement import MilestoneEvent, build_replacement_event
@@ -431,7 +432,7 @@ def run_arm(
                 ],
             }
         )
-        semantic = run_semantic_wiring(
+        semantic = run_oracle_semantic_fixture(
             row=semantic_row,
             config=authorization.semantic_config,
             original_task=prompt,

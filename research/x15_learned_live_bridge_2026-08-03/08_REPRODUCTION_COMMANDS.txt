@@ -1,0 +1,25 @@
+# Worktree
+cd /home/lijingsu/codex-worktrees/cope-x15-learned-live
+
+# Baseline/final tests (CPU only)
+CUDA_VISIBLE_DEVICES="" scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python -m pytest -q
+
+# Dedicated adversarial rejection suite
+CUDA_VISIBLE_DEVICES="" scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python -m pytest -q tests/test_live_semantic_runner.py -k "forged or stale or unknown_target or unauthorized_extra or invalid_operation or oracle_substitution or silent_fallback or idempotence"
+
+# Credential presence check; never print the value
+test -n "${OPENROUTER_API_KEY:-}"
+
+# Mandatory first provider-backed smoke: development state 0 only
+CUDA_VISIBLE_DEVICES="" scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python experiments/live_semantic_runner.py --case-manifest research/semantic_live_runner_2026-08-02/01_CASES.csv --semantic-config manifests/semantic_task1_config_v1.csv --output-dir research/x15_learned_live_bridge_2026-08-03/smoke_state0_v1
+
+# States 1--4 only after the retained state-0 CSV passes the frozen gate.
+# This command does not repeat state 0 and does not retry any failed arm.
+CUDA_VISIBLE_DEVICES="" scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python experiments/live_semantic_runner.py --case-manifest research/semantic_live_runner_2026-08-02/01_CASES.csv --semantic-config manifests/semantic_task1_config_v1.csv --output-dir research/x15_learned_live_bridge_2026-08-03/expansion_states1_4_v1 --expand-states-1-4 --state0-results research/x15_learned_live_bridge_2026-08-03/smoke_state0_v1/01_PER_ARM_RESULTS.csv
+
+# Read-only provenance
+git rev-parse HEAD
+git status --short
+
+# Secret scan prints file names only, never matched content
+find . -path ./.git -prune -o -type f -print0 | xargs -0 grep -I -l -E "sk-[A-Za-z0-9_-]{16,}"

@@ -149,7 +149,7 @@ def _commitment(
     }
 
 
-def build_oracle_full_state(
+def build_canonical_replacement_state(
     event: Mapping[str, Any],
     *,
     previous_state_version: int = 0,
@@ -213,6 +213,16 @@ def build_oracle_full_state(
         },
         "controller_prompt": "diagnostic-only; execution must use the shared compiler",
     }
+
+
+def build_oracle_full_state(
+    event: Mapping[str, Any], *, previous_state_version: int = 0
+) -> dict[str, Any]:
+    """Explicit legacy oracle fixture alias for X04 and oracle-control tests."""
+
+    return build_canonical_replacement_state(
+        event, previous_state_version=previous_state_version
+    )
 
 
 def _require_mapping(value: Any, label: str) -> Mapping[str, Any]:
@@ -288,7 +298,7 @@ def validate_canonical_task_sections(
         raise FullStateValidationError("evidence versions do not bind to the current event and state")
 
 
-def validate_oracle_full_state(
+def validate_canonical_replacement_state(
     state: Mapping[str, Any],
     event: Mapping[str, Any],
     *,
@@ -360,11 +370,28 @@ def validate_oracle_full_state(
     if normalized != expected_atoms:
         raise FullStateValidationError("current goal is not the authorized post-event conjunction")
 
-    canonical = build_oracle_full_state(
+    canonical = build_canonical_replacement_state(
         event,
         previous_state_version=previous_state_version,
     )
     validate_canonical_task_sections(state, canonical)
+
+
+def validate_oracle_full_state(
+    state: Mapping[str, Any],
+    event: Mapping[str, Any],
+    *,
+    previous_state_version: int,
+    physically_true_objects: Sequence[str],
+) -> None:
+    """Explicit legacy oracle fixture alias for backward-compatible tests."""
+
+    validate_canonical_replacement_state(
+        state,
+        event,
+        previous_state_version=previous_state_version,
+        physically_true_objects=physically_true_objects,
+    )
 
 
 def compile_controller_prompt(state: Mapping[str, Any]) -> str:

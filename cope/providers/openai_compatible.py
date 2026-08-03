@@ -182,6 +182,22 @@ class OpenAICompatibleRecoveryProvider(HighLevelRecoveryProvider):
     def regenerate(self, recovery_input: RecoveryInput) -> ProviderInvocation:
         return self._call("regenerate", recovery_input, self.full_contract)
 
+    def call_contract(
+        self, mode: str, recovery_input: RecoveryInput, output_contract: str
+    ) -> ProviderInvocation:
+        """Issue one audited draw for an experiment-specific output contract.
+
+        The adapter still owns credential access, request construction, timeout
+        handling, and the zero-retry policy.  Experiment code cannot bypass the
+        credential-redacting transport or silently substitute a second call.
+        """
+
+        if mode not in {"patch", "compact", "regenerate"}:
+            raise ValueError(f"unsupported provider mode {mode!r}")
+        if not isinstance(output_contract, str) or not output_contract.strip():
+            raise ValueError("output contract must be nonempty")
+        return self._call(mode, recovery_input, output_contract)
+
     def compact(self, recovery_input: RecoveryInput) -> ProviderInvocation:
         return self._call("compact", recovery_input, self.compact_contract)
 

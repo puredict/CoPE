@@ -1,0 +1,19 @@
+[run_project_env] Using project-isolated LIBERO/OpenVLA environment for this subprocess only.
+[run_project_env] LD_LIBRARY_PATH is unset here to avoid the broken system CUDA nvJitLink path.
+
+==================================== ERRORS ====================================
+_____________ ERROR collecting tests/test_semantic_oracle_pilot.py _____________
+ImportError while importing test module '/home/lijingsu/codex-worktrees/cope-x15-learned-live/tests/test_semantic_oracle_pilot.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.10/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_semantic_oracle_pilot.py:8: in <module>
+    from experiments.semantic_oracle_pilot import (
+experiments/semantic_oracle_pilot.py:18: in <module>
+    from cope.semantic_live_runner import (
+E   ImportError: cannot import name 'run_semantic_wiring' from 'cope.semantic_live_runner' (/home/lijingsu/codex-worktrees/cope-x15-learned-live/cope/semantic_live_runner.py)
+=========================== short test summary info ============================
+ERROR tests/test_semantic_oracle_pilot.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 0.41s

@@ -67,7 +67,7 @@ def _commitment(
     }
 
 
-def build_oracle_cancellation_state(
+def build_canonical_cancellation_state(
     event: Mapping[str, Any],
     *,
     previous_state_version: int = 0,
@@ -110,7 +110,17 @@ def build_oracle_cancellation_state(
     }
 
 
-def validate_oracle_cancellation_state(
+def build_oracle_cancellation_state(
+    event: Mapping[str, Any], *, previous_state_version: int = 0
+) -> dict[str, Any]:
+    """Explicit legacy oracle fixture alias for X04 and oracle-control tests."""
+
+    return build_canonical_cancellation_state(
+        event, previous_state_version=previous_state_version
+    )
+
+
+def validate_canonical_cancellation_state(
     state: Mapping[str, Any],
     event: Mapping[str, Any],
     *,
@@ -154,11 +164,28 @@ def validate_oracle_cancellation_state(
     if state.get("plan") != [] or state.get("execution_directive") != "HALT":
         raise FullStateValidationError("cancelled terminal state must compile to HALT")
 
-    canonical = build_oracle_cancellation_state(
+    canonical = build_canonical_cancellation_state(
         event,
         previous_state_version=previous_state_version,
     )
     validate_canonical_task_sections(state, canonical)
+
+
+def validate_oracle_cancellation_state(
+    state: Mapping[str, Any],
+    event: Mapping[str, Any],
+    *,
+    previous_state_version: int,
+    physically_true_objects: Sequence[str],
+) -> None:
+    """Explicit legacy oracle fixture alias for backward-compatible tests."""
+
+    validate_canonical_cancellation_state(
+        state,
+        event,
+        previous_state_version=previous_state_version,
+        physically_true_objects=physically_true_objects,
+    )
 
 
 def compile_execution_directive(state: Mapping[str, Any]) -> str:
