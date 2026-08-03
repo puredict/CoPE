@@ -50,6 +50,15 @@ def goal_commitment_id(object_name: str) -> str:
     return f"goal:in:{object_name}:{RECEPTACLE}"
 
 
+def validate_event_sibling_objects(done_object: str, pending_object: str) -> None:
+    """Validate a two-commitment task from event-bound object symbols."""
+
+    if done_object == pending_object:
+        raise FullStateValidationError("done and pending commitments must be distinct")
+    if done_object not in ALLOWED_OBJECTS or pending_object not in ALLOWED_OBJECTS:
+        raise FullStateValidationError("event contains an unknown task object")
+
+
 @dataclass(frozen=True)
 class MilestoneEvent:
     policy_step: int
@@ -314,9 +323,11 @@ def validate_canonical_replacement_state(
     done_object = str(event.get("done_object"))
     pending_object = str(event.get("pending_object"))
     replacement_object = str(event.get("replacement_object"))
-    if {done_object, pending_object} != set(ORIGINAL_OBJECTS):
-        raise FullStateValidationError("event does not identify exactly one done and one pending sibling")
-    if replacement_object not in ALLOWED_OBJECTS or replacement_object in ORIGINAL_OBJECTS:
+    validate_event_sibling_objects(done_object, pending_object)
+    if replacement_object not in ALLOWED_OBJECTS or replacement_object in {
+        done_object,
+        pending_object,
+    }:
         raise FullStateValidationError("replacement object is invalid")
     if event.get("target_commitment_id") != goal_commitment_id(pending_object):
         raise FullStateValidationError("event targets the wrong commitment")

@@ -4,11 +4,11 @@ from typing import Any, Mapping, Sequence
 
 from cope.semantic_replacement import (
     FULL_STATE_SCHEMA,
-    ORIGINAL_OBJECTS,
     RECEPTACLE,
     FullStateValidationError,
     MilestoneEvent,
     goal_commitment_id,
+    validate_event_sibling_objects,
     validate_canonical_task_sections,
 )
 from cope.operations import apply_patch
@@ -135,8 +135,7 @@ def validate_canonical_cancellation_state(
         raise FullStateValidationError("event is not authorized to cancel the task goal")
     done_object = str(event.get("done_object"))
     pending_object = str(event.get("pending_object"))
-    if {done_object, pending_object} != set(ORIGINAL_OBJECTS):
-        raise FullStateValidationError("event does not identify one done and one pending sibling")
+    validate_event_sibling_objects(done_object, pending_object)
     if event.get("target_commitment_id") != goal_commitment_id(pending_object):
         raise FullStateValidationError("event targets the wrong commitment")
     if done_object not in set(physically_true_objects):
