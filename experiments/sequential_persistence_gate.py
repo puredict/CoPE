@@ -208,16 +208,21 @@ def main() -> int:
                     receipts[0]["logical_after_hash"]
                     == receipts[1]["logical_before_hash"]
                 )
+                typed_continuity = (
+                    receipts[0].get("after_hash") == receipts[1].get("before_hash")
+                    if arm in {"cope", "neutral_patch"}
+                    else True
+                )
                 revisions = [
                     receipts[0]["revision_before"],
                     receipts[0]["revision_after"],
                     receipts[1]["revision_after"],
                 ]
-                passed = continuity and revisions == [1, 2, 3]
+                passed = continuity and typed_continuity and revisions == [1, 2, 3]
                 error = "" if passed else "continuity_or_revision_failure"
             except Exception as exc:
                 final_state, receipts, directives = {}, [], []
-                continuity, revisions = False, []
+                continuity, typed_continuity, revisions = False, False, []
                 passed, error = False, f"{type(exc).__name__}:{exc}"
             row = {
                 "case_id": case["case_id"],
@@ -227,6 +232,7 @@ def main() -> int:
                 "passed": passed,
                 "revision_path": ">".join(str(item) for item in revisions),
                 "adjacent_logical_hash_continuity": continuity,
+                "adjacent_typed_hash_continuity": typed_continuity,
                 "final_state_sha256": stable_hash(final_state) if final_state else "",
                 "final_directive": directives[-1] if directives else "",
                 "provider_calls": 0,

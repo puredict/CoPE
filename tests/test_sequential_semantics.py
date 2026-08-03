@@ -13,6 +13,9 @@ from cope.sequential_semantics import (
     full_replan_oracle_proposal,
     materialize_fsr_proposal,
     materialize_full_replan_proposal,
+    execute_typed_sparse_transition,
+    initialize_typed_sequence_state,
+    sparse_oracle_proposal,
     validate_sequence_transition,
 )
 from cope.semantic_replacement import goal_commitment_id
@@ -138,6 +141,35 @@ def test_fsr_and_full_replan_materialize_same_incremental_state():
     )
     assert fsr == replan == expected
     assert fsr_directive == replan_directive
+
+
+@pytest.mark.parametrize("neutral", [False, True])
+def test_sparse_typed_receipts_form_one_continuous_state_chain(neutral):
+    initial, first, middle, second = fixture()
+    typed = initialize_typed_sequence_state(
+        sequence_id="unit",
+        done_object="alphabet_soup_1",
+        pending_object="tomato_sauce_1",
+    )
+    typed, logical, receipt1, _ = execute_typed_sparse_transition(
+        typed,
+        initial,
+        first,
+        sparse_oracle_proposal(first, neutral=neutral),
+        neutral=neutral,
+        physically_true_objects=("alphabet_soup_1",),
+    )
+    typed, logical, receipt2, _ = execute_typed_sparse_transition(
+        typed,
+        logical,
+        second,
+        sparse_oracle_proposal(second, neutral=neutral),
+        neutral=neutral,
+        physically_true_objects=("alphabet_soup_1",),
+    )
+    assert receipt1["after_hash"] == receipt2["before_hash"]
+    assert [receipt1["revision_before"], receipt1["revision_after"], receipt2["revision_after"]] == [1, 2, 3]
+    assert logical == build_expected_next_state(middle, second)
 
 
 def test_fsr_cannot_omit_historical_commitment():
