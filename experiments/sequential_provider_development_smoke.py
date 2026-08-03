@@ -33,6 +33,46 @@ EXPECTED_CASES = {
     "task0_reverse_replace_cancel", "task0_reverse_replace_replace",
 }
 EXPECTED_CASE_MANIFEST_SHA256 = "3c97c85cb66d048e39e575e4cce56a8d76a699471ecd462df60c37175d0bfa49"
+SMOKE_RESULT_FIELDS = (
+    "case_id", "arm", "event_index", "provider_called", "passed",
+    "failure_class", "input_sha256", "proposal_sha256", "prompt_tokens",
+    "completion_tokens", "latency_seconds",
+)
+
+
+def summarize_smoke(cases: list[dict[str, str]], rows: list[dict[str, Any]]) -> dict[str, Any]:
+    expected = {
+        (case["case_id"], arm, event_index)
+        for case in cases for arm in ARMS for event_index in (1, 2)
+    }
+    keys = [
+        (str(row["case_id"]), str(row["arm"]), int(row["event_index"]))
+        for row in rows
+    ]
+    if len(rows) != 32 or len(set(keys)) != 32 or set(keys) != expected:
+        raise ValueError("smoke journal is incomplete, duplicate, or outside manifest")
+    if any(set(row) != set(SMOKE_RESULT_FIELDS) for row in rows):
+        raise ValueError("smoke journal row schema mismatch")
+    sequence_pass = {
+        (case["case_id"], arm): all(
+            bool(row["passed"]) for row in rows
+            if row["case_id"] == case["case_id"] and row["arm"] == arm
+        )
+        for case in cases for arm in ARMS
+    }
+    gate = all(
+        any(
+            sequence_pass[(case["case_id"], arm)]
+            for case in cases if case["sequence_type"] == kind
+        )
+        for arm in ARMS for kind in ("replace_then_cancel", "replace_then_replace")
+    )
+    return {
+        "gate": gate,
+        "passed_event_cells": sum(bool(row["passed"]) for row in rows),
+        "result_cells": len(rows),
+        "provider_calls": sum(bool(row["provider_called"]) for row in rows),
+    }
 
 
 def parse_args() -> argparse.Namespace:
@@ -139,6 +179,8 @@ def main() -> int:
                     rows.append(row)
                     with journal.open("a", encoding="utf-8") as handle:
                         handle.write(canonical_json(row) + "\n")
+                        handle.flush(); os.fsync(handle.fileno())
+                    print(canonical_json(row), flush=True)
                     continue
                 recovery = build_sequential_recovery_input(
                     sequence_id=case["case_id"], task_id=0, state_id=0,
@@ -197,25 +239,15 @@ def main() -> int:
                     handle.flush(); os.fsync(handle.fileno())
                 print(canonical_json(row), flush=True)
     with (args.output_dir / "02_RESULTS.csv").open("x", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=list(rows[0]), lineterminator="\n")
+        writer = csv.DictWriter(handle, fieldnames=SMOKE_RESULT_FIELDS, lineterminator="\n")
         writer.writeheader(); writer.writerows(rows)
-    complete = sum(bool(row["passed"]) for row in rows)
-    sequence_pass = {
-        (case["case_id"], arm): all(
-            bool(row["passed"]) for row in rows
-            if row["case_id"] == case["case_id"] and row["arm"] == arm
-        )
-        for case in cases for arm in ARMS
-    }
-    gate = all(
-        any(sequence_pass[(case["case_id"], arm)] for case in cases if case["sequence_type"] == kind)
-        for arm in ARMS for kind in ("replace_then_cancel", "replace_then_replace")
-    )
+    summary = summarize_smoke(cases, rows)
+    gate = bool(summary["gate"])
     (args.output_dir / "03_RESULT.md").write_text(
         "# Sequential live-provider development smoke\n\n"
         f"- Gate: **{'PASS' if gate else 'FAIL'}**\n"
-        f"- Passed event cells: **{complete}/{len(rows)}**\n"
-        f"- Provider calls: **{sum(bool(row['provider_called']) for row in rows)}**\n"
+        f"- Passed event cells: **{summary['passed_event_cells']}/{summary['result_cells']}**\n"
+        f"- Provider calls: **{summary['provider_calls']}**\n"
         "- Simulator states indexed: **0**\n",
         encoding="utf-8",
     )

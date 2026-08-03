@@ -36,7 +36,8 @@ is never written to git, command artifacts, or result logs.
 - exact sequence endpoint, McNemar test, exact conditional interval and Holm
   secondary correction frozen before outcomes;
 - fail-closed dependency skips, zero retry, credential guard, fsync journals,
-  and complete-journal disconnect recovery implemented.
+  and complete-journal disconnect recovery implemented for both smoke and
+  formal runs.
 
 ## Locked artifacts
 
@@ -79,6 +80,10 @@ external replication when a fresh four-object scene is available.
 ## Next automatic transition
 
 Once the remote credential environment is present, run the locked 32-call
-symbolic smoke first.  If and only if its gate passes without prompt repair,
-launch the detached 320-cell formal runner.  If smoke repair is required,
-version the contracts and repeat oracle gate/cold preflight before formal use.
+symbolic smoke first.  Commit its complete result evidence and restore a clean
+worktree; this is an intentional provenance checkpoint required by the formal
+runner.  If and only if the smoke gate passes without prompt repair, launch the
+detached 320-cell formal runner.  If smoke repair is required, version the
+contracts and repeat oracle gate/cold preflight before formal use.  After a
+disconnect, derive outputs only from a complete unique journal; never rerun
+individual calls to fill a partial result.
