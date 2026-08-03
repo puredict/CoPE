@@ -15,6 +15,10 @@ provider call in any arm and is reported only in the substrate denominator.
 Every eligible event-1 cell must record one provider attempt and zero retries.
 Event 2 must also be attempted unless event 1 failed; in that case it must have
 no call and the exact failure class `dependency_skip_after_event1_failure`.
+For every eligible sequence, all eight rows must share nonempty physical-prefix
+action and simulator hashes.  All attempted calls at the same event index must
+also share one nonempty common-input hash across arms.  Any divergence aborts
+analysis rather than becoming a method outcome.
 
 ## Frozen sequence endpoint
 

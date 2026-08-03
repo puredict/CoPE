@@ -138,8 +138,25 @@ def main() -> int:
         is_eligible = values.pop()
         calls = [truth(row["provider_called"]) for row in rows]
         if is_eligible:
+            for field in ("prefix_action_sha256", "prefix_simulator_sha256"):
+                hashes = {row[field] for row in rows}
+                if len(hashes) != 1 or not next(iter(hashes)):
+                    raise ValueError(
+                        f"eligible sequence has divergent {field}: {sequence_id}"
+                    )
             if any(int(row["retry_count"]) != 0 for row in rows):
                 raise ValueError(f"eligible sequence has a retry: {sequence_id}")
+            for event_index in (1, 2):
+                attempted = [
+                    row for row in rows
+                    if int(row["event_index"]) == event_index
+                    and truth(row["provider_called"])
+                ]
+                input_hashes = {row["input_sha256"] for row in attempted}
+                if attempted and (len(input_hashes) != 1 or not next(iter(input_hashes))):
+                    raise ValueError(
+                        f"common event-{event_index} input drift: {sequence_id}"
+                    )
             for arm in ARMS:
                 pair = sorted(
                     (row for row in rows if row["arm"] == arm),

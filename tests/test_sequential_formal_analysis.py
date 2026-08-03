@@ -80,6 +80,9 @@ def test_analysis_pipeline_applies_frozen_decisive_gate(tmp_path, monkeypatch):
                     proposal_bytes=(100 if arm == "cope" else 200),
                     prompt_tokens=10, completion_tokens=5, latency_seconds=0.1,
                     failure_class="",
+                    input_sha256=f"input-{sequence['sequence_id']}-{event_index}",
+                    prefix_action_sha256=f"action-{sequence['sequence_id']}",
+                    prefix_simulator_sha256=f"sim-{sequence['sequence_id']}",
                 )
                 if arm == "neutral_patch" and sequence_index < 8 and event_index == 2:
                     row["final_intent_satisfied"] = False
@@ -103,3 +106,19 @@ def test_analysis_pipeline_applies_frozen_decisive_gate(tmp_path, monkeypatch):
     assert float(primary["exact_mcnemar_p"]) == 0.0078125
     assert float(primary["locality_median_relative_byte_reduction"]) == 0.5
     assert primary["decisive_experiment_gate"] == "True"
+
+    rows[0]["input_sha256"] = "contaminated-arm-specific-input"
+    contaminated = tmp_path / "contaminated.csv"
+    with contaminated.open("x", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=RESULT_FIELDS, lineterminator="\n")
+        writer.writeheader(); writer.writerows(rows)
+    monkeypatch.setattr(
+        sys, "argv",
+        [
+            "analyze", "--manifest", str(manifest),
+            "--event-results", str(contaminated),
+            "--output-dir", str(tmp_path / "rejected"),
+        ],
+    )
+    with pytest.raises(ValueError, match="common event-1 input drift"):
+        MODULE.main()
