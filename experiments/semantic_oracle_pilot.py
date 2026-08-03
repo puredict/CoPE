@@ -53,6 +53,22 @@ ARMS = ("native_fsr_pc", "oracle_cope")
 CONTROLLER_CONFIG = OracleSkillConfig(max_move_steps=60)
 
 
+def legacy_controller_config_hash() -> str:
+    """Hash the field set frozen before bounded regrasp was introduced.
+
+    X04 authorizes the historical one-shot controller.  The later opt-in
+    regrasp field defaults to that same centered one-shot behavior, but adding
+    it to the serialized payload would invalidate the already published X04
+    authorization digest.  Fail closed if its compatibility default changes.
+    """
+
+    payload = asdict(CONTROLLER_CONFIG)
+    offsets = payload.pop("grasp_attempt_xy_offsets_m", None)
+    if offsets not in ([[0.0, 0.0]], ((0.0, 0.0),)):
+        raise ValueError("X04 compatibility requires one centered grasp attempt")
+    return stable_hash(payload)
+
+
 RESULT_FIELDS = (
     "pair_id",
     "arm",
@@ -193,7 +209,7 @@ def load_authorization(path: Path, *, repo_root: Path) -> PilotAuthorization:
     for key, expected in required.items():
         if row.get(key) != expected:
             raise ValueError(f"pilot authorization {key} is not the frozen value")
-    controller_hash = stable_hash(asdict(CONTROLLER_CONFIG))
+    controller_hash = legacy_controller_config_hash()
     if row.get("controller_config_sha256") != controller_hash:
         raise ValueError("pilot authorization controller config differs from X04")
 
@@ -309,7 +325,7 @@ def run_arm(
             "authorization_sha256": authorization.sha256,
             "source_manifest_sha256": authorization.manifest_sha256,
             "semantic_config_sha256": authorization.semantic_config.sha256,
-            "controller_config_sha256": stable_hash(asdict(CONTROLLER_CONFIG)),
+            "controller_config_sha256": legacy_controller_config_hash(),
             "resolution": int(authorization.row["resolution"]),
             "seed": state_id,
         }
@@ -720,9 +736,7 @@ def main() -> int:
                             "authorization_sha256": authorization.sha256,
                             "source_manifest_sha256": authorization.manifest_sha256,
                             "semantic_config_sha256": authorization.semantic_config.sha256,
-                            "controller_config_sha256": stable_hash(
-                                asdict(CONTROLLER_CONFIG)
-                            ),
+                            "controller_config_sha256": legacy_controller_config_hash(),
                             "failure_stage": "pilot_episode",
                             "error_type": type(exc).__name__,
                             "error_message": str(exc),
