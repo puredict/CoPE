@@ -1,0 +1,5 @@
+arm,assigned,provider_ok,parser_valid,semantic_correct,completion_tokens,proposal_bytes,latency_seconds
+cope_semantic,36,36,36,36,6711,12870,57.675059
+neutral_typed,36,36,36,34,6758,11906,56.599815
+compact_semantic,36,36,36,29,6729,13055,56.532332
+fsr_semantic,36,36,36,32,25574,44522,147.582883
