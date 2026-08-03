@@ -21,6 +21,7 @@ from cope.semantic_live_runner import (
     make_paired_recovery_inputs,
     build_expected_live_post_state,
     build_live_pre_state,
+    commit_live_shared_envelope,
     execute_live_cope_patch,
     parse_live_cope_patch,
     run_learned_semantic_triplet,
@@ -556,6 +557,40 @@ def test_state0_gate_requires_both_families_and_all_three_provider_ok() -> None:
     assert state0_expansion_allowed([replacement, cancellation]) is True
     cancellation["arms"][0]["provider_status"] = "timeout"
     assert state0_expansion_allowed([replacement, cancellation]) is False
+
+
+def test_live_shared_envelope_commits_metadata_outside_provider_patch() -> None:
+    event = _event_for(frozen_row(0, "cancel_pending_goal"))
+    result = commit_live_shared_envelope(
+        event,
+        {
+            "arm": "cope",
+            "semantic_correct": True,
+            "trusted_receipt": {"patch": _cope_output(event)},
+            "after_state_sha256": "c" * 64,
+        },
+    )
+    assert result["pass"] is True
+    assert result["transaction_metadata_model_generated"] is False
+    assert result["transaction_meta"]["state_version"] == event["valid_from_state_version"] + 1
+    assert result["transaction_meta"]["processed_events"][0]["event_id"] == event["event_id"]
+
+
+def test_live_shared_envelope_rejects_model_generated_transaction_metadata() -> None:
+    event = _event_for(frozen_row(0, "cancel_pending_goal"))
+    patch = _cope_output(event)
+    patch["state_version"] = 999
+    result = commit_live_shared_envelope(
+        event,
+        {
+            "arm": "cope",
+            "semantic_correct": True,
+            "trusted_receipt": {"patch": patch},
+            "after_state_sha256": "c" * 64,
+        },
+    )
+    assert result["pass"] is False
+    assert "transaction metadata" in result["error"]
 
 
 def test_recorded_state0_gate_avoids_provider_retry() -> None:

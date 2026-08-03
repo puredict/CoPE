@@ -116,6 +116,13 @@ def _flatten(triplet: Mapping[str, Any], runtime: Mapping[str, Any]) -> list[dic
                 "case_id": triplet["case_id"],
                 "state_id": triplet["state_id"],
                 "event_type": triplet["event_type"],
+                "shared_envelope_pass": triplet["shared_envelope"]["pass"],
+                "shared_envelope_error": triplet["shared_envelope"]["error"],
+                "shared_transaction_meta_sha256": triplet["shared_envelope"].get("transaction_meta_sha256", ""),
+                "shared_semantic_state_sha256": triplet["shared_envelope"].get("semantic_state_sha256", ""),
+                "transaction_metadata_model_generated": triplet["shared_envelope"].get(
+                    "transaction_metadata_model_generated", False
+                ),
                 "arm": arm["arm"],
                 "provider_called": arm["provider_called"],
                 "provider_status": arm["provider_status"],
@@ -418,6 +425,13 @@ def main() -> int:
         "oracle_substitution": any(item["oracle_substitution"] for item in triplets),
         "post_interruption_action_delta": sum(
             int(item["post_interruption_action_delta"]) for item in triplets
+        ),
+        "shared_envelope_pass": all(
+            item.get("shared_envelope", {}).get("pass") is True for item in triplets
+        ),
+        "transaction_metadata_model_generated": any(
+            item.get("shared_envelope", {}).get("transaction_metadata_model_generated") is True
+            for item in triplets
         ),
         "replacement": {
             "triplets": sum(item["event_type"] == "replace_pending_goal" for item in triplets)

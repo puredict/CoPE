@@ -20,6 +20,7 @@ from cope.schema import (
     Patch,
     PatchContext,
 )
+from cope.shared_commit_envelope import SharedEnvelopeError, commit_envelope
 from cope.semantic_cancellation import (
     apply_oracle_cancellation_patch,
     build_cancellation_event,
@@ -578,6 +579,49 @@ def build_live_pre_state(event: Mapping[str, Any]) -> dict[str, Any]:
     }
 
 
+def commit_live_shared_envelope(
+    event: Mapping[str, Any], cope_arm: Mapping[str, Any]
+) -> dict[str, Any]:
+    """Bind a provider-selected live semantic patch to trusted transaction metadata."""
+    if cope_arm.get("arm") != "cope" or cope_arm.get("semantic_correct") is not True:
+        return {"pass": False, "error": "CoPE semantic arm did not pass"}
+    receipt = cope_arm.get("trusted_receipt")
+    patch = receipt.get("patch") if isinstance(receipt, Mapping) else None
+    if not isinstance(patch, Mapping):
+        return {"pass": False, "error": "trusted CoPE receipt lacks the provider patch"}
+    banned = {"state_version", "evidence_version", "processed_events", "payload_sha256", "receipt"}
+    if set(patch) & banned:
+        return {"pass": False, "error": "provider patch generated transaction metadata"}
+    pre_state = build_live_pre_state(event)
+    transaction_meta = {
+        "schema_version": "transaction-meta-v1",
+        "state_version": int(pre_state["state_version"]),
+        "evidence_version": int(pre_state["evidence_versions"]["world_version"]),
+        "processed_events": [],
+    }
+    envelope_event = copy.deepcopy(dict(event))
+    envelope_event["base_version"] = int(event["valid_from_state_version"])
+    try:
+        committed = commit_envelope(transaction_meta, envelope_event)
+    except (KeyError, TypeError, ValueError, SharedEnvelopeError) as exc:
+        return {"pass": False, "error": f"{type(exc).__name__}:{exc}"}
+    if (
+        committed["state_version"] != transaction_meta["state_version"] + 1
+        or committed["evidence_version"] != int(event["world_version"])
+        or [row["event_id"] for row in committed["processed_events"]] != [event["event_id"]]
+    ):
+        return {"pass": False, "error": "trusted envelope postcondition mismatch"}
+    return {
+        "pass": True,
+        "error": "",
+        "transaction_metadata_model_generated": False,
+        "semantic_state_sha256": str(cope_arm.get("after_state_sha256", "")),
+        "transaction_meta_sha256": stable_hash(committed),
+        "event_sha256": stable_hash(envelope_event),
+        "transaction_meta": committed,
+    }
+
+
 def build_expected_live_post_state(event: Mapping[str, Any]) -> dict[str, Any]:
     """Trusted event-bound validation target, never a provider substitute."""
 
@@ -1093,6 +1137,9 @@ def run_learned_semantic_triplet(
         )
         for arm, _mode, _contract in specs
     ]
+    shared_envelope = commit_live_shared_envelope(
+        event, next(item for item in arms if item["arm"] == "cope")
+    )
     expected_payload = common.as_payload()
     fairness = bool(
         all(call.raw_request.get("recovery_input") == expected_payload for call in invocations.values())
@@ -1147,6 +1194,7 @@ def run_learned_semantic_triplet(
         "post_interruption_action_delta": action_delta,
         "simulator_state_before": simulator_before,
         "simulator_state_after": simulator_after,
+        "shared_envelope": shared_envelope,
         "arms": arms,
     }
 
@@ -1157,6 +1205,8 @@ def state0_expansion_allowed(triplets: Sequence[Mapping[str, Any]]) -> bool:
     if any(int(item.get("state_id", -1)) != 0 for item in triplets):
         return False
     for triplet in triplets:
+        if triplet.get("shared_envelope", {}).get("pass") is not True:
+            return False
         arms = triplet.get("arms")
         if not isinstance(arms, list) or {item.get("arm") for item in arms} != {
             "cope",
