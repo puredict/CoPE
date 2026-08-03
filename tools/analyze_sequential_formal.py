@@ -120,8 +120,19 @@ def main() -> int:
         is_eligible = values.pop()
         calls = [truth(row["provider_called"]) for row in rows]
         if is_eligible:
-            if not all(calls) or any(int(row["retry_count"]) != 0 for row in rows):
-                raise ValueError(f"eligible sequence has missing call or retry: {sequence_id}")
+            if any(int(row["retry_count"]) != 0 for row in rows):
+                raise ValueError(f"eligible sequence has a retry: {sequence_id}")
+            for arm in ARMS:
+                pair = sorted(
+                    (row for row in rows if row["arm"] == arm),
+                    key=lambda row: int(row["event_index"]),
+                )
+                if not truth(pair[0]["provider_called"]):
+                    raise ValueError(f"eligible event 1 lacks provider call: {sequence_id}/{arm}")
+                if not truth(pair[1]["provider_called"]):
+                    event1_ok = truth(pair[0]["parser_valid"]) and truth(pair[0]["semantic_valid"])
+                    if event1_ok or pair[1]["failure_class"] != "dependency_skip_after_event1_failure":
+                        raise ValueError(f"invalid event-2 dependency skip: {sequence_id}/{arm}")
             eligible.append(sequence_id)
         else:
             if any(calls):

@@ -66,6 +66,7 @@ def build_sequential_recovery_input(
     physically_true_objects: Sequence[str],
     processed_event_ids: Sequence[str],
     event_index: int,
+    rgb_observation_sha256: str = "RUNTIME_BOUND_BEFORE_PROVIDER_CALL",
 ) -> RecoveryInput:
     return RecoveryInput(
         schema_version="sequential-recovery-input-v1",
@@ -77,7 +78,7 @@ def build_sequential_recovery_input(
             "source": "post_prefix_runtime",
             "task_id": int(task_id),
             "state_id": int(state_id),
-            "rgb_observation_sha256": "RUNTIME_BOUND_BEFORE_PROVIDER_CALL",
+            "rgb_observation_sha256": rgb_observation_sha256,
         },
         event=copy.deepcopy(dict(event)),
         public_action_history=(

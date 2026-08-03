@@ -12,7 +12,9 @@ The event-result table must contain exactly one row for every planned
 missing, or extra cell is accepted.  `substrate_eligible` must be identical
 across all eight rows of a sequence.  An ineligible shared prefix has no
 provider call in any arm and is reported only in the substrate denominator.
-Every eligible cell must record one provider attempt and zero retries.
+Every eligible event-1 cell must record one provider attempt and zero retries.
+Event 2 must also be attempted unless event 1 failed; in that case it must have
+no call and the exact failure class `dependency_skip_after_event1_failure`.
 
 ## Frozen sequence endpoint
 
@@ -26,7 +28,8 @@ For an eligible sequence-arm pair, success requires:
 5. the event-2 final intent (HALT or final placement) is satisfied;
 6. action and call budgets are respected on both events.
 
-Timeout, provider outage, parse failure, semantic rejection, invariant failure,
+Timeout, provider outage, parse failure, semantic rejection, dependency skip,
+invariant failure,
 stale execution, incorrect final intent, retry, or budget violation is a
 sequence failure.  There is no repair or imputation.
 
