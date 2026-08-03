@@ -15,12 +15,15 @@ def main() -> int:
     parser.add_argument("--env-name", required=True)
     parser.add_argument("--cwd", type=Path, required=True)
     parser.add_argument("--log", type=Path, required=True)
+    parser.add_argument("--secret-parts", type=int, default=1)
     parser.add_argument("command", nargs=argparse.REMAINDER)
     args = parser.parse_args()
     command = args.command[1:] if args.command[:1] == ["--"] else args.command
     if not command:
         parser.error("a command is required after --")
-    secret = getpass.getpass("")
+    if args.secret_parts < 1:
+        parser.error("--secret-parts must be positive")
+    secret = "".join(getpass.getpass("") for _ in range(args.secret_parts))
     if not secret:
         raise SystemExit("empty secret")
     environment = os.environ.copy()
