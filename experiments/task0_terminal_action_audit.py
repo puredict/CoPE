@@ -90,6 +90,7 @@ def main() -> int:
     rows: list[dict[str, Any]] = []
     for spec in SPECS:
         for state_id in STATE_IDS:
+            case = {**spec, "state_id": state_id}
             row: dict[str, Any] = {
                 "task_id": 0,
                 "state_id": state_id,
@@ -114,7 +115,7 @@ def main() -> int:
             env = None
             try:
                 env, controller, view, prefix = create_prefixed_env(
-                    task, states[state_id], spec, args.resolution
+                    task, states[state_id], case, args.resolution
                 )
                 row["prefix_success"] = prefix["eligible"]
                 row["prefix_action_sha256"] = prefix["action_sha256"]
@@ -127,7 +128,7 @@ def main() -> int:
                     trace = []
                     for index in range(5):
                         controller.hold(f"terminal_audit_stability_{index + 1}", 1, gripper=-1.0)
-                        trace.append(predicate_snapshot(view, spec))
+                        trace.append(predicate_snapshot(view, case))
                     row["terminal_trace"] = canonical_json(trace)
                     expected = {"done": True, "b": False, "c": False, "d": True}
                     stable = len(trace) == 5 and all(item == expected for item in trace)
