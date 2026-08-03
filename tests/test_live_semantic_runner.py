@@ -14,6 +14,8 @@ from cope.semantic_cancellation import build_cancellation_event
 from cope.semantic_live_runner import (
     DEVELOPMENT_STATE_IDS,
     EVENT_TYPES,
+    FORMAL_STATE_IDS,
+    PERMANENT_RESERVE_STATE_IDS,
     LearnedSemanticError,
     LoadedSemanticConfig,
     finalize_mutation_accounting,
@@ -81,6 +83,20 @@ def test_case_manifest_rejects_retuned_objects_or_threshold() -> None:
     rows[0]["stable_steps"] = "4"
     with pytest.raises(ValueError, match="stability threshold"):
         validate_case_rows(rows)
+
+
+def test_formal_manifest_is_exact_and_permanent_reserve_stays_locked() -> None:
+    assert FORMAL_STATE_IDS == frozenset(range(27, 47))
+    assert PERMANENT_RESERVE_STATE_IDS == frozenset(range(47, 50))
+    rows = [
+        frozen_row(state_id, event_type)
+        for state_id in sorted(FORMAL_STATE_IDS)
+        for event_type in EVENT_TYPES
+    ]
+    validate_case_rows(rows, authorized_state_ids=FORMAL_STATE_IDS)
+    rows[-1]["state_id"] = "47"
+    with pytest.raises(ValueError, match="caller-authorized semantic set"):
+        validate_case_rows(rows, authorized_state_ids=FORMAL_STATE_IDS)
 
 
 def test_paired_recovery_input_is_byte_identical() -> None:
@@ -440,7 +456,12 @@ class ScriptedProvider:
         )
 
 
-def _run_learned(row: dict[str, str], provider: Any | None = None) -> dict[str, Any]:
+def _run_learned(
+    row: dict[str, str],
+    provider: Any | None = None,
+    *,
+    authorized_state_ids: set[int] | None = None,
+) -> dict[str, Any]:
     return run_learned_semantic_triplet(
         row=row,
         config=synthetic_config(),
@@ -451,6 +472,7 @@ def _run_learned(row: dict[str, str], provider: Any | None = None) -> dict[str, 
         simulator_state_probe=lambda: SIM_HASH,
         action_counter=lambda: 120,
         provider=provider or ScriptedProvider(),
+        authorized_state_ids=authorized_state_ids,
     )
 
 
@@ -478,6 +500,14 @@ def test_learned_triplet_is_provider_backed_fair_and_trusted(event_type: str) ->
         == {"done": True, "pending": False, "validator_is_fake": False}
         for item in result["arms"]
     )
+
+
+def test_learned_triplet_requires_explicit_formal_state_authorization() -> None:
+    row = frozen_row(27, "cancel_pending_goal")
+    with pytest.raises(LearnedSemanticError, match="caller-authorized semantic set"):
+        _run_learned(row)
+    result = _run_learned(row, authorized_state_ids=set(FORMAL_STATE_IDS))
+    assert result["state_id"] == 27
 
 
 def test_rejects_forged_model_receipt() -> None:

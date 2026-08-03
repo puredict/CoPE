@@ -25,7 +25,11 @@ from cope.semantic_live_runner import (
     X15_SEED,
     X15_TEMPERATURE,
     X15_TIMEOUT_SECONDS,
+    FORMAL_SEMANTIC_CONFIG_SCHEMA,
+    FORMAL_STATE_IDS,
     LIVE_ARMS,
+    PERMANENT_RESERVE_STATE_IDS,
+    SEMANTIC_CONFIG_SCHEMA,
     load_semantic_config,
     recorded_state0_expansion_allowed,
     run_learned_semantic_triplet,
@@ -54,7 +58,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--semantic-config", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--resolution", type=int, default=64)
-    parser.add_argument("--expand-states-1-4", action="store_true")
+    scope = parser.add_mutually_exclusive_group()
+    scope.add_argument("--expand-states-1-4", action="store_true")
+    scope.add_argument(
+        "--formal-reserved",
+        action="store_true",
+        help="Run the preregistered formal states 27--46; never index 47--49",
+    )
     parser.add_argument("--state0-results", type=Path)
     execution = parser.add_mutually_exclusive_group()
     execution.add_argument(
@@ -247,9 +257,21 @@ def main() -> int:
         raise FileExistsError(f"refusing to overwrite {output_dir}")
     runtime_commit = repository_commit_and_clean(repo_root)
     config = load_semantic_config(args.semantic_config, repo_root=repo_root)
+    expected_config_schema = (
+        FORMAL_SEMANTIC_CONFIG_SCHEMA
+        if args.formal_reserved
+        else SEMANTIC_CONFIG_SCHEMA
+    )
+    if config.row.get("schema_version") != expected_config_schema:
+        raise RuntimeError("semantic config schema does not match the requested state scope")
+    if args.formal_reserved and not args.execute_valid_arms:
+        raise RuntimeError("formal reserved mode requires --execute-valid-arms")
+    if args.formal_reserved and args.state0_results is not None:
+        raise RuntimeError("formal reserved mode forbids retained development results")
+    authorized_state_ids = FORMAL_STATE_IDS if args.formal_reserved else None
     with args.case_manifest.open(newline="", encoding="utf-8") as handle:
         rows = list(csv.DictReader(handle))
-    validate_case_rows(rows)
+    validate_case_rows(rows, authorized_state_ids=authorized_state_ids)
     provider = OpenAICompatibleRecoveryProvider(
         {
             "provider": args.provider,
@@ -290,6 +312,7 @@ def main() -> int:
     task = suite.get_task(1)
     initial_states = suite.get_task_init_states(1)
     controller_config = OracleSkillConfig(max_move_steps=60)
+    reserved_states_consumed = bool(args.formal_reserved)
     common_runtime = {
         "runtime_git_commit": runtime_commit,
         "case_manifest_sha256": sha256_file(args.case_manifest),
@@ -302,7 +325,16 @@ def main() -> int:
         "max_completion_tokens": provider.metadata.max_completion_tokens,
         "retry_budget": provider.metadata.max_retries,
         "repair_budget": 0,
-        "reserved_states_27_49_consumed": False,
+        "formal_reserved_mode": bool(args.formal_reserved),
+        "authorized_state_ids": ";".join(
+            str(item)
+            for item in sorted(FORMAL_STATE_IDS if args.formal_reserved else range(5))
+        ),
+        "permanent_reserve_state_ids": ";".join(
+            str(item) for item in sorted(PERMANENT_RESERVE_STATE_IDS)
+        ),
+        "reserve_manifest_sha256": config.reserve_manifest_sha256,
+        "reserved_states_27_49_consumed": reserved_states_consumed,
     }
     triplets: list[dict[str, Any]] = []
     flat_rows: list[dict[str, Any]] = []
@@ -315,8 +347,9 @@ def main() -> int:
 
     def run_states(state_ids: Sequence[int]) -> None:
         for state_id in state_ids:
-            if state_id not in range(5):
-                raise RuntimeError("X15 attempted to leave development states 0--4")
+            allowed_states = FORMAL_STATE_IDS if args.formal_reserved else range(5)
+            if state_id not in allowed_states:
+                raise RuntimeError("runner attempted to leave its exact authorized state set")
             state_rows = [row for row in rows if int(row["state_id"]) == state_id]
             if embodied_mode:
                 # HALT is evaluated first and emits no action, so both event
@@ -410,6 +443,7 @@ def main() -> int:
                         simulator_state_probe=lambda: simulator_state_hash(env),
                         action_counter=lambda: len(controller.action_history),
                         provider=provider,
+                        authorized_state_ids=authorized_state_ids,
                     )
                     triplets.append(triplet)
                     runtime = {
@@ -522,7 +556,7 @@ def main() -> int:
                                     "semantic_correct": False,
                                     "execution_attempted": False,
                                     "matched_prefix_pass": True,
-                                    "shared_envelope_pass": "",
+                                    "shared_envelope_pass": triplet["shared_envelope"]["pass"],
                                     "selection_source": "",
                                     "execution_kind": "fail_closed",
                                     "selected_object": "",
@@ -543,7 +577,7 @@ def main() -> int:
                                     "simulator_state_before_execution": original_prefix_sim_sha256,
                                     "simulator_state_after_execution": original_prefix_sim_sha256,
                                     "runtime_git_commit": runtime_commit,
-                                    "reserved_states_27_49_consumed": False,
+                                    "reserved_states_27_49_consumed": reserved_states_consumed,
                                 }
                             else:
                                 decision = (
@@ -624,11 +658,7 @@ def main() -> int:
                                         "semantic_correct": True,
                                         "execution_attempted": True,
                                         "matched_prefix_pass": True,
-                                        "shared_envelope_pass": (
-                                            triplet["shared_envelope"]["pass"]
-                                            if arm_name == "cope"
-                                            else ""
-                                        ),
+                                        "shared_envelope_pass": triplet["shared_envelope"]["pass"],
                                         "selection_source": decision[
                                             "selection_source"
                                         ],
@@ -673,7 +703,7 @@ def main() -> int:
                                         "simulator_state_before_execution": execution_sim_before,
                                         "simulator_state_after_execution": execution_sim_after,
                                         "runtime_git_commit": runtime_commit,
-                                        "reserved_states_27_49_consumed": False,
+                                        "reserved_states_27_49_consumed": reserved_states_consumed,
                                     }
                                 finally:
                                     if replay_env is not None:
@@ -698,7 +728,10 @@ def main() -> int:
                     env.close()
 
     state0_triplets: list[dict[str, Any]] = []
-    if args.expand_states_1_4:
+    if args.formal_reserved:
+        run_states(tuple(sorted(FORMAL_STATE_IDS)))
+        expansion_allowed = True
+    elif args.expand_states_1_4:
         if args.state0_results is None:
             raise RuntimeError("expansion requires --state0-results from the retained smoke")
         with args.state0_results.open(newline="", encoding="utf-8") as handle:
@@ -725,7 +758,18 @@ def main() -> int:
         "state0_triplets": len(state0_triplets),
         "state0_expansion_allowed": expansion_allowed,
         "states_1_4_requested": bool(args.expand_states_1_4),
-        "states_1_4_executed": any(item["state_id"] > 0 for item in triplets),
+        "states_1_4_executed": any(1 <= item["state_id"] <= 4 for item in triplets),
+        "formal_reserved_requested": bool(args.formal_reserved),
+        "formal_state_ids_indexed": sorted(
+            {item["state_id"] for item in triplets if item["state_id"] in FORMAL_STATE_IDS}
+        ),
+        "permanent_reserve_state_ids_indexed": sorted(
+            {
+                item["state_id"]
+                for item in triplets
+                if item["state_id"] in PERMANENT_RESERVE_STATE_IDS
+            }
+        ),
         "provider_calls": len(LIVE_ARMS) * len(triplets),
         "fallback_used": any(item["fallback_used"] for item in triplets),
         "oracle_substitution": any(item["oracle_substitution"] for item in triplets),
@@ -764,7 +808,7 @@ def main() -> int:
         },
         "credential_env_name": provider.api_key_env,
         "credential_logged": False,
-        "reserved_states_27_49_consumed": False,
+        "reserved_states_27_49_consumed": reserved_states_consumed,
         "runtime_git_commit": runtime_commit,
     }
     status_path = output_dir / (

@@ -56,7 +56,10 @@ from cope.types import (
 
 
 SEMANTIC_CONFIG_SCHEMA = "cope-semantic-task1-pilot-config-v1"
+FORMAL_SEMANTIC_CONFIG_SCHEMA = "cope-semantic-task1-formal-config-v1"
 DEVELOPMENT_STATE_IDS = frozenset(range(5))
+FORMAL_STATE_IDS = frozenset(range(27, 47))
+PERMANENT_RESERVE_STATE_IDS = frozenset(range(47, 50))
 EVENT_TYPES = frozenset({"replace_pending_goal", "cancel_pending_goal"})
 DONE_OBJECT = "cream_cheese_1"
 PENDING_OBJECT = "butter_1"
@@ -181,7 +184,8 @@ def load_semantic_config(path: Path, *, repo_root: Path) -> LoadedSemanticConfig
     if len(rows) != 1:
         raise ValueError("semantic config must contain exactly one row")
     row = dict(rows[0])
-    if row.get("schema_version") != SEMANTIC_CONFIG_SCHEMA:
+    schema_version = row.get("schema_version")
+    if schema_version not in {SEMANTIC_CONFIG_SCHEMA, FORMAL_SEMANTIC_CONFIG_SCHEMA}:
         raise ValueError("unsupported semantic config schema")
     if (row.get("task_suite"), row.get("task_id")) != ("libero_10", "1"):
         raise ValueError("live semantic runner is locked to LIBERO-10 task 1")
@@ -192,10 +196,26 @@ def load_semantic_config(path: Path, *, repo_root: Path) -> LoadedSemanticConfig
     if event_types != EVENT_TYPES:
         raise ValueError("semantic config event families differ from the frozen runner contract")
     reserved_state_ids = frozenset(int(item) for item in row["reserved_state_ids"].split(";") if item)
-    if reserved_state_ids != frozenset({25, 26}):
+    if schema_version == SEMANTIC_CONFIG_SCHEMA:
+        expected_reserved_state_ids = frozenset({25, 26})
+        expected_rollout_authorized = "false"
+        expected_status_by_state = {
+            state_id: "reserved_uninspected" for state_id in expected_reserved_state_ids
+        }
+    else:
+        expected_reserved_state_ids = FORMAL_STATE_IDS | PERMANENT_RESERVE_STATE_IDS
+        expected_rollout_authorized = "true"
+        expected_status_by_state = {
+            **{state_id: "formal_authorized_preregistered" for state_id in FORMAL_STATE_IDS},
+            **{
+                state_id: "permanent_reserve"
+                for state_id in PERMANENT_RESERVE_STATE_IDS
+            },
+        }
+    if reserved_state_ids != expected_reserved_state_ids:
         raise ValueError("semantic config reserve identity differs from the frozen manifest")
-    if row.get("rollout_authorized", "").lower() != "false":
-        raise ValueError("development integration requires the reserved rollout lock to remain closed")
+    if row.get("rollout_authorized", "").lower() != expected_rollout_authorized:
+        raise ValueError("semantic config rollout authorization differs from its schema")
     if row.get("predicate_snapshot_schema") != "cope-libero-predicate-snapshot-v1":
         raise ValueError("semantic config predicate packet schema is not pinned")
     if row.get("predicate_factory") != (
@@ -212,10 +232,10 @@ def load_semantic_config(path: Path, *, repo_root: Path) -> LoadedSemanticConfig
     reserve_path = repo_root / row["pilot_manifest_path"]
     with reserve_path.open(newline="", encoding="utf-8") as handle:
         reserve_rows = list(csv.DictReader(handle))
-    if (
-        {int(item["state_id"]) for item in reserve_rows} != reserved_state_ids
-        or any(item.get("status") != "reserved_uninspected" for item in reserve_rows)
-    ):
+    observed_status_by_state = {
+        int(item["state_id"]): str(item.get("status", "")) for item in reserve_rows
+    }
+    if observed_status_by_state != expected_status_by_state:
         raise ValueError("reserved-state manifest is not intact")
     return LoadedSemanticConfig(
         row=row,
@@ -228,15 +248,32 @@ def load_semantic_config(path: Path, *, repo_root: Path) -> LoadedSemanticConfig
     )
 
 
-def validate_case_rows(rows: Sequence[Mapping[str, str]]) -> None:
-    expected = {(state_id, event_type) for state_id in DEVELOPMENT_STATE_IDS for event_type in EVENT_TYPES}
+def validate_case_rows(
+    rows: Sequence[Mapping[str, str]],
+    *,
+    authorized_state_ids: Sequence[int] | None = None,
+) -> None:
+    allowed_states = (
+        DEVELOPMENT_STATE_IDS
+        if authorized_state_ids is None
+        else frozenset(int(item) for item in authorized_state_ids)
+    )
+    expected = {
+        (state_id, event_type)
+        for state_id in allowed_states
+        for event_type in EVENT_TYPES
+    }
     observed: set[tuple[int, str]] = set()
     case_ids: set[str] = set()
     for row in rows:
         state_id = int(row["state_id"])
         event_type = row["event_type"]
-        if state_id not in DEVELOPMENT_STATE_IDS:
-            raise ValueError(f"state {state_id} is outside the consumed development range 0--4")
+        if state_id not in allowed_states:
+            if authorized_state_ids is None:
+                raise ValueError(
+                    f"state {state_id} is outside the consumed development range 0--4"
+                )
+            raise ValueError(f"state {state_id} is outside the caller-authorized semantic set")
         if event_type not in EVENT_TYPES:
             raise ValueError(f"unsupported event type {event_type!r}")
         if row["case_id"] in case_ids:
@@ -251,7 +288,7 @@ def validate_case_rows(rows: Sequence[Mapping[str, str]]) -> None:
         case_ids.add(row["case_id"])
         observed.add((state_id, event_type))
     if observed != expected or len(rows) != len(expected):
-        raise ValueError("case manifest must be the frozen 5-state x 2-event assignment")
+        raise ValueError("case manifest does not match the exact authorized state x event assignment")
 
 
 def recovery_input_bytes(recovery_input: RecoveryInput) -> bytes:
@@ -1214,13 +1251,19 @@ def run_learned_semantic_triplet(
     simulator_state_probe: Callable[[], str],
     action_counter: Callable[[], int],
     provider: Any,
+    authorized_state_ids: Sequence[int] | None = None,
 ) -> dict[str, Any]:
     """Run X15 Phase A: three provider calls and trusted semantics, zero actions."""
 
     _validate_x15_provider(provider)
     state_id = int(row["state_id"])
-    if state_id not in DEVELOPMENT_STATE_IDS:
-        raise LearnedSemanticError("X15 permits only development states 0--4")
+    allowed_states = (
+        DEVELOPMENT_STATE_IDS
+        if authorized_state_ids is None
+        else frozenset(int(item) for item in authorized_state_ids)
+    )
+    if state_id not in allowed_states:
+        raise LearnedSemanticError("state is outside the caller-authorized semantic set")
     milestone = MilestoneEvent(
         policy_step=int(observation["predicate_snapshot"]["policy_step"]),
         done_object=row["done_object"],
