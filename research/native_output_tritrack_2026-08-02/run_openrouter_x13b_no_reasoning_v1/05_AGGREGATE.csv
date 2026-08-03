@@ -1,0 +1,4 @@
+arm,assigned,configuration_blocked,method_evaluable,provider_ok,provider_outage_or_timeout,first_pass_valid,semantic_correct,unauthorized_or_stale_edit,progress_corruption,continuity_error,prompt_tokens,completion_tokens,proposal_bytes,latency_seconds,validator_calls
+cope,12,0,12,12,0,7,7,0,0,0,11593,909,2122,12.198983,7
+compact_tx,12,0,12,12,0,3,3,0,0,0,13033,3385,7065,22.815510,3
+fsr_pc,12,0,12,12,0,0,0,3,0,6,10909,6750,14838,36.382127,12
