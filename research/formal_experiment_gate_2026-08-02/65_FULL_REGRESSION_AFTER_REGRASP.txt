@@ -1,0 +1,14 @@
+Command:
+CUDA_VISIBLE_DEVICES="" scripts/run_project_env.sh /home/lijingsu/codex-worktrees/cope-runtime-python-20260803-v1/bin/python -m pytest -q
+
+Result:
+501 passed in 48.15s
+
+Runtime commit:
+f0fe4a7bc6318b3fbb61f63fed34bcef7acb07df
+
+Notes:
+- CPU-only execution.
+- The preceding run found one historical X04 controller-config hash compatibility failure (500 passed, 1 failed).
+- Commit f0fe4a7 preserves the historical pre-regrasp field set for X04 authorization while new experiments retain full regrasp configuration hashes.
+- The command above is the post-fix complete regression and exited 0.
