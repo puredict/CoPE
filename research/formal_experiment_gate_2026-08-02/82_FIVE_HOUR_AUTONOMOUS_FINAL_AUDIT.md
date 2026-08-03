@@ -36,7 +36,7 @@ prefix is present in the local or remote repository.
   exactly 320 scheduled calls maximum;
 - cold preflight: **320/320 requests constructed**, zero provider and zero
   formal-state indexing;
-- final repository regression: **535/535 passed in 49.07 s**.
+- final repository regression: **537/537 passed in 48.99 s**.
 
 No task-1 state 33 retry occurred.  Task-1 states 34--49 were not indexed.
 Formal task-0 states 10--29 were not indexed during credential/preflight gates;
