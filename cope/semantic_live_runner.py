@@ -618,8 +618,60 @@ def commit_live_shared_envelope(
         "semantic_state_sha256": str(cope_arm.get("after_state_sha256", "")),
         "transaction_meta_sha256": stable_hash(committed),
         "event_sha256": stable_hash(envelope_event),
+        "transaction_base_version": int(envelope_event["base_version"]),
+        "transaction_pre_state_version": int(transaction_meta["state_version"]),
+        "transaction_post_state_version": int(committed["state_version"]),
+        "transaction_evidence_version": int(committed["evidence_version"]),
+        "transaction_processed_event_id": str(
+            committed["processed_events"][0]["event_id"]
+        ),
+        "transaction_processed_payload_sha256": str(
+            committed["processed_events"][0]["payload_sha256"]
+        ),
         "transaction_meta": committed,
     }
+
+
+def select_validated_cope_execution(
+    cope_arm: Mapping[str, Any], event_type: str
+) -> dict[str, Any]:
+    """Derive the high-level executor command only from an accepted CoPE state."""
+
+    if cope_arm.get("arm") != "cope" or cope_arm.get("semantic_correct") is not True:
+        raise LearnedSemanticError("embodied execution requires an accepted CoPE arm")
+    state = cope_arm.get("trusted_after_state")
+    if not isinstance(state, Mapping):
+        raise LearnedSemanticError("accepted CoPE arm has no trusted post-state")
+    directive = cope_arm.get("compiled_directive")
+    plan = state.get("plan")
+    if not isinstance(plan, list):
+        raise LearnedSemanticError("accepted CoPE state has no canonical plan")
+    if event_type == "cancel_pending_goal":
+        if directive != "HALT" or plan:
+            raise LearnedSemanticError("cancellation must compile to an empty HALT plan")
+        return {
+            "execution_kind": "halt",
+            "selected_object": "",
+            "compiled_directive": "HALT",
+            "selection_source": "validated_provider_post_state",
+        }
+    if event_type == "replace_pending_goal":
+        pending = [row for row in plan if isinstance(row, Mapping) and row.get("status") == "pending"]
+        if len(pending) != 1:
+            raise LearnedSemanticError("replacement must compile to one pending action")
+        arguments = pending[0].get("arguments")
+        if not isinstance(arguments, list) or len(arguments) != 2:
+            raise LearnedSemanticError("replacement action arguments are noncanonical")
+        selected_object = str(arguments[0])
+        if not selected_object or not isinstance(directive, str) or not directive:
+            raise LearnedSemanticError("replacement has no executable directive")
+        return {
+            "execution_kind": "pick_and_place",
+            "selected_object": selected_object,
+            "compiled_directive": directive,
+            "selection_source": "validated_provider_post_state",
+        }
+    raise LearnedSemanticError(f"unsupported embodied event family {event_type!r}")
 
 
 def build_expected_live_post_state(event: Mapping[str, Any]) -> dict[str, Any]:

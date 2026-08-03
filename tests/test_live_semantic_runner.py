@@ -27,6 +27,7 @@ from cope.semantic_live_runner import (
     run_learned_semantic_triplet,
     run_oracle_semantic_fixture,
     recorded_state0_expansion_allowed,
+    select_validated_cope_execution,
     state0_expansion_allowed,
     validate_case_rows,
 )
@@ -574,6 +575,38 @@ def test_live_shared_envelope_commits_metadata_outside_provider_patch() -> None:
     assert result["transaction_metadata_model_generated"] is False
     assert result["transaction_meta"]["state_version"] == event["valid_from_state_version"] + 1
     assert result["transaction_meta"]["processed_events"][0]["event_id"] == event["event_id"]
+    assert result["transaction_base_version"] == event["valid_from_state_version"]
+    assert result["transaction_pre_state_version"] == event["valid_from_state_version"]
+    assert result["transaction_post_state_version"] == event["valid_from_state_version"] + 1
+    assert result["transaction_evidence_version"] == event["world_version"]
+    assert result["transaction_processed_event_id"] == event["event_id"]
+    assert len(result["transaction_processed_payload_sha256"]) == 64
+
+
+@pytest.mark.parametrize(
+    ("event_type", "kind", "selected"),
+    (
+        ("cancel_pending_goal", "halt", ""),
+        ("replace_pending_goal", "pick_and_place", "alphabet_soup_1"),
+    ),
+)
+def test_embodied_command_is_derived_from_validated_provider_state(
+    event_type: str, kind: str, selected: str
+) -> None:
+    result = _run_learned(frozen_row(0, event_type))
+    cope_arm = next(item for item in result["arms"] if item["arm"] == "cope")
+    command = select_validated_cope_execution(cope_arm, event_type)
+    assert command["execution_kind"] == kind
+    assert command["selected_object"] == selected
+    assert command["selection_source"] == "validated_provider_post_state"
+
+
+def test_embodied_command_rejects_unvalidated_arm() -> None:
+    with pytest.raises(LearnedSemanticError, match="accepted CoPE arm"):
+        select_validated_cope_execution(
+            {"arm": "cope", "semantic_correct": False},
+            "cancel_pending_goal",
+        )
 
 
 def test_live_shared_envelope_rejects_model_generated_transaction_metadata() -> None:

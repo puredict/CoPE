@@ -28,6 +28,7 @@ from cope.semantic_live_runner import (
     load_semantic_config,
     recorded_state0_expansion_allowed,
     run_learned_semantic_triplet,
+    select_validated_cope_execution,
     sha256_file,
     state0_expansion_allowed,
     validate_case_rows,
@@ -53,6 +54,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--resolution", type=int, default=64)
     parser.add_argument("--expand-states-1-4", action="store_true")
     parser.add_argument("--state0-results", type=Path)
+    parser.add_argument(
+        "--execute-cope",
+        action="store_true",
+        help="Phase B: execute only the accepted CoPE command with the qualified oracle substrate",
+    )
     parser.add_argument("--provider", default="openrouter")
     parser.add_argument(
         "--endpoint", default="https://openrouter.ai/api/v1/chat/completions"
@@ -120,6 +126,15 @@ def _flatten(triplet: Mapping[str, Any], runtime: Mapping[str, Any]) -> list[dic
                 "shared_envelope_error": triplet["shared_envelope"]["error"],
                 "shared_transaction_meta_sha256": triplet["shared_envelope"].get("transaction_meta_sha256", ""),
                 "shared_semantic_state_sha256": triplet["shared_envelope"].get("semantic_state_sha256", ""),
+                "shared_event_sha256": triplet["shared_envelope"].get("event_sha256", ""),
+                "transaction_base_version": triplet["shared_envelope"].get("transaction_base_version", ""),
+                "transaction_pre_state_version": triplet["shared_envelope"].get("transaction_pre_state_version", ""),
+                "transaction_post_state_version": triplet["shared_envelope"].get("transaction_post_state_version", ""),
+                "transaction_evidence_version": triplet["shared_envelope"].get("transaction_evidence_version", ""),
+                "transaction_processed_event_id": triplet["shared_envelope"].get("transaction_processed_event_id", ""),
+                "transaction_processed_payload_sha256": triplet["shared_envelope"].get(
+                    "transaction_processed_payload_sha256", ""
+                ),
                 "transaction_metadata_model_generated": triplet["shared_envelope"].get(
                     "transaction_metadata_model_generated", False
                 ),
@@ -283,12 +298,21 @@ def main() -> int:
     }
     triplets: list[dict[str, Any]] = []
     flat_rows: list[dict[str, Any]] = []
+    embodied_rows: list[dict[str, Any]] = []
+    journal_path: Path | None = None
+    if args.execute_cope:
+        output_dir.mkdir(parents=True, exist_ok=False)
+        journal_path = output_dir / "00_CASE_JOURNAL.txt"
 
     def run_states(state_ids: Sequence[int]) -> None:
         for state_id in state_ids:
             if state_id not in range(5):
                 raise RuntimeError("X15 attempted to leave development states 0--4")
             state_rows = [row for row in rows if int(row["state_id"]) == state_id]
+            if args.execute_cope:
+                # HALT is evaluated first and emits no action, so both event
+                # families see the exact same physical milestone.
+                state_rows.sort(key=lambda row: row["event_type"] != "cancel_pending_goal")
             cfg = ExperimentConfig(
                 checkpoint=config.row["checkpoint_path"],
                 task_suite="libero_10",
@@ -389,7 +413,103 @@ def main() -> int:
                         "warmup_steps": warmup.steps,
                         "initial_state_indexed": state_id,
                     }
-                    flat_rows.extend(_flatten(triplet, runtime))
+                    case_flat_rows = _flatten(triplet, runtime)
+                    flat_rows.extend(case_flat_rows)
+                    embodied_row: dict[str, Any] | None = None
+                    if args.execute_cope:
+                        if journal_path is None:
+                            raise RuntimeError("Phase-B journal path was not initialized")
+                        with journal_path.open("a", encoding="utf-8") as handle:
+                            handle.write(
+                                canonical_json(
+                                    {
+                                        "record_type": "semantic",
+                                        "case_id": row["case_id"],
+                                        "rows": case_flat_rows,
+                                    }
+                                )
+                                + "\n"
+                            )
+                        cope_arm = next(
+                            item for item in triplet["arms"] if item["arm"] == "cope"
+                        )
+                        decision = select_validated_cope_execution(
+                            cope_arm, row["event_type"]
+                        )
+                        execution_actions_before = len(controller.action_history)
+                        execution_sim_before = simulator_state_hash(env)
+                        skill = (
+                            controller.pick_and_place(
+                                decision["selected_object"], RECEPTACLE
+                            )
+                            if decision["execution_kind"] == "pick_and_place"
+                            else None
+                        )
+                        execution_actions_after = len(controller.action_history)
+                        execution_sim_after = simulator_state_hash(env)
+                        predicates = {
+                            name: view.libero_predicate("in", (name, RECEPTACLE))
+                            for name in (
+                                row["done_object"],
+                                row["pending_object"],
+                                row["replacement_object"] or "alphabet_soup_1",
+                            )
+                        }
+                        terminal_goal_success = bool(
+                            predicates[row["done_object"]]
+                            and (
+                                predicates[row["replacement_object"]]
+                                if row["event_type"] == "replace_pending_goal"
+                                else not predicates[row["pending_object"]]
+                            )
+                        )
+                        suffix = controller.action_history[execution_actions_before:]
+                        embodied_row = {
+                            "case_id": row["case_id"],
+                            "state_id": state_id,
+                            "event_type": row["event_type"],
+                            "cope_semantic_correct": cope_arm["semantic_correct"],
+                            "shared_envelope_pass": triplet["shared_envelope"]["pass"],
+                            "selection_source": decision["selection_source"],
+                            "execution_kind": decision["execution_kind"],
+                            "selected_object": decision["selected_object"],
+                            "compiled_directive": decision["compiled_directive"],
+                            "low_level_controller": "privileged_simulator_geometry_oracle",
+                            "learned_policy_used": False,
+                            "provider_called": True,
+                            "skill_success": skill.success if skill is not None else True,
+                            "skill_failure_reason": (
+                                skill.failure_reason or "" if skill is not None else ""
+                            ),
+                            "terminal_goal_success": terminal_goal_success,
+                            "valid_progress_retained": predicates[row["done_object"]],
+                            "stale_pending_executed": predicates[row["pending_object"]],
+                            "replacement_object_in_region": predicates[
+                                row["replacement_object"] or "alphabet_soup_1"
+                            ],
+                            "post_event_action_count": (
+                                execution_actions_after - execution_actions_before
+                            ),
+                            "post_event_action_sha256": stable_hash(
+                                [list(action) for action in suffix]
+                            ),
+                            "simulator_state_before_execution": execution_sim_before,
+                            "simulator_state_after_execution": execution_sim_after,
+                            "runtime_git_commit": runtime_commit,
+                            "reserved_states_27_49_consumed": False,
+                        }
+                        embodied_rows.append(embodied_row)
+                        with journal_path.open("a", encoding="utf-8") as handle:
+                            handle.write(
+                                canonical_json(
+                                    {
+                                        "record_type": "embodied",
+                                        "case_id": row["case_id"],
+                                        "row": embodied_row,
+                                    }
+                                )
+                                + "\n"
+                            )
             finally:
                 if env is not None:
                     env.close()
@@ -412,9 +532,12 @@ def main() -> int:
         state0_triplets = [item for item in triplets if item["state_id"] == 0]
         expansion_allowed = state0_expansion_allowed(state0_triplets)
 
-    output_dir.mkdir(parents=True, exist_ok=False)
+    if not args.execute_cope:
+        output_dir.mkdir(parents=True, exist_ok=False)
     _write_csv(output_dir / "01_PER_ARM_RESULTS.csv", flat_rows)
     _write_family_aggregate(output_dir / "02_FAMILY_ARM_AGGREGATE.csv", flat_rows)
+    if args.execute_cope:
+        _write_csv(output_dir / "03_EMBODIED_RESULTS.csv", embodied_rows)
     status = {
         "state0_triplets": len(state0_triplets),
         "state0_expansion_allowed": expansion_allowed,
@@ -425,6 +548,14 @@ def main() -> int:
         "oracle_substitution": any(item["oracle_substitution"] for item in triplets),
         "post_interruption_action_delta": sum(
             int(item["post_interruption_action_delta"]) for item in triplets
+        ),
+        "embodied_phase_b": bool(args.execute_cope),
+        "embodied_cases": len(embodied_rows),
+        "embodied_terminal_successes": sum(
+            bool(item["terminal_goal_success"]) for item in embodied_rows
+        ),
+        "embodied_post_event_actions": sum(
+            int(item["post_event_action_count"]) for item in embodied_rows
         ),
         "shared_envelope_pass": all(
             item.get("shared_envelope", {}).get("pass") is True for item in triplets
@@ -444,11 +575,21 @@ def main() -> int:
         "reserved_states_27_49_consumed": False,
         "runtime_git_commit": runtime_commit,
     }
-    (output_dir / "03_RUN_STATUS.txt").write_text(
+    status_path = output_dir / (
+        "04_RUN_STATUS.txt" if args.execute_cope else "03_RUN_STATUS.txt"
+    )
+    status_path.write_text(
         canonical_json(status) + "\n", encoding="utf-8"
     )
     print(canonical_json(status))
-    return 0 if expansion_allowed else 1
+    embodied_gate = (
+        not args.execute_cope
+        or (
+            len(embodied_rows) == len(triplets)
+            and all(item["terminal_goal_success"] for item in embodied_rows)
+        )
+    )
+    return 0 if expansion_allowed and embodied_gate else 1
 
 
 if __name__ == "__main__":
