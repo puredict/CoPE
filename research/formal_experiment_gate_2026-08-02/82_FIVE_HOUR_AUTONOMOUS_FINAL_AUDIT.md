@@ -56,10 +56,11 @@ identical physical prefix hashes, identical common-input hashes across attempted
 same-event calls, zero retries and valid dependency skips.  The necessary
 decisive-experiment gate was frozen before learned outcomes:
 
-1. CoPE versus neutral exact McNemar `p < 0.05` and paired success difference
+1. all 40 sequence units are substrate eligible;
+2. CoPE versus neutral exact McNemar `p < 0.05` and paired success difference
    at least `+0.15`;
-2. no excess CoPE stale-execution or invariant/hash-continuity failures;
-3. on pairs with two valid outputs in both methods, at least 20% median relative
+3. no excess CoPE stale-execution or invariant/hash-continuity failures;
+4. on pairs with two valid outputs in both methods, at least 20% median relative
    proposal-byte reduction and two-sided exact sign-test `p < 0.05`.
 
 Passing remains insufficient for submission because the design has one task
