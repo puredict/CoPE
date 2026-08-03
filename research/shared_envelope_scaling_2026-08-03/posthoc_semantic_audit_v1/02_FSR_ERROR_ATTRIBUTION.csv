@@ -1,0 +1,4 @@
+state_size,correct,incorrect,preservation_drift,preservation_only,transition_and_preservation,transition_only,duplicate_id,nonduplicate_differing_paths,nonduplicate_distractor_paths
+4,30,6,5,5,0,0,1,65,56
+16,13,23,23,22,1,0,0,456,384
+32,8,28,27,26,1,0,1,95,28

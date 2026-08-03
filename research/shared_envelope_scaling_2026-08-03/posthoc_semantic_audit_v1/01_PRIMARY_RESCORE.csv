@@ -1,0 +1,4 @@
+contrast,scope,cope_only,other_only,discordant,exact_two_sided_p
+cope_semantic_vs_fsr_semantic,state_size_32,28,0,28,7.450580596923828e-09
+cope_semantic_vs_compact_semantic,state_size_32,3,0,3,0.25
+cope_semantic_vs_neutral_typed,state_size_32,2,0,2,0.5
