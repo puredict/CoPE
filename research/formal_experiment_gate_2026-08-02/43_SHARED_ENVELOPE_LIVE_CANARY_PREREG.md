@@ -23,7 +23,7 @@ Commit `fe2aae5effd38a7ba2038abebd734608b51a6bea` adds the live adapter:
   event into the processed-event record;
 - shared semantic-state and transaction-metadata hashes are retained separately.
 
-Forty-five live-semantic and shared-envelope tests pass, including rejection of
+Thirty-seven focused live-semantic and shared-envelope tests pass, including rejection of
 model-generated transaction metadata and duplicate stable IDs.
 
 ## Frozen canary
