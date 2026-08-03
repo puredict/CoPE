@@ -26,6 +26,7 @@ from cope.native_ntrack import (
     state_without_history,
     validate_and_compile,
 )
+from cope.native_fresh_cases import load_fresh_manifest
 from cope.providers.openai_compatible import (
     OpenAICompatibleRecoveryProvider,
     ProviderConfigurationError,
@@ -336,6 +337,7 @@ def write_failures(path: Path, rows: list[dict[str, Any]]) -> None:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--manifest", type=Path, required=True)
+    parser.add_argument("--manifest-kind", choices=("standard", "fresh60"), default="standard")
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--provider", default="openrouter")
     parser.add_argument("--endpoint", default="https://openrouter.ai/api/v1/chat/completions")
@@ -362,7 +364,11 @@ def main() -> int:
         "max_completion_tokens": args.max_tokens, "max_prompt_tokens": 12000,
         "max_retries": 0, "timeout_seconds": args.timeout,
     })
-    cases = load_manifest(args.manifest)
+    cases = (
+        load_fresh_manifest(args.manifest)
+        if args.manifest_kind == "fresh60"
+        else load_manifest(args.manifest)
+    )
     if not os.environ.get(provider.api_key_env):
         fairness_pass = write_preflight_fairness(
             args.output_dir / "03_FAIRNESS_INPUT_HASH_AUDIT.csv", cases, provider
@@ -379,6 +385,7 @@ def main() -> int:
             "fairness_preflight_pass": fairness_pass, "provider": provider.metadata.provider,
             "model": provider.metadata.model, "credential_env_name": provider.api_key_env,
             "reasoning_effort": provider.reasoning_effort or "provider_default",
+            "manifest_kind": args.manifest_kind,
             "credential_logged": False, "reserved_states_read": False,
         }
         (args.output_dir / "07_RUN_STATUS.txt").write_text(canonical_json(status) + "\n", encoding="utf-8")
@@ -409,6 +416,7 @@ def main() -> int:
         "provider": provider.metadata.provider,
         "model": provider.metadata.model,
         "reasoning_effort": provider.reasoning_effort or "provider_default",
+        "manifest_kind": args.manifest_kind,
         "temperature": provider.metadata.temperature,
         "seed": provider.seed,
         "max_tokens": provider.metadata.max_completion_tokens,
