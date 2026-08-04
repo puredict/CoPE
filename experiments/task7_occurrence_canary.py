@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import csv
 import hashlib
+import os
 import subprocess
 from dataclasses import asdict
 from pathlib import Path
@@ -46,6 +47,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--resolution", type=int, default=64)
+    parser.add_argument("--state-id", type=int, default=STATE_ID)
     return parser.parse_args()
 
 
@@ -89,6 +91,8 @@ def main() -> int:
     ).stdout.strip()
     if args.output_dir.exists():
         raise FileExistsError(args.output_dir)
+    if args.state_id not in range(10):
+        raise ValueError("task-7 occurrence development state must be in 0..9")
     if stable_hash(asdict(CONTROLLER_CONFIG)) != EXPECTED_CONTROLLER_SHA256:
         raise RuntimeError("controller configuration hash drift")
     suite = get_benchmark_suite("libero_10")
@@ -98,15 +102,15 @@ def main() -> int:
     for mode in MODES:
         cfg = ExperimentConfig(
             checkpoint="oracle-skill-controller", task_suite="libero_10",
-            task_id=TASK_ID, trial_id=STATE_ID, mode="clean", max_steps=700,
-            num_steps_wait=0, seed=STATE_ID, resolution=args.resolution,
+            task_id=TASK_ID, trial_id=args.state_id, mode="clean", max_steps=700,
+            num_steps_wait=0, seed=args.state_id, resolution=args.resolution,
             enable_auto_disturbance=False,
         )
-        set_seed(STATE_ID)
+        set_seed(args.state_id)
         env, prompt = create_libero_env(task, cfg)
         try:
             env.reset()
-            observation = env.set_init_state(initial_states[STATE_ID])
+            observation = env.set_init_state(initial_states[args.state_id])
             from cope_benchmark.oracle_skill_controller import LiberoOracleSkillController
 
             controller = LiberoOracleSkillController(
@@ -127,7 +131,7 @@ def main() -> int:
             prefix_action_sha256 = controller.action_prefix_sha256()
             actions_before_semantic = controller.total_steps
             sim_before_semantic = simulator_hash(env)
-            sequence_id = f"task7-state0-{mode}"
+            sequence_id = f"task7-state{args.state_id}-{mode}"
             logical = build_initial_state(
                 sequence_id=sequence_id, done_object=DONE,
                 pending_object=ORIGINAL,
@@ -182,7 +186,7 @@ def main() -> int:
             )
             row = {
                 "suite": "libero_10", "task_id": TASK_ID,
-                "state_id": STATE_ID, "mode": mode, "prompt": prompt,
+                "state_id": args.state_id, "mode": mode, "prompt": prompt,
                 "runtime_git_commit": runtime_commit,
                 "controller_sha256": EXPECTED_CONTROLLER_SHA256,
                 "provider_calls": 0, "learned_policy_used": False,
@@ -208,19 +212,27 @@ def main() -> int:
                 ),
             }
             rows.append(row)
+            args.output_dir.mkdir(parents=True, exist_ok=True)
+            journal = args.output_dir / "01_EVENT_JOURNAL.txt"
+            with journal.open("a", encoding="utf-8") as handle:
+                handle.write(canonical_json(row) + "\n")
+                handle.flush()
+                os.fsync(handle.fileno())
+            if not row["episode_success"]:
+                break
         finally:
             env.close()
     gate = len(rows) == 2 and all(row["episode_success"] for row in rows)
-    args.output_dir.mkdir(parents=True, exist_ok=False)
+    args.output_dir.mkdir(parents=True, exist_ok=True)
     with (args.output_dir / "01_RESULTS.csv").open("x", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(rows[0]), lineterminator="\n")
         writer.writeheader(); writer.writerows(rows)
     status = {
         "schema": "task7-occurrence-physical-canary-v1",
-        "gate": "PASS" if gate else "FAIL", "episodes": 2,
+        "gate": "PASS" if gate else "FAIL", "episodes": len(rows),
         "successes": sum(bool(row["episode_success"]) for row in rows),
-        "provider_calls": 0, "task7_states_indexed": [0],
-        "task7_states1_49_indexed": False, "task1_state33_retried": False,
+        "provider_calls": 0, "task7_states_indexed": [args.state_id],
+        "task7_states10_49_indexed": False, "task1_state33_retried": False,
         "task1_states34_49_indexed": False,
         "runtime_git_commit": runtime_commit,
     }
