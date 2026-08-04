@@ -99,6 +99,9 @@ def test_v2_requires_both_neutral_and_governed_primary_gates(tmp_path, monkeypat
     assert primary["governed_delta"]["control_gate"] == "True"
     text = (output / "00_RESULT.md").read_text()
     assert "NECESSARY_GATE_PASS_SINGLE_TASK_ONLY" in text
+    decision = json.loads((output / "04_DECISION.txt").read_text())
+    assert decision["joint_primary_gate"] is True
+    assert decision["claim_status"] == "NECESSARY_GATE_PASS_SINGLE_TASK_ONLY"
 
     tied = make_rows(manifest)
     for row in tied:
@@ -109,6 +112,8 @@ def test_v2_requires_both_neutral_and_governed_primary_gates(tmp_path, monkeypat
     text = (output / "00_RESULT.md").read_text()
     assert "NO_GO_PRIMARY_NEUTRAL_COMPARISON" in text
     assert "Governed control gate: **True**" in text
+    decision = json.loads((output / "04_DECISION.txt").read_text())
+    assert decision["joint_primary_gate"] is False
 
 
 def test_claim_status_rejects_governed_tie_even_if_neutral_passes():

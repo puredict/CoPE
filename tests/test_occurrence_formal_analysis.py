@@ -80,11 +80,16 @@ def test_occurrence_analysis_requires_both_primary_controls(tmp_path, monkeypatc
     rows = synthetic(manifest)
     text = run(tmp_path, monkeypatch, rows, "pass")
     assert "NECESSARY_SYMBOLIC_GATE_PASS" in text
+    decision = json.loads((tmp_path / "out-pass" / "04_DECISION.txt").read_text())
+    assert decision["joint_primary_gate"] is True
+    assert decision["secondary_can_rescue"] is False
     for row in rows:
         if row["arm"] == "neutral_patch":
             row["canonical_valid"] = True
     text = run(tmp_path, monkeypatch, rows, "neutral-tie")
     assert "NO_GO_PRIMARY_NEUTRAL_COMPARISON" in text
+    decision = json.loads((tmp_path / "out-neutral-tie" / "04_DECISION.txt").read_text())
+    assert decision["joint_primary_gate"] is False
 
 
 def test_occurrence_analysis_invalidates_infrastructure_failure(tmp_path, monkeypatch):

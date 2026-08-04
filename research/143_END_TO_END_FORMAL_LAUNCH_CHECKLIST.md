@@ -64,7 +64,8 @@ CUDA_VISIBLE_DEVICES="" scripts/run_project_env.sh \
 
 Unlock step 3 only when the claim status is
 `NECESSARY_SYMBOLIC_GATE_PASS_REQUIRES_EMBODIED_AND_MODEL_REPLICATION` and
-both rows in `01_COPRIMARY.csv` have `control_gate=True`.
+`04_DECISION.txt` has `joint_primary_gate=true`. Analyzer exit code 0 alone
+means only that analysis completed and is not an unlock signal.
 
 ## 3. Task-0 embodied formal v2
 
@@ -94,6 +95,10 @@ CUDA_VISIBLE_DEVICES="" scripts/run_project_env.sh \
   --event-results /home/lijingsu/cope-runs/sequential-formal-v2/03_EVENT_RESULTS.csv \
   --output-dir /home/lijingsu/cope-runs/sequential-formal-v2-analysis
 ```
+
+Read `04_DECISION.txt`; do not interpret analyzer exit code 0 as a scientific
+PASS. Even `joint_primary_gate=true` remains single-task evidence when the
+claim status is `NECESSARY_GATE_PASS_SINGLE_TASK_ONLY`.
 
 ## Hard stops
 

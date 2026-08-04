@@ -23,6 +23,7 @@ V1 = importlib.util.module_from_spec(SPEC); SPEC.loader.exec_module(V1)
 from cope.occurrence_prompting import ARMS, build_recovery_input
 from cope.occurrence_sequence import build_recurrence_case
 from cope.formal_artifact_validation import validate_event_results_artifacts
+from cope.types import canonical_json
 from experiments.occurrence_formal_runner import RESULT_FIELDS
 from experiments.occurrence_formal_preflight import EXPECTED_MANIFEST_SHA256, validate_manifest
 
@@ -310,6 +311,21 @@ def main() -> int:
         f"- Claim status: **{status}**\n\n"
         "Both primary controls must pass; secondary controls cannot rescue a failure.\n",
         encoding="utf-8",
+    )
+    decision = {
+        "schema": "occurrence-formal-analysis-decision-v1",
+        "result_cells": len(rows),
+        "infrastructure_valid": infrastructure_valid,
+        "neutral_gate": bool(primary[0]["control_gate"]),
+        "governed_gate": bool(primary[1]["control_gate"]),
+        "joint_primary_gate": bool(
+            infrastructure_valid and all(row["control_gate"] for row in primary)
+        ),
+        "claim_status": status,
+        "secondary_can_rescue": False,
+    }
+    (args.output_dir / "04_DECISION.txt").write_text(
+        canonical_json(decision) + "\n", encoding="utf-8"
     )
     return 0
 

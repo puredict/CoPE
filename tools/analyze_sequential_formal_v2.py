@@ -13,6 +13,7 @@ from statistics import median
 from typing import Any
 
 from cope.formal_artifact_validation import validate_event_results_artifacts
+from cope.types import canonical_json
 from experiments.sequential_formal_runner_v2 import RESULT_FIELDS
 
 
@@ -348,6 +349,23 @@ def main() -> int:
         "Both co-primary controls must pass. Secondary FSR-PC or full-replan "
         "wins cannot rescue either co-primary failure.\n",
         encoding="utf-8",
+    )
+    decision = {
+        "schema": "sequential-formal-v2-analysis-decision-v1",
+        "result_cells": len(event_rows),
+        "substrate_complete": substrate_complete,
+        "infrastructure_valid": infrastructure_valid,
+        "neutral_gate": bool(primary[0]["control_gate"]),
+        "governed_gate": bool(primary[1]["control_gate"]),
+        "joint_primary_gate": bool(
+            substrate_complete and infrastructure_valid
+            and all(row["control_gate"] for row in primary)
+        ),
+        "claim_status": status,
+        "secondary_can_rescue": False,
+    }
+    (args.output_dir / "04_DECISION.txt").write_text(
+        canonical_json(decision) + "\n", encoding="utf-8"
     )
     return 0
 
