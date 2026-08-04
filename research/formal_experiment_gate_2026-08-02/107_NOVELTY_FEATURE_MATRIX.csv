@@ -1,0 +1,17 @@
+feature,cope,tang_mission_governance,instructflow,planar,internal_tx_exec_plus,claim_effect
+persistent_canonical_task_or_mission_state,YES,YES,GRAPH_STATE,YES,YES,"not novel"
+typed_local_proposals,YES,YES,YES,NO_FULL_REPLAN,GENERIC_WRITES,"not novel"
+deterministic_verification_before_commit,YES,YES,PARTIAL_NOT_ATOMIC_COMMIT,NO,YES,"not novel versus Tang/TX"
+atomic_synchronized_commit,YES,YES,NOT_ESTABLISHED,NO,YES,"not novel versus Tang/TX"
+bounded_affected_scope_repair,YES,YES,YES_SUBGOAL,NO,YES,"not novel"
+preserve_completed_or_protected_work,YES,YES,PARTIAL,REINSTANTIATE_AND_REPLAN,YES,"not novel versus Tang/TX"
+versioned_state_snapshot,YES,YES,NOT_ESTABLISHED,NOT_ESTABLISHED,YES,"not novel versus Tang/TX"
+owner_or_authority_field,YES,YES_OWNER_NOT_EVENT_AUTHORITY,NOT_ESTABLISHED,NOT_ESTABLISHED,YES,"event authorization remains narrower distinction"
+source_evidence_lifetime_status_records,YES,YES,CONSTRAINTS,STATE_PREDICATES,YES,"not novel versus Tang"
+duplicate_event_idempotence,YES,NOT_FOUND,NOT_FOUND,NOT_FOUND,YES,"not unique versus generic transaction"
+hash_bound_transaction_receipt,YES,NOT_FOUND,NOT_FOUND,NOT_FOUND,YES,"not unique versus generic transaction"
+immutable_inactive_commitment_lineage,YES,NOT_ESTABLISHED,NOT_ESTABLISHED,NOT_ESTABLISHED,YES,"possible domain-specific distinction; needs evidence"
+occurrence_addressed_authorized_goal_revision,YES,NO,NO,NO,YES_CAPABLE,"domain-specific operationalization"
+learned_first_pass_update_comparison,YES_LIMITED,NO,YES_DIFFERENT_TARGET,NO,NO,"prospective empirical contribution"
+physical_manipulation_evaluation,SIM_PRIVILEGED_CONTROLLER,NO_HIGH_LEVEL_SIM,YES,YES_REAL_ROBOT,NO,"CoPE empirical scope currently weaker"
+
