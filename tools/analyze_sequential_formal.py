@@ -99,6 +99,36 @@ def decisive_experiment_gate(
     )
 
 
+def formal_claim_status(
+    *, substrate_complete: bool, success_p: float, risk_difference: float,
+    safety_no_excess: bool, locality_p: float,
+    locality_median_relative_reduction: float, task_identity_count: int,
+) -> str:
+    """Return a non-overclaiming interpretation of the frozen necessary gate.
+
+    Secondary comparisons are intentionally absent from this decision.  In
+    particular, a CoPE win over FSR-PC or full replan cannot rescue a tie or
+    loss against the primary neutral-patch control.
+    """
+    if not substrate_complete:
+        return "INVALID_SUBSTRATE_INCOMPLETE"
+    if (
+        success_p >= 0.05
+        or risk_difference < PRACTICAL_RISK_DIFFERENCE_MIN
+        or not safety_no_excess
+    ):
+        return "NO_GO_PRIMARY_NEUTRAL_COMPARISON"
+    if (
+        locality_p >= 0.05
+        or locality_median_relative_reduction
+        < LOCALITY_MEDIAN_RELATIVE_REDUCTION_MIN
+    ):
+        return "NO_GO_LOCALITY_GATE"
+    if task_identity_count < 2:
+        return "NECESSARY_GATE_PASS_SINGLE_TASK_ONLY"
+    return "NECESSARY_GATE_PASS_REQUIRES_EXTERNAL_VALIDITY_REVIEW"
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--manifest", type=Path, required=True)
@@ -286,6 +316,9 @@ def main() -> int:
     safety_no_excess = cope_stale <= neutral_stale and cope_invariant <= neutral_invariant
     primary.update(
         {
+            "primary_comparison": True,
+            "secondary_cannot_rescue_primary": True,
+            "task_identity_count": len({row["task_id"] for row in manifest}),
             "substrate_complete": len(eligible) == 40,
             "cope_stale_sequences": cope_stale,
             "other_stale_sequences": neutral_stale,
@@ -307,6 +340,17 @@ def main() -> int:
                 locality_median_relative_reduction=locality_median,
             ),
         }
+    )
+    primary["formal_claim_status"] = formal_claim_status(
+        substrate_complete=bool(primary["substrate_complete"]),
+        success_p=float(primary["exact_mcnemar_p"]),
+        risk_difference=float(primary["paired_risk_difference"]),
+        safety_no_excess=bool(primary["safety_no_excess"]),
+        locality_p=float(primary["locality_exact_sign_p"]),
+        locality_median_relative_reduction=float(
+            primary["locality_median_relative_byte_reduction"]
+        ),
+        task_identity_count=int(primary["task_identity_count"]),
     )
     secondary_raw = {
         row["comparison"]: float(row["exact_mcnemar_p"])
@@ -344,7 +388,12 @@ def main() -> int:
         f"- Locality median relative byte reduction: **{100 * primary['locality_median_relative_byte_reduction']:.1f}%**\n"
         f"- Locality exact sign p: **{primary['locality_exact_sign_p']:.8g}**\n"
         f"- Decisive experiment gate: **{primary['decisive_experiment_gate']}**\n"
-        "\nThe decisive gate is necessary but not sufficient for submission: this locked study has one task identity and does not establish cross-task generalization.\n",
+        f"- Formal claim status: **{primary['formal_claim_status']}**\n"
+        "\nThe primary comparison is CoPE versus neutral patch. Secondary wins "
+        "over FSR-PC or full replan cannot rescue a primary tie or loss. The "
+        "decisive gate is necessary but not sufficient for submission: this "
+        "locked study has one task identity and does not establish cross-task "
+        "generalization.\n",
         encoding="utf-8",
     )
     return 0

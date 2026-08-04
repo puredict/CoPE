@@ -61,6 +61,31 @@ def test_decisive_gate_has_frozen_practical_safety_and_locality_thresholds():
         assert MODULE.decisive_experiment_gate(**case) is False
 
 
+def test_formal_claim_status_cannot_be_rescued_by_secondary_comparisons():
+    common = dict(
+        substrate_complete=True,
+        success_p=0.01,
+        risk_difference=0.20,
+        safety_no_excess=True,
+        locality_p=0.01,
+        locality_median_relative_reduction=0.25,
+        task_identity_count=1,
+    )
+    assert MODULE.formal_claim_status(**common) == (
+        "NECESSARY_GATE_PASS_SINGLE_TASK_ONLY"
+    )
+    primary_tie = dict(common, success_p=1.0, risk_difference=0.0)
+    assert MODULE.formal_claim_status(**primary_tie) == (
+        "NO_GO_PRIMARY_NEUTRAL_COMPARISON"
+    )
+    locality_tie = dict(common, locality_p=1.0)
+    assert MODULE.formal_claim_status(**locality_tie) == "NO_GO_LOCALITY_GATE"
+    incomplete = dict(common, substrate_complete=False)
+    assert MODULE.formal_claim_status(**incomplete) == (
+        "INVALID_SUBSTRATE_INCOMPLETE"
+    )
+
+
 def test_analysis_pipeline_applies_frozen_decisive_gate(tmp_path, monkeypatch):
     manifest = ROOT / "manifests" / "sequential_formal_40x4x2_v1.csv"
     with manifest.open(newline="", encoding="utf-8") as handle:
@@ -108,6 +133,12 @@ def test_analysis_pipeline_applies_frozen_decisive_gate(tmp_path, monkeypatch):
     assert float(primary["exact_mcnemar_p"]) == 0.0078125
     assert float(primary["locality_median_relative_byte_reduction"]) == 0.5
     assert primary["decisive_experiment_gate"] == "True"
+    assert primary["primary_comparison"] == "True"
+    assert primary["secondary_cannot_rescue_primary"] == "True"
+    assert primary["task_identity_count"] == "1"
+    assert primary["formal_claim_status"] == (
+        "NECESSARY_GATE_PASS_SINGLE_TASK_ONLY"
+    )
 
     rows[0]["input_sha256"] = "contaminated-arm-specific-input"
     contaminated = tmp_path / "contaminated.csv"
