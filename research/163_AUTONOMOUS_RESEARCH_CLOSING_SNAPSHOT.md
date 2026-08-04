@@ -40,7 +40,8 @@ failure is first observed and the affected run is stopped rather than retried.
 - OpenRouter public model catalog returned HTTP 200;
 - `qwen/qwen3.5-flash-02-23` had exactly one catalog match;
 - no secure `OPENROUTER_API_KEY` was available on the server;
-- current tree and reachable Git history contained no `sk-or-v1-` match;
+- current tree and reachable Git history contained no exposed provider-key
+  prefix match;
 - the credential pasted into chat was never reused or stored and must be
   revoked/rotated;
 - no live provider call was made.
