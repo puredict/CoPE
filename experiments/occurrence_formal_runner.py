@@ -10,7 +10,10 @@ import subprocess
 from pathlib import Path
 from typing import Any, Mapping
 
-from cope.formal_recovery import AMBIGUOUS_FAILURE, FormalRecoveryLedger, cell_key
+from cope.formal_recovery import (
+    AMBIGUOUS_FAILURE, INFRASTRUCTURE_STOP_FILE, FormalRecoveryLedger,
+    cell_key, freeze_infrastructure_stop, is_infrastructure_failure,
+)
 from cope.occurrence_prompting import (
     ARMS, CONTRACTS, MAX_COMPLETION_TOKENS, MAX_PROMPT_TOKENS, MODEL,
     REASONING_EFFORT, TEMPERATURE, TIMEOUT_SECONDS, build_recovery_input,
@@ -160,6 +163,10 @@ def main() -> int:
     ).stdout.strip()
     if args.output_dir.exists() and not args.resume:
         raise FileExistsError(args.output_dir)
+    stop_path = args.output_dir / INFRASTRUCTURE_STOP_FILE
+    if stop_path.is_file():
+        print(stop_path.read_text(encoding="utf-8").strip(), flush=True)
+        return 4
     if __import__("hashlib").sha256(args.manifest.read_bytes()).hexdigest() != EXPECTED_MANIFEST_SHA256:
         raise RuntimeError("occurrence manifest hash mismatch")
     with args.manifest.open(newline="", encoding="utf-8") as handle:
@@ -271,6 +278,12 @@ def main() -> int:
                     "failure_class": f"{type(exc).__name__}:{exc}",
                 })
             publish(result)
+            if is_infrastructure_failure(result["failure_class"]):
+                freeze_infrastructure_stop(
+                    args.output_dir, failure_class=str(result["failure_class"]),
+                    cell=result,
+                )
+                return 4
     results = list(ledger.results.values())
     if len(results) != 200:
         raise RuntimeError(f"occurrence run has {len(results)} results, expected 200")

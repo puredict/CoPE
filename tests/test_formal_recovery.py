@@ -10,6 +10,8 @@ from cope.formal_recovery import (
     AMBIGUOUS_FAILURE,
     FormalRecoveryError,
     FormalRecoveryLedger,
+    freeze_infrastructure_stop,
+    is_infrastructure_failure,
 )
 
 
@@ -26,6 +28,25 @@ def test_formal_ledger_fsyncs_regular_files_and_directory_entries(tmp_path, monk
     })
     assert any(stat.S_ISREG(mode) for mode in modes)
     assert any(stat.S_ISDIR(mode) for mode in modes)
+
+
+def test_infrastructure_stop_is_durable_exclusive_and_classified(tmp_path):
+    output = tmp_path / "run"
+    FormalRecoveryLedger(output, {"run": "v2"}, resume=False)
+    cell = {"sequence_id": "s", "arm": "cope", "event_index": 1}
+    assert is_infrastructure_failure("event1:provider_http_503")
+    assert is_infrastructure_failure(AMBIGUOUS_FAILURE)
+    assert not is_infrastructure_failure("response_parse_failure")
+    path = freeze_infrastructure_stop(
+        output, failure_class="event1:provider_http_503", cell=cell,
+    )
+    payload = json.loads(path.read_text())
+    assert payload["resume_forbidden"] is True
+    assert payload["provider_calls_after_stop"] == 0
+    with pytest.raises(FileExistsError):
+        freeze_infrastructure_stop(
+            output, failure_class="event1:provider_http_503", cell=cell,
+        )
 
 
 KEY = {"sequence_id": "seq-1", "arm": "cope", "event_index": 1}

@@ -12,6 +12,11 @@ from cope.types import canonical_json
 
 CELL_FIELDS = ("sequence_id", "arm", "event_index")
 AMBIGUOUS_FAILURE = "ambiguous_interrupted_call_no_retry"
+INFRASTRUCTURE_FAILURE_MARKERS = (
+    "provider_timeout", "provider_transport_outage", "provider_http_",
+    AMBIGUOUS_FAILURE,
+)
+INFRASTRUCTURE_STOP_FILE = "05_INFRASTRUCTURE_STOP.txt"
 
 
 class FormalRecoveryError(RuntimeError):
@@ -56,6 +61,26 @@ def _write_exclusive_fsynced(path: Path, payload: Mapping[str, Any]) -> None:
         handle.flush()
         os.fsync(handle.fileno())
     _fsync_directory(path.parent)
+
+
+def is_infrastructure_failure(failure_class: Any) -> bool:
+    text = str(failure_class)
+    return any(marker in text for marker in INFRASTRUCTURE_FAILURE_MARKERS)
+
+
+def freeze_infrastructure_stop(
+    output_dir: Path, *, failure_class: str, cell: Mapping[str, Any],
+) -> Path:
+    path = output_dir / INFRASTRUCTURE_STOP_FILE
+    _write_exclusive_fsynced(path, {
+        "schema": "formal-infrastructure-stop-v1",
+        "gate": "INVALID_INFRASTRUCTURE_FAILURE",
+        "failure_class": failure_class,
+        "cell": {field: cell[field] for field in CELL_FIELDS},
+        "resume_forbidden": True,
+        "provider_calls_after_stop": 0,
+    })
+    return path
 
 
 def _load_unique(path: Path, label: str) -> dict[tuple[str, str, int], dict[str, Any]]:

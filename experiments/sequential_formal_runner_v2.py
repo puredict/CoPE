@@ -29,10 +29,12 @@ from cope.sequential_prompting_v2 import (
 )
 from cope.governed_delta import materialize_governed_delta
 from cope.formal_recovery import (
-    AMBIGUOUS_FAILURE,
+    AMBIGUOUS_FAILURE, INFRASTRUCTURE_STOP_FILE,
     FormalRecoveryError,
     FormalRecoveryLedger,
     cell_key,
+    freeze_infrastructure_stop,
+    is_infrastructure_failure,
 )
 from cope.sequential_semantics import (
     build_initial_sequence_state,
@@ -414,6 +416,10 @@ def main() -> int:
     ).stdout.strip()
     if args.output_dir.exists() and not args.resume:
         raise FileExistsError(args.output_dir)
+    stop_path = args.output_dir / INFRASTRUCTURE_STOP_FILE
+    if stop_path.is_file():
+        print(stop_path.read_text(encoding="utf-8").strip(), flush=True)
+        return 4
     if sha256_bytes(args.manifest.read_bytes()) != EXPECTED_MANIFEST_SHA256:
         raise RuntimeError("formal manifest hash mismatch")
     with args.manifest.open(newline="", encoding="utf-8") as handle:
@@ -621,6 +627,13 @@ def main() -> int:
                         }
                     )
                     publish(event1_result)
+                    if is_infrastructure_failure(event1_result["failure_class"]):
+                        freeze_infrastructure_stop(
+                            args.output_dir,
+                            failure_class=str(event1_result["failure_class"]),
+                            cell=event1_result,
+                        )
+                        return 4
                     skipped = base_result(row, arm, 2)
                     skipped.update(
                         {
@@ -708,6 +721,13 @@ def main() -> int:
                         }
                     )
                     publish(event2_result)
+                    if is_infrastructure_failure(event2_result["failure_class"]):
+                        freeze_infrastructure_stop(
+                            args.output_dir,
+                            failure_class=str(event2_result["failure_class"]),
+                            cell=event2_result,
+                        )
+                        return 4
                 except Exception as exc:
                     if isinstance(exc, FormalTransitionError):
                         diagnostics2 = exc.diagnostics
@@ -731,6 +751,13 @@ def main() -> int:
                         }
                     )
                     publish(event2_result)
+                    if is_infrastructure_failure(event2_result["failure_class"]):
+                        freeze_infrastructure_stop(
+                            args.output_dir,
+                            failure_class=str(event2_result["failure_class"]),
+                            cell=event2_result,
+                        )
+                        return 4
             finally:
                 if env is not None:
                     env.close()
