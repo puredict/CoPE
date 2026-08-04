@@ -38,6 +38,10 @@ yet constitute a learned robot-recovery method result.
 - [PLanAR](https://arxiv.org/html/2602.01662v4) already supplies strong
   multi-task, multi-model, real-robot symbolic verification/replanning evidence
   and sets a much higher external-validity bar.
+- [ASPIRE](https://arxiv.org/html/2607.00272) already demonstrates autonomous
+  execution-failure diagnosis, repair synthesis/validation, persistent skill
+  accumulation, and multi-benchmark long-horizon generalization; CoPE cannot
+  claim first agentic robot failure repair or persistent reuse of repairs.
 
 ## Only live hypothesis still capable of supporting a method contribution
 
