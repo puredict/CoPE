@@ -668,7 +668,7 @@ def main() -> int:
                         physically_true=(row["done_object"],), event_index=2,
                     )
                     continuity = event1_result["logical_after_sha256"] == sequence_state_hash(logical)
-                    if arm == "cope":
+                    if arm in {"cope", "neutral_patch", "governed_delta"}:
                         continuity = continuity and receipt1["after_hash"] == receipt2["before_hash"]
                     if directive != "HALT":
                         placement = controller.pick_and_place(row["replacement_d"], RECEPTACLE)
