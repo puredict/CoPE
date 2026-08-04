@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 import csv
+import hashlib
 import importlib.util
 import sys
 from pathlib import Path
+
+import pytest
 
 from experiments.sequential_formal_runner import RESULT_FIELDS
 
@@ -25,7 +28,10 @@ def make_rows(manifest):
                 row = dict.fromkeys(RESULT_FIELDS, "")
                 row.update(
                     sequence_id=sequence["sequence_id"], arm=arm,
-                    event_index=event_index, substrate_eligible=True,
+                    event_index=event_index, task_id=sequence["task_id"],
+                    state_id=sequence["state_id"],
+                    prefix_orientation=sequence["prefix_orientation"],
+                    sequence_type=sequence["sequence_type"], substrate_eligible=True,
                     provider_called=True, retry_count=0, parser_valid=True,
                     semantic_valid=True, revision_hash_continuity=True,
                     intermediate_invariant_valid=True, progress_preserved=True,
@@ -34,16 +40,17 @@ def make_rows(manifest):
                     proposal_bytes=(100 if arm == "cope" else 200),
                     prompt_tokens=10, completion_tokens=5, latency_seconds=0.1,
                     failure_class="",
-                    input_sha256=f"input-{sequence['sequence_id']}-{event_index}",
-                    prefix_action_sha256=f"action-{sequence['sequence_id']}",
-                    prefix_simulator_sha256=f"sim-{sequence['sequence_id']}",
+                    input_sha256=hashlib.sha256(f"input-{sequence['sequence_id']}-{event_index}".encode()).hexdigest(),
+                    proposal_sha256="a" * 64, response_sha256="b" * 64,
+                    logical_before_sha256="c" * 64,
+                    logical_after_sha256="d" * 64,
+                    prefix_action_sha256=hashlib.sha256(f"action-{sequence['sequence_id']}".encode()).hexdigest(),
+                    prefix_simulator_sha256=hashlib.sha256(f"sim-{sequence['sequence_id']}".encode()).hexdigest(),
                 )
                 if arm == "neutral_patch" and index < 8 and event_index == 2:
                     row["final_intent_satisfied"] = False
-                    row["failure_class"] = "synthetic_neutral_failure"
                 if arm == "governed_delta" and index < 10 and event_index == 2:
                     row["final_intent_satisfied"] = False
-                    row["failure_class"] = "synthetic_governed_failure"
                 rows.append(row)
     return rows
 
@@ -103,7 +110,55 @@ def test_infrastructure_failure_invalidates_an_otherwise_passing_run(tmp_path, m
         manifest = list(csv.DictReader(handle))
     rows = make_rows(manifest)
     rows[0]["failure_class"] = "event1:FormalTransitionError:provider_http_503"
+    for field in (
+        "parser_valid", "semantic_valid", "revision_hash_continuity",
+        "intermediate_invariant_valid", "progress_preserved",
+        "final_intent_satisfied", "action_budget_respected",
+    ):
+        rows[0][field] = False
+    rows[0]["proposal_bytes"] = 0
+    rows[0]["proposal_sha256"] = ""
+    rows[0]["response_sha256"] = ""
+    rows[0]["logical_after_sha256"] = ""
+    rows[1].update(
+        provider_called=False, parser_valid=False, semantic_valid=False,
+        revision_hash_continuity=False, intermediate_invariant_valid=False,
+        progress_preserved=False, final_intent_satisfied=False,
+        action_budget_respected=False, proposal_bytes=0, input_sha256="",
+        proposal_sha256="", response_sha256="", logical_before_sha256="",
+        logical_after_sha256="", failure_class="dependency_skip_after_event1_failure",
+    )
     output = run_analysis(tmp_path, monkeypatch, rows, "infrastructure")
     text = (output / "00_RESULT.md").read_text()
     assert "INVALID_INFRASTRUCTURE_FAILURE" in text
     assert "Infrastructure failures: **1**" in text
+
+
+def _break_event1_dependency(rows):
+    rows[0].update(
+        semantic_valid=False, revision_hash_continuity=False,
+        intermediate_invariant_valid=False, progress_preserved=False,
+        final_intent_satisfied=False, action_budget_respected=False,
+        failure_class="synthetic_semantic_failure",
+    )
+
+
+@pytest.mark.parametrize("mutation,match", [
+    (lambda rows: rows.pop(), "missing, duplicated, or extra"),
+    (lambda rows: rows[0].update(state_id="99"), "metadata drift"),
+    (lambda rows: rows[0].update(progress_preserved="garbage"), "boolean is noncanonical"),
+    (lambda rows: rows[0].update(prefix_action_sha256=""), "prefix hash drift"),
+    (lambda rows: rows[0].update(input_sha256="e" * 64), "common event-1 input drift"),
+    (lambda rows: rows[0].update(proposal_sha256=""), "proposal evidence invalid"),
+    (lambda rows: rows[0].update(logical_after_sha256=""), "semantic evidence inconsistent"),
+    (_break_event1_dependency, "event-2 call dependency"),
+])
+def test_v2_analysis_rejects_corrupt_or_drifted_results(
+    tmp_path, monkeypatch, mutation, match,
+):
+    manifest_path = ROOT / "manifests" / "sequential_formal_40x5x2_v2.csv"
+    with manifest_path.open(newline="", encoding="utf-8") as handle:
+        rows = make_rows(list(csv.DictReader(handle)))
+    mutation(rows)
+    with pytest.raises(ValueError, match=match):
+        run_analysis(tmp_path, monkeypatch, rows, "corrupt")

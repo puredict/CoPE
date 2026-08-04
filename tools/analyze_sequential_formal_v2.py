@@ -29,6 +29,14 @@ PRIMARY_CONTROLS = ("neutral_patch", "governed_delta")
 SECONDARY_CONTROLS = ("fsr_pc", "full_replan")
 EXPECTED_MANIFEST_SHA256 = "9788ceff3c4366e5928bef028cc5e24c594dc30d6c8a559c2403b78bb5a858e5"
 BOOL_TRUE = {"1", "true", "yes"}
+BOOL_FALSE = {"0", "false", "no"}
+BOOLEAN_FIELDS = (
+    "substrate_eligible", "provider_called", "parser_valid", "semantic_valid",
+    "revision_hash_continuity", "intermediate_invariant_valid",
+    "progress_preserved", "stale_commitment_executed",
+    "final_intent_satisfied", "action_budget_respected",
+    "call_budget_respected",
+)
 INFRASTRUCTURE_FAILURE_MARKERS = (
     "provider_timeout",
     "provider_transport_outage",
@@ -39,6 +47,10 @@ INFRASTRUCTURE_FAILURE_MARKERS = (
 
 def truth(value: str) -> bool:
     return value.strip().lower() in BOOL_TRUE
+
+
+def is_sha256(value: str) -> bool:
+    return len(value) == 64 and all(char in "0123456789abcdef" for char in value)
 
 
 def parse_args() -> argparse.Namespace:
@@ -103,6 +115,21 @@ def main() -> int:
     for row in event_rows:
         by_sequence[row["sequence_id"]].append(row)
         by_pair[(row["sequence_id"], row["arm"])].append(row)
+    for sequence_id, rows in by_sequence.items():
+        manifest_row = manifest_by_id[sequence_id]
+        for row in rows:
+            if any(
+                row[field].strip().lower() not in BOOL_TRUE | BOOL_FALSE
+                for field in BOOLEAN_FIELDS
+            ):
+                raise ValueError(f"v2 result boolean is noncanonical: {sequence_id}")
+            if (
+                row["task_id"] != manifest_row["task_id"]
+                or row["state_id"] != manifest_row["state_id"]
+                or row["prefix_orientation"] != manifest_row["prefix_orientation"]
+                or row["sequence_type"] != manifest_row["sequence_type"]
+            ):
+                raise ValueError(f"v2 result metadata drift: {sequence_id}")
     eligible: list[str] = []
     substrate_failures: list[str] = []
     for sequence_id, rows in by_sequence.items():
@@ -116,7 +143,7 @@ def main() -> int:
             continue
         for field in ("prefix_action_sha256", "prefix_simulator_sha256"):
             values = {row[field] for row in rows}
-            if len(values) != 1 or not next(iter(values)):
+            if len(values) != 1 or not is_sha256(next(iter(values))):
                 raise ValueError(f"eligible prefix hash drift: {sequence_id}/{field}")
         if any(int(row["retry_count"]) != 0 for row in rows):
             raise ValueError(f"eligible sequence has retry: {sequence_id}")
@@ -126,8 +153,36 @@ def main() -> int:
                 if int(row["event_index"]) == event_index and truth(row["provider_called"])
             ]
             hashes = {row["input_sha256"] for row in attempted}
-            if attempted and (len(hashes) != 1 or not next(iter(hashes))):
+            if attempted and (len(hashes) != 1 or not is_sha256(next(iter(hashes)))):
                 raise ValueError(f"common event-{event_index} input drift: {sequence_id}")
+        for row in rows:
+            if not truth(row["provider_called"]):
+                continue
+            parser_valid = truth(row["parser_valid"])
+            semantic_valid = truth(row["semantic_valid"])
+            if parser_valid and (
+                int(row["proposal_bytes"]) <= 0
+                or not is_sha256(row["proposal_sha256"])
+                or not is_sha256(row["response_sha256"])
+            ):
+                raise ValueError(f"v2 parsed proposal evidence invalid: {sequence_id}")
+            if semantic_valid and not parser_valid:
+                raise ValueError(f"v2 semantic/parser flags inconsistent: {sequence_id}")
+            if semantic_valid and (
+                not is_sha256(row["logical_before_sha256"])
+                or not is_sha256(row["logical_after_sha256"])
+                or row["failure_class"]
+            ):
+                raise ValueError(f"v2 semantic evidence inconsistent: {sequence_id}")
+            semantic_dependent = (
+                "revision_hash_continuity", "intermediate_invariant_valid",
+                "progress_preserved", "stale_commitment_executed",
+                "final_intent_satisfied", "action_budget_respected",
+            )
+            if any(truth(row[field]) for field in semantic_dependent) and not semantic_valid:
+                raise ValueError(f"v2 outcome/semantic flags inconsistent: {sequence_id}")
+            if not semantic_valid and not row["failure_class"]:
+                raise ValueError(f"v2 failed call lacks classification: {sequence_id}")
         for arm in ARMS:
             pair = sorted(
                 (row for row in rows if row["arm"] == arm),
@@ -135,10 +190,12 @@ def main() -> int:
             )
             if not truth(pair[0]["provider_called"]):
                 raise ValueError(f"eligible event 1 lacks call: {sequence_id}/{arm}")
-            if not truth(pair[1]["provider_called"]):
-                event1_ok = truth(pair[0]["parser_valid"]) and truth(pair[0]["semantic_valid"])
-                if event1_ok or pair[1]["failure_class"] != "dependency_skip_after_event1_failure":
-                    raise ValueError(f"invalid event-2 skip: {sequence_id}/{arm}")
+            event1_ok = truth(pair[0]["parser_valid"]) and truth(pair[0]["semantic_valid"])
+            event2_called = truth(pair[1]["provider_called"])
+            if event1_ok != event2_called:
+                raise ValueError(f"invalid event-2 call dependency: {sequence_id}/{arm}")
+            if not event2_called and pair[1]["failure_class"] != "dependency_skip_after_event1_failure":
+                raise ValueError(f"invalid event-2 skip: {sequence_id}/{arm}")
         eligible.append(sequence_id)
 
     sequence_rows: list[dict[str, Any]] = []
