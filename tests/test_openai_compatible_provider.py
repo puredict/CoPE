@@ -165,6 +165,18 @@ def test_adapter_classifies_wrong_envelope_types_as_infrastructure(monkeypatch) 
             "id": "bad-usage", "choices": [{"message": {"content": "{}"}}],
             "usage": [],
         },
+        {
+            "id": "negative-usage", "choices": [{"message": {"content": "{}"}}],
+            "usage": {"prompt_tokens": -1, "completion_tokens": 2},
+        },
+        {
+            "id": "float-usage", "choices": [{"message": {"content": "{}"}}],
+            "usage": {"prompt_tokens": 10.5, "completion_tokens": 2},
+        },
+        {
+            "id": "boolean-usage", "choices": [{"message": {"content": "{}"}}],
+            "usage": {"prompt_tokens": True, "completion_tokens": 2},
+        },
     ):
         monkeypatch.setattr(
             "cope.providers.openai_compatible.request.urlopen",

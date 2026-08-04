@@ -127,8 +127,13 @@ class OpenAICompatibleRecoveryProvider(HighLevelRecoveryProvider):
                     usage = {}
                 if not isinstance(usage, Mapping):
                     raise TypeError("provider usage must be an object")
-                prompt_tokens = int(usage.get("prompt_tokens", 0))
-                completion_tokens = int(usage.get("completion_tokens", 0))
+                prompt_tokens = usage.get("prompt_tokens", 0)
+                completion_tokens = usage.get("completion_tokens", 0)
+                if any(
+                    isinstance(value, bool) or not isinstance(value, int) or value < 0
+                    for value in (prompt_tokens, completion_tokens)
+                ):
+                    raise ValueError("provider token usage must contain non-negative integers")
                 provider_request_id = envelope.get("id")
             except (
                 AttributeError, KeyError, IndexError, OverflowError, TypeError,

@@ -19,6 +19,9 @@ or infrastructure failure and must not count against an experimental arm.
 
 - invalid/missing envelope structure, nontextual content, or malformed usage is
   `provider_malformed_envelope`;
+- usage token counts must be non-negative JSON integers; negative, floating,
+  boolean, list, or other noncanonical values are infrastructure-invalid and
+  are never coerced or charged to an arm;
 - this class preserves the raw-body SHA-256, enters the infrastructure-invalid
   family, writes the first-failure stop marker, and permits no later call;
 - textual model content that is not the required JSON remains
