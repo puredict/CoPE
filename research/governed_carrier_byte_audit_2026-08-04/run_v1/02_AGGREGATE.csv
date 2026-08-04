@@ -1,0 +1,6 @@
+arm,transitions,proposal_bytes_median,proposal_bytes_min,proposal_bytes_max,contract_bytes,json_leaf_count_median,cope_smaller_pairs
+cope,8,300.0,234,305,588,6.0,
+neutral_patch,8,1657.5,592,1685,849,45.0,8
+governed_delta,8,1893.0,944,1902,1147,47.0,8
+fsr_pc,8,2244.0,1886,2764,584,63.0,8
+full_replan,8,348.0,331,375,691,8.0,8
