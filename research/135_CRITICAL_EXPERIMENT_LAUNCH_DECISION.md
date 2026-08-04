@@ -1,8 +1,8 @@
 # Critical experiment launch decision and runbook
 
-Date: 2026-08-04  
-Current authoritative branch: `codex/shared-commit-envelope`  
-Current smoke implementation commit: `9d392139ec0dd7a3322082588228adbec1930e3a`
+Date: 2026-08-04
+Current authoritative branch: `codex/shared-commit-envelope`
+Current smoke implementation commit: `d5de43d444bbea03699aa116c17d2848ab773825`
 
 ## Decision
 
@@ -73,6 +73,8 @@ CUDA_VISIBLE_DEVICES="" ./scripts/run_project_env.sh \
 ## Stop rules
 
 - smoke failure: stop, no retry;
+- smoke intent without response: classify as an ambiguous consumed draw; do
+  not create a replacement output directory;
 - infrastructure-invalid formal run: retain it, do not interpret efficacy;
 - neutral or governed NO-GO: stop the method-paper route;
 - symbolic dual-primary PASS: report it as necessary but non-embodied, then
@@ -82,7 +84,7 @@ CUDA_VISIBLE_DEVICES="" ./scripts/run_project_env.sh \
 
 ## Current paper status before outcomes
 
-Architecture novelty: NO-GO after the Tang collision.  
-Occurrence interface/benchmark: HOLD, experimentally testable.  
-ICRA method paper: weak reject / not submission-ready.  
+Architecture novelty: NO-GO after the Tang collision.
+Occurrence interface/benchmark: HOLD, experimentally testable.
+ICRA method paper: weak reject / not submission-ready.
 Immediate blocker: secure credential plus the one-draw smoke—not missing code.

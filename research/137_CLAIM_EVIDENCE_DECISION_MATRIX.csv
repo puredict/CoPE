@@ -1,0 +1,13 @@
+claim_id,claim,evidence,status,decisive_next_outcome,allowed_paper_language
+C01,"Persistent commitment editing is a novel architecture","Tang et al. 2026 hard-collision audit","NO_GO","None under current scope","Do not claim architecture invention"
+C02,"Occurrence identity itself is novel","Event Calculus; commitment lifecycle; workflow instance prior art","NO_GO","None","Describe as enabling representation only"
+C03,"CoPE is a compact carrier","Cold preflight and symbolic proposal-size measurements","SUPPORTED_DESCRIPTIVE","Replicate on learned outputs","CoPE uses a compact patch carrier"
+C04,"CoPE is more compact than full replan","Full-replan proposal is near-sized in several audited settings","NOT_GENERAL","Learned paired locality with confidence interval","Avoid general claim"
+C05,"CoPE improves first-pass occurrence-sensitive editing","No live learned formal result yet","HOLD","Pass Holm-corrected efficacy against neutral and governed","Claim only after dual-primary PASS"
+C06,"CoPE improves locality","No live learned formal result yet","HOLD","Median paired locality improvement >=20% against both primaries","Claim only after locality PASS"
+C07,"CoPE is no less safe than controls","Symbolic oracle and negative gates only","HOLD","No excess canonical/directive/history invariant failures","Claim only within tested formal scope"
+C08,"Occurrence-sensitive editing works symbolically","20/20 deterministic equivalence and 5/5 negative rejection","SUPPORTED_MECHANISM","Learned formal tests model selection rather than semantics","Occurrence-addressed semantics are executable and audited"
+C09,"Occurrence-sensitive editing works physically","Task7 state2 restore failed target_predicate_false","REFUTED_CURRENT_CONTROLLER","New controller or separately preregistered benchmark; no retry of state2","Report controller-bound failure"
+C10,"Formal runner provides at-most-once learned calls","Intent-response-result fsync recovery and injected interruption tests","SUPPORTED_IMPLEMENTATION","Confirm artifact counts after live run","Crash-safe at-most-once execution"
+C11,"Provider path is operational","Only exact unit test and no-credential block are observed","BLOCKED","One-draw task-independent smoke PASS","Do not claim until live smoke"
+C12,"CoPE supports an ICRA method paper","Architecture novelty collision and missing learned/embodied primary evidence","WEAK_REJECT_HOLD","Occurrence dual-primary PASS then task0 embodied PASS","Not submission-ready"
