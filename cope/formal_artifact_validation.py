@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
-from cope.formal_recovery import cell_key
+from cope.formal_recovery import FormalRecoveryError, FormalRecoveryLedger, cell_key
 
 
 class FormalArtifactError(ValueError):
@@ -38,23 +38,13 @@ def validate_event_results_artifacts(
     if not isinstance(metadata, dict) or metadata.get("manifest_sha256") != expected_manifest_sha256:
         raise FormalArtifactError("formal run metadata manifest hash mismatch")
 
-    records: dict[tuple[str, str, int], dict[str, Any]] = {}
-    with journal_path.open(encoding="utf-8") as handle:
-        for line_number, line in enumerate(handle, start=1):
-            if not line.endswith("\n"):
-                raise FormalArtifactError("formal event journal has a torn final line")
-            try:
-                record = json.loads(line)
-            except json.JSONDecodeError as exc:
-                raise FormalArtifactError(
-                    f"formal event journal line {line_number} is invalid JSON"
-                ) from exc
-            if not isinstance(record, dict) or set(record) != set(result_fields):
-                raise FormalArtifactError("formal event journal record schema mismatch")
-            key = cell_key(record)
-            if key in records:
-                raise FormalArtifactError("formal event journal contains a duplicate cell")
-            records[key] = record
+    try:
+        ledger = FormalRecoveryLedger(run_dir, metadata, resume=True)
+    except (FormalRecoveryError, FileExistsError) as exc:
+        raise FormalArtifactError(f"formal durable ledger is invalid: {exc}") from exc
+    records = ledger.results
+    if any(set(record) != set(result_fields) for record in records.values()):
+        raise FormalArtifactError("formal event journal record schema mismatch")
 
     csv_by_key: dict[tuple[str, str, int], Mapping[str, str]] = {}
     for row in csv_rows:

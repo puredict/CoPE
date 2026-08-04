@@ -55,6 +55,15 @@ def run(tmp_path, monkeypatch, rows, suffix):
     with (run_dir / "01_EVENT_JOURNAL.txt").open("x", encoding="utf-8") as handle:
         for row in rows:
             handle.write(json.dumps(row, sort_keys=True) + "\n")
+    with (run_dir / "04_CALL_INTENTS.txt").open("x", encoding="utf-8") as intents, (
+        run_dir / "02_PROVIDER_TRACES.txt"
+    ).open("x", encoding="utf-8") as responses:
+        for row in rows:
+            if str(row["provider_called"]).lower() not in {"true", "1", "yes"}:
+                continue
+            key = {field: row[field] for field in ("sequence_id", "arm", "event_index")}
+            intents.write(json.dumps(key, sort_keys=True) + "\n")
+            responses.write(json.dumps({**key, "diagnostics": {}}, sort_keys=True) + "\n")
     output = tmp_path / f"out-{suffix}"
     monkeypatch.setattr(sys, "argv", [
         "analyze", "--manifest", str(manifest_path),

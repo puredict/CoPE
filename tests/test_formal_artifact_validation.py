@@ -64,3 +64,22 @@ def test_formal_artifacts_reject_manifest_or_torn_journal(tmp_path):
             event_results=result, csv_rows=rows, result_fields=FIELDS,
             expected_manifest_sha256="abc",
         )
+
+
+def test_formal_artifacts_reject_called_result_without_intent_response(tmp_path):
+    result, rows = artifacts(tmp_path)
+    rows[0]["provider_called"] = "True"
+    with result.open("w", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=(*FIELDS, "provider_called"), lineterminator="\n")
+        writer.writeheader(); writer.writerows(rows)
+    journal = result.parent / "01_EVENT_JOURNAL.txt"
+    journal.write_text(json.dumps({
+        "sequence_id": "s", "arm": "cope", "event_index": 1,
+        "value": True, "provider_called": True,
+    }) + "\n")
+    with pytest.raises(FormalArtifactError, match="called result lacks a durable call intent"):
+        validate_event_results_artifacts(
+            event_results=result, csv_rows=rows,
+            result_fields=(*FIELDS, "provider_called"),
+            expected_manifest_sha256="abc",
+        )
