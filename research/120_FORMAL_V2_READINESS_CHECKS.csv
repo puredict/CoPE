@@ -1,0 +1,17 @@
+check,expected,observed,gate
+manifest_sha256,9788ceff3c4366e5928bef028cc5e24c594dc30d6c8a559c2403b78bb5a858e5,9788ceff3c4366e5928bef028cc5e24c594dc30d6c8a559c2403b78bb5a858e5,PASS
+sequence_units,40,40,PASS
+arms_per_unit,5,5,PASS
+events_per_arm,2,2,PASS
+planned_provider_calls,400,400,PASS
+cold_preflight_provider_calls,0,0,PASS
+cold_preflight_simulator_states_indexed,0,0,PASS
+request_rows,400,400,PASS
+five_arm_request_groups,80,80,PASS
+common_input_hash_groups,80,80,PASS
+normalized_request_hash_groups,80,80,PASS
+full_test_suite,586,586,PASS
+credential_block_exit_code,3,3,PASS
+task1_state33_retried,false,false,PASS
+task1_states34_49_indexed,false,false,PASS
+formal_execution,secure_credential_and_smoke_pass,not_satisfied,BLOCKED
