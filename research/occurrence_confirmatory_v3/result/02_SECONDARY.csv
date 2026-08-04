@@ -1,0 +1,3 @@
+control,paired_cases,cope_successes,control_successes,cope_only_wins,control_only_wins,paired_risk_difference,raw_efficacy_p,holm_secondary_p,secondary_cannot_rescue_primary
+fsr_pc,40,40,31,9,0,0.225,0.00390625,0.0078125,True
+full_replan,40,40,37,3,0,0.075,0.25,0.25,True
