@@ -6,6 +6,7 @@ from cope.occurrence_prompting_confirmatory_v3 import (
     CONTRACTS_V3,
     EXPECTED_CONTRACT_HASHES_V3,
 )
+from cope.occurrence_sequence import build_recurrence_case
 from cope.types import stable_hash
 from experiments.occurrence_confirmatory_runner_v3 import EXPECTED_MANIFEST_SHA256_V3
 
@@ -52,3 +53,13 @@ def test_v3_manifest_is_locked_balanced_and_vocabulary_disjoint() -> None:
         for position in range(5) for arm in ARMS
     }
     assert set(positions.values()) == {8}
+    for row in rows:
+        pre_state, event, _ = build_recurrence_case(
+            case_id=row["case_id"],
+            done_object=row["done_object"],
+            recurring_object=row["recurring_object"],
+            intermediate_object=row["intermediate_object"],
+            recurrence_depth=int(row["recurrence_depth"]),
+        )
+        assert pre_state["state_version"] == 2 * int(row["recurrence_depth"])
+        assert event["replacement_object"] == row["recurring_object"]

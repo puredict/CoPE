@@ -20,6 +20,9 @@ the completed v1/v2 diagnostics.
 - Arm position is balanced: every arm appears eight times in every position.
 - The common recovery input is byte-identical across arms within a case.
 - The seven v3 object IDs are disjoint from the seven v1/v2 object IDs.
+- Before requests, the symbolic benchmark's fixed object allowlist and display
+  labels are extended with those seven IDs. This changes no transition rule,
+  materializer, validator, oracle, or scoring rule.
 - CoPE and all controls name the actual input fields
   `event.target_commitment_id`, `event.replacement_commitment_id`, and
   `event.valid_from_state_version`.

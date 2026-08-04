@@ -20,6 +20,15 @@ TASK_ID = 1
 RECEPTACLE = "basket_1_contain_region"
 ORIGINAL_OBJECTS = ("cream_cheese_1", "butter_1")
 REPLACEMENT_OBJECT = "alphabet_soup_1"
+CONFIRMATORY_OBJECTS = (
+    "apple_1",
+    "banana_1",
+    "bread_1",
+    "coffee_jar_1",
+    "lemon_1",
+    "mug_1",
+    "sugar_box_1",
+)
 ALLOWED_OBJECTS = frozenset(
     {
         "cream_cheese_1",
@@ -29,6 +38,7 @@ ALLOWED_OBJECTS = frozenset(
         "ketchup_1",
         "orange_juice_1",
         "tomato_sauce_1",
+        *CONFIRMATORY_OBJECTS,
     }
 )
 OBJECT_LABELS = {
@@ -39,6 +49,13 @@ OBJECT_LABELS = {
     "ketchup_1": "ketchup",
     "orange_juice_1": "orange juice",
     "tomato_sauce_1": "tomato sauce",
+    "apple_1": "apple",
+    "banana_1": "banana",
+    "bread_1": "bread",
+    "coffee_jar_1": "coffee jar",
+    "lemon_1": "lemon",
+    "mug_1": "mug",
+    "sugar_box_1": "sugar box",
 }
 
 
