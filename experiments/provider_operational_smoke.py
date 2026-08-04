@@ -24,6 +24,27 @@ Return exactly one JSON object with exactly one field: status. Its value must
 be ready. Return no prose, markdown, or additional fields."""
 
 
+def write_fsynced(path: Path, payload: Mapping[str, Any]) -> None:
+    """Publish one JSON record durably and never overwrite prior evidence."""
+    with path.open("x", encoding="utf-8") as handle:
+        handle.write(canonical_json(payload) + "\n")
+        handle.flush()
+        os.fsync(handle.fileno())
+    directory_fd = os.open(path.parent, os.O_RDONLY)
+    try:
+        os.fsync(directory_fd)
+    finally:
+        os.close(directory_fd)
+
+
+def fsync_directory(path: Path) -> None:
+    directory_fd = os.open(path, os.O_RDONLY)
+    try:
+        os.fsync(directory_fd)
+    finally:
+        os.close(directory_fd)
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output-dir", type=Path, required=True)
@@ -74,6 +95,47 @@ def evaluate(invocation: Any) -> dict[str, Any]:
     }
 
 
+def execute_one_draw(
+    *, output_dir: Path, provider: Any, recovery: RecoveryInput,
+    runtime_commit: str, endpoint: str,
+) -> int:
+    """Execute the smoke after a durable intent; any interruption forbids recall."""
+    output_dir.mkdir(parents=True, exist_ok=False)
+    fsync_directory(output_dir.parent)
+    write_fsynced(output_dir / "00_CALL_INTENT.txt", {
+        "schema": "provider-operational-smoke-intent-v1",
+        "runtime_git_commit": runtime_commit,
+        "input_sha256": recovery.input_hash,
+        "contract_sha256": stable_hash(CONTRACT),
+        "endpoint": endpoint,
+        "model": MODEL,
+        "seed": SEED,
+        "max_retries": 0,
+        "credential_logged": False,
+        "experimental_case": False,
+        "simulator_used": False,
+    })
+    invocation = provider.call_contract("compact", recovery, CONTRACT)
+    result = evaluate(invocation)
+    result.update({
+        "schema": "provider-operational-smoke-result-v1",
+        "runtime_git_commit": runtime_commit, "credential_logged": False,
+        "simulator_states_indexed": 0, "experimental_cases_materialized": 0,
+        "input_sha256": recovery.input_hash,
+        "contract_sha256": stable_hash(CONTRACT),
+    })
+    trace = {
+        "raw_request": invocation.raw_request,
+        "raw_response": invocation.raw_response,
+        "parsed_output": invocation.parsed_output,
+    }
+    # Response evidence precedes the terminal status. Intent without response is
+    # ambiguous; response without status is recoverable by offline inspection.
+    write_fsynced(output_dir / "01_REDACTED_TRACE.txt", trace)
+    write_fsynced(output_dir / "00_STATUS.txt", result)
+    return 0 if result["gate"] == "PASS" else 2
+
+
 def main() -> int:
     args = parse_args()
     repo_root = Path(__file__).resolve().parents[1]
@@ -96,7 +158,7 @@ def main() -> int:
             "experimental_cases_materialized": 0,
             "runtime_git_commit": runtime_commit,
         }
-        (args.output_dir / "00_STATUS.txt").write_text(canonical_json(blocked) + "\n", encoding="utf-8")
+        write_fsynced(args.output_dir / "00_STATUS.txt", blocked)
         print(canonical_json(blocked), flush=True)
         return 3
     recovery = build_smoke_input()
@@ -108,24 +170,10 @@ def main() -> int:
         "max_completion_tokens": MAX_COMPLETION_TOKENS, "max_retries": 0,
         "timeout_seconds": TIMEOUT_SECONDS,
     })
-    invocation = provider.call_contract("compact", recovery, CONTRACT)
-    result = evaluate(invocation)
-    result.update({
-        "schema": "provider-operational-smoke-result-v1",
-        "runtime_git_commit": runtime_commit, "credential_logged": False,
-        "simulator_states_indexed": 0, "experimental_cases_materialized": 0,
-        "input_sha256": recovery.input_hash,
-        "contract_sha256": stable_hash(CONTRACT),
-    })
-    trace = {
-        "raw_request": invocation.raw_request,
-        "raw_response": invocation.raw_response,
-        "parsed_output": invocation.parsed_output,
-    }
-    args.output_dir.mkdir(parents=True, exist_ok=False)
-    (args.output_dir / "00_STATUS.txt").write_text(canonical_json(result) + "\n", encoding="utf-8")
-    (args.output_dir / "01_REDACTED_TRACE.txt").write_text(canonical_json(trace) + "\n", encoding="utf-8")
-    return 0 if result["gate"] == "PASS" else 2
+    return execute_one_draw(
+        output_dir=args.output_dir, provider=provider, recovery=recovery,
+        runtime_commit=runtime_commit, endpoint=args.endpoint,
+    )
 
 
 if __name__ == "__main__":
