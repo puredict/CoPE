@@ -214,12 +214,25 @@ class LiberoOracleSkillController:
         gripper = self.base_env.robots[0].gripper
         return bool(self.base_env._check_grasp(gripper, obj))
 
-    def in_region(self, object_name: str, target_region_name: str) -> bool:
+    def predicate_satisfied(
+        self,
+        predicate: str,
+        object_name: str,
+        target_name: str,
+    ) -> bool:
+        relation = str(predicate).strip().lower()
+        if not relation:
+            raise ValueError("predicate must be nonempty")
         return bool(
             self.base_env._eval_predicate(
-                ["in", str(object_name), str(target_region_name)]
+                [relation, str(object_name), str(target_name)]
             )
         )
+
+    def in_region(self, object_name: str, target_region_name: str) -> bool:
+        """Backward-compatible wrapper for the historical insertion controller."""
+
+        return self.predicate_satisfied("in", object_name, target_region_name)
 
     def warmup(self) -> PhaseRecord:
         return self.hold("warmup", self.config.warmup_steps, gripper=-1.0)
@@ -315,8 +328,10 @@ class LiberoOracleSkillController:
         self,
         checkpoint: HeldObjectCheckpoint,
         target_region_name: str,
+        *,
+        predicate: str = "in",
     ) -> OracleSkillResult:
-        """Continue a valid held-object checkpoint into a target region."""
+        """Continue a valid held-object checkpoint into a relational target."""
 
         cfg = self.config
         phases: list[PhaseRecord] = []
@@ -354,7 +369,7 @@ class LiberoOracleSkillController:
                 gripper=1.0,
             )
         )
-        if self.in_region(object_name, target_region_name):
+        if self.predicate_satisfied(predicate, object_name, target_region_name):
             return OracleSkillResult(
                 object_name=object_name,
                 target_region_name=target_region_name,
@@ -373,7 +388,9 @@ class LiberoOracleSkillController:
         retreat[2] += cfg.retreat_height_m
         phases.append(self.move_to("retreat", retreat, gripper=-1.0))
         phases.append(self.hold("settle", cfg.settle_steps, gripper=-1.0))
-        target_predicate = self.in_region(object_name, target_region_name)
+        target_predicate = self.predicate_satisfied(
+            predicate, object_name, target_region_name
+        )
         return OracleSkillResult(
             object_name=object_name,
             target_region_name=target_region_name,
@@ -451,6 +468,8 @@ class LiberoOracleSkillController:
         self,
         object_name: str,
         target_region_name: str,
+        *,
+        predicate: str = "in",
     ) -> OracleSkillResult:
         cfg = self.config
         phases: list[PhaseRecord] = []
@@ -514,7 +533,7 @@ class LiberoOracleSkillController:
         # Narrow insertion tasks may become successful while the object is
         # still grasped.  Releasing after the target predicate is established
         # can knock the object back out of the region.
-        if self.in_region(object_name, target_region_name):
+        if self.predicate_satisfied(predicate, object_name, target_region_name):
             return OracleSkillResult(
                 object_name=object_name,
                 target_region_name=target_region_name,
@@ -535,7 +554,9 @@ class LiberoOracleSkillController:
         phases.append(self.move_to("retreat", retreat, gripper=-1.0))
         phases.append(self.hold("settle", cfg.settle_steps, gripper=-1.0))
 
-        target_predicate = self.in_region(object_name, target_region_name)
+        target_predicate = self.predicate_satisfied(
+            predicate, object_name, target_region_name
+        )
         return OracleSkillResult(
             object_name=object_name,
             target_region_name=target_region_name,

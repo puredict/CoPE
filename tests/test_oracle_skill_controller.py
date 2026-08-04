@@ -29,6 +29,7 @@ class FakeEnv:
         self.objects_dict = {"can": object()}
         self.robots = [SimpleNamespace(gripper=object())]
         self.grasped = False
+        self.predicate_calls = []
 
     def step(self, action):
         action = np.asarray(action)
@@ -46,7 +47,11 @@ class FakeEnv:
         return self.grasped
 
     def _eval_predicate(self, state):
-        assert state == ["in", "can", "basket_region"]
+        self.predicate_calls.append(list(state))
+        assert state in (
+            ["in", "can", "basket_region"],
+            ["on", "can", "basket_region"],
+        )
         obj = self.object_states_dict["can"].position
         target = self.object_states_dict["basket_region"].position
         return np.linalg.norm(obj[:2] - target[:2]) < 0.04
@@ -115,6 +120,42 @@ def test_pick_checkpoint_can_resume_into_place():
     placed = controller.place_held(checkpoint, "basket_region")
     assert placed.success
     assert placed.target_predicate
+
+
+def test_explicit_relation_is_forwarded_to_libero_predicate_evaluator():
+    env = FakeEnv()
+    controller = LiberoOracleSkillController(
+        env, {"robot0_eef_pos": env.eef.copy()}
+    )
+    result = controller.pick_and_place("can", "basket_region", predicate="On")
+    assert result.success
+    assert env.predicate_calls
+    assert all(call == ["on", "can", "basket_region"] for call in env.predicate_calls)
+
+
+def test_historical_default_relation_remains_in():
+    env = FakeEnv()
+    controller = LiberoOracleSkillController(
+        env, {"robot0_eef_pos": env.eef.copy()}
+    )
+    result = controller.pick_and_place("can", "basket_region")
+    assert result.success
+    assert env.predicate_calls
+    assert all(call == ["in", "can", "basket_region"] for call in env.predicate_calls)
+
+
+def test_empty_relation_fails_closed_before_evaluator_call():
+    env = FakeEnv()
+    controller = LiberoOracleSkillController(
+        env, {"robot0_eef_pos": env.eef.copy()}
+    )
+    try:
+        controller.predicate_satisfied("  ", "can", "basket_region")
+    except ValueError as exc:
+        assert "nonempty" in str(exc)
+    else:
+        raise AssertionError("empty relation must fail closed")
+    assert env.predicate_calls == []
 
 
 def test_default_grasp_protocol_preserves_single_historical_attempt():
