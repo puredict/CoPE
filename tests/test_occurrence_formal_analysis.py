@@ -112,6 +112,18 @@ def test_two_control_holm_boundary_is_feasible_but_not_two_six_zero_edges():
     assert all(value >= 0.05 for value in tied_edges.values())
 
 
+def test_occurrence_failure_taxonomy_is_descriptive_and_arm_complete():
+    manifest_path = ROOT / "manifests" / "occurrence_learned_formal_40x5_v1.csv"
+    with manifest_path.open(newline="", encoding="utf-8") as handle:
+        rows = synthetic(list(csv.DictReader(handle)))
+    taxonomy = {row["arm"]: row for row in MODULE.failure_taxonomy(rows)}
+    assert set(taxonomy) == set(MODULE.ARMS)
+    assert taxonomy["cope"]["complete_successes"] == 40
+    assert taxonomy["neutral_patch"]["complete_successes"] == 32
+    assert taxonomy["governed_delta"]["complete_successes"] == 30
+    assert taxonomy["fsr_pc"]["parser_failures"] == 0
+
+
 @pytest.mark.parametrize("mutation,match", [
     (lambda rows: rows.pop(), "missing, duplicated, or extra"),
     (lambda rows: rows[0].update(input_sha256="d" * 64), "common input drift"),

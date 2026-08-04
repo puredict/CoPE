@@ -38,8 +38,8 @@ BOOLEAN_FIELDS = (
 INFRA = ("provider_timeout", "provider_transport_outage", "provider_http_", "ambiguous_interrupted_call_no_retry")
 
 
-def truth(value: str) -> bool:
-    return value.strip().lower() in TRUE
+def truth(value: Any) -> bool:
+    return str(value).strip().lower() in TRUE
 
 
 @lru_cache(maxsize=None)
@@ -96,6 +96,42 @@ def claim_status(primary: list[dict[str, Any]], infrastructure_valid: bool) -> s
     if not by["governed_delta"]["control_gate"]:
         return "NO_GO_PRIMARY_GOVERNED_COMPARISON"
     return "NECESSARY_SYMBOLIC_GATE_PASS_REQUIRES_EMBODIED_AND_MODEL_REPLICATION"
+
+
+def failure_taxonomy(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    output = []
+    for arm in ARMS:
+        arm_rows = [row for row in rows if row["arm"] == arm]
+        output.append({
+            "arm": arm,
+            "cells": len(arm_rows),
+            "infrastructure_failures": sum(
+                any(marker in row["failure_class"] for marker in INFRA)
+                for row in arm_rows
+            ),
+            "parser_failures": sum(not truth(row["parser_valid"]) for row in arm_rows),
+            "semantic_failures_after_parse": sum(
+                truth(row["parser_valid"]) and not truth(row["semantic_valid"])
+                for row in arm_rows
+            ),
+            "canonical_failures_after_semantics": sum(
+                truth(row["semantic_valid"]) and not truth(row["canonical_valid"])
+                for row in arm_rows
+            ),
+            "history_failures_after_semantics": sum(
+                truth(row["semantic_valid"]) and not truth(row["history_valid"])
+                for row in arm_rows
+            ),
+            "directive_failures_after_semantics": sum(
+                truth(row["semantic_valid"]) and not truth(row["directive_valid"])
+                for row in arm_rows
+            ),
+            "complete_successes": sum(all(truth(row[field]) for field in (
+                "parser_valid", "semantic_valid", "canonical_valid",
+                "history_valid", "directive_valid",
+            )) for row in arm_rows),
+        })
+    return output
 
 
 def main() -> int:
@@ -262,6 +298,10 @@ def main() -> int:
     with (args.output_dir / "02_SECONDARY.csv").open("x", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(secondary[0]), lineterminator="\n")
         writer.writeheader(); writer.writerows(secondary)
+    taxonomy = failure_taxonomy(rows)
+    with (args.output_dir / "03_FAILURE_TAXONOMY.csv").open("x", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=list(taxonomy[0]), lineterminator="\n")
+        writer.writeheader(); writer.writerows(taxonomy)
     (args.output_dir / "00_RESULT.md").write_text(
         "# Occurrence-sensitive learned formal result\n\n"
         f"- Infrastructure failures: **{len(infrastructure_failures)}**\n"
