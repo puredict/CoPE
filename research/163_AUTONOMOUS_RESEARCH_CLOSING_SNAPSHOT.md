@@ -20,8 +20,8 @@ history also have non-robotics prior art.
 
 - authoritative formal code commit:
   `49fa2da2fa39cf12095bb11beb4e96837690c1e6`;
-- final research/report HEAD at this snapshot:
-  `d0ff818ae549`;
+- parent evidence HEAD before this snapshot was added:
+  `d0ff818ae549` (the snapshot itself is a later report-only commit);
 - branch: `codex/shared-commit-envelope`;
 - complete CPU-only regression: `633 passed in 54.62s`;
 - critical provider/recovery/runner/analyzer regression:
@@ -115,4 +115,3 @@ learned-method paper.
 - secure handoff: `research/161_SECURE_CREDENTIAL_HANDOFF.txt`;
 - nearest embodied neighbor:
   `research/162_AGENTCHORD_NEAREST_NEIGHBOR_AUDIT.md`.
-
