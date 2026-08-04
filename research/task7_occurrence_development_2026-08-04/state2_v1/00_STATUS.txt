@@ -1,0 +1,1 @@
+{"episodes":2,"gate":"FAIL","provider_calls":0,"runtime_git_commit":"c946f1b830f5f2a32945ce04b9c99c84ce6cea0e","schema":"task7-occurrence-physical-canary-v1","successes":1,"task1_state33_retried":false,"task1_states34_49_indexed":false,"task7_states10_49_indexed":false,"task7_states_indexed":[2]}
