@@ -542,3 +542,58 @@ def materialize_full_replan(
     if not isinstance(proposal, Mapping) or canonical_json(proposal) != canonical_json(oracle):
         raise OccurrenceSemanticError("full replan is not occurrence-canonical")
     return expected, validate_transition(pre_state, expected, event, physically_true_objects)
+
+
+def build_recurrence_case(
+    *, case_id: str, done_object: str, recurring_object: str,
+    intermediate_object: str, recurrence_depth: int,
+) -> tuple[dict[str, Any], dict[str, Any], ConstraintState]:
+    """Build a critical recurrence event and its complete pre-event history."""
+    if len({done_object, recurring_object, intermediate_object}) != 3:
+        raise OccurrenceSemanticError("recurrence case objects must be distinct")
+    if recurrence_depth not in range(1, 5):
+        raise OccurrenceSemanticError("recurrence depth must be in 1..4")
+    logical = build_initial_state(
+        sequence_id=case_id, done_object=done_object,
+        pending_object=recurring_object,
+        available_objects=(done_object, recurring_object, intermediate_object),
+        world_version=100,
+    )
+    typed = initialize_typed(
+        sequence_id=case_id, done_object=done_object,
+        pending_object=recurring_object,
+    )
+    step = 0
+    for cycle in range(1, recurrence_depth + 1):
+        step += 1
+        to_intermediate = build_event(
+            logical, sequence_id=case_id, step_index=step,
+            done_object=done_object, event_type="replace_pending_goal",
+            replacement_object=intermediate_object,
+            replacement_occurrence=cycle, world_version=100 + step,
+        )
+        typed, logical, _, _ = materialize_cope(
+            cope_oracle(to_intermediate), typed, logical, to_intermediate,
+            (done_object,),
+        )
+        if cycle < recurrence_depth:
+            step += 1
+            back_to_recurring = build_event(
+                logical, sequence_id=case_id, step_index=step,
+                done_object=done_object, event_type="replace_pending_goal",
+                replacement_object=recurring_object,
+                replacement_occurrence=cycle + 1,
+                world_version=100 + step,
+            )
+            typed, logical, _, _ = materialize_cope(
+                cope_oracle(back_to_recurring), typed, logical,
+                back_to_recurring, (done_object,),
+            )
+    critical = build_event(
+        logical, sequence_id=case_id, step_index=step + 1,
+        done_object=done_object, event_type="replace_pending_goal",
+        replacement_object=recurring_object,
+        replacement_occurrence=recurrence_depth + 1,
+        world_version=101 + step,
+    )
+    return logical, critical, typed
