@@ -36,7 +36,10 @@ BOOLEAN_FIELDS = (
     "provider_called", "parser_valid", "semantic_valid", "canonical_valid",
     "history_valid", "directive_valid",
 )
-INFRA = ("provider_timeout", "provider_transport_outage", "provider_http_", "ambiguous_interrupted_call_no_retry")
+INFRA = (
+    "provider_timeout", "provider_transport_outage", "provider_http_",
+    "provider_malformed_envelope", "ambiguous_interrupted_call_no_retry",
+)
 
 
 def truth(value: Any) -> bool:

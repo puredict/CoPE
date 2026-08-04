@@ -14,7 +14,7 @@ CELL_FIELDS = ("sequence_id", "arm", "event_index")
 AMBIGUOUS_FAILURE = "ambiguous_interrupted_call_no_retry"
 INFRASTRUCTURE_FAILURE_MARKERS = (
     "provider_timeout", "provider_transport_outage", "provider_http_",
-    AMBIGUOUS_FAILURE,
+    "provider_malformed_envelope", AMBIGUOUS_FAILURE,
 )
 INFRASTRUCTURE_STOP_FILE = "05_INFRASTRUCTURE_STOP.txt"
 

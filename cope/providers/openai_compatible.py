@@ -115,25 +115,52 @@ class OpenAICompatibleRecoveryProvider(HighLevelRecoveryProvider):
             with request.urlopen(req, timeout=self._metadata.timeout_seconds) as response:
                 raw_bytes = response.read()
             latency = time.monotonic() - started
-            envelope = json.loads(raw_bytes.decode("utf-8"))
-            message = envelope["choices"][0]["message"]
-            content = message.get("content")
-            if not isinstance(content, str):
-                raise ValueError("provider response has no textual message content")
-            usage = envelope.get("usage") or {}
-            parsed = _json_object(content)
+            response_hash = hashlib.sha256(raw_bytes).hexdigest()
+            try:
+                envelope = json.loads(raw_bytes.decode("utf-8"))
+                message = envelope["choices"][0]["message"]
+                content = message.get("content")
+                if not isinstance(content, str):
+                    raise ValueError("provider response has no textual message content")
+                usage = envelope.get("usage") or {}
+                prompt_tokens = int(usage.get("prompt_tokens", 0))
+                completion_tokens = int(usage.get("completion_tokens", 0))
+                provider_request_id = envelope.get("id")
+            except (KeyError, IndexError, TypeError, ValueError, json.JSONDecodeError) as exc:
+                return ProviderInvocation(
+                    mode=mode, raw_request=audited_request,
+                    raw_response={
+                        "response_sha256": response_hash,
+                        "error_class": type(exc).__name__,
+                    },
+                    parsed_output=None,
+                    validation_failure="provider_malformed_envelope",
+                    latency_seconds=latency,
+                )
+            try:
+                parsed = _json_object(content)
+            except (TypeError, ValueError, json.JSONDecodeError) as exc:
+                return ProviderInvocation(
+                    mode=mode, raw_request=audited_request,
+                    raw_response={
+                        "response_sha256": response_hash, "content": content,
+                        "provider_request_id": provider_request_id,
+                    },
+                    parsed_output=None, parse_failure=str(exc),
+                    latency_seconds=latency,
+                )
             return ProviderInvocation(
                 mode=mode,
                 raw_request=audited_request,
                 raw_response={
-                    "response_sha256": hashlib.sha256(raw_bytes).hexdigest(),
+                    "response_sha256": response_hash,
                     "content": content,
-                    "provider_request_id": envelope.get("id"),
+                    "provider_request_id": provider_request_id,
                 },
                 parsed_output=parsed,
                 usage=TokenUsage(
-                    prompt_tokens=int(usage.get("prompt_tokens", 0)),
-                    completion_tokens=int(usage.get("completion_tokens", 0)),
+                    prompt_tokens=prompt_tokens,
+                    completion_tokens=completion_tokens,
                 ),
                 latency_seconds=latency,
             )
@@ -166,16 +193,6 @@ class OpenAICompatibleRecoveryProvider(HighLevelRecoveryProvider):
                 raw_response={"error_class": type(exc).__name__},
                 parsed_output=None,
                 validation_failure="provider_transport_outage",
-                latency_seconds=latency,
-            )
-        except (KeyError, TypeError, ValueError, json.JSONDecodeError) as exc:
-            latency = time.monotonic() - started
-            return ProviderInvocation(
-                mode=mode,
-                raw_request=audited_request,
-                raw_response={"error_class": type(exc).__name__},
-                parsed_output=None,
-                parse_failure=str(exc),
                 latency_seconds=latency,
             )
 

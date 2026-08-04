@@ -45,6 +45,7 @@ INFRASTRUCTURE_FAILURE_MARKERS = (
     "provider_timeout",
     "provider_transport_outage",
     "provider_http_",
+    "provider_malformed_envelope",
     "ambiguous_interrupted_call_no_retry",
 )
 

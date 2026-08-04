@@ -5,6 +5,7 @@ from pathlib import Path
 
 from cope.native_ntrack import build_case, derive_post_state, expected_patch, state_without_history
 from cope.providers.openai_compatible import OpenAICompatibleRecoveryProvider, normalized_wire_request_hash
+from experiments.sequential_formal_runner_v2 import invocation_failure
 from experiments.native_output_ntrack import run_pair
 
 
@@ -91,3 +92,34 @@ def test_reasoning_effort_is_identical_and_auditable_across_arms() -> None:
     ]
     assert all(item["wire_payload"]["reasoning"] == {"effort": "none"} for item in requests)
     assert provider.reasoning_effort == "none"
+
+
+def test_adapter_separates_malformed_envelope_from_model_json_failure(monkeypatch) -> None:
+    monkeypatch.setenv("TEST_PROVIDER_KEY", "secret-value")
+    provider = OpenAICompatibleRecoveryProvider({
+        "provider": "test-real-adapter", "model": "frozen-model-version",
+        "api_key_env": "TEST_PROVIDER_KEY", "max_retries": 0,
+    })
+    case = build_case("cancel_sibling", "smoke", "cancel", "public_synthetic")
+
+    monkeypatch.setattr(
+        "cope.providers.openai_compatible.request.urlopen",
+        lambda req, timeout: _Response({"id": "missing-choices"}),
+    )
+    malformed = provider.patch(case.recovery_input, case.pre_state)
+    assert malformed.validation_failure == "provider_malformed_envelope"
+    assert invocation_failure(malformed) == "provider_malformed_envelope"
+    assert malformed.raw_response["response_sha256"]
+
+    monkeypatch.setattr(
+        "cope.providers.openai_compatible.request.urlopen",
+        lambda req, timeout: _Response({
+            "id": "valid-envelope", "choices": [{"message": {"content": "not-json"}}],
+            "usage": {"prompt_tokens": 10, "completion_tokens": 2},
+        }),
+    )
+    bad_content = provider.patch(case.recovery_input, case.pre_state)
+    assert bad_content.validation_failure is None
+    assert bad_content.parse_failure
+    assert invocation_failure(bad_content) == "response_parse_failure"
+    assert bad_content.raw_response["response_sha256"]
