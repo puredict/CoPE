@@ -50,6 +50,9 @@ failure halts the method-paper path. FSR-PC/full-replan cannot rescue it.
 ## Research conclusions already fixed
 
 - Architecture-first novelty is NO-GO after Tang et al. 2026.
+- AgentChord independently blocks broad structured constraint-graph,
+  forward-progress, and no-online-replanning recovery novelty; the older audit
+  is now reintegrated by report 162.
 - Occurrence IDs/event histories/commitment lifecycles are prior art.
 - Generic transactions can be compact, atomic, and fail-closed.
 - Typed operations reduce the tested commission-error surface but do not solve
@@ -82,6 +85,8 @@ silently reusing a credential is outside the permitted research workflow.
 - exact execution commands and stop rules:
   `research/143_END_TO_END_FORMAL_LAUNCH_CHECKLIST.md`;
 - current claim ceiling: `research/148_PAPER_CLAIM_STACK_CURRENT.md`;
+- closest embodied structured-recovery boundary:
+  `research/162_AGENTCHORD_NEAREST_NEIGHBOR_AUDIT.md`;
 - old/new evidence precedence:
   `research/147_CURRENT_EVIDENCE_SUPERSESSION_INDEX.csv`;
 - statistical boundary and sensitivity:

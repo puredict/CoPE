@@ -42,6 +42,11 @@ yet constitute a learned robot-recovery method result.
   execution-failure diagnosis, repair synthesis/validation, persistent skill
   accumulation, and multi-benchmark long-horizon generalization; CoPE cannot
   claim first agentic robot failure repair or persistent reuse of repairs.
+- [AgentChord](https://arxiv.org/html/2605.11951) already compiles semantic
+  subgoal/constraint graphs, monitors, and forward-moving recovery branches,
+  and switches to them without online full-task replanning in simulation and
+  real-robot tasks. It blocks broad structured recovery-graph, progress-
+  preserving, constraint-governed, and no-replanning novelty claims.
 
 ## Only live hypothesis still capable of supporting a method contribution
 
@@ -53,6 +58,11 @@ yet constitute a learned robot-recovery method result.
 This claim is permitted only after the frozen 200-call analysis passes both
 co-primary efficacy, safety, and locality gates. FSR-PC or full-replan results
 cannot rescue either primary failure.
+
+Even a formal PASS does not establish an embodied systems advantage over
+AgentChord. A submission-quality embodied experiment must add native
+AgentChord or a faithful matched recovery-augmented-graph abstraction, or
+document why a native comparison is infeasible.
 
 ## Outcome-contingent paper ceiling
 
@@ -68,6 +78,8 @@ cannot rescue either primary failure.
 
 - first persistent robot mission-state architecture;
 - first local robot repair instead of replanning;
+- first forward-moving structured recovery graph or constraint-governed
+  recovery without online full-task replanning;
 - first occurrence-aware or event-addressed commitment method;
 - unique transaction or assurance semantics;
 - full replan is intrinsically much larger;
