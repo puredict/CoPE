@@ -22,6 +22,8 @@ V1 = importlib.util.module_from_spec(SPEC); SPEC.loader.exec_module(V1)
 
 from cope.occurrence_prompting import ARMS, build_recovery_input
 from cope.occurrence_sequence import build_recurrence_case
+from cope.formal_artifact_validation import validate_event_results_artifacts
+from experiments.occurrence_formal_runner import RESULT_FIELDS
 from experiments.occurrence_formal_preflight import EXPECTED_MANIFEST_SHA256, validate_manifest
 
 
@@ -109,6 +111,11 @@ def main() -> int:
     expected = {(case, arm, 1) for case in cases for arm in ARMS}
     with args.event_results.open(newline="", encoding="utf-8") as handle:
         rows = list(csv.DictReader(handle))
+    validate_event_results_artifacts(
+        event_results=args.event_results, csv_rows=rows,
+        result_fields=RESULT_FIELDS,
+        expected_manifest_sha256=EXPECTED_MANIFEST_SHA256,
+    )
     keys = [(row["case_id"], row["arm"], int(row["event_index"])) for row in rows]
     if len(keys) != 200 or len(set(keys)) != 200 or set(keys) != expected:
         raise ValueError("occurrence result cells are missing, duplicated, or extra")

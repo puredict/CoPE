@@ -3,6 +3,7 @@ from __future__ import annotations
 import csv
 import hashlib
 import importlib.util
+import json
 import sys
 from pathlib import Path
 
@@ -57,10 +58,18 @@ def make_rows(manifest):
 
 def run_analysis(tmp_path, monkeypatch, rows, suffix):
     manifest_path = ROOT / "manifests" / "sequential_formal_40x5x2_v2.csv"
-    event_path = tmp_path / f"events-{suffix}.csv"
+    run_dir = tmp_path / f"run-{suffix}"
+    run_dir.mkdir()
+    event_path = run_dir / "03_EVENT_RESULTS.csv"
     with event_path.open("x", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=RESULT_FIELDS, lineterminator="\n")
         writer.writeheader(); writer.writerows(rows)
+    (run_dir / "00_RUN_METADATA.txt").write_text(json.dumps({
+        "manifest_sha256": MODULE.EXPECTED_MANIFEST_SHA256,
+    }) + "\n")
+    with (run_dir / "01_EVENT_JOURNAL.txt").open("x", encoding="utf-8") as handle:
+        for row in rows:
+            handle.write(json.dumps(row, sort_keys=True) + "\n")
     output = tmp_path / f"out-{suffix}"
     monkeypatch.setattr(sys, "argv", [
         "analyze-v2", "--manifest", str(manifest_path),

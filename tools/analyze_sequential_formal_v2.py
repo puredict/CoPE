@@ -12,6 +12,9 @@ from pathlib import Path
 from statistics import median
 from typing import Any
 
+from cope.formal_artifact_validation import validate_event_results_artifacts
+from experiments.sequential_formal_runner_v2 import RESULT_FIELDS
+
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -106,6 +109,11 @@ def main() -> int:
     }
     with args.event_results.open(newline="", encoding="utf-8") as handle:
         event_rows = list(csv.DictReader(handle))
+    validate_event_results_artifacts(
+        event_results=args.event_results, csv_rows=event_rows,
+        result_fields=RESULT_FIELDS,
+        expected_manifest_sha256=EXPECTED_MANIFEST_SHA256,
+    )
     keys = [(row["sequence_id"], row["arm"], int(row["event_index"])) for row in event_rows]
     if len(keys) != 400 or len(set(keys)) != 400 or set(keys) != expected:
         raise ValueError("v2 event-result cells are missing, duplicated, or extra")
