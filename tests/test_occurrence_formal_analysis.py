@@ -83,6 +83,17 @@ def test_occurrence_analysis_invalidates_infrastructure_failure(tmp_path, monkey
     assert "INVALID_INFRASTRUCTURE_FAILURE" in text
 
 
+def test_two_control_holm_boundary_is_feasible_but_not_two_six_zero_edges():
+    weak = MODULE.V1.exact_mcnemar(6, 0)
+    strong = MODULE.V1.exact_mcnemar(7, 0)
+    assert weak == 0.03125
+    assert strong == 0.015625
+    adjusted = MODULE.V1.holm({"neutral": weak, "governed": strong})
+    assert all(value < 0.05 for value in adjusted.values())
+    tied_edges = MODULE.V1.holm({"neutral": weak, "governed": weak})
+    assert all(value >= 0.05 for value in tied_edges.values())
+
+
 @pytest.mark.parametrize("mutation,match", [
     (lambda rows: rows.pop(), "missing, duplicated, or extra"),
     (lambda rows: rows[0].update(input_sha256="d" * 64), "common input drift"),
