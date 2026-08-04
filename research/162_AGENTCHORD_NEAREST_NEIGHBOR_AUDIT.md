@@ -18,15 +18,25 @@ occurrence-sensitive contract is therefore the only defensible residual method
 claim, and it remains unproven until the preregistered dual-primary formal gate
 passes.
 
+This is **not a first discovery for the repository**. AgentChord was already
+audited in the 2026-07-30 research package, especially
+`CoPE_AgentChord_Branch_Compilation_and_Unanticipated_Interruption_Stress_Test_2026-07-30.md`
+and `CoPE_ICRA_Complete_Experiment_Plan_2026-07-30.md`. The defect found here
+is that the latest `147--159` supersession/decision chain did not carry that
+closest-neighbor result forward. This report re-integrates it into the current
+formal-launch and submission decision.
+
 ## Primary source
 
 - Sheng Xu et al., *From Reaction to Anticipation: Proactive Failure Recovery
   through Agentic Task Graph for Robotic Manipulation*, arXiv:2605.11951v1,
   12 May 2026: <https://arxiv.org/html/2605.11951>
-- Public implementation linked by the paper:
+- Implementation URL linked by the paper:
   <https://github.com/Jasonxu1225/AgentChord>
 
 The audit uses the paper itself, not search-result summaries.
+The linked repository could not be shallow-cloned during this audit, so no
+implementation-level absence claim is made.
 
 ## Direct overlap
 
@@ -43,8 +53,8 @@ These are author-reported results and were not independently reproduced here.
 
 ## Non-overlap that may remain
 
-The paper contains no occurrence-identity formulation and no use of the term
-"occurrence." Its online recovery chooses a precompiled edge associated with
+The paper text contains no occurrence-identity formulation and no use of the
+term "occurrence." Its online recovery chooses a precompiled edge associated with
 the active nominal edge and anticipated failure mode. For unforeseen failures,
 the stated fallback reinvokes the agent pipeline to synthesize an additional
 branch. The paper does not report a contract requiring all of the following:
@@ -56,8 +66,9 @@ branch. The paper does not report a contract requiring all of the following:
 4. reject ambiguous, stale, or illegal edits before execution; and
 5. compare learned editors under identical information and output envelopes.
 
-This is a **paper-text non-overlap**, not proof that the implementation could
-not be extended to satisfy the contract.
+This is a **paper-text non-overlap**, not proof that the unavailable public
+implementation lacks the mechanism or that AgentChord could not be extended to
+satisfy the contract.
 
 ## Claim changes required
 
@@ -110,4 +121,3 @@ routes to a recovery source, but it does not edit persistent task commitments:
 <https://arxiv.org/html/2606.16690>. It sharpens the distinction between
 interruption *detection* and commitment *editing* but is less direct than
 AgentChord.
-
