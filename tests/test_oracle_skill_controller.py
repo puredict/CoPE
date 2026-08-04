@@ -6,6 +6,7 @@ import numpy as np
 
 from cope_benchmark.oracle_skill_controller import (
     LiberoOracleSkillController,
+    OnPlacementConfig,
     OracleSkillConfig,
 )
 
@@ -54,7 +55,19 @@ class FakeEnv:
         )
         obj = self.object_states_dict["can"].position
         target = self.object_states_dict["basket_region"].position
-        return np.linalg.norm(obj[:2] - target[:2]) < 0.04
+        xy_close = np.linalg.norm(obj[:2] - target[:2]) < 0.04
+        if state[0] == "on":
+            vertical_delta = float(obj[2] - target[2])
+            return xy_close and 0.025 <= vertical_delta <= 0.070
+        return xy_close
+
+
+class NeverOnFakeEnv(FakeEnv):
+    def _eval_predicate(self, state):
+        if state[0] == "on":
+            self.predicate_calls.append(list(state))
+            return False
+        return super()._eval_predicate(state)
 
 
 class FirstCheckMissFakeEnv(FakeEnv):
@@ -131,6 +144,10 @@ def test_explicit_relation_is_forwarded_to_libero_predicate_evaluator():
     assert result.success
     assert env.predicate_calls
     assert all(call == ["on", "can", "basket_region"] for call in env.predicate_calls)
+    assert not env.grasped
+    phase_names = [phase.phase for phase in result.phases]
+    assert any(name.startswith("on_contact_descent_") for name in phase_names)
+    assert "open_gripper" in phase_names
 
 
 def test_historical_default_relation_remains_in():
@@ -156,6 +173,42 @@ def test_empty_relation_fails_closed_before_evaluator_call():
     else:
         raise AssertionError("empty relation must fail closed")
     assert env.predicate_calls == []
+
+
+def test_on_contact_bound_fails_closed_without_releasing_object():
+    env = NeverOnFakeEnv()
+    controller = LiberoOracleSkillController(
+        env,
+        {"robot0_eef_pos": env.eef.copy()},
+        on_config=OnPlacementConfig(
+            descent_step_m=0.005,
+            max_descent_m=0.010,
+            min_eef_above_target_m=0.02,
+            move_steps_per_increment=4,
+            translation_action_limit=0.15,
+        ),
+    )
+    result = controller.pick_and_place("can", "basket_region", predicate="on")
+    assert not result.success
+    assert result.failure_reason == "on_contact_not_established"
+    assert env.grasped
+    assert "open_gripper" not in [phase.phase for phase in result.phases]
+
+
+def test_on_placement_config_rejects_unsafe_bounds():
+    invalid = (
+        {"descent_step_m": 0.0},
+        {"descent_step_m": 0.02, "max_descent_m": 0.01},
+        {"move_steps_per_increment": 0},
+        {"translation_action_limit": 1.1},
+    )
+    for values in invalid:
+        try:
+            OnPlacementConfig(**values)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError(f"unsafe on-placement config accepted: {values}")
 
 
 def test_default_grasp_protocol_preserves_single_historical_attempt():

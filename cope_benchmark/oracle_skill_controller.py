@@ -9,6 +9,7 @@ without conflating them with language-policy failures.
 from __future__ import annotations
 
 import hashlib
+import math
 from dataclasses import asdict, dataclass, field
 from typing import Any, Callable, Sequence
 
@@ -44,6 +45,33 @@ class OracleSkillConfig:
         for offset in self.grasp_attempt_xy_offsets_m:
             if len(offset) != 2 or not all(np.isfinite(value) for value in offset):
                 raise ValueError("grasp attempt offsets must be finite XY pairs")
+
+
+@dataclass(frozen=True)
+class OnPlacementConfig:
+    """Predicate-feedback bounds for object-on-target placement."""
+
+    descent_step_m: float = 0.005
+    max_descent_m: float = 0.10
+    min_eef_above_target_m: float = 0.02
+    move_steps_per_increment: int = 8
+    translation_action_limit: float = 0.15
+
+    def __post_init__(self) -> None:
+        positive = (
+            self.descent_step_m,
+            self.max_descent_m,
+            self.min_eef_above_target_m,
+            self.translation_action_limit,
+        )
+        if not all(np.isfinite(value) and value > 0.0 for value in positive):
+            raise ValueError("on-placement distances and action limit must be positive")
+        if self.descent_step_m > self.max_descent_m:
+            raise ValueError("on-placement descent step exceeds total bound")
+        if not 0.0 < self.translation_action_limit <= 1.0:
+            raise ValueError("on-placement action limit must be in (0, 1]")
+        if self.move_steps_per_increment <= 0:
+            raise ValueError("on-placement increment steps must be positive")
 
 
 @dataclass
@@ -103,12 +131,14 @@ class LiberoOracleSkillController:
         env: Any,
         observation: dict[str, Any],
         config: OracleSkillConfig | None = None,
+        on_config: OnPlacementConfig | None = None,
         step_observer: Callable[[np.ndarray, int], None] | None = None,
     ) -> None:
         self.env = env
         self.base_env = getattr(env, "env", env)
         self.observation = observation
         self.config = config or OracleSkillConfig()
+        self.on_config = on_config or OnPlacementConfig()
         self.step_observer = step_observer
         self.total_steps = 0
         # Retain the exact low-level commands issued through env.step so
@@ -233,6 +263,42 @@ class LiberoOracleSkillController:
         """Backward-compatible wrapper for the historical insertion controller."""
 
         return self.predicate_satisfied("in", object_name, target_region_name)
+
+    def establish_on_contact(
+        self,
+        object_name: str,
+        target_name: str,
+    ) -> tuple[bool, list[PhaseRecord]]:
+        """Descend under a fixed bound until LIBERO's exact `on` predicate holds."""
+
+        cfg = self.on_config
+        phases: list[PhaseRecord] = []
+        target_z = float(self.position(target_name)[2])
+        start_z = float(self.observation["robot0_eef_pos"][2])
+        minimum_z = max(
+            start_z - cfg.max_descent_m,
+            target_z + cfg.min_eef_above_target_m,
+        )
+        increments = int(math.ceil(cfg.max_descent_m / cfg.descent_step_m))
+        for index in range(increments + 1):
+            if self.predicate_satisfied("on", object_name, target_name):
+                return True, phases
+            current = np.asarray(self.observation["robot0_eef_pos"], dtype=float)
+            next_z = max(float(current[2]) - cfg.descent_step_m, minimum_z)
+            if next_z >= float(current[2]) - 1e-9:
+                break
+            next_target = current.copy()
+            next_target[2] = next_z
+            phases.append(
+                self.move_to(
+                    f"on_contact_descent_{index + 1}",
+                    next_target,
+                    gripper=1.0,
+                    max_steps=cfg.move_steps_per_increment,
+                    translation_action_limit=cfg.translation_action_limit,
+                )
+            )
+        return self.predicate_satisfied("on", object_name, target_name), phases
 
     def warmup(self) -> PhaseRecord:
         return self.hold("warmup", self.config.warmup_steps, gripper=-1.0)
@@ -369,7 +435,25 @@ class LiberoOracleSkillController:
                 gripper=1.0,
             )
         )
-        if self.predicate_satisfied(predicate, object_name, target_region_name):
+        relation = str(predicate).strip().lower()
+        if relation == "on":
+            established, on_phases = self.establish_on_contact(
+                object_name, target_region_name
+            )
+            phases.extend(on_phases)
+            if not established:
+                return OracleSkillResult(
+                    object_name=object_name,
+                    target_region_name=target_region_name,
+                    success=False,
+                    failure_reason="on_contact_not_established",
+                    grasp_acquired=True,
+                    object_lift_m=checkpoint.object_lift_m,
+                    target_predicate=False,
+                    total_steps=self.total_steps - start_steps,
+                    phases=phases,
+                )
+        elif self.predicate_satisfied(relation, object_name, target_region_name):
             return OracleSkillResult(
                 object_name=object_name,
                 target_region_name=target_region_name,
@@ -389,7 +473,7 @@ class LiberoOracleSkillController:
         phases.append(self.move_to("retreat", retreat, gripper=-1.0))
         phases.append(self.hold("settle", cfg.settle_steps, gripper=-1.0))
         target_predicate = self.predicate_satisfied(
-            predicate, object_name, target_region_name
+            relation, object_name, target_region_name
         )
         return OracleSkillResult(
             object_name=object_name,
@@ -533,7 +617,25 @@ class LiberoOracleSkillController:
         # Narrow insertion tasks may become successful while the object is
         # still grasped.  Releasing after the target predicate is established
         # can knock the object back out of the region.
-        if self.predicate_satisfied(predicate, object_name, target_region_name):
+        relation = str(predicate).strip().lower()
+        if relation == "on":
+            established, on_phases = self.establish_on_contact(
+                object_name, target_region_name
+            )
+            phases.extend(on_phases)
+            if not established:
+                return OracleSkillResult(
+                    object_name=object_name,
+                    target_region_name=target_region_name,
+                    success=False,
+                    failure_reason="on_contact_not_established",
+                    grasp_acquired=grasp,
+                    object_lift_m=lift,
+                    target_predicate=False,
+                    total_steps=self.total_steps - start_steps,
+                    phases=phases,
+                )
+        elif self.predicate_satisfied(relation, object_name, target_region_name):
             return OracleSkillResult(
                 object_name=object_name,
                 target_region_name=target_region_name,
@@ -555,7 +657,7 @@ class LiberoOracleSkillController:
         phases.append(self.hold("settle", cfg.settle_steps, gripper=-1.0))
 
         target_predicate = self.predicate_satisfied(
-            predicate, object_name, target_region_name
+            relation, object_name, target_region_name
         )
         return OracleSkillResult(
             object_name=object_name,
