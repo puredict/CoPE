@@ -7,6 +7,7 @@ import argparse
 import csv
 import importlib.util
 import sys
+from functools import lru_cache
 from pathlib import Path
 from statistics import median
 from typing import Any
@@ -19,18 +20,51 @@ SPEC = importlib.util.spec_from_file_location("formal_v1", ROOT / "tools" / "ana
 assert SPEC is not None and SPEC.loader is not None
 V1 = importlib.util.module_from_spec(SPEC); SPEC.loader.exec_module(V1)
 
-from cope.occurrence_prompting import ARMS
+from cope.occurrence_prompting import ARMS, build_recovery_input
+from cope.occurrence_sequence import build_recurrence_case
 from experiments.occurrence_formal_preflight import EXPECTED_MANIFEST_SHA256, validate_manifest
 
 
 PRIMARY = ("neutral_patch", "governed_delta")
 SECONDARY = ("fsr_pc", "full_replan")
 TRUE = {"1", "true", "yes"}
+FALSE = {"0", "false", "no"}
+BOOLEAN_FIELDS = (
+    "provider_called", "parser_valid", "semantic_valid", "canonical_valid",
+    "history_valid", "directive_valid",
+)
 INFRA = ("provider_timeout", "provider_transport_outage", "provider_http_", "ambiguous_interrupted_call_no_retry")
 
 
 def truth(value: str) -> bool:
     return value.strip().lower() in TRUE
+
+
+@lru_cache(maxsize=None)
+def _expected_input_sha256(
+    case_id: str, done_object: str, recurring_object: str,
+    intermediate_object: str, recurrence_depth: int,
+) -> str:
+    pre, event, _ = build_recurrence_case(
+        case_id=case_id, done_object=done_object,
+        recurring_object=recurring_object,
+        intermediate_object=intermediate_object,
+        recurrence_depth=recurrence_depth,
+    )
+    return build_recovery_input(
+        case_id=case_id, pre_state=pre, event=event,
+    ).input_hash
+
+
+def expected_input_sha256(row: dict[str, str]) -> str:
+    return _expected_input_sha256(
+        row["case_id"], row["done_object"], row["recurring_object"],
+        row["intermediate_object"], int(row["recurrence_depth"]),
+    )
+
+
+def is_sha256(value: str) -> bool:
+    return len(value) == 64 and all(char in "0123456789abcdef" for char in value)
 
 
 def parse_args() -> argparse.Namespace:
@@ -79,15 +113,57 @@ def main() -> int:
     if len(keys) != 200 or len(set(keys)) != 200 or set(keys) != expected:
         raise ValueError("occurrence result cells are missing, duplicated, or extra")
     by = {(row["case_id"], row["arm"]): row for row in rows}
-    for case in cases:
+    for case, manifest_row in cases.items():
         group = [by[(case, arm)] for arm in ARMS]
+        expected_hash = expected_input_sha256(manifest_row)
         hashes = {row["input_sha256"] for row in group if truth(row["provider_called"])}
-        if len(hashes) != 1 or not next(iter(hashes)):
+        if hashes != {expected_hash}:
             raise ValueError(f"occurrence common input drift: {case}")
         if any(int(row["retry_count"]) != 0 for row in group):
             raise ValueError(f"occurrence retry detected: {case}")
         if any(not truth(row["provider_called"]) for row in group):
             raise ValueError(f"occurrence cell lacks provider call: {case}")
+        for row in group:
+            if any(
+                row[field].strip().lower() not in TRUE | FALSE
+                for field in BOOLEAN_FIELDS
+            ):
+                raise ValueError(f"occurrence result boolean is noncanonical: {case}")
+            if (
+                row["sequence_id"] != case
+                or row["triple_index"] != manifest_row["triple_index"]
+                or row["recurrence_depth"] != manifest_row["recurrence_depth"]
+            ):
+                raise ValueError(f"occurrence result metadata drift: {case}")
+            parser_valid = truth(row["parser_valid"])
+            semantic_valid = truth(row["semantic_valid"])
+            invariant_flags = (
+                truth(row["canonical_valid"]), truth(row["history_valid"]),
+                truth(row["directive_valid"]),
+            )
+            if semantic_valid and not parser_valid:
+                raise ValueError(f"occurrence semantic/parser flags inconsistent: {case}")
+            if any(invariant_flags) and not semantic_valid:
+                raise ValueError(f"occurrence invariant/semantic flags inconsistent: {case}")
+            complete_success = all(truth(row[field]) for field in (
+                "parser_valid", "semantic_valid", "canonical_valid",
+                "history_valid", "directive_valid",
+            ))
+            if parser_valid and (
+                int(row["proposal_bytes"]) <= 0
+                or not is_sha256(row["proposal_sha256"])
+            ):
+                raise ValueError(f"occurrence parsed proposal evidence invalid: {case}")
+            if semantic_valid and not is_sha256(row["candidate_sha256"]):
+                raise ValueError(f"occurrence candidate evidence invalid: {case}")
+            if complete_success and (
+                row["failure_class"] or not is_sha256(row["response_sha256"])
+            ):
+                raise ValueError(f"occurrence success evidence inconsistent: {case}")
+            if not parser_valid and not row["failure_class"]:
+                raise ValueError(f"occurrence parser failure lacks classification: {case}")
+            if parser_valid and not semantic_valid and not row["failure_class"]:
+                raise ValueError(f"occurrence semantic failure lacks classification: {case}")
     infrastructure_failures = [
         row for row in rows if any(marker in row["failure_class"] for marker in INFRA)
     ]

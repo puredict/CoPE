@@ -5,6 +5,8 @@ import importlib.util
 import sys
 from pathlib import Path
 
+import pytest
+
 from experiments.occurrence_formal_runner import RESULT_FIELDS
 
 
@@ -26,7 +28,9 @@ def synthetic(manifest):
                 retry_count=0, parser_valid=True, semantic_valid=True,
                 canonical_valid=True, history_valid=True, directive_valid=True,
                 proposal_bytes=100 if arm == "cope" else 200,
-                input_sha256=f"input-{case['case_id']}", failure_class="",
+                input_sha256=MODULE.expected_input_sha256(case),
+                proposal_sha256="a" * 64, response_sha256="b" * 64,
+                candidate_sha256="c" * 64, failure_class="",
             )
             if arm == "neutral_patch" and index < 8:
                 row["canonical_valid"] = False
@@ -70,5 +74,35 @@ def test_occurrence_analysis_invalidates_infrastructure_failure(tmp_path, monkey
     with manifest_path.open(newline="", encoding="utf-8") as handle:
         rows = synthetic(list(csv.DictReader(handle)))
     rows[0]["failure_class"] = "FormalTransitionError:provider_timeout"
+    for field in ("parser_valid", "semantic_valid", "canonical_valid", "history_valid", "directive_valid"):
+        rows[0][field] = False
+    rows[0]["proposal_sha256"] = ""
+    rows[0]["candidate_sha256"] = ""
+    rows[0]["response_sha256"] = ""
     text = run(tmp_path, monkeypatch, rows, "infra")
     assert "INVALID_INFRASTRUCTURE_FAILURE" in text
+
+
+@pytest.mark.parametrize("mutation,match", [
+    (lambda rows: rows.pop(), "missing, duplicated, or extra"),
+    (lambda rows: rows[0].update(input_sha256="d" * 64), "common input drift"),
+    (lambda rows: rows[0].update(retry_count=1), "retry detected"),
+    (lambda rows: rows[0].update(sequence_id="wrong"), "metadata drift"),
+    (lambda rows: rows[0].update(proposal_sha256=""), "proposal evidence invalid"),
+    (lambda rows: rows[0].update(candidate_sha256=""), "candidate evidence invalid"),
+    (lambda rows: rows[0].update(response_sha256=""), "success evidence inconsistent"),
+    (lambda rows: rows[0].update(canonical_valid="garbage"), "boolean is noncanonical"),
+    (
+        lambda rows: rows[0].update(semantic_valid=False, failure_class="bad_semantics"),
+        "invariant/semantic flags inconsistent",
+    ),
+])
+def test_occurrence_analysis_rejects_corrupt_or_drifted_results(
+    tmp_path, monkeypatch, mutation, match,
+):
+    manifest_path = ROOT / "manifests" / "occurrence_learned_formal_40x5_v1.csv"
+    with manifest_path.open(newline="", encoding="utf-8") as handle:
+        rows = synthetic(list(csv.DictReader(handle)))
+    mutation(rows)
+    with pytest.raises(ValueError, match=match):
+        run(tmp_path, monkeypatch, rows, "corrupt")
