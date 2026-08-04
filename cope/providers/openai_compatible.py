@@ -17,9 +17,13 @@ class ProviderConfigurationError(RuntimeError):
     pass
 
 
+def _reject_nonfinite_json(value: str) -> None:
+    raise ValueError(f"non-finite JSON constant {value} is forbidden")
+
+
 def _json_object(text: str) -> dict[str, Any]:
     stripped = text.strip()
-    value = json.loads(stripped)
+    value = json.loads(stripped, parse_constant=_reject_nonfinite_json)
     if not isinstance(value, dict):
         raise ValueError("provider response JSON must be an object")
     return value
@@ -111,16 +115,25 @@ class OpenAICompatibleRecoveryProvider(HighLevelRecoveryProvider):
             latency = time.monotonic() - started
             response_hash = hashlib.sha256(raw_bytes).hexdigest()
             try:
-                envelope = json.loads(raw_bytes.decode("utf-8"))
+                envelope = json.loads(
+                    raw_bytes.decode("utf-8"), parse_constant=_reject_nonfinite_json
+                )
                 message = envelope["choices"][0]["message"]
                 content = message.get("content")
                 if not isinstance(content, str):
                     raise ValueError("provider response has no textual message content")
-                usage = envelope.get("usage") or {}
+                usage = envelope.get("usage")
+                if usage is None:
+                    usage = {}
+                if not isinstance(usage, Mapping):
+                    raise TypeError("provider usage must be an object")
                 prompt_tokens = int(usage.get("prompt_tokens", 0))
                 completion_tokens = int(usage.get("completion_tokens", 0))
                 provider_request_id = envelope.get("id")
-            except (KeyError, IndexError, TypeError, ValueError, json.JSONDecodeError) as exc:
+            except (
+                AttributeError, KeyError, IndexError, OverflowError, TypeError,
+                ValueError, json.JSONDecodeError,
+            ) as exc:
                 return ProviderInvocation(
                     mode=mode, raw_request=audited_request,
                     raw_response={

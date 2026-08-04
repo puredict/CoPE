@@ -22,11 +22,14 @@ The following are method-level `response_parse_failure` outcomes:
 - prose followed by an object;
 - a markdown-fenced object;
 - a top-level JSON array;
+- non-standard `NaN` or `Infinity` constants;
 - malformed JSON content.
 
 They are not infrastructure failures and do not stop later formal cells.
 Provider-envelope malformation remains the separate infrastructure class from
-report 157.
+report 157. Wrong envelope object types, malformed usage values, and non-finite
+envelope constants are also classified as `provider_malformed_envelope`
+rather than escaping the adapter as unclassified exceptions.
 
 ## Consequence
 

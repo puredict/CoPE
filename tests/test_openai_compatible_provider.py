@@ -136,6 +136,8 @@ def test_adapter_rejects_prose_or_markdown_wrapped_json(monkeypatch) -> None:
         'Here is the result: {"status":"ready"}',
         '```json\n{"status":"ready"}\n```',
         '[{"status":"ready"}]',
+        '{"status":NaN}',
+        '{"status":Infinity}',
     ):
         monkeypatch.setattr(
             "cope.providers.openai_compatible.request.urlopen",
@@ -148,3 +150,26 @@ def test_adapter_rejects_prose_or_markdown_wrapped_json(monkeypatch) -> None:
         assert invocation.parsed_output is None
         assert invocation.parse_failure
         assert invocation_failure(invocation) == "response_parse_failure"
+
+
+def test_adapter_classifies_wrong_envelope_types_as_infrastructure(monkeypatch) -> None:
+    monkeypatch.setenv("TEST_PROVIDER_KEY", "secret-value")
+    provider = OpenAICompatibleRecoveryProvider({
+        "provider": "test-real-adapter", "model": "frozen-model-version",
+        "api_key_env": "TEST_PROVIDER_KEY", "max_retries": 0,
+    })
+    case = build_case("cancel_sibling", "smoke", "cancel", "public_synthetic")
+    for payload in (
+        {"id": "bad-message", "choices": [{"message": "not-an-object"}]},
+        {
+            "id": "bad-usage", "choices": [{"message": {"content": "{}"}}],
+            "usage": [],
+        },
+    ):
+        monkeypatch.setattr(
+            "cope.providers.openai_compatible.request.urlopen",
+            lambda req, timeout, payload=payload: _Response(payload),
+        )
+        invocation = provider.patch(case.recovery_input, case.pre_state)
+        assert invocation.validation_failure == "provider_malformed_envelope"
+        assert invocation.raw_response["response_sha256"]
