@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import os
+import stat
 
 import pytest
 
@@ -9,6 +11,21 @@ from cope.formal_recovery import (
     FormalRecoveryError,
     FormalRecoveryLedger,
 )
+
+
+def test_formal_ledger_fsyncs_regular_files_and_directory_entries(tmp_path, monkeypatch):
+    modes = []
+
+    def capture(descriptor):
+        modes.append(os.fstat(descriptor).st_mode)
+
+    monkeypatch.setattr(os, "fsync", capture)
+    ledger = FormalRecoveryLedger(tmp_path / "run", {"run": "v2"}, resume=False)
+    ledger.record_intent({
+        "sequence_id": "s", "arm": "cope", "event_index": 1,
+    })
+    assert any(stat.S_ISREG(mode) for mode in modes)
+    assert any(stat.S_ISDIR(mode) for mode in modes)
 
 
 KEY = {"sequence_id": "seq-1", "arm": "cope", "event_index": 1}

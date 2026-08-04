@@ -18,6 +18,14 @@ class FormalRecoveryError(RuntimeError):
     pass
 
 
+def _fsync_directory(path: Path) -> None:
+    descriptor = os.open(path, os.O_RDONLY)
+    try:
+        os.fsync(descriptor)
+    finally:
+        os.close(descriptor)
+
+
 def cell_key(payload: Mapping[str, Any]) -> tuple[str, str, int]:
     try:
         key = (
@@ -33,10 +41,13 @@ def cell_key(payload: Mapping[str, Any]) -> tuple[str, str, int]:
 
 
 def _append_fsynced(path: Path, payload: Mapping[str, Any]) -> None:
+    existed = path.exists()
     with path.open("a", encoding="utf-8") as handle:
         handle.write(canonical_json(dict(payload)) + "\n")
         handle.flush()
         os.fsync(handle.fileno())
+    if not existed:
+        _fsync_directory(path.parent)
 
 
 def _write_exclusive_fsynced(path: Path, payload: Mapping[str, Any]) -> None:
@@ -44,6 +55,7 @@ def _write_exclusive_fsynced(path: Path, payload: Mapping[str, Any]) -> None:
         handle.write(canonical_json(dict(payload)) + "\n")
         handle.flush()
         os.fsync(handle.fileno())
+    _fsync_directory(path.parent)
 
 
 def _load_unique(path: Path, label: str) -> dict[tuple[str, str, int], dict[str, Any]]:
@@ -92,6 +104,7 @@ class FormalRecoveryLedger:
             if output_dir.exists():
                 raise FileExistsError(output_dir)
             output_dir.mkdir(parents=True, exist_ok=False)
+            _fsync_directory(output_dir.parent)
             _write_exclusive_fsynced(self.metadata_path, frozen)
         self.intents = _load_unique(self.intent_path, "call-intent journal")
         self.responses = _load_unique(self.response_path, "provider-response journal")
@@ -156,4 +169,3 @@ class FormalRecoveryLedger:
         if key in self.intents:
             return "ambiguous_intent"
         return "new"
-
