@@ -1,0 +1,6 @@
+case,rejected,error_class
+stale_revision,True,OccurrenceSemanticError
+wrong_target_occurrence,True,OccurrenceSemanticError
+reactivate_historical_occurrence,True,OccurrenceSemanticError
+duplicate_new_occurrence,True,OccurrenceSemanticError
+omit_historical_occurrence,True,OccurrenceSemanticError
