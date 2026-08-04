@@ -35,3 +35,14 @@ or a replacement directory.
 This reduces the maximum wasted spend after a decisive infrastructure failure
 from the remainder of 200/400 calls to zero. It does not change a model result,
 hypothesis, arm, prompt, threshold, or valid-run sample size.
+
+## Verification
+
+- focused recovery/runner tests: 15 passed;
+- full repository regression: 630 passed;
+- clean-commit occurrence marker `--resume` probe: exit 4;
+- clean-commit embodied marker `--resume` probe: exit 4;
+- both probes recorded `resume_forbidden=true` and
+  `provider_calls_after_stop=0`;
+- both probes ran with the credential environment unset and made no provider
+  or simulator call.
