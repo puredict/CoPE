@@ -19,13 +19,7 @@ class ProviderConfigurationError(RuntimeError):
 
 def _json_object(text: str) -> dict[str, Any]:
     stripped = text.strip()
-    try:
-        value = json.loads(stripped)
-    except json.JSONDecodeError:
-        start, end = stripped.find("{"), stripped.rfind("}")
-        if start < 0 or end <= start:
-            raise ValueError("provider response contains no JSON object")
-        value = json.loads(stripped[start : end + 1])
+    value = json.loads(stripped)
     if not isinstance(value, dict):
         raise ValueError("provider response JSON must be an object")
     return value

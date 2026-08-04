@@ -123,3 +123,28 @@ def test_adapter_separates_malformed_envelope_from_model_json_failure(monkeypatc
     assert bad_content.parse_failure
     assert invocation_failure(bad_content) == "response_parse_failure"
     assert bad_content.raw_response["response_sha256"]
+
+
+def test_adapter_rejects_prose_or_markdown_wrapped_json(monkeypatch) -> None:
+    monkeypatch.setenv("TEST_PROVIDER_KEY", "secret-value")
+    provider = OpenAICompatibleRecoveryProvider({
+        "provider": "test-real-adapter", "model": "frozen-model-version",
+        "api_key_env": "TEST_PROVIDER_KEY", "max_retries": 0,
+    })
+    case = build_case("cancel_sibling", "smoke", "cancel", "public_synthetic")
+    for content in (
+        'Here is the result: {"status":"ready"}',
+        '```json\n{"status":"ready"}\n```',
+        '[{"status":"ready"}]',
+    ):
+        monkeypatch.setattr(
+            "cope.providers.openai_compatible.request.urlopen",
+            lambda req, timeout, content=content: _Response({
+                "id": "wrapped", "choices": [{"message": {"content": content}}],
+                "usage": {"prompt_tokens": 10, "completion_tokens": 2},
+            }),
+        )
+        invocation = provider.patch(case.recovery_input, case.pre_state)
+        assert invocation.parsed_output is None
+        assert invocation.parse_failure
+        assert invocation_failure(invocation) == "response_parse_failure"
