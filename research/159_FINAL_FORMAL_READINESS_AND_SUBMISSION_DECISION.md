@@ -1,7 +1,7 @@
 # Final formal readiness and submission decision
 
 Date: 2026-08-04
-Authoritative code commit: `8f05af59df922a30e98c9b8c75b23cf7767205b6`
+Authoritative code commit: `49fa2da2fa39cf12095bb11beb4e96837690c1e6`
 Branch: `codex/shared-commit-envelope`
 
 ## Bottom line
@@ -16,7 +16,8 @@ smoke. No learned occurrence or embodied formal outcome exists yet.
 - complete repository regression: 633 passed;
 - worktree: clean after the code commit;
 - strict whole-response JSON object parser: enabled;
-- non-finite JSON constants and malformed usage/message types: rejected;
+- non-finite JSON constants, malformed usage/message types, and noninteger or
+  negative token counts: rejected;
 - provider envelope errors separated from model JSON failures;
 - file and directory fsync ordering: enabled;
 - at-most-once intent -> response -> result recovery: enabled;
