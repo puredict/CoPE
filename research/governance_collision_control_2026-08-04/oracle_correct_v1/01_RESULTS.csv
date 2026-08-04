@@ -1,0 +1,21 @@
+case_id,arm,revision_path,hash_continuity,final_state_sha256,final_directive,provider_calls,simulator_states_indexed,passed
+task0_forward_replace_cancel,cope,1>2>3,True,d7f6fd9cc42f1dbb46433bacab5984320d018674b0d273ce59ccc82f65e7fc25,HALT,0,0,True
+task0_forward_replace_cancel,neutral_patch,1>2>3,True,d7f6fd9cc42f1dbb46433bacab5984320d018674b0d273ce59ccc82f65e7fc25,HALT,0,0,True
+task0_forward_replace_cancel,fsr_pc,1>2>3,True,d7f6fd9cc42f1dbb46433bacab5984320d018674b0d273ce59ccc82f65e7fc25,HALT,0,0,True
+task0_forward_replace_cancel,full_replan,1>2>3,True,d7f6fd9cc42f1dbb46433bacab5984320d018674b0d273ce59ccc82f65e7fc25,HALT,0,0,True
+task0_forward_replace_cancel,governed_delta,1>2>3,True,d7f6fd9cc42f1dbb46433bacab5984320d018674b0d273ce59ccc82f65e7fc25,HALT,0,0,True
+task0_forward_replace_replace,cope,1>2>3,True,4425e4606573ef8e180b934537fbd082cee59a9f8c99c1dc4a9386e531c52ee5,"place_in(butter_1, basket_1_contain_region)",0,0,True
+task0_forward_replace_replace,neutral_patch,1>2>3,True,4425e4606573ef8e180b934537fbd082cee59a9f8c99c1dc4a9386e531c52ee5,"place_in(butter_1, basket_1_contain_region)",0,0,True
+task0_forward_replace_replace,fsr_pc,1>2>3,True,4425e4606573ef8e180b934537fbd082cee59a9f8c99c1dc4a9386e531c52ee5,"place_in(butter_1, basket_1_contain_region)",0,0,True
+task0_forward_replace_replace,full_replan,1>2>3,True,4425e4606573ef8e180b934537fbd082cee59a9f8c99c1dc4a9386e531c52ee5,"place_in(butter_1, basket_1_contain_region)",0,0,True
+task0_forward_replace_replace,governed_delta,1>2>3,True,4425e4606573ef8e180b934537fbd082cee59a9f8c99c1dc4a9386e531c52ee5,"place_in(butter_1, basket_1_contain_region)",0,0,True
+task0_reverse_replace_cancel,cope,1>2>3,True,ac62fbbc293fb92d4eb0a9eb9288d849d2f3923df7cee9dc646a2fdd33edf716,HALT,0,0,True
+task0_reverse_replace_cancel,neutral_patch,1>2>3,True,ac62fbbc293fb92d4eb0a9eb9288d849d2f3923df7cee9dc646a2fdd33edf716,HALT,0,0,True
+task0_reverse_replace_cancel,fsr_pc,1>2>3,True,ac62fbbc293fb92d4eb0a9eb9288d849d2f3923df7cee9dc646a2fdd33edf716,HALT,0,0,True
+task0_reverse_replace_cancel,full_replan,1>2>3,True,ac62fbbc293fb92d4eb0a9eb9288d849d2f3923df7cee9dc646a2fdd33edf716,HALT,0,0,True
+task0_reverse_replace_cancel,governed_delta,1>2>3,True,ac62fbbc293fb92d4eb0a9eb9288d849d2f3923df7cee9dc646a2fdd33edf716,HALT,0,0,True
+task0_reverse_replace_replace,cope,1>2>3,True,1ab0fc921396879bc602c6ca37cf309a593d16c2f98733c04477674f44a8107b,"place_in(butter_1, basket_1_contain_region)",0,0,True
+task0_reverse_replace_replace,neutral_patch,1>2>3,True,1ab0fc921396879bc602c6ca37cf309a593d16c2f98733c04477674f44a8107b,"place_in(butter_1, basket_1_contain_region)",0,0,True
+task0_reverse_replace_replace,fsr_pc,1>2>3,True,1ab0fc921396879bc602c6ca37cf309a593d16c2f98733c04477674f44a8107b,"place_in(butter_1, basket_1_contain_region)",0,0,True
+task0_reverse_replace_replace,full_replan,1>2>3,True,1ab0fc921396879bc602c6ca37cf309a593d16c2f98733c04477674f44a8107b,"place_in(butter_1, basket_1_contain_region)",0,0,True
+task0_reverse_replace_replace,governed_delta,1>2>3,True,1ab0fc921396879bc602c6ca37cf309a593d16c2f98733c04477674f44a8107b,"place_in(butter_1, basket_1_contain_region)",0,0,True
