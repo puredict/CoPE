@@ -21,8 +21,8 @@ change the statistical verdict.
 
 Before any efficacy or locality calculation, the shared validator now:
 
-1. requires `00_RUN_METADATA.txt`, `01_EVENT_JOURNAL.txt`, call-intent journal,
-   and provider-response journal beside the CSV;
+1. requires `00_RUN_METADATA.txt` and `01_EVENT_JOURNAL.txt` beside the CSV,
+   and validates call-intent/provider-response records for every called cell;
 2. requires the metadata manifest SHA-256 to equal the frozen analyzer value;
 3. rejects a torn or invalid JSONL journal line;
 4. requires the exact result schema in every CSV and journal record;
