@@ -3,6 +3,7 @@ from __future__ import annotations
 import pytest
 
 from cope.governed_delta import governed_oracle_proposal
+from cope.formal_recovery import AMBIGUOUS_FAILURE, FormalRecoveryLedger
 from cope.sequential_prompting import build_sequential_recovery_input
 from cope.sequential_semantics import (
     build_expected_next_state,
@@ -15,15 +16,21 @@ from cope.sequential_semantics import (
     sparse_oracle_proposal,
 )
 from cope.types import ProviderInvocation, TokenUsage
-from experiments.sequential_formal_runner_v2 import FormalTransitionError, call_and_transition
+from experiments.sequential_formal_runner_v2 import (
+    FormalTransitionError,
+    call_and_transition,
+    recover_or_call_transition,
+)
 
 
 class FixtureProvider:
     def __init__(self, proposal=None, failure=""):
         self.proposal = proposal
         self.failure = failure
+        self.calls = 0
 
     def call_contract(self, mode, recovery_input, contract):
+        self.calls += 1
         return ProviderInvocation(
             mode=mode,
             raw_request={"recovery_input": recovery_input.as_payload()},
@@ -124,3 +131,51 @@ def test_provider_outage_retains_attempt_diagnostics_for_fail_closed_result():
         )
     assert captured.value.diagnostics["provider_called"] is True
     assert captured.value.diagnostics["prompt_tokens"] == 100
+
+
+def test_received_response_is_rematerialized_without_a_second_provider_call(tmp_path):
+    state, event, recovery = fixture()
+    provider = FixtureProvider(sparse_oracle_proposal(event, neutral=False))
+    ledger = FormalRecoveryLedger(tmp_path / "run", {"run": "test"}, resume=False)
+
+    def execute():
+        return recover_or_call_transition(
+            ledger=ledger, sequence_id="runner-unit", event_index=1,
+            provider=provider, arm="cope", recovery_input=recovery,
+            event=event, logical_state=state,
+            typed_state=initialize_typed_sequence_state(
+                sequence_id="runner-unit", done_object="alphabet_soup_1",
+                pending_object="tomato_sauce_1",
+            ),
+            physically_true=("alphabet_soup_1",),
+        )
+
+    first = execute()
+    second = execute()
+    assert provider.calls == 1
+    assert first[0] == second[0]
+    assert ledger.phase(("runner-unit", "cope", 1)) == "response"
+
+
+def test_intent_without_response_fails_closed_without_calling_provider(tmp_path):
+    state, event, recovery = fixture()
+    provider = FixtureProvider(sparse_oracle_proposal(event, neutral=False))
+    ledger = FormalRecoveryLedger(tmp_path / "run", {"run": "test"}, resume=False)
+    ledger.record_intent(
+        {
+            "sequence_id": "runner-unit", "arm": "cope", "event_index": 1,
+            "input_sha256": recovery.input_hash,
+        }
+    )
+    with pytest.raises(FormalTransitionError, match=AMBIGUOUS_FAILURE):
+        recover_or_call_transition(
+            ledger=ledger, sequence_id="runner-unit", event_index=1,
+            provider=provider, arm="cope", recovery_input=recovery,
+            event=event, logical_state=state,
+            typed_state=initialize_typed_sequence_state(
+                sequence_id="runner-unit", done_object="alphabet_soup_1",
+                pending_object="tomato_sauce_1",
+            ),
+            physically_true=("alphabet_soup_1",),
+        )
+    assert provider.calls == 0

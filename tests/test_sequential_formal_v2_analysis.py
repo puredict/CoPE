@@ -92,6 +92,18 @@ def test_claim_status_rejects_governed_tie_even_if_neutral_passes():
         {"control": "governed_delta", "control_gate": False},
     ]
     assert MODULE.claim_status(
-        substrate_complete=True, primary=primary, task_count=1
+        substrate_complete=True, infrastructure_valid=True,
+        primary=primary, task_count=1
     ) == "NO_GO_PRIMARY_GOVERNED_COMPARISON"
 
+
+def test_infrastructure_failure_invalidates_an_otherwise_passing_run(tmp_path, monkeypatch):
+    manifest_path = ROOT / "manifests" / "sequential_formal_40x5x2_v2.csv"
+    with manifest_path.open(newline="", encoding="utf-8") as handle:
+        manifest = list(csv.DictReader(handle))
+    rows = make_rows(manifest)
+    rows[0]["failure_class"] = "event1:FormalTransitionError:provider_http_503"
+    output = run_analysis(tmp_path, monkeypatch, rows, "infrastructure")
+    text = (output / "00_RESULT.md").read_text()
+    assert "INVALID_INFRASTRUCTURE_FAILURE" in text
+    assert "Infrastructure failures: **1**" in text

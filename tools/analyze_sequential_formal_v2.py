@@ -29,6 +29,12 @@ PRIMARY_CONTROLS = ("neutral_patch", "governed_delta")
 SECONDARY_CONTROLS = ("fsr_pc", "full_replan")
 EXPECTED_MANIFEST_SHA256 = "9788ceff3c4366e5928bef028cc5e24c594dc30d6c8a559c2403b78bb5a858e5"
 BOOL_TRUE = {"1", "true", "yes"}
+INFRASTRUCTURE_FAILURE_MARKERS = (
+    "provider_timeout",
+    "provider_transport_outage",
+    "provider_http_",
+    "ambiguous_interrupted_call_no_retry",
+)
 
 
 def truth(value: str) -> bool:
@@ -53,9 +59,14 @@ def control_gate(row: dict[str, Any]) -> bool:
     )
 
 
-def claim_status(*, substrate_complete: bool, primary: list[dict[str, Any]], task_count: int) -> str:
+def claim_status(
+    *, substrate_complete: bool, infrastructure_valid: bool,
+    primary: list[dict[str, Any]], task_count: int,
+) -> str:
     if not substrate_complete:
         return "INVALID_SUBSTRATE_INCOMPLETE"
+    if not infrastructure_valid:
+        return "INVALID_INFRASTRUCTURE_FAILURE"
     by_control = {row["control"]: row for row in primary}
     if not bool(by_control["neutral_patch"]["control_gate"]):
         return "NO_GO_PRIMARY_NEUTRAL_COMPARISON"
@@ -236,8 +247,19 @@ def main() -> int:
         row["holm_secondary_p"] = secondary_adjusted[str(row["control"])]
         row["secondary_cannot_rescue_primary"] = True
     substrate_complete = len(eligible) == 40
+    infrastructure_failures = [
+        row for row in event_rows
+        if truth(row["substrate_eligible"])
+        and any(marker in row["failure_class"] for marker in INFRASTRUCTURE_FAILURE_MARKERS)
+    ]
+    infrastructure_valid = not infrastructure_failures
     task_count = len({row["task_id"] for row in manifest})
-    status = claim_status(substrate_complete=substrate_complete, primary=primary, task_count=task_count)
+    status = claim_status(
+        substrate_complete=substrate_complete,
+        infrastructure_valid=infrastructure_valid,
+        primary=primary,
+        task_count=task_count,
+    )
 
     args.output_dir.mkdir(parents=True, exist_ok=False)
     with (args.output_dir / "01_SEQUENCE_RESULTS.csv").open("x", newline="", encoding="utf-8") as handle:
@@ -255,7 +277,8 @@ def main() -> int:
         f"- Shared substrate failures: **{len(substrate_failures)}**\n"
         f"- Neutral control gate: **{primary[0]['control_gate']}**\n"
         f"- Governed control gate: **{primary[1]['control_gate']}**\n"
-        f"- Joint necessary gate: **{all(bool(row['control_gate']) for row in primary) and substrate_complete}**\n"
+        f"- Infrastructure failures: **{len(infrastructure_failures)}**\n"
+        f"- Joint necessary gate: **{all(bool(row['control_gate']) for row in primary) and substrate_complete and infrastructure_valid}**\n"
         f"- Formal claim status: **{status}**\n\n"
         "Both co-primary controls must pass. Secondary FSR-PC or full-replan "
         "wins cannot rescue either co-primary failure.\n",
@@ -266,4 +289,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

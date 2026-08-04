@@ -10,7 +10,7 @@ import os
 import subprocess
 from dataclasses import asdict
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any, Callable, Mapping
 
 import numpy as np
 
@@ -28,6 +28,12 @@ from cope.sequential_prompting_v2 import (
     build_sequential_recovery_input,
 )
 from cope.governed_delta import materialize_governed_delta
+from cope.formal_recovery import (
+    AMBIGUOUS_FAILURE,
+    FormalRecoveryError,
+    FormalRecoveryLedger,
+    cell_key,
+)
 from cope.sequential_semantics import (
     build_initial_sequence_state,
     build_sequence_event,
@@ -60,7 +66,7 @@ EXPECTED_CONTRACT_HASHES = {
     "fsr_pc": "2675a262a2c8e60f8775efe7c23df13facc4eed8a95cc3fda5ef84d61b633451",
     "full_replan": "7979e131875303efb0340e78d74b9329d6e758664755517c91611ab314246ecf",
 }
-EXPECTED_PROTOCOL_SHA256 = "aa15cdc25500b27e981bbcbb4e7f35aa13b8b936594eae8969e009613292a3a5"
+EXPECTED_PROTOCOL_SHA256 = "13f7dd93b7d890c146db4f3e1bda4e2662de2db0a0ebd43c6ae5cc2d0272c0e8"
 RESULT_FIELDS = (
     "sequence_id", "arm", "event_index", "task_id", "state_id",
     "prefix_orientation", "sequence_type", "substrate_eligible",
@@ -85,6 +91,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--api-key-env", default="OPENROUTER_API_KEY")
     parser.add_argument("--endpoint", default="https://openrouter.ai/api/v1/chat/completions")
     parser.add_argument("--resolution", type=int, default=64)
+    parser.add_argument("--resume", action="store_true")
     return parser.parse_args()
 
 
@@ -104,7 +111,32 @@ def formal_protocol_config() -> dict[str, Any]:
         "max_retries": 0,
         "timeout_seconds": TIMEOUT_SECONDS,
         "arms": list(ARMS),
+        "recovery_protocol": "intent-response-result-v1",
     }
+
+
+def worktree_clean_for_run(repo_root: Path, output_dir: Path, resume: bool) -> bool:
+    """Allow only an untracked in-repository output directory during resume."""
+    tracked_dirty = any(
+        subprocess.run(command, cwd=repo_root).returncode != 0
+        for command in (("git", "diff", "--quiet"), ("git", "diff", "--cached", "--quiet"))
+    )
+    if tracked_dirty:
+        return False
+    untracked = subprocess.run(
+        ["git", "ls-files", "--others", "--exclude-standard"],
+        cwd=repo_root, check=True, capture_output=True, text=True,
+    ).stdout.splitlines()
+    if not untracked:
+        return True
+    if not resume:
+        return False
+    try:
+        relative_output = output_dir.resolve().relative_to(repo_root.resolve())
+    except ValueError:
+        return False
+    prefix = relative_output.as_posix().rstrip("/") + "/"
+    return all(path == relative_output.as_posix() or path.startswith(prefix) for path in untracked)
 
 
 def simulator_hash(env: Any) -> str:
@@ -230,6 +262,44 @@ class FormalTransitionError(RuntimeError):
         self.diagnostics = dict(diagnostics)
 
 
+def materialize_transition(
+    *,
+    arm: str,
+    proposal: Any,
+    event: Mapping[str, Any],
+    logical_state: Mapping[str, Any],
+    typed_state: Any,
+    physically_true: tuple[str, ...],
+) -> tuple[dict[str, Any], Any, dict[str, Any], str]:
+    """Purely materialize a received proposal; used for crash recovery."""
+    if arm == "cope":
+        typed_state, candidate, receipt, directive = execute_typed_sparse_transition(
+            typed_state, logical_state, event, proposal,
+            neutral=False, physically_true_objects=physically_true,
+        )
+    elif arm == "neutral_patch":
+        candidate, receipt, directive = materialize_neutral_json_patch(
+            proposal, logical_state, event, physically_true
+        )
+    elif arm == "governed_delta":
+        candidate, receipt, directive = materialize_governed_delta(
+            proposal, logical_state, event, physically_true
+        )
+    elif arm == "fsr_pc":
+        candidate, directive = materialize_fsr_proposal(
+            proposal, logical_state, event, physically_true
+        )
+        receipt = {"accepted": True}
+    elif arm == "full_replan":
+        candidate, directive = materialize_full_replan_proposal(
+            proposal, logical_state, event, physically_true
+        )
+        receipt = {"accepted": True}
+    else:
+        raise ValueError(f"unsupported formal arm {arm!r}")
+    return candidate, typed_state, receipt, directive
+
+
 def call_and_transition(
     *,
     provider: OpenAICompatibleRecoveryProvider,
@@ -239,6 +309,7 @@ def call_and_transition(
     logical_state: Mapping[str, Any],
     typed_state: Any,
     physically_true: tuple[str, ...],
+    on_invocation: Callable[[Mapping[str, Any]], None] | None = None,
 ) -> tuple[dict[str, Any], Any, dict[str, Any], str, dict[str, Any]]:
     mode = "patch" if arm == "cope" else "compact" if arm in {"neutral_patch", "governed_delta"} else "regenerate"
     invocation = provider.call_contract(mode, recovery_input, CONTRACTS[arm])
@@ -256,35 +327,18 @@ def call_and_transition(
         "raw_response": invocation.raw_response,
     }
     failure = invocation_failure(invocation)
+    diagnostics["failure"] = failure
+    if on_invocation is not None:
+        on_invocation(diagnostics)
     if failure:
         raise FormalTransitionError(failure, diagnostics)
     proposal = invocation.parsed_output
     assert proposal is not None
     try:
-        if arm == "cope":
-            typed_state, candidate, receipt, directive = execute_typed_sparse_transition(
-                typed_state, logical_state, event, proposal,
-                neutral=arm == "neutral_patch",
-                physically_true_objects=physically_true,
-            )
-        elif arm == "neutral_patch":
-            candidate, receipt, directive = materialize_neutral_json_patch(
-                proposal, logical_state, event, physically_true
-            )
-        elif arm == "governed_delta":
-            candidate, receipt, directive = materialize_governed_delta(
-                proposal, logical_state, event, physically_true
-            )
-        elif arm == "fsr_pc":
-            candidate, directive = materialize_fsr_proposal(
-                proposal, logical_state, event, physically_true
-            )
-            receipt = {"accepted": True}
-        else:
-            candidate, directive = materialize_full_replan_proposal(
-                proposal, logical_state, event, physically_true
-            )
-            receipt = {"accepted": True}
+        candidate, typed_state, receipt, directive = materialize_transition(
+            arm=arm, proposal=proposal, event=event, logical_state=logical_state,
+            typed_state=typed_state, physically_true=physically_true,
+        )
     except Exception as exc:
         raise FormalTransitionError(
             f"{type(exc).__name__}:{exc}", diagnostics
@@ -292,20 +346,73 @@ def call_and_transition(
     return candidate, typed_state, receipt, directive, diagnostics
 
 
+def recover_or_call_transition(
+    *, ledger: FormalRecoveryLedger, sequence_id: str, event_index: int,
+    provider: OpenAICompatibleRecoveryProvider, arm: str,
+    recovery_input: Any, event: Mapping[str, Any],
+    logical_state: Mapping[str, Any], typed_state: Any,
+    physically_true: tuple[str, ...],
+) -> tuple[dict[str, Any], Any, dict[str, Any], str, dict[str, Any]]:
+    """Use one durable response or issue exactly one new provider draw."""
+    key_payload = {
+        "sequence_id": sequence_id,
+        "arm": arm,
+        "event_index": event_index,
+    }
+    key = cell_key(key_payload)
+    response_record = ledger.responses.get(key)
+    if response_record is not None:
+        diagnostics = dict(response_record["diagnostics"])
+        failure = str(diagnostics.get("failure", ""))
+        if failure:
+            raise FormalTransitionError(failure, diagnostics)
+        proposal = diagnostics.get("parsed_output")
+        try:
+            candidate, typed_state, receipt, directive = materialize_transition(
+                arm=arm, proposal=proposal, event=event,
+                logical_state=logical_state, typed_state=typed_state,
+                physically_true=physically_true,
+            )
+        except Exception as exc:
+            raise FormalTransitionError(f"{type(exc).__name__}:{exc}", diagnostics) from exc
+        return candidate, typed_state, receipt, directive, diagnostics
+    if key in ledger.intents:
+        diagnostics = {
+            "provider_called": True, "retry_count": 0,
+            "prompt_tokens": 0, "completion_tokens": 0,
+            "latency_seconds": 0.0, "response_sha256": "",
+            "parsed_output": None, "raw_response": {},
+            "failure": AMBIGUOUS_FAILURE,
+        }
+        raise FormalTransitionError(AMBIGUOUS_FAILURE, diagnostics)
+    ledger.record_intent(
+        {
+            **key_payload,
+            "input_sha256": recovery_input.input_hash,
+            "logical_before_sha256": sequence_state_hash(logical_state),
+        }
+    )
+
+    def persist_response(diagnostics: Mapping[str, Any]) -> None:
+        ledger.record_response({**key_payload, "diagnostics": dict(diagnostics)})
+
+    return call_and_transition(
+        provider=provider, arm=arm, recovery_input=recovery_input,
+        event=event, logical_state=logical_state, typed_state=typed_state,
+        physically_true=physically_true, on_invocation=persist_response,
+    )
+
+
 def main() -> int:
     args = parse_args()
     repo_root = Path(__file__).resolve().parents[1]
-    status = subprocess.run(
-        ["git", "status", "--porcelain"], cwd=repo_root, check=True,
-        capture_output=True, text=True,
-    ).stdout
-    if status.strip():
-        raise RuntimeError("formal runner requires a clean committed worktree")
+    if not worktree_clean_for_run(repo_root, args.output_dir, args.resume):
+        raise RuntimeError("formal runner requires a clean committed worktree outside its resume directory")
     runtime_commit = subprocess.run(
         ["git", "rev-parse", "HEAD"], cwd=repo_root, check=True,
         capture_output=True, text=True,
     ).stdout.strip()
-    if args.output_dir.exists():
+    if args.output_dir.exists() and not args.resume:
         raise FileExistsError(args.output_dir)
     if sha256_bytes(args.manifest.read_bytes()) != EXPECTED_MANIFEST_SHA256:
         raise RuntimeError("formal manifest hash mismatch")
@@ -319,7 +426,6 @@ def main() -> int:
     if stable_hash(formal_protocol_config()) != EXPECTED_PROTOCOL_SHA256:
         raise RuntimeError("formal provider protocol hash drift")
     if not os.environ.get(args.api_key_env):
-        args.output_dir.mkdir(parents=True, exist_ok=False)
         blocked = {
             "gate": "BLOCKED_CREDENTIAL_UNAVAILABLE",
             "credential_env_name": args.api_key_env,
@@ -328,37 +434,50 @@ def main() -> int:
             "simulator_states_indexed": 0,
             "runtime_git_commit": runtime_commit,
         }
-        (args.output_dir / "00_CREDENTIAL_PREFLIGHT.txt").write_text(
-            canonical_json(blocked) + "\n", encoding="utf-8"
-        )
+        if not args.resume:
+            args.output_dir.mkdir(parents=True, exist_ok=False)
+            (args.output_dir / "00_CREDENTIAL_PREFLIGHT.txt").write_text(
+                canonical_json(blocked) + "\n", encoding="utf-8"
+            )
         print(canonical_json(blocked), flush=True)
         return 3
 
-    args.output_dir.mkdir(parents=True, exist_ok=False)
-    journal = args.output_dir / "01_EVENT_JOURNAL.txt"
-    trace_journal = args.output_dir / "02_PROVIDER_TRACES.txt"
+    run_metadata = {
+        "schema": "cope-sequential-formal-run-metadata-v2.1",
+        "runtime_git_commit": runtime_commit,
+        "manifest_sha256": EXPECTED_MANIFEST_SHA256,
+        "controller_sha256": EXPECTED_CONTROLLER_SHA256,
+        "contract_hashes": EXPECTED_CONTRACT_HASHES,
+        "protocol_sha256": EXPECTED_PROTOCOL_SHA256,
+        "resolution": int(args.resolution),
+        "endpoint": str(args.endpoint),
+        "api_key_env": str(args.api_key_env),
+        "credential_logged": False,
+    }
+    ledger = FormalRecoveryLedger(args.output_dir, run_metadata, resume=args.resume)
     suite = get_benchmark_suite("libero_10")
     task = suite.get_task(0)
     initial_states = suite.get_task_init_states(0)
-    results: list[dict[str, Any]] = []
-
-    def publish(result: dict[str, Any], trace: Mapping[str, Any] | None = None) -> None:
-        results.append(result)
-        with journal.open("a", encoding="utf-8") as handle:
-            handle.write(canonical_json(result) + "\n")
-            handle.flush()
-            os.fsync(handle.fileno())
-        if trace is not None:
-            with trace_journal.open("a", encoding="utf-8") as handle:
-                handle.write(canonical_json(trace) + "\n")
-                handle.flush()
-                os.fsync(handle.fileno())
+    def publish(result: dict[str, Any]) -> None:
+        key = cell_key(result)
+        existing = ledger.results.get(key)
+        if existing is not None:
+            if canonical_json(existing) != canonical_json(result):
+                raise FormalRecoveryError(f"rematerialized result drift for {key}")
+            return
+        ledger.record_result(result)
         print(canonical_json(result), flush=True)
 
     for row in rows:
         state_id = int(row["state_id"])
         if state_id not in range(10, 30):
             raise RuntimeError("runner attempted unauthorized state")
+        row_keys = {
+            (row["sequence_id"], arm, event_index)
+            for arm in row["arm_order"].split(";") for event_index in (1, 2)
+        }
+        if row_keys.issubset(ledger.results):
+            continue
         pre_env = None
         try:
             pre_env, _, _, shared = create_prefixed_env(
@@ -382,6 +501,12 @@ def main() -> int:
             continue
 
         for arm in row["arm_order"].split(";"):
+            event1_key = (row["sequence_id"], arm, 1)
+            event2_key = (row["sequence_id"], arm, 2)
+            if event2_key in ledger.results and event1_key not in ledger.results:
+                raise FormalRecoveryError(f"event 2 result exists without event 1 for {event2_key}")
+            if event1_key in ledger.results and event2_key in ledger.results:
+                continue
             env = None
             try:
                 env, controller, view, prefix = create_prefixed_env(
@@ -444,10 +569,11 @@ def main() -> int:
                 event1_result["input_sha256"] = recovery1.input_hash
                 diagnostics1: dict[str, Any] = {}
                 try:
-                    candidate1, typed, receipt1, _, diagnostics1 = call_and_transition(
+                    candidate1, typed, receipt1, _, diagnostics1 = recover_or_call_transition(
+                        ledger=ledger, sequence_id=row["sequence_id"],
                         provider=provider, arm=arm, recovery_input=recovery1,
                         event=event1, logical_state=logical, typed_state=typed,
-                        physically_true=(row["done_object"],),
+                        physically_true=(row["done_object"],), event_index=1,
                     )
                     snapshot1 = predicate_snapshot(view, row)
                     event1_result.update(
@@ -471,7 +597,7 @@ def main() -> int:
                             "c_predicate": snapshot1["c"], "d_predicate": snapshot1["d"],
                         }
                     )
-                    publish(event1_result, {"sequence_id": row["sequence_id"], "arm": arm, "event_index": 1, **diagnostics1})
+                    publish(event1_result)
                 except Exception as exc:
                     if isinstance(exc, FormalTransitionError):
                         diagnostics1 = exc.diagnostics
@@ -494,7 +620,7 @@ def main() -> int:
                             "call_budget_respected": int(diagnostics1.get("retry_count", 0)) == 0,
                         }
                     )
-                    publish(event1_result, {"sequence_id": row["sequence_id"], "arm": arm, "event_index": 1, **diagnostics1})
+                    publish(event1_result)
                     skipped = base_result(row, arm, 2)
                     skipped.update(
                         {
@@ -535,10 +661,11 @@ def main() -> int:
                 diagnostics2: dict[str, Any] = {}
                 actions_before = controller.total_steps
                 try:
-                    candidate2, typed, receipt2, directive, diagnostics2 = call_and_transition(
+                    candidate2, typed, receipt2, directive, diagnostics2 = recover_or_call_transition(
+                        ledger=ledger, sequence_id=row["sequence_id"],
                         provider=provider, arm=arm, recovery_input=recovery2,
                         event=event2, logical_state=logical, typed_state=typed,
-                        physically_true=(row["done_object"],),
+                        physically_true=(row["done_object"],), event_index=2,
                     )
                     continuity = event1_result["logical_after_sha256"] == sequence_state_hash(logical)
                     if arm == "cope":
@@ -580,7 +707,7 @@ def main() -> int:
                             "c_predicate": final["c"], "d_predicate": final["d"],
                         }
                     )
-                    publish(event2_result, {"sequence_id": row["sequence_id"], "arm": arm, "event_index": 2, **diagnostics2})
+                    publish(event2_result)
                 except Exception as exc:
                     if isinstance(exc, FormalTransitionError):
                         diagnostics2 = exc.diagnostics
@@ -603,23 +730,32 @@ def main() -> int:
                             "call_budget_respected": int(diagnostics2.get("retry_count", 0)) == 0,
                         }
                     )
-                    publish(event2_result, {"sequence_id": row["sequence_id"], "arm": arm, "event_index": 2, **diagnostics2})
+                    publish(event2_result)
             finally:
                 if env is not None:
                     env.close()
 
-    with (args.output_dir / "03_EVENT_RESULTS.csv").open(
-        "x", newline="", encoding="utf-8"
-    ) as handle:
+    results = list(ledger.results.values())
+    if len(results) != 400:
+        raise FormalRecoveryError(f"formal run ended with {len(results)} result cells, expected 400")
+    final_csv = args.output_dir / "03_EVENT_RESULTS.csv"
+    temporary_csv = args.output_dir / "03_EVENT_RESULTS.csv.tmp"
+    with temporary_csv.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=RESULT_FIELDS, lineterminator="\n")
         writer.writeheader(); writer.writerows(results)
+        handle.flush(); os.fsync(handle.fileno())
+    os.replace(temporary_csv, final_csv)
     summary = {
-        "schema": "cope-sequential-formal-run-v2",
+        "schema": "cope-sequential-formal-run-v2.1",
         "runtime_git_commit": runtime_commit,
         "manifest_sha256": EXPECTED_MANIFEST_SHA256,
         "result_cells": len(results),
         "provider_calls": sum(bool(row["provider_called"]) for row in results),
         "retry_count": sum(int(row["retry_count"]) for row in results),
+        "ambiguous_interrupted_calls": sum(
+            AMBIGUOUS_FAILURE in str(row["failure_class"]) for row in results
+        ),
+        "resume_mode": bool(args.resume),
         "formal_states_indexed": list(range(10, 30)),
         "reserve_states_30_49_indexed": False,
         "task1_state33_retried": False,
