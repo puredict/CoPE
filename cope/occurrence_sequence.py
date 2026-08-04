@@ -411,6 +411,11 @@ def materialize_neutral(
 ) -> tuple[dict[str, Any], dict[str, Any], str]:
     parsed = parse_proposal(proposal, pre_state, event)
     expected = expected_next_state(pre_state, event)
+    oracle = neutral_oracle(pre_state, expected, event)
+    observed_writes = sorted(parsed["writes"], key=lambda item: item["path"])
+    expected_writes = sorted(oracle["writes"], key=lambda item: item["path"])
+    if canonical_json(observed_writes) != canonical_json(expected_writes):
+        raise OccurrenceSemanticError("neutral transaction is not the minimum canonical write set")
 
     def finalize(staged: Mapping[str, Any], _event: Mapping[str, Any]) -> dict[str, Any]:
         out = copy.deepcopy(dict(staged))
@@ -470,12 +475,22 @@ def materialize_governed(
     delta = proposal.get("forest_delta")
     if not isinstance(scope, list) or not isinstance(delta, list):
         raise OccurrenceSemanticError("governed scope or delta is malformed")
+    if (
+        not scope or scope != sorted(scope) or len(set(scope)) != len(scope)
+        or any(not isinstance(identifier, str) or not identifier for identifier in scope)
+    ):
+        raise OccurrenceSemanticError("governed affected scope is not sorted and unique")
     records = {
         item.get("node_id"): copy.deepcopy(item.get("after"))
         for item in delta if isinstance(item, Mapping) and set(item) == {"node_id", "after"}
     }
     if set(scope) != set(records) or len(records) != len(delta):
         raise OccurrenceSemanticError("governed scope and records disagree")
+    expected_scope = governed_oracle(
+        pre_state, expected_next_state(pre_state, event), event
+    )["affected_scope"]
+    if scope != expected_scope:
+        raise OccurrenceSemanticError("governed affected scope is not exact")
     staged = copy.deepcopy(dict(pre_state))
     positions = {row["id"]: index for index, row in enumerate(staged["commitments"])}
     for identifier in scope:
