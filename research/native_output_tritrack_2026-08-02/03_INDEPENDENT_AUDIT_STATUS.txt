@@ -1,0 +1,1 @@
+{"audit_program_sha256":"03958879ed7a4f7c79bbc4c35721a2d60a1887ea57805e4b1fe897e40500d427","checks_passed":15,"checks_total":15,"decision":"PASS","learned_provider_calls":0,"learned_result_available":false,"mocked_cells_passed":36,"mocked_cells_total":36,"preflight_cells_blocked":36,"preflight_cells_total":36,"reserved_states_read":false}

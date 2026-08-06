@@ -1,0 +1,38 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import csv
+import json
+import sys
+from collections import Counter
+from pathlib import Path
+
+
+run = Path(sys.argv[1])
+out = Path(sys.argv[2])
+rows = list(csv.DictReader((run / "04_PER_SAMPLE_RESULTS.csv").open(newline="", encoding="utf-8")))
+fair = list(csv.DictReader((run / "03_FAIRNESS_INPUT_HASH_AUDIT.csv").open(newline="", encoding="utf-8")))
+status = json.loads((run / "07_RUN_STATUS.txt").read_text(encoding="utf-8"))
+by_arm = {arm: [row for row in rows if row["arm"] == arm] for arm in ("cope", "compact_tx", "fsr_pc")}
+checks = [
+    ("assigned_rows_12", len(rows) == 12, str(len(rows))),
+    ("assigned_triplets_4", status["assigned_triplets"] == 4, str(status["assigned_triplets"])),
+    ("fairness_4_of_4", len(fair) == 4 and all(r["fairness_pass"] == "True" for r in fair), str(len(fair))),
+    ("smoke_gate_failed", status["smoke_gate_pass"] is False, str(status["smoke_gate_pass"])),
+    ("not_expanded", status["expanded"] is False, str(status["expanded"])),
+    ("no_configuration_block", all(r["provider_status"] != "configuration_blocked" for r in rows), ""),
+    ("no_outage_or_timeout", all(r["provider_status"] not in {"outage", "timeout"} for r in rows), ""),
+    ("cope_correct_2_of_4", sum(r["semantic_correct"] == "True" for r in by_arm["cope"]) == 2, ""),
+    ("compact_correct_2_of_4", sum(r["semantic_correct"] == "True" for r in by_arm["compact_tx"]) == 2, ""),
+    ("fsr_correct_0_of_4", sum(r["semantic_correct"] == "True" for r in by_arm["fsr_pc"]) == 0, ""),
+    ("fsr_budget_violation_4_of_4", all(r["provider_status"] == "budget_violation" for r in by_arm["fsr_pc"]), ""),
+    ("response_hashes_present", all(r["response_sha256"] for r in rows), ""),
+    ("credential_not_logged_flag", status["credential_logged"] is False, str(status["credential_logged"])),
+]
+with out.open("x", newline="", encoding="utf-8") as stream:
+    writer = csv.writer(stream, lineterminator="\n")
+    writer.writerow(["check", "pass", "detail"])
+    writer.writerows(checks)
+print(f"checks_pass={sum(item[1] for item in checks)}/{len(checks)}")
+print("provider_status=" + json.dumps(Counter(r["provider_status"] for r in rows), sort_keys=True))
+raise SystemExit(0 if all(item[1] for item in checks) else 2)

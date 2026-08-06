@@ -1,0 +1,13 @@
+status=INFRASTRUCTURE_INTERRUPTED
+ssh_exit_code=255
+provider_calls_completed=8
+semantic_journal_records=2
+semantic_arm_rows_retained=8
+cancellation_embodied_rows_retained=4
+replacement_embodied_rows_retained=0
+journal_line_count=6
+runner_process_alive_after_disconnect=false
+provider_retry_authorized=false
+reserved_states_27_49_consumed=false
+interpretation=not_a_completed_experiment_result
+recovery_rule=freeze_journal_then_preregister_zero-provider execution-only resume

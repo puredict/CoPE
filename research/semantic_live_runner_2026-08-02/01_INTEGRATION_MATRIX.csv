@@ -1,0 +1,21 @@
+check_id,component,success_condition,observed,decision,gate_scope
+I01,semantic config loader,"exact one-row task-1 sidecar loaded and hashed","10/10 rows semantic_config_loaded=True; config SHA-256 16e7b990d4adbf7c47424ea0347d49053088248befc974d80aa9c264db1f597b",PASS,X08 integration
+I02,development-state lock,"only states 0--4 indexed; states 25--49 not indexed or consumed","initial_state_indexed is 0--4; reserved_states_indexed=False and reserved_state_consumed=False on 10/10",PASS,X04
+I03,physical milestone,"cream_cheese_1 true and butter_1 false for five stable steps","stable_steps_observed=5 on 10/10; independent predicate digest pinned",PASS,X03
+I04,production live packet,"source live; test_only false; non-fake validator","10/10 source_kind=live_libero_eval_predicate; test_only=False; validator_is_fake=False",PASS,X03
+I05,packet binding,"task/event/step/RGB/sim-state/producer/canonical packet hash complete","all seven bindings present and validated on 10/10",PASS,X03
+I06,independent predicate audit,"packet values equal independently logged predicates","packet_matches_independent_log=True on 10/10",PASS,X03
+I07,paired information contract,"native FSR and post-CoPE RecoveryInput bytes identical","recovery_input_byte_identical=True and hashes equal on 10/10",PASS,X04
+I08,shared state schema,"both arms emit full-state-v2","native_schema=materialized_schema=full-state-v2 on 10/10",PASS,X04
+I09,shared validator/compiler,"both states traverse the same validate-then-compile function","shared_validator_compiler=True; directives_equal=True on 10/10",PASS,X04
+I10,accepted-state-only compilation,"compiler receives only validated accepted canonical state","accepted_transition=True; canonical_states_equal=True on 10/10",PASS,X04
+I11,fixed oracle selector,"no real provider call","oracle_operation_selector=True and provider_called=False on 10/10",PASS,X04 mechanism only
+I12,semantic non-mutation,"semantic path emits no controller action and does not mutate simulator","simulator hash and action count unchanged; post_event_policy_actions=0 on 10/10",PASS,X04
+I13,deterministic replay,"authoritative and replay CSV byte-identical","both SHA-256 0bfe482a2663fb04b42afdae10aac6624e08fc1bb5705a1bdbe9dc6abf6a2dbf",PASS,X04
+I14,independent materializer replay,"frozen X07 replay unchanged","4/4 passed; byte-identical to prior authoritative CSV",PASS,X04 dependency
+I15,corruption audit replay,"all frozen malformed/control decisions unchanged","123 cases; 0 expectation failures; 0 malformed accepted; byte-identical",PASS,X04 dependency
+I16,test regression,"targeted and full repository tests pass","38 targeted passed; 349 full passed",PASS,X03/X04/X08
+G03,X03 live packet integration,"at least one production packet produced and consumed","10 production packets produced and consumed on states 0--4",CLOSED,integration/live packet gate
+G04,X04 formal runner integration,"sidecar + atomic slots + common full-state-v2 validator/compiler wired","10/10 cases pass with zero post-event policy action",CLOSED,integration/live packet gate
+G08,X08 sidecar-consumption integration,"embodied runner loads exact task-1 semantic config","exact sidecar and reserve manifest hashes recorded on 10/10",CLOSED,integration sub-gate only
+G08B,X08 updated-goal controller competence,"replacement controller passes frozen updated-goal gate","prior result remains failed; not rerun here",OPEN,overall X08 / replacement efficacy blocker

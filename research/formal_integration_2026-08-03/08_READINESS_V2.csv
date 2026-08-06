@@ -1,0 +1,11 @@
+gate_id,gate,status,mandatory,evidence,decision_effect
+G01,live semantic extraction and shared execution path,PASS,true,"10/10 live non-fake predicate packets; shared RecoveryInput validator compiler",none
+G02,matched three-arm transport fairness,PASS,true,"12/12 triplet preflight and 36/36 mocked transport cells",none
+G03,real learned semantic generation,FAIL,true,"zero hosted provider calls; credential unavailable",deny learned and embodied formal run
+G04,privileged controller substrate,PASS,true,"75 assigned episodes; 0 pre-event failures; 35/35 paired provenance",none
+G05,validator differential robustness,PASS_QUALIFIED,true,"v1 found 24 false accepts; repaired holdout 2992/2992 changed-candidate parity; 445 tests pass",none within synthetic scope
+G06,representation uniqueness,FAIL,false,"TX-EXEC+ exact equivalence; typing-specific assurance equalized by matched guards",deny unique-expressivity claim
+G07,sparse state scaling,MIXED,false,"byte advantage at sparse edits; reverses at 50 percent; commit and allocator costs worse",restrict efficiency claim
+G08,external runtime provenance,FAIL,true,"previous true-clean audit found dirty or incompletely content-addressed dependencies",deny formal evidence eligibility
+G09,reserved-state integrity,PASS,true,"states 27-49 untouched; 47-49 remain permanent reserve",none
+G10,analysis and repository regression,PASS,true,"isolated analysis contract retained; consolidated branch 445/445 tests",none

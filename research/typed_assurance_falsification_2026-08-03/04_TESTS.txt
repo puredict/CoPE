@@ -1,0 +1,31 @@
+X14 TEST RECORD — 2026-08-03 Asia/Shanghai
+
+Focused experiment tests:
+  tests/test_typed_assurance_falsification.py
+  Result: 3 passed in 0.20s
+
+Deterministic fault campaign:
+  clean canonical cells: 36/36 passed
+  noncanonical faulty cells: 48/48 changed
+  fault gate: 48/48 passed
+  representation fail-open: cope=0/16, compact_tx=7/16, fsr_pc=12/16
+  end-to-end fail-open: 0/48
+  crashes: 0/48
+  caller-state mutations: 0/48
+  matched canonical guard: 16/16 for every arm
+  decision: PASS
+
+Independent CSV-only audit:
+  checks: 17/17
+  decision: PASS
+
+Complete repository regression:
+  409 passed in 47.44s
+  exit status: 0
+
+Resource/evidence boundary:
+  learned provider calls: 0
+  credentials used: false
+  GPU/LLM/robot/simulator used: false
+  reserved states 27--49 read: false
+

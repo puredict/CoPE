@@ -1,0 +1,9 @@
+mode,arm,assigned,provider_ok,parser_valid,semantic_correct,unsafe_mutation_attempts,completion_tokens,proposal_bytes,latency_seconds
+plain,cope,6,6,6,0,6,1258,2486,9.115235
+plain,neutral_typed,6,6,6,0,6,1927,3664,11.917341
+plain,compact_tx,6,6,6,0,6,1879,3720,13.736800
+plain,fsr_pc,6,6,6,0,6,2791,5604,16.324144
+structured,cope,6,6,6,0,6,1345,2683,10.650878
+structured,neutral_typed,6,6,6,0,6,2155,4152,14.777231
+structured,compact_tx,6,6,6,0,6,1996,3960,13.519181
+structured,fsr_pc,6,6,6,0,6,2791,5604,18.441214

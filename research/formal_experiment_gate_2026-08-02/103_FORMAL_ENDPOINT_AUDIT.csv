@@ -1,0 +1,7 @@
+evidence_id,design,task_states,independent_units,cope_endpoint,neutral_endpoint,fsr_pc_endpoint,compact_endpoint,confirmatory_valid,primary_interpretation,submission_effect
+LEARNED_PHASE_B,"development one-event replacement/cancellation","task1 states0-4",10,"10/10","ABSENT","0/10 semantic-valid","0/10 semantic-valid",false,"CoPE absolute mechanism pass; no matched neutral comparison","MECHANISM_ONLY"
+RETAINED_FORMAL_SEGMENT,"interrupted one-event matched valid-arm","task1 states27-32",12,"12/12","12/12","0/12","0/12",false,"CoPE-neutral tie; secondary FSR/compact contrasts descriptive only","NO_GO_PRIMARY_AND_INTERRUPTED"
+SEQUENTIAL_FORMAL_40X4X2,"two-event persistent sequence","task0 states10-29 planned",40,"NOT_RUN","NOT_RUN","NOT_RUN","NOT_RUN",false,"Correct primary design but no outcome evidence and one task identity","PENDING_CREDENTIAL_AND_COMPLETE_RUN"
+TASK6_FRESH_CANARY,"relational on-placement substrate","task6 state0 only",0,"NOT_CALLED","NOT_CALLED","NOT_CALLED","NOT_CALLED",false,"method-independent physical predicate failure","NO_CROSS_TASK_EVIDENCE"
+TASK9_FRESH_CANARY,"cross-arity in/close substrate","task9 state0 only",0,"NOT_CALLED","NOT_CALLED","NOT_CALLED","NOT_CALLED",false,"method-independent physical prefix failure","NO_CROSS_TASK_EVIDENCE"
+

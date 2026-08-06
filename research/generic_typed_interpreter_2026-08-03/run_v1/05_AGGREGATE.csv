@@ -1,0 +1,13 @@
+threat_axis,arm,fault_cells,parser_rejected,native_representation_guard_rejected,common_validator_rejected,accepted,representation_fail_open,end_to_end_fail_open,caller_state_mutated,uncaught_crash,passed
+all,cope_exact,22,4,18,0,0,0,0,0,0,22
+all,cope_generic,22,4,10,8,0,8,0,0,0,22
+all,compact_tx,22,8,1,13,0,13,0,0,0,22
+all,fsr_pc,22,4,0,18,0,18,0,0,0,22
+commission_or_structure,cope_exact,14,4,10,0,0,0,0,0,0,14
+commission_or_structure,cope_generic,14,4,10,0,0,0,0,0,0,14
+commission_or_structure,compact_tx,14,8,1,5,0,5,0,0,0,14
+commission_or_structure,fsr_pc,14,4,0,10,0,10,0,0,0,14
+omission,cope_exact,8,0,8,0,0,0,0,0,0,8
+omission,cope_generic,8,0,0,8,0,8,0,0,0,8
+omission,compact_tx,8,0,0,8,0,8,0,0,0,8
+omission,fsr_pc,8,0,0,8,0,8,0,0,0,8

@@ -1,0 +1,126 @@
+#!/usr/bin/env python3
+"""Independent CSV-only audit for X17; imports no CoPE code."""
+
+from __future__ import annotations
+
+import csv
+import hashlib
+import itertools
+import json
+from collections import Counter
+from pathlib import Path
+
+
+ROOT = Path("research/predicate_composition_2026-08-03")
+RUN = ROOT / "run_v1"
+GROUPS = (
+    "authorization_noop", "version_evidence", "identity_lifecycle", "goal_consistency",
+    "progress_preservation", "action_continuity", "restoration_entity", "unaffected_scope",
+)
+
+
+def read_csv(path: Path) -> list[dict[str, str]]:
+    with path.open(newline="", encoding="utf-8") as stream:
+        return list(csv.DictReader(stream))
+
+
+def truth(value: str) -> bool:
+    if value not in {"True", "False"}:
+        raise ValueError(value)
+    return value == "True"
+
+
+def add(checks: list[dict[str, str]], name: str, passed: bool, observed: object, expected: object) -> None:
+    checks.append({
+        "check": name,
+        "pass": str(bool(passed)),
+        "observed": json.dumps(observed, sort_keys=True, separators=(",", ":")),
+        "expected": json.dumps(expected, sort_keys=True, separators=(",", ":")),
+    })
+
+
+def status_map(path: Path) -> dict[str, str]:
+    result = {}
+    for line in path.read_text(encoding="utf-8").splitlines():
+        key, value = line.split("=", 1)
+        result[key] = value
+    return result
+
+
+def main() -> int:
+    manifest = read_csv(ROOT / "01_MUTATION_MANIFEST.csv")
+    clean = read_csv(RUN / "02_CLEAN_CONTROLS.csv")
+    faults = read_csv(RUN / "03_COMPOSITION_RESULTS.csv")
+    ablation = read_csv(RUN / "04_SINGLETON_ABLATION.csv")
+    status = status_map(RUN / "05_STATUS.txt")
+    checks: list[dict[str, str]] = []
+
+    manifest_ids = [row["mutation_id"] for row in manifest]
+    manifest_groups = tuple(row["predicate_group"] for row in manifest)
+    add(checks, "manifest_eight_unique_ordered_groups", len(manifest_ids) == 8 and len(set(manifest_ids)) == 8 and manifest_groups == GROUPS, [manifest_ids, manifest_groups], [8, GROUPS])
+    add(checks, "clean_12_of_12", len(clean) == 12 and all(truth(row["pass"]) and truth(row["exact_validator_accepted"]) and truth(row["decomposed_validator_accepted"]) and row["violated_groups"] == "" for row in clean), sum(truth(row["pass"]) for row in clean), 12)
+    size_counts = Counter(int(row["combination_size"]) for row in faults)
+    add(checks, "composition_shape_8_21_35", len(faults) == 64 and size_counts == {1: 8, 2: 21, 3: 35}, [len(faults), dict(size_counts)], [64, {1: 8, 2: 21, 3: 35}])
+    add(checks, "candidate_ids_unique", len({row["candidate_id"] for row in faults}) == 64, len({row["candidate_id"] for row in faults}), 64)
+    changed = all(truth(row["candidate_changed"]) and row["candidate_sha256"] != row["canonical_sha256"] for row in faults)
+    add(checks, "all_candidates_noncanonical", changed, sum(truth(row["candidate_changed"]) for row in faults), 64)
+    rejection = all(not truth(row["exact_validator_accepted"]) and not truth(row["decomposed_validator_accepted"]) for row in faults)
+    add(checks, "both_validators_reject_64", rejection, sum(not truth(row["decomposed_validator_accepted"]) for row in faults), 64)
+    attribution = all(row["expected_groups"] == row["observed_groups"] and truth(row["attribution_exact"]) for row in faults)
+    add(checks, "exact_group_attribution_64", attribution, sum(truth(row["attribution_exact"]) for row in faults), 64)
+    add(checks, "caller_state_unchanged_64", all(truth(row["caller_state_unchanged"]) for row in faults), sum(not truth(row["caller_state_unchanged"]) for row in faults), 0)
+    add(checks, "fault_gate_64", all(truth(row["pass"]) for row in faults), sum(truth(row["pass"]) for row in faults), 64)
+
+    nonauth = manifest_ids[1:]
+    expected_sets = {tuple(combo) for size in (1, 2, 3) for combo in itertools.combinations(nonauth, size)}
+    observed_sets = {
+        tuple(row["mutation_ids"].split(";"))
+        for row in faults if row["candidate_id"] != "AUTH_SINGLE"
+    }
+    auth_ok = sum(row["mutation_ids"] == manifest_ids[0] for row in faults) == 1
+    add(checks, "combination_enumeration_complete", observed_sets == expected_sets and auth_ok, [len(observed_sets), auth_ok], [63, True])
+    occurrence = Counter()
+    for row in faults:
+        occurrence.update(row["mutation_ids"].split(";"))
+    expected_occurrence = {manifest_ids[0]: 1, **{mutation_id: 22 for mutation_id in nonauth}}
+    add(checks, "mutation_occurrence_counts", dict(occurrence) == expected_occurrence, dict(occurrence), expected_occurrence)
+
+    ablation_map = {row["predicate_group"]: row for row in ablation}
+    ablation_ok = len(ablation) == 8 and set(ablation_map) == set(GROUPS) and all(
+        row["singleton_observed_groups"] == row["predicate_group"]
+        and row["violations_after_removing_group"] == ""
+        and truth(row["would_fail_open_if_group_removed"])
+        and truth(row["pass"])
+        for row in ablation
+    )
+    add(checks, "all_groups_singleton_ablation_fail_open", ablation_ok, sum(truth(row["pass"]) for row in ablation), 8)
+    gates_ok = status.get("clean_pass") == "12/12" and status.get("decomposed_rejected") == "64/64" and status.get("exact_attribution") == "64/64" and status.get("singleton_ablation_fail_open") == "8/8"
+    add(checks, "frozen_gates", gates_ok, [status.get("clean_pass"), status.get("decomposed_rejected"), status.get("exact_attribution"), status.get("singleton_ablation_fail_open")], ["12/12", "64/64", "64/64", "8/8"])
+    boundary_ok = status.get("learned_provider_calls") == "0" and status.get("gpu_llm_robot_simulator_used") == "false" and status.get("reserved_states_27_49_read") == "false" and status.get("evidence_class") == "offline_white_box_predicate_composition"
+    add(checks, "evidence_resource_boundary", boundary_ok, [status.get("learned_provider_calls"), status.get("gpu_llm_robot_simulator_used"), status.get("reserved_states_27_49_read"), status.get("evidence_class")], ["0", "false", "false", "offline_white_box_predicate_composition"])
+    add(checks, "run_decision_pass", status.get("decision") == "PASS", status.get("decision"), "PASS")
+
+    output = ROOT / "02_INDEPENDENT_AUDIT.csv"
+    with output.open("x", newline="", encoding="utf-8") as stream:
+        writer = csv.DictWriter(stream, fieldnames=["check", "pass", "observed", "expected"], lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(checks)
+    passed = sum(row["pass"] == "True" for row in checks)
+    decision = "PASS" if passed == len(checks) else "FAIL"
+    result = {
+        "audit_program_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        "checks_passed": passed,
+        "checks_total": len(checks),
+        "decision": decision,
+        "fault_candidates": len(faults),
+        "decomposed_rejected": sum(not truth(row["decomposed_validator_accepted"]) for row in faults),
+        "learned_provider_calls": 0,
+        "reserved_states_read": False,
+    }
+    (ROOT / "02_INDEPENDENT_AUDIT_STATUS.txt").write_text(json.dumps(result, sort_keys=True, separators=(",", ":")) + "\n", encoding="utf-8")
+    print(json.dumps(result, sort_keys=True))
+    return 0 if decision == "PASS" else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -1,0 +1,4 @@
+arm,assigned,provider_ok,parser_valid,semantic_correct,unsafe_mutation_attempts,completion_tokens,proposal_bytes,latency_seconds
+cope,36,36,36,8,22,6416,13027,53.450790
+compact_tx,36,36,36,6,21,4032,13510,51.385737
+fsr_pc,36,36,36,7,18,17882,37841,114.406439

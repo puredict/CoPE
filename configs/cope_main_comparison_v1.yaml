@@ -1,0 +1,105 @@
+schema_version: cope-main-comparison-v1
+study_id: libero_spatial_cope_vs_full_regeneration_v1
+task_suite: libero_spatial
+resolution: 256
+event_source: oracle
+
+checkpoint:
+  id: openvla-7b-finetuned-libero-spatial
+  repository: openvla/openvla-7b-finetuned-libero-spatial
+  revision: 962318cec55ac10993ff0f5f43eda9a270b4c873
+  path: /home/lijingsu/vla/models/openvla-7b-finetuned-libero-spatial
+  # SHA-256 of the sorted per-file SHA-256 manifest. The manifest is retained
+  # with the integration outputs so the identity can be independently replayed.
+  sha256: 2f1d36893462b60a5efe76aed327d9cc713b561e96278bb02d73bf3c96c77974
+
+dependency_commits:
+  baseline: 570d78333ee977c8ae6de3d97120b23272c4c660
+  cope_state_semantics: fd0e2c501342ed7226360ae63c14615a1fc44c65
+  main_experiment_adapters: e9d19ec358b98c1250c4a3144a987b1aa16ab634
+  repeated_interruptions: 1a8a774c13c31ccc64a05c00c2df00322d8201f5
+  auditability: cc8f5092b87769ca53becdb7070aa32a3062035b
+
+disturbance_manifest: data/disturbance_atlas_v1.jsonl
+
+methods:
+  - clean
+  - reactive_disturbed
+  - structured_relocalize_prompt
+  - stage_backtrack_subgoal
+  - history_augmented_full_regeneration
+  - cope_patch
+
+selections:
+  pilot:
+    task_ids: [1, 3]
+    initial_state_ids: [0, 1]
+    seeds: [7]
+  formal:
+    task_ids: [1, 3, 4, 6, 8]
+    initial_state_ids: [0, 1, 2, 3, 4, 5, 6, 7]
+    seeds: [7, 8, 9]
+  detected:
+    task_ids: [1, 3, 4, 6, 8]
+    initial_state_ids: [0, 1]
+    seeds: [7, 8, 9]
+
+budgets:
+  policy_steps: 220
+  warmup_env_steps: 10
+
+high_level:
+  prompt_template_version: cope-main-prompts-v1
+  max_calls: 1
+  max_prompt_tokens: 4096
+  max_completion_tokens: 1024
+  event_fields:
+    - event_type
+    - affected_object
+    - event_time
+    - displacement_category
+  history_fields:
+    - policy_step
+    - raw_action
+    - env_action
+    - reward
+    - done
+    - task_progress
+  observation_fields:
+    - encoding
+    - rgb
+    - sha256
+    - width
+    - height
+    - fresh
+
+provider:
+  factory: null  # Set to module:factory for the real high-level service adapter.
+  provider: null
+  model: null
+  temperature: 0.0
+  max_prompt_tokens: 4096
+  max_completion_tokens: 1024
+  max_retries: 1
+  timeout_seconds: 60.0
+  detector:
+    factory: null
+    commit: null
+
+engine:
+  factory: cope.state_engine_adapter:create_cope_state_engine
+  required_source_branch: method/cope-state-semantics
+  engine_commit: fd0e2c501342ed7226360ae63c14615a1fc44c65
+  schema_version: "1.0"
+  actor: high_level_recovery_provider
+  authority_priority: 100
+  authorized_sources: [task, planner, perception]
+  revalidation_validator_factory: null  # Required before formal execution.
+
+permissions:
+  manual_intervention: false
+  reset: false
+  rollback: false
+
+artifacts:
+  output_root: /home/lijingsu/vla/cope_main_comparison_outputs

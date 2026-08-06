@@ -1,0 +1,24 @@
+X11 TX-EXEC assigned run v1 failure record
+Date: 2026-08-02 Asia/Shanghai
+
+Command reached the existing native_ntrack.load_manifest loader and failed
+before constructing any NativeCase because 01_CASE_MANIFEST.csv omitted the
+required provenance column named `source`.
+
+Observed exception:
+KeyError: 'source'
+
+Results observed: none
+Clean cases executed: 0
+Fault cases executed: 0
+Timing repetitions executed: 0
+GPU / LLM / simulator / robot calls: 0
+Reserved states 27-49 read: false
+
+Correction authorized before rerun: add a `source` column with the same frozen
+value `public_synthetic` to all 12 rows. Case IDs, phases, event families,
+authorization labels, expected directive classes, fault manifest, endpoints,
+thresholds, implementation, and analysis are unchanged.
+
+The empty run_assigned_v1 directory is retained on the remote filesystem. The
+corrected rerun must use a new output directory and must not overwrite it.

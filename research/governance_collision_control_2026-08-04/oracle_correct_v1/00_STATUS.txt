@@ -1,0 +1,1 @@
+{"assigned_cells":20,"assigned_transitions":40,"credential_names_present":[],"gate":"PASS","passed_cells":20,"provider_calls":0,"runtime_git_commit":"d9b1b0582114f91239dfe257245fd21a879f2920","schema":"governance-collision-capability-v1","simulator_states_indexed":0,"task1_state33_retried":false,"task1_states34_49_indexed":false}

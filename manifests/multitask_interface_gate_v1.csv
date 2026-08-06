@@ -1,0 +1,5 @@
+schema_version,case_id,task_id,event_type,done_object,pending_object,replacement_object,previous_state_version,policy_step
+cope-multitask-interface-gate-v1,task0_replace,0,replace_pending_goal,alphabet_soup_1,tomato_sauce_1,cream_cheese_1,0,200
+cope-multitask-interface-gate-v1,task0_cancel,0,cancel_pending_goal,alphabet_soup_1,tomato_sauce_1,,0,200
+cope-multitask-interface-gate-v1,task7_replace,7,replace_pending_goal,alphabet_soup_1,cream_cheese_1,butter_1,0,200
+cope-multitask-interface-gate-v1,task7_cancel,7,cancel_pending_goal,alphabet_soup_1,cream_cheese_1,,0,200

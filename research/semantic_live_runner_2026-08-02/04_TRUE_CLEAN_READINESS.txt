@@ -1,0 +1,53 @@
+CoPE X04 true-clean readiness
+Date: 2026-08-02 Asia/Shanghai
+
+Integration evidence audit
+==========================
+schema_version: cope-x04-true-clean-readiness-v1
+audit_commit: 7c189190e4dcffef094c0c1804953b19aa514ec0
+git_worktree_clean: true
+evidence_committed: true
+assigned_sha256: 0bfe482a2663fb04b42afdae10aac6624e08fc1bb5705a1bdbe9dc6abf6a2dbf
+replay_sha256: 0bfe482a2663fb04b42afdae10aac6624e08fc1bb5705a1bdbe9dc6abf6a2dbf
+ten_assigned_pass: true
+development_states_only: true
+reserved_state_not_consumed: true
+semantic_config_loaded: true
+production_live_packet_consumed: true
+packet_independent_log_match: true
+paired_input_byte_identical: true
+shared_full_state_v2_path: true
+semantic_nonmutation: true
+provider_not_called: true
+deterministic_replay_byte_identical: true
+integration_ready: true
+x03_live_integration_closed: true
+x04_integration_closed: true
+x08_config_consumption_subgate_closed: true
+overall_x08_closed: false
+reserved_rollout_authorized: false
+
+Unchanged main-runner fail-closed audit
+=======================================
+audit_commit: 1d6ce6fbe8b2058bd7932c6a882d7b553aa85166
+git_worktree_clean: true
+validate_only_exit: 2
+ready: false
+rollout_authorized: false
+formal_evidence_eligible: false
+
+Remaining main-runner blockers outside this bounded integration experiment:
+- fixture disturbance atlas instead of formal atlas
+- no real high-level provider
+- unchanged spatial main config has no revalidation validator adapter
+- no configured main rollout backend
+- incomplete external dependency provenance
+- statsmodels missing from the main analysis stack
+
+Interpretation
+==============
+The X03/X04 live integration and X08 sidecar-consumption sub-gate are cleanly
+closed. The unchanged broad main-comparison readiness correctly remains closed;
+this experiment does not authorize reserved-state rollout. The prior replacement
+updated-goal controller-competence failure remains open, so overall X08 is not
+claimed closed. State 26 was not run.

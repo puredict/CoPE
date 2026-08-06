@@ -1,0 +1,124 @@
+family,case_id,dimension,expected_accept,actual_accept,expectation_met,isolation_required,isolation_pass,error_class,error_message
+replacement_fullstate_v2,valid_control,control,True,True,True,False,,,
+replacement_fullstate_v2,missing_schema,schema,False,False,True,False,,FullStateValidationError,wrong full-state schema
+replacement_fullstate_v2,wrong_schema,schema,False,False,True,False,,FullStateValidationError,wrong full-state schema
+replacement_fullstate_v2,missing_state_version,version,False,False,True,False,,FullStateValidationError,state version is stale or skips a revision
+replacement_fullstate_v2,stale_state_version,version,False,False,True,False,,FullStateValidationError,state version is stale or skips a revision
+replacement_fullstate_v2,skipped_state_version,version,False,False,True,False,,FullStateValidationError,state version is stale or skips a revision
+replacement_fullstate_v2,nonnumeric_state_version,version,False,False,True,False,,ValueError,invalid literal for int() with base 10: 'one'
+replacement_fullstate_v2,wrong_issuer,authority,False,False,True,False,,FullStateValidationError,event is not authorized to replace the task goal
+replacement_fullstate_v2,weak_authority_event,authority,False,False,True,False,,FullStateValidationError,event is not authorized to replace the task goal
+replacement_fullstate_v2,wrong_target_commitment,authority,False,False,True,False,,FullStateValidationError,event targets the wrong commitment
+replacement_fullstate_v2,false_completed_physical_fact,physical_truth,False,False,True,False,,FullStateValidationError,claimed completed milestone is not physically true
+replacement_fullstate_v2,pending_already_complete,physical_truth,False,True,False,False,,,
+replacement_fullstate_v2,missing_commitments,commitments,False,False,True,False,,FullStateValidationError,full state must contain exactly three task commitments
+replacement_fullstate_v2,commitments_not_list,commitments,False,False,True,False,,FullStateValidationError,full state must contain exactly three task commitments
+replacement_fullstate_v2,missing_last_commitment,commitments,False,False,True,False,,FullStateValidationError,full state must contain exactly three task commitments
+replacement_fullstate_v2,duplicate_commitment_id,identity,False,False,True,False,,FullStateValidationError,duplicate commitment id 'goal:in:cream_cheese_1:basket_1_contain_region'
+replacement_fullstate_v2,missing_commitment_id,identity,False,False,True,False,,FullStateValidationError,commitment id must be nonempty
+replacement_fullstate_v2,wrong_commitment_target,grounding,False,False,True,False,,FullStateValidationError,commitment 'goal:in:cream_cheese_1:basket_1_contain_region' has unknown grounding
+replacement_fullstate_v2,unknown_commitment_object,grounding,False,False,True,False,,FullStateValidationError,commitment 'goal:in:cream_cheese_1:basket_1_contain_region' has unknown grounding
+replacement_fullstate_v2,wrong_done_lifecycle,lifecycle,False,False,True,False,,FullStateValidationError,commitment lifecycle statuses do not match the event
+replacement_fullstate_v2,wrong_pending_lifecycle,lifecycle,False,False,True,False,,FullStateValidationError,commitment lifecycle statuses do not match the event
+replacement_fullstate_v2,wrong_commitment_source,authority,False,True,False,False,,,
+replacement_fullstate_v2,wrong_commitment_owner,authority,False,True,False,False,,,
+replacement_fullstate_v2,weak_commitment_authority,authority,False,True,False,False,,,
+replacement_fullstate_v2,wrong_commitment_valid_from,evidence,False,True,False,False,,,
+replacement_fullstate_v2,missing_commitment_predicate,grounding,False,True,False,False,,,
+replacement_fullstate_v2,missing_current_goal,goal,False,False,True,False,,FullStateValidationError,current_goal must be an object
+replacement_fullstate_v2,missing_goal_atom,goal,False,False,True,False,,FullStateValidationError,current goal is not the authorized post-event conjunction
+replacement_fullstate_v2,duplicate_goal_atom,goal,False,True,False,False,,,
+replacement_fullstate_v2,extra_stale_goal_atom,goal,False,False,True,False,,FullStateValidationError,current goal is not the authorized post-event conjunction
+replacement_fullstate_v2,missing_progress_ledger,progress,False,True,False,False,,,
+replacement_fullstate_v2,empty_progress_ledger,progress,False,True,False,False,,,
+replacement_fullstate_v2,progress_achieved_false,progress,False,True,False,False,,,
+replacement_fullstate_v2,progress_physically_false,progress,False,True,False,False,,,
+replacement_fullstate_v2,wrong_progress_id,progress,False,True,False,False,,,
+replacement_fullstate_v2,fabricated_extra_progress,progress,False,True,False,False,,,
+replacement_fullstate_v2,missing_entities,entities,False,True,False,False,,,
+replacement_fullstate_v2,missing_done_entity,entities,False,True,False,False,,,
+replacement_fullstate_v2,duplicate_entity,entities,False,True,False,False,,,
+replacement_fullstate_v2,wrong_entity_kind,entities,False,True,False,False,,,
+replacement_fullstate_v2,missing_evidence_versions,evidence,False,True,False,False,,,
+replacement_fullstate_v2,stale_world_version,evidence,False,True,False,False,,,
+replacement_fullstate_v2,future_world_version,evidence,False,True,False,False,,,
+replacement_fullstate_v2,wrong_evidence_event,evidence,False,True,False,False,,,
+replacement_fullstate_v2,wrong_input_state_version,evidence,False,True,False,False,,,
+replacement_fullstate_v2,pending_restoration_injected,restoration,False,True,False,False,,,
+replacement_fullstate_v2,malicious_diagnostic_prompt,compiler_isolation,True,True,True,True,True,,
+replacement_fullstate_v2,invalid_replacement_object,event,False,False,True,False,,FullStateValidationError,replacement object is invalid
+replacement_fullstate_v2,unknown_replacement_object,event,False,False,True,False,,FullStateValidationError,replacement object is invalid
+replacement_fullstate_v2,wrong_replacement_lifecycle,lifecycle,False,False,True,False,,FullStateValidationError,commitment lifecycle statuses do not match the event
+replacement_fullstate_v2,missing_supersession_lineage,lineage,False,False,True,False,,FullStateValidationError,replacement does not preserve supersession lineage
+replacement_fullstate_v2,extra_supersession_lineage,lineage,False,False,True,False,,FullStateValidationError,replacement does not preserve supersession lineage
+replacement_fullstate_v2,missing_plan,plan,False,True,False,False,,,
+replacement_fullstate_v2,empty_plan,plan,False,True,False,False,,,
+replacement_fullstate_v2,wrong_plan_object,plan,False,True,False,False,,,
+replacement_fullstate_v2,wrong_plan_target,plan,False,True,False,False,,,
+replacement_fullstate_v2,wrong_plan_skill,plan,False,True,False,False,,,
+replacement_fullstate_v2,completed_plan_status,plan,False,True,False,False,,,
+replacement_fullstate_v2,extra_stale_plan_step,plan,False,True,False,False,,,
+replacement_fullstate_v2,missing_plan_dependency,plan,False,True,False,False,,,
+replacement_fullstate_v2,missing_replacement_entity,entities,False,True,False,False,,,
+cancellation_fullstate_v2,valid_control,control,True,True,True,False,,,
+cancellation_fullstate_v2,missing_schema,schema,False,False,True,False,,FullStateValidationError,wrong full-state schema
+cancellation_fullstate_v2,wrong_schema,schema,False,False,True,False,,FullStateValidationError,wrong full-state schema
+cancellation_fullstate_v2,missing_state_version,version,False,False,True,False,,FullStateValidationError,state version is stale or skips a revision
+cancellation_fullstate_v2,stale_state_version,version,False,False,True,False,,FullStateValidationError,state version is stale or skips a revision
+cancellation_fullstate_v2,skipped_state_version,version,False,False,True,False,,FullStateValidationError,state version is stale or skips a revision
+cancellation_fullstate_v2,nonnumeric_state_version,version,False,False,True,False,,ValueError,invalid literal for int() with base 10: 'one'
+cancellation_fullstate_v2,wrong_issuer,authority,False,False,True,False,,FullStateValidationError,event is not authorized to cancel the task goal
+cancellation_fullstate_v2,weak_authority_event,authority,False,False,True,False,,FullStateValidationError,event is not authorized to cancel the task goal
+cancellation_fullstate_v2,wrong_target_commitment,authority,False,False,True,False,,FullStateValidationError,event targets the wrong commitment
+cancellation_fullstate_v2,false_completed_physical_fact,physical_truth,False,False,True,False,,FullStateValidationError,claimed completed milestone is not physically true
+cancellation_fullstate_v2,pending_already_complete,physical_truth,False,False,True,False,,FullStateValidationError,pending commitment is already physically satisfied
+cancellation_fullstate_v2,missing_commitments,commitments,False,False,True,False,,FullStateValidationError,full state must contain exactly two commitments
+cancellation_fullstate_v2,commitments_not_list,commitments,False,False,True,False,,FullStateValidationError,full state must contain exactly two commitments
+cancellation_fullstate_v2,missing_last_commitment,commitments,False,False,True,False,,FullStateValidationError,full state must contain exactly two commitments
+cancellation_fullstate_v2,duplicate_commitment_id,identity,False,False,True,False,,FullStateValidationError,commitment IDs must be unique
+cancellation_fullstate_v2,missing_commitment_id,identity,False,False,True,False,,FullStateValidationError,commitment lifecycle statuses do not match cancellation
+cancellation_fullstate_v2,wrong_commitment_target,grounding,False,True,False,False,,,
+cancellation_fullstate_v2,unknown_commitment_object,grounding,False,True,False,False,,,
+cancellation_fullstate_v2,wrong_done_lifecycle,lifecycle,False,False,True,False,,FullStateValidationError,commitment lifecycle statuses do not match cancellation
+cancellation_fullstate_v2,wrong_pending_lifecycle,lifecycle,False,False,True,False,,FullStateValidationError,commitment lifecycle statuses do not match cancellation
+cancellation_fullstate_v2,wrong_commitment_source,authority,False,True,False,False,,,
+cancellation_fullstate_v2,wrong_commitment_owner,authority,False,True,False,False,,,
+cancellation_fullstate_v2,weak_commitment_authority,authority,False,True,False,False,,,
+cancellation_fullstate_v2,wrong_commitment_valid_from,evidence,False,True,False,False,,,
+cancellation_fullstate_v2,missing_commitment_predicate,grounding,False,True,False,False,,,
+cancellation_fullstate_v2,missing_current_goal,goal,False,False,True,False,,FullStateValidationError,current goal does not match cancellation
+cancellation_fullstate_v2,missing_goal_atom,goal,False,False,True,False,,FullStateValidationError,current goal does not match cancellation
+cancellation_fullstate_v2,duplicate_goal_atom,goal,False,False,True,False,,FullStateValidationError,current goal does not match cancellation
+cancellation_fullstate_v2,extra_stale_goal_atom,goal,False,False,True,False,,FullStateValidationError,current goal does not match cancellation
+cancellation_fullstate_v2,missing_progress_ledger,progress,False,True,False,False,,,
+cancellation_fullstate_v2,empty_progress_ledger,progress,False,True,False,False,,,
+cancellation_fullstate_v2,progress_achieved_false,progress,False,True,False,False,,,
+cancellation_fullstate_v2,progress_physically_false,progress,False,True,False,False,,,
+cancellation_fullstate_v2,wrong_progress_id,progress,False,True,False,False,,,
+cancellation_fullstate_v2,fabricated_extra_progress,progress,False,True,False,False,,,
+cancellation_fullstate_v2,missing_entities,entities,False,True,False,False,,,
+cancellation_fullstate_v2,missing_done_entity,entities,False,True,False,False,,,
+cancellation_fullstate_v2,duplicate_entity,entities,False,True,False,False,,,
+cancellation_fullstate_v2,wrong_entity_kind,entities,False,True,False,False,,,
+cancellation_fullstate_v2,missing_evidence_versions,evidence,False,True,False,False,,,
+cancellation_fullstate_v2,stale_world_version,evidence,False,True,False,False,,,
+cancellation_fullstate_v2,future_world_version,evidence,False,True,False,False,,,
+cancellation_fullstate_v2,wrong_evidence_event,evidence,False,True,False,False,,,
+cancellation_fullstate_v2,wrong_input_state_version,evidence,False,True,False,False,,,
+cancellation_fullstate_v2,pending_restoration_injected,restoration,False,True,False,False,,,
+cancellation_fullstate_v2,malicious_diagnostic_prompt,compiler_isolation,True,True,True,True,True,,
+cancellation_fullstate_v2,nonempty_cancellation_plan,plan,False,False,True,False,,FullStateValidationError,cancelled terminal state must compile to HALT
+cancellation_fullstate_v2,missing_execution_directive,compiler,False,False,True,False,,FullStateValidationError,cancelled terminal state must compile to HALT
+cancellation_fullstate_v2,wrong_execution_directive,compiler,False,False,True,False,,FullStateValidationError,cancelled terminal state must compile to HALT
+main_fullstate_parser,valid_control,control,True,True,True,False,,,
+main_fullstate_parser,wrong_schema,schema,False,True,False,False,,,
+main_fullstate_parser,empty_constraints,commitments,False,True,False,False,,,
+main_fullstate_parser,duplicate_constraint_id,identity,False,False,True,False,,ValueError,duplicate regenerated constraint id 'regenerated:goal'
+main_fullstate_parser,missing_constraint_id,identity,False,False,True,False,,ValueError,constraints[0].id must be a non-empty string
+main_fullstate_parser,missing_constraint_source,authority,False,True,False,False,,,
+main_fullstate_parser,missing_constraint_priority,authority,False,True,False,False,,,
+main_fullstate_parser,missing_constraint_lineage,lineage,False,True,False,False,,,
+main_fullstate_parser,missing_plan,plan,False,False,True,False,,ValueError,plan must be a list of objects
+main_fullstate_parser,empty_plan,plan,False,True,False,False,,,
+main_fullstate_parser,malicious_direct_controller_prompt,compiler_isolation,False,True,False,False,,,
+main_fullstate_parser,missing_controller_prompt,parser,False,False,True,False,,ValueError,controller_prompt must be a non-empty string

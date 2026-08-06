@@ -1,0 +1,4 @@
+comparison,cases,cope_only_success,control_only_success,exact_mcnemar_p,confirmatory_valid,qualification
+cope_vs_fsr_pc,12,12,0,0.00048828125,False,descriptive_interrupted_segment
+cope_vs_compact_tx,12,12,0,0.00048828125,False,descriptive_interrupted_segment
+cope_vs_neutral_patch,12,0,0,1,False,descriptive_interrupted_segment

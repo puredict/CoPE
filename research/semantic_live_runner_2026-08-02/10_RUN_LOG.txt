@@ -1,0 +1,35 @@
+X04 live semantic runner evidence log
+Date: 2026-08-02 Asia/Shanghai
+
+Pre-registration commit: 3305dc298e383db8a17a64e3d2257cd67c0bee34
+Storage-lock clarification commit: 9953aaf52cded2fbe43cb68e346794f85b29ddd9
+Hardened implementation commit: 739e175521e93a8c598cdef20f5b0570f1809c81
+
+Focused semantic/config/materialization tests:
+58 passed in 0.29s
+
+Full repository regression:
+349 passed in 46.32s
+
+Assigned hardened live run:
+CUDA_VISIBLE_DEVICES="" scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python experiments/live_semantic_runner.py --case-manifest research/semantic_live_runner_2026-08-02/01_CASES.csv --semantic-config manifests/semantic_task1_config_v1.csv --output-csv research/semantic_live_runner_2026-08-02/04_ASSIGNED_RESULTS.csv --resolution 64
+assigned=10 passed=10 live_packets=10 reserved_state_consumed=0
+
+Operator-captured hardened replay:
+CUDA_VISIBLE_DEVICES="" scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python experiments/live_semantic_runner.py --case-manifest research/semantic_live_runner_2026-08-02/01_CASES.csv --semantic-config manifests/semantic_task1_config_v1.csv --output-csv research/semantic_live_runner_2026-08-02/05_ASSIGNED_RESULTS_HARDENED.csv --resolution 64
+assigned=10 passed=10 live_packets=10 reserved_state_consumed=0
+
+Independent materialization replay:
+CUDA_VISIBLE_DEVICES="" scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python experiments/semantic_materialization_preflight.py --case-manifest research/semantic_materialization_2026-08-02/01_PREFLIGHT_CASES.csv --output-csv research/semantic_live_runner_2026-08-02/06_X07_INDEPENDENT_REPLAY.csv
+assigned=4 passed=4 reserve_consumed=0
+
+Frozen corruption replay:
+CUDA_VISIBLE_DEVICES="" scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python research/contract_stress_2026-08-01/02_AUDIT_PROGRAM.txt --result-csv research/semantic_live_runner_2026-08-02/07_X07_CONTRACT_REPLAY.csv
+cases=123 expectation_failures=0
+replacement_fullstate_v2: cases=61 expectation_failures=0 malformed_accepted=0
+cancellation_fullstate_v2: cases=50 expectation_failures=0 malformed_accepted=0
+main_fullstate_parser: cases=12 expectation_failures=0 malformed_accepted=0
+
+Atomicity/property replay:
+CUDA_VISIBLE_DEVICES="" scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python -m pytest -q tests/cope/test_atomicity.py tests/cope/test_counterexamples.py tests/cope/test_property_sequences.py
+67 passed in 39.84s

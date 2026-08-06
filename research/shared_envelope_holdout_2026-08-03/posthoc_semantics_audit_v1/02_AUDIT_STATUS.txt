@@ -1,0 +1,6 @@
+decision=FAIL
+reason=corrected compact JSON Patch semantics remove the preregistered significant separation
+raw_responses_modified=false
+provider_calls=0
+original_run_commit=111487204017b03a0fea82ea258324d5aab55c1a
+correction_commit=47da0df4409476c66c257e705a41b2573af0def3

@@ -1,0 +1,11 @@
+case_id,state_id,event_type,done_object,pending_object,replacement_object,stable_steps
+state0_replace,0,replace_pending_goal,cream_cheese_1,butter_1,alphabet_soup_1,5
+state0_cancel,0,cancel_pending_goal,cream_cheese_1,butter_1,,5
+state1_replace,1,replace_pending_goal,cream_cheese_1,butter_1,alphabet_soup_1,5
+state1_cancel,1,cancel_pending_goal,cream_cheese_1,butter_1,,5
+state2_replace,2,replace_pending_goal,cream_cheese_1,butter_1,alphabet_soup_1,5
+state2_cancel,2,cancel_pending_goal,cream_cheese_1,butter_1,,5
+state3_replace,3,replace_pending_goal,cream_cheese_1,butter_1,alphabet_soup_1,5
+state3_cancel,3,cancel_pending_goal,cream_cheese_1,butter_1,,5
+state4_replace,4,replace_pending_goal,cream_cheese_1,butter_1,alphabet_soup_1,5
+state4_cancel,4,cancel_pending_goal,cream_cheese_1,butter_1,,5

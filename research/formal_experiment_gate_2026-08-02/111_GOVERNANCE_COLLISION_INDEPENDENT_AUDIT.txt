@@ -1,0 +1,17 @@
+independent_shape=PASS
+assigned_rows=20
+trace_rows=20
+balanced_arms=5x4
+cross_arm_final_equivalence=PASS
+cases_equivalent=4/4
+adjacent_hash_and_revision_continuity=PASS
+revision_path=1>2>3
+negative_fault_rejection=5/5
+caller_mutation_on_rejection=0/5
+focused_tests=30/30
+full_tests=573/573
+provider_calls=0
+simulator_states_indexed=0
+task1_state33_retried=false
+task1_states34_49_indexed=false
+

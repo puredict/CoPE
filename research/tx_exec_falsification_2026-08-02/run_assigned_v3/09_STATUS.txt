@@ -1,0 +1,13 @@
+schema_version=tx-exec-falsification-status-v1
+assigned_clean=12
+clean_pass=12
+assigned_faults=8
+fault_pass=8
+replay_identical=12
+source_independence_pass=True
+decision=TX_EXEC_STRONG_FALSIFIER_PASS
+gpu_used=false
+llm_used=false
+robot_or_simulator_used=false
+reserved_states_27_49_read=false
+claim_boundary=synthetic_cpu_semantic_mechanism_only

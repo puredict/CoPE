@@ -1,0 +1,18 @@
+check,pass,observed,expected
+predicate_manifest_exact_groups,True,"[""authorization_noop"",""version_evidence"",""identity_lifecycle"",""goal_consistency"",""progress_preservation"",""action_continuity"",""restoration_entity"",""unaffected_scope""]","[""authorization_noop"",""version_evidence"",""identity_lifecycle"",""goal_consistency"",""progress_preservation"",""action_continuity"",""restoration_entity"",""unaffected_scope""]"
+source_audit_no_oracle_or_whole_state_pattern,True,"[{""forbidden_hits"":"""",""forbidden_symbols"":""expected_patch;derive_post_state;validate_and_compile"",""module"":""cope.decomposed_validator"",""pass"":""True"",""source_sha256"":""5971cedc122deccfc7911c103b516b388255b35713c7b6f4229d3002d856a9f2"",""whole_state_compare_hits"":"""",""whole_state_compare_patterns"":""canonical_json(candidate);stable_hash(candidate)""}]","""one passing source-audit row"""
+clean_48_rows,True,48,48
+clean_48_specificity,True,48,48
+fault_88_rows,True,88,88
+native_and_materialized_partition,True,"[49,39]","[49,39]"
+materialized_faults_rejected_39_of_39,True,39,39
+full_pipeline_rejects_88_of_88,True,88,88
+exact_decomposed_parity_136,True,136,136
+zero_crash,True,0,0
+zero_caller_mutation,True,0,0
+coverage_ablation_recomputed,True,"{""action_continuity"":{""ablation_fail_open_count"":3,""clean_false_positive_count"":0,""fault_candidates_violating_group"":20,""unique_catch_count"":3},""authorization_noop"":{""ablation_fail_open_count"":5,""clean_false_positive_count"":0,""fault_candidates_violating_group"":5,""unique_catch_count"":5},""goal_consistency"":{""ablation_fail_open_count"":0,""clean_false_positive_count"":0,""fault_candidates_violating_group"":17,""unique_catch_count"":0},""identity_lifecycle"":{""ablation_fail_open_count"":2,""clean_false_positive_count"":0,""fault_candidates_violating_group"":19,""unique_catch_count"":2},""progress_preservation"":{""ablation_fail_open_count"":1,""clean_false_positive_count"":0,""fault_candidates_violating_group"":1,""unique_catch_count"":1},""restoration_entity"":{""ablation_fail_open_count"":0,""clean_false_positive_count"":0,""fault_candidates_violating_group"":14,""unique_catch_count"":0},""unaffected_scope"":{""ablation_fail_open_count"":2,""clean_false_positive_count"":0,""fault_candidates_violating_group"":2,""unique_catch_count"":2},""version_evidence"":{""ablation_fail_open_count"":9,""clean_false_positive_count"":0,""fault_candidates_violating_group"":24,""unique_catch_count"":9}}","""exact coverage CSV"""
+unique_catch_counts,True,"{""action_continuity"":3,""authorization_noop"":5,""goal_consistency"":0,""identity_lifecycle"":2,""progress_preservation"":1,""restoration_entity"":0,""unaffected_scope"":2,""version_evidence"":9}","{""action_continuity"":3,""authorization_noop"":5,""goal_consistency"":0,""identity_lifecycle"":2,""progress_preservation"":1,""restoration_entity"":0,""unaffected_scope"":2,""version_evidence"":9}"
+zero_clean_group_false_positive,True,0,0
+frozen_gates,True,"[""True"",""True"",""True""]","[""True"",""True"",""True""]"
+evidence_resource_boundary,True,"[""0"",""false"",""false"",""offline_deterministic_candidate_replay""]","[""0"",""false"",""false"",""offline_deterministic_candidate_replay""]"
+run_decision_pass,True,"""PASS""","""PASS"""

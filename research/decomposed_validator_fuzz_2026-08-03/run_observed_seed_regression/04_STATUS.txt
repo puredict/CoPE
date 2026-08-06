@@ -1,0 +1,16 @@
+schema_version=decomposed-validator-fuzz-v1
+seed=20260803
+cases=12
+samples_per_case=250
+assigned_mutants=3000
+clean_accept=12/12
+mutants_changed=2997/3000
+exact_rejected=2997/3000
+decomposed_rejected=2997/3000
+decision_parity=3000/3000
+caller_state_unchanged=3000/3000
+decision=FAIL
+evidence_class=offline_seeded_structure_field_differential_fuzzing
+learned_provider_calls=0
+gpu_llm_robot_simulator_used=false
+reserved_states_27_49_read=false

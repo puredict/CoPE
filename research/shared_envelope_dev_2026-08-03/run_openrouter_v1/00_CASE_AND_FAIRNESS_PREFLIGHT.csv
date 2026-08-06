@@ -1,0 +1,7 @@
+case_id,family,rule_clause_count,arm_cells,fairness_pass,normalized_request_sha256,call_order
+SCE-D01,or_dependency_cancellation,3,4,True,356ba5d1a2f2d737006478e3c0be7df4802b937866b9851f43e0335da42965cd,"[""cope_semantic"",""neutral_typed"",""compact_semantic"",""fsr_semantic""]"
+SCE-D02,replacement_progress_transfer,2,4,True,c49d4edd011959ee85b3493df7c53114e28a6f0e17163c03ed986b3abd8b2fb7,"[""neutral_typed"",""compact_semantic"",""fsr_semantic"",""cope_semantic""]"
+SCE-D03,temporary_override,3,4,True,c612d3bd6858f78ae3c69f138663a1ec3e927f9118921a2b78a06896810b3a41,"[""compact_semantic"",""fsr_semantic"",""cope_semantic"",""neutral_typed""]"
+SCE-D04,override_release,3,4,True,5af5dadd9d64cbf3e9480cbc73aa6614a38a713c739b730c5e7f2e75d9ba4e52,"[""fsr_semantic"",""cope_semantic"",""neutral_typed"",""compact_semantic""]"
+SCE-D05,world_invalidated_restoration,3,4,True,16d7d4455762d06543e09eeaec74c55e25fbfadd62e111763948fc7b9b88fa05,"[""cope_semantic"",""neutral_typed"",""compact_semantic"",""fsr_semantic""]"
+SCE-D06,nonreversible_continuity,3,4,True,094bf2179efd4f2de65ba8a6095de427f4a8132eeb7b607fa753c9d5a37d229c,"[""neutral_typed"",""compact_semantic"",""fsr_semantic"",""cope_semantic""]"

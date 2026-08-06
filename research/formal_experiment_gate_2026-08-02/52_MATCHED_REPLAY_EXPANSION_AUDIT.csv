@@ -1,0 +1,17 @@
+check,value,pass,note
+provider_calls,32,true,all four arms over eight events
+provider_ok,32,true,zero retries
+cope_semantic_correct,8,true,eight of eight
+neutral_sparse_semantic_correct,8,true,eight of eight
+compact_semantic_correct,0,true,measured and not forced
+fsr_pc_semantic_correct,0,true,measured and not forced
+valid_terminal_success,16,true,all semantic-valid cells
+invalid_fail_closed,16,true,zero execution and zero actions
+replacement_trace_pairs_equal,4,true,action count and hash exact
+journal_records,40,true,eight semantic plus thirty-two embodied records
+state_ids,1;2;3;4,true,no state zero repeat or reserved state
+credential_match_files,0,true,experiment log and tracked repository
+blank_neutral_embodied_shared_envelope_fields,8,true,retained observability defect corrected before formal run
+raw_result_commit,eb7b585671187c94f3a70276a981506050592f29,true,immutable raw output
+formal_runner_commit,8ae5949bc853815e007e576530dd33d58beb8e15,true,32 focused and 491 full tests
+formal_preflight_commit,09bd383802ac39c857bae2de987af70c29248f84,true,zero calls actions and indexed states

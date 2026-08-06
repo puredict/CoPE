@@ -1,0 +1,6 @@
+arm,cells,infrastructure_failures,parser_failures,semantic_failures_after_parse,canonical_failures_after_semantics,history_failures_after_semantics,directive_failures_after_semantics,complete_successes
+cope,40,0,0,0,0,0,0,40
+neutral_patch,40,0,0,0,0,0,0,40
+governed_delta,40,0,0,40,0,0,0,0
+fsr_pc,40,0,0,9,0,0,0,31
+full_replan,40,0,0,3,0,0,0,37

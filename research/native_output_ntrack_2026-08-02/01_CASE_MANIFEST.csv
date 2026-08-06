@@ -1,0 +1,13 @@
+case_id,phase,family,source,expected_authorized,notes
+no_op,smoke,no_op,public_synthetic,yes,No semantic change.
+replace_pending_target,smoke,replacement,contract_valid_control_extension,yes,Supersede one pending sibling.
+wrong_source_revoke,smoke,authorization,contract_diagnostic_control_extension,no,Observer cannot revoke task-owner commitment.
+continuity_invalid,smoke,continuity,public_synthetic,yes,New prohibition requires explicit executing-action cancellation.
+cancel_sibling,expansion,cancellation,public_synthetic,yes,Cancel untouched pending sibling while preserving achieved progress.
+activate_override,expansion,override,public_synthetic,yes,Suspend pending target and create restoration record.
+release_override,expansion,release,public_synthetic,yes,Release without intervening world change.
+world_change_release,expansion,release_world_change,public_synthetic,yes,Release must reground against current world.
+stale_version,expansion,version,public_synthetic,no,Stale input state version requires no edit.
+idempotence,expansion,idempotence,public_synthetic,no,Already processed event requires no edit.
+irrelevant_sibling_change,expansion,irrelevant_change,public_synthetic,yes,Only evidence and version advance.
+continuity_valid,expansion,continuity,public_synthetic,yes,Executing action remains valid and must continue.

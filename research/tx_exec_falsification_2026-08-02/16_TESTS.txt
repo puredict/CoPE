@@ -1,0 +1,24 @@
+X11 TX-EXEC+ verification record
+Date: 2026-08-02 Asia/Shanghai
+
+Focused TX-EXEC plus native-output contract suite before v2:
+39 passed in 0.10s
+
+Focused TX-EXEC plus native-output contract suite after external-validator
+rollback correction:
+39 passed in 0.10s
+
+Authoritative assigned v3:
+clean semantic equivalence 12/12
+fail-closed fault injection 8/8
+deterministic semantic replay 12/12
+independent CSV/AST audit 12/12
+
+Final full repository regression:
+382 passed in 46.33s
+
+GPU used: no
+LLM used: no
+Robot or simulator used: no
+LIBERO states 27-49 read: no
+

@@ -1,0 +1,1 @@
+{"assigned_triplets":12,"configuration_blocker":"credential_unavailable","credential_env_name":"OPENROUTER_API_KEY","credential_logged":false,"expanded":false,"fairness_preflight_pass":true,"model":"qwen/qwen3.5-flash-02-23","provider":"openrouter","provider_calls":0,"reserved_states_read":false,"smoke_gate_pass":false}

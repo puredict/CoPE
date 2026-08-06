@@ -1,0 +1,6 @@
+arm,complete_successes,total_cases,mean_proposal_bytes,median_proposal_bytes,mean_prompt_tokens,mean_completion_tokens,mean_latency_seconds
+cope,40,40,272.175,274.0,1816.05,117.1,1.240
+neutral_patch,40,40,1710.8,1709.0,2210.05,790.0,4.697
+governed_delta,0,40,1950.75,1946.0,2075.05,946.275,5.540
+fsr_pc,31,40,4296.55,4336.0,1941.05,1890.9,10.497
+full_replan,37,40,545.725,560.5,1872.05,243.95,1.876

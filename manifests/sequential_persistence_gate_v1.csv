@@ -1,0 +1,5 @@
+case_id,task_id,sequence_type,done_object,initial_pending_object,replacement_c,replacement_d,world_version
+task0_replace_cancel,0,replace_then_cancel,alphabet_soup_1,tomato_sauce_1,cream_cheese_1,,1000
+task0_replace_replace,0,replace_then_replace,alphabet_soup_1,tomato_sauce_1,cream_cheese_1,butter_1,1100
+task7_replace_cancel,7,replace_then_cancel,alphabet_soup_1,cream_cheese_1,butter_1,,1200
+task7_replace_replace,7,replace_then_replace,alphabet_soup_1,cream_cheese_1,butter_1,tomato_sauce_1,1300

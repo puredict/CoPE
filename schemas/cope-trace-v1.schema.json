@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/puredict/CoPE/schemas/cope-trace-v1.schema.json",
+  "title": "CoPE Experiment Trace v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "trace_schema_version",
+    "pair_key",
+    "event_source",
+    "information_budget",
+    "policy_step_budget",
+    "high_level_call_count",
+    "constraint_state_before",
+    "constraint_state_after",
+    "patch_operations",
+    "slot_id",
+    "source",
+    "mode",
+    "priority",
+    "lineage",
+    "revalidation_result",
+    "task_progress",
+    "termination_reason",
+    "manual_intervention",
+    "git_commit",
+    "config_hash",
+    "checkpoint_id"
+  ],
+  "properties": {
+    "trace_schema_version": {"const": "1.0"},
+    "pair_key": {"type": "object", "minProperties": 1},
+    "event_source": {"enum": ["oracle", "detected"]},
+    "information_budget": {"type": "integer", "minimum": 0},
+    "policy_step_budget": {"type": "integer", "minimum": 0},
+    "high_level_call_count": {"type": "integer", "minimum": 0},
+    "constraint_state_before": {"$ref": "#/$defs/stateReference"},
+    "constraint_state_after": {"$ref": "#/$defs/stateReference"},
+    "patch_operations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "cope-state-v1.schema.json#/$defs/operation"
+      }
+    },
+    "slot_id": {"type": "string", "minLength": 1},
+    "source": {
+      "$ref": "cope-state-v1.schema.json#/$defs/source"
+    },
+    "mode": {
+      "$ref": "cope-state-v1.schema.json#/$defs/mode"
+    },
+    "priority": {"type": "integer", "minimum": 0, "maximum": 1000},
+    "lineage": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "revalidation_result": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["validation_id", "slot_id", "validator_id", "result", "evidence"],
+          "properties": {
+            "validation_id": {"type": "string", "minLength": 1},
+            "slot_id": {"type": "string", "minLength": 1},
+            "validator_id": {"type": "string", "minLength": 1},
+            "result": {"type": "boolean"},
+            "evidence": {"type": "object"}
+          }
+        }
+      ]
+    },
+    "task_progress": {"type": "object"},
+    "termination_reason": {"type": "string", "minLength": 1},
+    "manual_intervention": {"type": "boolean"},
+    "git_commit": {"type": "string", "minLength": 7},
+    "config_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "checkpoint_id": {"type": "string", "minLength": 1}
+  },
+  "$defs": {
+    "stateReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state_id", "revision", "state_hash"],
+      "properties": {
+        "state_id": {"type": "string", "minLength": 1},
+        "revision": {"type": "integer", "minimum": 0},
+        "state_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    }
+  }
+}

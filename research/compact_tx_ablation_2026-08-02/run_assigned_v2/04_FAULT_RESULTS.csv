@@ -1,0 +1,9 @@
+fault_id,source_case,layer,rejected,published,rolled_back,pre_state_unchanged,after_sha256_empty,validator_calls,rejection_class,actual_rejection_stage,stage_matches_manifest,pass
+C01,cancel_sibling,parser,True,False,True,True,True,0,CompactTransactionError,parser,True,True
+C02,cancel_sibling,parser,True,False,True,True,True,0,CompactTransactionError,parser,True,True
+C03,cancel_sibling,parser,True,False,True,True,True,0,CompactTransactionError,parser,True,True
+C04,replace_pending_target,parser,True,False,True,True,True,0,CompactTransactionError,parser,True,True
+C05,cancel_sibling,materializer,True,False,True,True,True,0,CompactTransactionError,materializer,True,True
+C06,replace_pending_target,semantic_validator,True,False,True,True,True,1,NativeOutputError,semantic_validator,True,True
+C07,continuity_invalid,semantic_validator,True,False,True,True,True,1,NativeOutputError,semantic_validator,True,True
+C08,irrelevant_sibling_change,semantic_validator,True,False,True,True,True,1,RuntimeError,semantic_validator,True,True

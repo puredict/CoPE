@@ -1,0 +1,2 @@
+module,source_sha256,forbidden_symbols,forbidden_hits,whole_state_compare_patterns,whole_state_compare_hits,pass
+cope.decomposed_validator,5971cedc122deccfc7911c103b516b388255b35713c7b6f4229d3002d856a9f2,expected_patch;derive_post_state;validate_and_compile,,canonical_json(candidate);stable_hash(candidate),,True

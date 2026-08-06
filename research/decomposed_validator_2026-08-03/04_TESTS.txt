@@ -1,0 +1,39 @@
+X16 TEST RECORD — 2026-08-03 Asia/Shanghai
+
+Focused tests:
+  tests/test_decomposed_validator.py
+  tests/test_decomposed_validator_experiment.py
+  Result: 8 passed in 0.30s
+
+Static source audit:
+  forbidden oracle symbols: expected_patch, derive_post_state, validate_and_compile
+  forbidden hits: none
+  whole-state comparison patterns checked: canonical_json(candidate), stable_hash(candidate)
+  whole-state comparison hits: none
+  decision: PASS
+
+Candidate replay:
+  clean accepted: 48/48
+  fault native rejection: 49/88
+  faulty candidates materialized: 39/88
+  decomposed rejected: 39/39
+  exact oracle rejected: 39/39
+  exact/decomposed parity: 136/136
+  full decomposed pipeline rejected: 88/88
+  crash/caller mutation: 0/0
+  decision: PASS
+
+Independent CSV-only audit:
+  checks: 17/17
+  decision: PASS
+
+Complete repository regression:
+  425 passed in 47.33s
+  exit status: 0
+
+Resource/evidence boundary:
+  provider/LLM calls: 0
+  credentials used: false
+  GPU/robot/simulator used: false
+  reserved states 27--49 read: false
+

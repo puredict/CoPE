@@ -1,0 +1,14 @@
+case_id,phase,family,source
+no_op,assigned,no_op,public_synthetic
+cancel_sibling,assigned,cancellation,public_synthetic
+replace_pending_target,assigned,replacement,public_synthetic
+activate_override,assigned,override,public_synthetic
+release_override,assigned,release,public_synthetic
+world_change_release,assigned,release_world_change,public_synthetic
+wrong_source_revoke,assigned,authorization,public_synthetic
+stale_version,assigned,version,public_synthetic
+idempotence,assigned,idempotence,public_synthetic
+irrelevant_sibling_change,assigned,irrelevant_change,public_synthetic
+continuity_valid,assigned,continuity,public_synthetic
+continuity_invalid,assigned,continuity,public_synthetic
+

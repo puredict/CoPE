@@ -1,0 +1,105 @@
+{
+  "blockers": [
+    "formal atlas cannot contain fixtures; formal atlas must identify source_branch=exp/disturbance-causal-atlas; formal atlas must record a real git commit SHA",
+    "high-level provider is not configured",
+    "CoPE engine readiness failed: CoPEEngineProtocolError: formal run requires a real revalidation validator adapter",
+    "rollout backend is not configured",
+    "atlas=fixture-atlas engine=fd0e2c501342ed7226360ae63c14615a1fc44c65",
+    "missing ['statsmodels']"
+  ],
+  "checks": [
+    {
+      "detail": "256834c7ce32f393f04984d6225ead6d4c0dac37",
+      "name": "git_commit_recorded",
+      "passed": true
+    },
+    {
+      "detail": "clean",
+      "name": "git_worktree_clean",
+      "passed": true
+    },
+    {
+      "detail": "('clean', 'reactive_disturbed', 'structured_relocalize_prompt', 'stage_backtrack_subgoal', 'history_augmented_full_regeneration', 'cope_patch')",
+      "name": "six_condition_order",
+      "passed": true
+    },
+    {
+      "detail": "manual=false reset=false rollback=false",
+      "name": "ranked_privileges_forbidden",
+      "passed": true
+    },
+    {
+      "detail": "oracle",
+      "name": "primary_oracle_event",
+      "passed": true
+    },
+    {
+      "detail": "4",
+      "name": "complete_preregistered_pairs",
+      "passed": true
+    },
+    {
+      "detail": "24",
+      "name": "episode_count",
+      "passed": true
+    },
+    {
+      "detail": "formal atlas cannot contain fixtures; formal atlas must identify source_branch=exp/disturbance-causal-atlas; formal atlas must record a real git commit SHA",
+      "name": "disturbance_atlas",
+      "passed": false
+    },
+    {
+      "detail": "high-level provider is not configured",
+      "name": "high_level_provider",
+      "passed": false
+    },
+    {
+      "detail": "CoPE engine readiness failed: CoPEEngineProtocolError: formal run requires a real revalidation validator adapter",
+      "name": "cope_engine",
+      "passed": false
+    },
+    {
+      "detail": "rollout backend is not configured",
+      "name": "rollout_backend",
+      "passed": false
+    },
+    {
+      "detail": "/home/lijingsu/vla/models/openvla-7b-finetuned-libero-spatial",
+      "name": "checkpoint",
+      "passed": true
+    },
+    {
+      "detail": "2f1d36893462b60a5efe76aed327d9cc713b561e96278bb02d73bf3c96c77974",
+      "name": "checkpoint_digest",
+      "passed": true
+    },
+    {
+      "detail": "atlas=fixture-atlas engine=fd0e2c501342ed7226360ae63c14615a1fc44c65",
+      "name": "external_dependency_commits",
+      "passed": false
+    },
+    {
+      "detail": "missing ['statsmodels']",
+      "name": "analysis_stack",
+      "passed": false
+    }
+  ],
+  "config_hash": "4c17746c497ab9faddb9f1f7720700591980b8c33763603fc634fb9d58ad6bdb",
+  "engine_commit": "fd0e2c501342ed7226360ae63c14615a1fc44c65",
+  "event_source": "oracle",
+  "formal_evidence_eligible": false,
+  "git_commit": "256834c7ce32f393f04984d6225ead6d4c0dac37",
+  "manifest": {
+    "atlas_commit": "fixture-atlas",
+    "digest": "f6472bc4f781a5d2690ce06ff8c78f69923590cbcef6df90ef0511f660f3600e",
+    "fixture": true,
+    "path": "/home/lijingsu/codex-worktrees/fsr-pc-v2-canary/tests/fixtures/disturbance_atlas_v1.fixture.jsonl"
+  },
+  "phase": "pilot",
+  "ready": false,
+  "rollout_authorized": false,
+  "scheduled_episode_count": 24,
+  "schema_version": "cope-main-readiness-v1",
+  "selected_pair_count": 4,
+  "test_only": true
+}

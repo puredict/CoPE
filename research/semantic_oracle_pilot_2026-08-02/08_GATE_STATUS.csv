@@ -1,0 +1,13 @@
+gate,assigned_status,debug_status,evidence,claim
+four_arm_execution,fail,pass,assigned 0/4; debug 4/4,assigned pilot remains NO-GO
+two_pair_identity,fail,pass,assigned 0/2; debug 2/2,debug validates deterministic paired substrate
+authorization_boundary,fail,pass,assigned rejected states25/26; fixed by explicit caller set,root cause confirmed
+replacement_budget,not_reached,pass,both debug arms 186/280 actions,Oracle execution feasibility only
+replacement_goal,not_reached,pass,cream cheese and alphabet soup true; butter false,progress retained in debug
+cancellation_policy_budget,not_reached,pass,both debug arms 0 policy actions,HALT feasibility only
+cancellation_verification,not_reached,pass,both debug arms 30/30 neutral holds,progress retained in debug
+provider_gpu,pass,pass,provider false and CUDA hidden,CPU Oracle only
+states27_49_lock,pass,pass,zero states27--49 indexed,holdout preserved
+focused_tests,pass,pass,14/14 after correction,authorization and empty-evidence guards
+full_regression,pass,pass,355/355 after correction,repository regression
+learned_pilot_authorized,fail,fail,assigned pilot NO-GO,do not advance to learned provider on this evidence

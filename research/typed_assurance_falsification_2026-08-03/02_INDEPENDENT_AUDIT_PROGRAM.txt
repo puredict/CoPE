@@ -1,0 +1,140 @@
+#!/usr/bin/env python3
+"""Independent CSV-only audit for X14; imports no CoPE implementation."""
+
+from __future__ import annotations
+
+import csv
+import hashlib
+import json
+from collections import Counter, defaultdict
+from pathlib import Path
+
+
+ROOT = Path("research/typed_assurance_falsification_2026-08-03")
+RUN = ROOT / "run_v1"
+ARMS = {"cope", "compact_tx", "fsr_pc"}
+
+
+def read_csv(path: Path) -> list[dict[str, str]]:
+    with path.open(newline="", encoding="utf-8") as stream:
+        return list(csv.DictReader(stream))
+
+
+def truth(value: str) -> bool:
+    if value not in {"True", "False"}:
+        raise ValueError(f"non-boolean CSV value: {value!r}")
+    return value == "True"
+
+
+def add(checks: list[dict[str, str]], name: str, passed: bool, observed: object, expected: object) -> None:
+    checks.append({
+        "check": name,
+        "pass": str(bool(passed)),
+        "observed": json.dumps(observed, sort_keys=True, separators=(",", ":")),
+        "expected": json.dumps(expected, sort_keys=True, separators=(",", ":")),
+    })
+
+
+def parse_status(path: Path) -> dict[str, str]:
+    result = {}
+    for line in path.read_text(encoding="utf-8").splitlines():
+        key, value = line.split("=", 1)
+        result[key] = value
+    return result
+
+
+def main() -> int:
+    fault_manifest = read_csv(ROOT / "01_FAULT_MANIFEST.csv")
+    clean = read_csv(RUN / "02_CLEAN_CONTROLS.csv")
+    faults = read_csv(RUN / "03_FAULT_RESULTS.csv")
+    aggregate = read_csv(RUN / "04_AGGREGATE.csv")
+    status = parse_status(RUN / "05_STATUS.txt")
+    checks: list[dict[str, str]] = []
+
+    fault_ids = [row["fault_id"] for row in fault_manifest]
+    add(checks, "manifest_16_unique_faults", len(fault_ids) == 16 and len(set(fault_ids)) == 16, [len(fault_ids), len(set(fault_ids))], [16, 16])
+    add(checks, "clean_36_cells", len(clean) == 36, len(clean), 36)
+    clean_groups: dict[str, list[dict[str, str]]] = defaultdict(list)
+    for row in clean:
+        clean_groups[row["case_id"]].append(row)
+    clean_triplets = len(clean_groups) == 12 and all(len(rows) == 3 and {row["arm"] for row in rows} == ARMS for rows in clean_groups.values())
+    add(checks, "clean_12_tri_arm_controls", clean_triplets, len(clean_groups), 12)
+    clean_ok = all(
+        truth(row["pass"])
+        and truth(row["parser_accepted"])
+        and truth(row["native_materializer_accepted"])
+        and truth(row["common_validator_accepted"])
+        and row["common_validator_calls"] == "1"
+        and not truth(row["proposal_changed"])
+        and not truth(row["candidate_differs_oracle"])
+        and truth(row["caller_state_unchanged"])
+        for row in clean
+    )
+    add(checks, "all_clean_controls_exact_and_valid", clean_ok, sum(truth(row["pass"]) for row in clean), 36)
+
+    fault_groups: dict[str, list[dict[str, str]]] = defaultdict(list)
+    for row in faults:
+        fault_groups[row["fault_id"]].append(row)
+    fault_triplets = set(fault_groups) == set(fault_ids) and all(len(rows) == 3 and {row["arm"] for row in rows} == ARMS for rows in fault_groups.values())
+    add(checks, "fault_16_tri_arm_triplets", len(faults) == 48 and fault_triplets, [len(faults), len(fault_groups)], [48, 16])
+    add(checks, "all_fault_proposals_changed", all(truth(row["proposal_changed"]) and row["proposal_sha256"] != row["canonical_proposal_sha256"] for row in faults), sum(truth(row["proposal_changed"]) for row in faults), 48)
+    add(checks, "full_pipeline_rejects_48_of_48", all(truth(row["full_pipeline_rejected"]) and not truth(row["common_validator_accepted"]) for row in faults), sum(truth(row["full_pipeline_rejected"]) for row in faults), 48)
+    add(checks, "zero_end_to_end_fail_open", not any(truth(row["end_to_end_fail_open"]) for row in faults), sum(truth(row["end_to_end_fail_open"]) for row in faults), 0)
+    add(checks, "zero_uncaught_crash", not any(truth(row["uncaught_crash"]) for row in faults), sum(truth(row["uncaught_crash"]) for row in faults), 0)
+    add(checks, "zero_caller_state_mutation", all(truth(row["caller_state_unchanged"]) for row in faults), sum(not truth(row["caller_state_unchanged"]) for row in faults), 0)
+    add(checks, "all_fault_cells_pass_frozen_gate", all(truth(row["pass"]) for row in faults), sum(truth(row["pass"]) for row in faults), 48)
+
+    recomputed = {}
+    for arm in ARMS:
+        selected = [row for row in faults if row["arm"] == arm]
+        layers = Counter(row["first_rejection_layer"] for row in selected)
+        recomputed[arm] = {
+            "parser_rejected": layers["schema_parser"],
+            "native_representation_guard_rejected": layers["native_representation_guard"],
+            "common_validator_rejected": layers["common_validator"],
+            "accepted": layers["accepted"],
+            "representation_fail_open": sum(truth(row["representation_fail_open"]) for row in selected),
+            "end_to_end_fail_open": sum(truth(row["end_to_end_fail_open"]) for row in selected),
+            "parser_or_matched_guard_rejects": sum(truth(row["parser_or_matched_guard_rejects"]) for row in selected),
+        }
+    aggregate_by_arm = {row["arm"]: row for row in aggregate}
+    aggregate_matches = len(aggregate) == 3 and set(aggregate_by_arm) == ARMS
+    if aggregate_matches:
+        aggregate_matches = all(
+            all(int(aggregate_by_arm[arm][key]) == value for key, value in expected.items())
+            for arm, expected in recomputed.items()
+        )
+    add(checks, "aggregate_recomputes_from_raw", aggregate_matches, recomputed, "exact CSV aggregate")
+    rep = {arm: values["representation_fail_open"] for arm, values in recomputed.items()}
+    add(checks, "representation_fail_open_counts", rep == {"cope": 0, "compact_tx": 7, "fsr_pc": 12}, rep, {"cope": 0, "compact_tx": 7, "fsr_pc": 12})
+    matched = {arm: values["parser_or_matched_guard_rejects"] for arm, values in recomputed.items()}
+    add(checks, "matched_guard_equalizes", matched == {arm: 16 for arm in ARMS}, matched, {arm: 16 for arm in ARMS})
+    add(checks, "native_advantage_but_typing_specificity_fails", status.get("native_typed_assurance_gate") == "True" and status.get("matched_canonical_guard_equalizes") == "True" and status.get("typing_specificity_gate") == "False", [status.get("native_typed_assurance_gate"), status.get("matched_canonical_guard_equalizes"), status.get("typing_specificity_gate")], ["True", "True", "False"])
+    boundary_ok = status.get("learned_provider_calls") == "0" and status.get("gpu_llm_robot_simulator_used") == "false" and status.get("reserved_states_27_49_read") == "false" and status.get("evidence_class") == "offline_deterministic_fault_injection"
+    add(checks, "evidence_and_resource_boundary", boundary_ok, [status.get("learned_provider_calls"), status.get("gpu_llm_robot_simulator_used"), status.get("reserved_states_27_49_read"), status.get("evidence_class")], ["0", "false", "false", "offline_deterministic_fault_injection"])
+    add(checks, "run_decision_pass", status.get("decision") == "PASS", status.get("decision"), "PASS")
+
+    output = ROOT / "02_INDEPENDENT_AUDIT.csv"
+    with output.open("x", newline="", encoding="utf-8") as stream:
+        writer = csv.DictWriter(stream, fieldnames=["check", "pass", "observed", "expected"], lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(checks)
+    passed = sum(row["pass"] == "True" for row in checks)
+    decision = "PASS" if passed == len(checks) else "FAIL"
+    result = {
+        "audit_program_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        "checks_passed": passed,
+        "checks_total": len(checks),
+        "decision": decision,
+        "learned_provider_calls": 0,
+        "fault_cells": len(faults),
+        "end_to_end_fail_open": sum(truth(row["end_to_end_fail_open"]) for row in faults),
+        "reserved_states_read": False,
+    }
+    (ROOT / "02_INDEPENDENT_AUDIT_STATUS.txt").write_text(json.dumps(result, sort_keys=True, separators=(",", ":")) + "\n", encoding="utf-8")
+    print(json.dumps(result, sort_keys=True))
+    return 0 if decision == "PASS" else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

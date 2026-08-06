@@ -1,0 +1,62 @@
+{
+  "trace_schema_version": "1.0",
+  "pair_key": {
+    "suite": "libero_spatial",
+    "task_id": 0,
+    "initial_state_id": 0,
+    "seed": 7
+  },
+  "event_source": "detected",
+  "information_budget": 1,
+  "policy_step_budget": 220,
+  "high_level_call_count": 1,
+  "constraint_state_before": {
+    "state_id": "fixture-state",
+    "revision": 0,
+    "state_hash": "da50c97829b1e7d899b5c47d3c43c15459a68f9ed9b7e3edfd6a637bd57d7568"
+  },
+  "constraint_state_after": {
+    "state_id": "fixture-state",
+    "revision": 1,
+    "state_hash": "bc45ee9195cac2314bc835d20ba3fcb20ba7d93e2599c0d25e61ff68ba5918d7"
+  },
+  "patch_operations": [
+    {
+      "operation_type": "insert",
+      "operation_id": "op-insert-alignment",
+      "slot": {
+        "slot_id": "cup-alignment-v1",
+        "constraint_type": "object_alignment",
+        "content": {
+          "object_id": "cup-1",
+          "relation": "aligned"
+        },
+        "source": "task",
+        "mode": "active",
+        "priority": 50,
+        "created_event_id": "event-1",
+        "last_updated_event_id": "event-1",
+        "parent_slot_id": null,
+        "overrides_slot_ids": [],
+        "lineage": ["cup-alignment-v1"],
+        "evidence_refs": [],
+        "metadata": {}
+      }
+    }
+  ],
+  "slot_id": "cup-alignment-v1",
+  "source": "task",
+  "mode": "active",
+  "priority": 50,
+  "lineage": ["cup-alignment-v1"],
+  "revalidation_result": null,
+  "task_progress": {
+    "stage": "approach",
+    "completed_subgoals": []
+  },
+  "termination_reason": "ongoing",
+  "manual_intervention": false,
+  "git_commit": "570d78333ee977c8ae6de3d97120b23272c4c660",
+  "config_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "checkpoint_id": "openvla-7b-finetuned-libero-spatial"
+}

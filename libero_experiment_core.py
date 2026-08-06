@@ -358,7 +358,36 @@ def load_model_and_processor(cfg: ExperimentConfig) -> tuple[Any, Any, SimpleNam
     model = get_model(model_cfg)
     resolved = resolve_unnorm_key(model, model_cfg.unnorm_key)
     model_cfg.unnorm_key = resolved
-    processor = get_processor(model_cfg)
+    try:
+        processor = get_processor(model_cfg)
+        model_cfg.processor_loader = "openvla_get_processor"
+        model_cfg.processor_dynamic_load_error = None
+    except OSError as exc:
+        # Official fine-tuned LIBERO checkpoints point AutoProcessor at the
+        # base openvla/openvla-7b repository's processing_prismatic.py. On an
+        # offline experiment host, construct the same upstream classes from
+        # the checked-out OpenVLA runtime and the checkpoint's local tokenizer
+        # and image-processor configs instead of reaching the Hub.
+        from prismatic.extern.hf.processing_prismatic import (
+            PrismaticImageProcessor,
+            PrismaticProcessor,
+        )
+        from transformers import AutoTokenizer
+
+        image_processor = PrismaticImageProcessor.from_pretrained(
+            model_cfg.pretrained_checkpoint,
+            local_files_only=True,
+        )
+        tokenizer = AutoTokenizer.from_pretrained(
+            model_cfg.pretrained_checkpoint,
+            local_files_only=True,
+        )
+        processor = PrismaticProcessor(
+            image_processor=image_processor,
+            tokenizer=tokenizer,
+        )
+        model_cfg.processor_loader = "local_upstream_prismatic_processor_v1"
+        model_cfg.processor_dynamic_load_error = f"{type(exc).__name__}: {exc}"
     return model, processor, model_cfg, resolved
 
 

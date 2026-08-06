@@ -1,0 +1,38 @@
+X15 TEST RECORD — 2026-08-03 Asia/Shanghai
+
+Focused tests:
+  tests/test_generic_typed_interpreter.py
+  tests/test_generic_typed_interpreter_experiment.py
+  Result: 8 passed in 0.28s
+
+Static generic-interpreter source audit:
+  forbidden symbols: expected_patch, derive_post_state, validate_and_compile
+  hits: none
+  decision: PASS
+
+Deterministic four-arm campaign:
+  clean controls: 48/48
+  changed faulty proposals: 88/88
+  full-pipeline rejected faults: 88/88
+  representation fail-open, all: cope_exact=0/22, cope_generic=8/22, compact_tx=13/22, fsr_pc=18/22
+  representation fail-open, commission/structure: cope_exact=0/14, cope_generic=0/14, compact_tx=5/14, fsr_pc=10/14
+  representation fail-open, omission: cope_exact=0/8, cope_generic=8/8, compact_tx=8/8, fsr_pc=8/8
+  end-to-end fail-open: 0/88
+  crashes: 0/88
+  caller mutations: 0/88
+  decision: PASS
+
+Independent CSV-only audit:
+  checks: 19/19
+  decision: PASS
+
+Complete repository regression:
+  417 passed in 47.02s
+  exit status: 0
+
+Resource/evidence boundary:
+  provider/LLM calls: 0
+  credentials used: false
+  GPU/robot/simulator used: false
+  reserved states 27--49 read: false
+

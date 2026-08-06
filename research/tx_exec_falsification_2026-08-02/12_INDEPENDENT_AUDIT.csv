@@ -1,0 +1,13 @@
+check,pass,detail
+clean_denominator,True,12
+clean_unique_cases,True,unique case IDs
+clean_semantic_equivalence,True,TX equals independent oracle and materialized CoPE
+clean_directive_manifest,True,directive class equals frozen manifest
+clean_integrity,True,input immutable; receipt complete; one validator call
+fault_denominator,True,8
+fault_atomicity,True,all eight fail closed after one validator call
+replay_denominator,True,12
+replay_hash_equality,True,semantic rows byte-identical
+embedded_audits,True,4/4
+independent_source_ast,True,
+output_file_count,True,7

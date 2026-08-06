@@ -1,0 +1,11 @@
+Task-1 predicate-validator CPU preflight commands
+Date: 2026-08-02 Asia/Shanghai
+
+Focused tests after implementation commit:
+scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python -m pytest -q tests/test_libero_predicate_validator.py tests/test_libero_backend_predicate_snapshot.py
+
+Frozen recorded-summary replay:
+scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python experiments/libero_predicate_validator_replay.py --case-manifest research/predicate_validator_2026-08-02/01_REPLAY_CASES.csv --output-csv research/predicate_validator_2026-08-02/03_ASSIGNED_RESULTS.csv
+
+Full regression:
+scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python -m pytest -q

@@ -1,0 +1,8 @@
+schema_version=provider-byte-sensitivity-v1
+winner_actual_contract_every_call=cope
+winner_hypothetical_contract_cached_once=cope
+winner_proposal_only=cope
+decision=PASS
+claim_scope=corpus_total_utf8_bytes_not_per_case_dominance
+provider_calls=0
+reserved_states_27_49_read=false

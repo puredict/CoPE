@@ -1,0 +1,9 @@
+[run_project_env] Using project-isolated LIBERO/OpenVLA environment for this subprocess only.
+[run_project_env] LD_LIBRARY_PATH is unset here to avoid the broken system CUDA nvJitLink path.
+Traceback (most recent call last):
+  File "/home/lijingsu/codex-worktrees/fsr-pc-v2-canary/tools/summarize_repeated_replacement.py", line 175, in <module>
+    main()
+  File "/home/lijingsu/codex-worktrees/fsr-pc-v2-canary/tools/summarize_repeated_replacement.py", line 34, in main
+    raise ValueError(
+ValueError: raw revision-path mismatch in /home/lijingsu/codex-worktrees/fsr-pc-v2-canary/research/oracle_repeated_replacement/state00_double_patch.csv: expected '1>2>3', found '1>2>2>3'; refusing to normalize raw evidence
+exit_status=1

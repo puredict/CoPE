@@ -1,0 +1,4 @@
+contrast,scope,cope_only,other_only,discordant,raw_p,holm_p
+cope_semantic_vs_fsr_semantic,largest_state,29,0,29,3.725290298461914e-09,3.725290298461914e-09
+cope_semantic_vs_compact_semantic,largest_state,3,0,3,0.25,0.25
+cope_semantic_vs_neutral_typed,largest_state,2,0,2,0.5,0.5

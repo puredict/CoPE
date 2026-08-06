@@ -28,3 +28,7 @@ libero_data/
 
 # Generated local image artifact, kept out without ignoring all PNG files
 synthetic_table.png
+
+# Machine-generated CoPE main-comparison readiness/schedule artifacts
+docs/audit/cope_main_*_readiness.json
+docs/audit/cope_main_*_schedule.jsonl

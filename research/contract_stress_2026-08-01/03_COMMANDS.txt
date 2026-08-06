@@ -1,0 +1,14 @@
+Shared semantic corruption and atomicity audit command record
+Date: 2026-08-01 Asia/Shanghai
+
+Manifest generation (does not call validators):
+scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python research/contract_stress_2026-08-01/02_AUDIT_PROGRAM.txt --manifest-csv research/contract_stress_2026-08-01/01_CORRUPTION_MANIFEST.csv
+
+Result generation (run only after preregistration commit):
+scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python research/contract_stress_2026-08-01/02_AUDIT_PROGRAM.txt --result-csv research/contract_stress_2026-08-01/04_ASSIGNED_RESULTS.csv
+
+Frozen atomicity replay:
+scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python -m pytest -q tests/cope/test_atomicity.py tests/cope/test_counterexamples.py tests/cope/test_property_sequences.py
+
+Full regression:
+scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python -m pytest -q

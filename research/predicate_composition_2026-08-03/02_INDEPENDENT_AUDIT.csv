@@ -1,0 +1,16 @@
+check,pass,observed,expected
+manifest_eight_unique_ordered_groups,True,"[[""M01"",""M02"",""M03"",""M04"",""M05"",""M06"",""M07"",""M08""],[""authorization_noop"",""version_evidence"",""identity_lifecycle"",""goal_consistency"",""progress_preservation"",""action_continuity"",""restoration_entity"",""unaffected_scope""]]","[8,[""authorization_noop"",""version_evidence"",""identity_lifecycle"",""goal_consistency"",""progress_preservation"",""action_continuity"",""restoration_entity"",""unaffected_scope""]]"
+clean_12_of_12,True,12,12
+composition_shape_8_21_35,True,"[64,{""1"":8,""2"":21,""3"":35}]","[64,{""1"":8,""2"":21,""3"":35}]"
+candidate_ids_unique,True,64,64
+all_candidates_noncanonical,True,64,64
+both_validators_reject_64,True,64,64
+exact_group_attribution_64,True,64,64
+caller_state_unchanged_64,True,0,0
+fault_gate_64,True,64,64
+combination_enumeration_complete,True,"[63,true]","[63,true]"
+mutation_occurrence_counts,True,"{""M01"":1,""M02"":22,""M03"":22,""M04"":22,""M05"":22,""M06"":22,""M07"":22,""M08"":22}","{""M01"":1,""M02"":22,""M03"":22,""M04"":22,""M05"":22,""M06"":22,""M07"":22,""M08"":22}"
+all_groups_singleton_ablation_fail_open,True,8,8
+frozen_gates,True,"[""12/12"",""64/64"",""64/64"",""8/8""]","[""12/12"",""64/64"",""64/64"",""8/8""]"
+evidence_resource_boundary,True,"[""0"",""false"",""false"",""offline_white_box_predicate_composition""]","[""0"",""false"",""false"",""offline_white_box_predicate_composition""]"
+run_decision_pass,True,"""PASS""","""PASS"""

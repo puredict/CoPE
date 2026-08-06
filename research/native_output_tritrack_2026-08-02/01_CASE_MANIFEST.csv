@@ -1,0 +1,14 @@
+case_id,phase,family,source
+no_op,smoke,no_op,public_synthetic
+replace_pending_target,smoke,replacement,contract_valid_control_extension
+wrong_source_revoke,smoke,authorization,contract_diagnostic_control_extension
+continuity_invalid,smoke,continuity,public_synthetic
+cancel_sibling,expansion,cancellation,public_synthetic
+activate_override,expansion,override,public_synthetic
+release_override,expansion,release,public_synthetic
+world_change_release,expansion,release_world_change,public_synthetic
+stale_version,expansion,version,public_synthetic
+idempotence,expansion,idempotence,public_synthetic
+irrelevant_sibling_change,expansion,irrelevant_change,public_synthetic
+continuity_valid,expansion,continuity,public_synthetic
+

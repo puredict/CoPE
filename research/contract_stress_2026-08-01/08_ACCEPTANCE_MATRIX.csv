@@ -1,0 +1,14 @@
+gate_id,priority,scope,observed_failed_cases,current_status,required_acceptance,blocks_two_state_pilot
+G01,P0,commitment authority and provenance,8,FAIL,"Reject wrong or missing source, owner, authority, and event provenance in every materialized commitment; main constraints must expose source and priority",yes
+G02,P0,event and physical-truth consistency,1,FAIL,"Reject replacement or cancellation of a pending goal already witnessed complete",yes
+G03,P0,progress ledger,12,FAIL,"Require exactly the witnessed retained milestone; reject missing, empty, false, wrong-ID, or fabricated progress",yes
+G04,P0,evidence version binding,12,FAIL,"Require event ID, current world version, and actual input state revision; reject missing, stale, future, or mismatched evidence",yes
+G05,P0,plan and goal continuity,9,FAIL,"For replacement require exactly the pending replacement step with correct object, target, skill, status, and dependency; reject obsolete or empty plans",yes
+G06,P1,task-relevant entity closure,9,FAIL,"Require unique correctly typed entities for retained, pending, replacement, and target region roles",yes
+G07,P1,commitment semantic grounding,4,FAIL,"Require predicate and canonical object-region grounding for every commitment in replacement and cancellation",yes
+G08,P1,canonical current goal,1,FAIL,"Reject duplicate as well as missing, extra, or stale current-goal atoms",yes
+G09,P0,pending restoration injection,2,FAIL,"Reject restoration work not authorized by the event and common recovery input",yes
+G10,P0,main full-state schema pinning,1,FAIL,"Reject every schema other than the single versioned canonical full-state representation",yes
+G11,P0,main full-state nonempty task state,1,FAIL,"Reject a nonterminal rewrite with zero task commitments",yes
+G12,P1,main full-state lineage completeness,1,FAIL,"Require stable lineage for every rewritten commitment and validate continuity against the previous state",yes
+G13,P0,neutral compiler and prompt isolation,1,FAIL,"Ignore provider controller prose in both arms and compile only the accepted canonical state through one versioned compiler",yes

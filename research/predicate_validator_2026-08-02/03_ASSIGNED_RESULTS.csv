@@ -1,0 +1,11 @@
+case_id,state_id,source_sha256_verified,source_field,source_value,validator_value,expected,provider_contradiction_ignored,test_only,live_packet,reserved_state_consumed,passed
+s0_cream_true,0,True,physical_truth_before_first_patch,True,True,True,True,True,False,False,True
+s0_alphabet_false,0,True,held_in_region_at_event,False,False,False,True,True,False,False,True
+s1_cream_true,1,True,physical_truth_before_first_patch,True,True,True,True,True,False,False,True
+s1_alphabet_false,1,True,held_in_region_at_event,False,False,False,True,True,False,False,True
+s2_cream_true,2,True,physical_truth_before_first_patch,True,True,True,True,True,False,False,True
+s2_alphabet_false,2,True,held_in_region_at_event,False,False,False,True,True,False,False,True
+s3_cream_true,3,True,physical_truth_before_first_patch,True,True,True,True,True,False,False,True
+s3_alphabet_false,3,True,held_in_region_at_event,False,False,False,True,True,False,False,True
+s4_cream_true,4,True,physical_truth_before_first_patch,True,True,True,True,True,False,False,True
+s4_alphabet_false,4,True,held_in_region_at_event,False,False,False,True,True,False,False,True

@@ -1,0 +1,1 @@
+{"arms":5,"event_cells":20,"gate":"PASS","negative_cases_rejected":5,"provider_calls":0,"schema":"occurrence-restoration-gate-v1","sequence_types":2,"simulator_states_indexed":0}

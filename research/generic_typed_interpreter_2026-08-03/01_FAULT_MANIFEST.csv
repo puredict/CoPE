@@ -1,0 +1,23 @@
+fault_id,source_case,mutation_class,threat_axis,semantic_intent
+F01,no_op,structural,commission_or_structure,replace the output object with a scalar
+F02,no_op,structural,commission_or_structure,use an unknown top-level schema version
+F03,no_op,structural,commission_or_structure,remove one required top-level field
+F04,no_op,structural,commission_or_structure,add an unauthorized top-level field
+F05,stale_version,binding,commission_or_structure,bind output to a different input state version
+F06,activate_override,binding,commission_or_structure,bind output to a different event ID
+F07,wrong_source_revoke,authorization,commission_or_structure,apply the rejected cancellation anyway
+F08,idempotence,idempotence,commission_or_structure,reapply the duplicate cancellation effect
+F09,world_change_release,progress,commission_or_structure,drop an achieved progress milestone
+F10,continuity_invalid,continuity,omission,retain the now-conflicting executing action
+F11,cancel_sibling,stable_identity,commission_or_structure,redirect the transition to an unknown commitment ID
+F12,replace_pending_target,duplication,commission_or_structure,duplicate a transition edit or stable record
+F13,replace_pending_target,grounding,commission_or_structure,substitute the replacement with an unobserved package
+F14,irrelevant_sibling_change,omission,omission,omit the required evidence and version transition
+F15,continuity_valid,version,commission_or_structure,advance the output state version twice
+F16,release_override,scope,commission_or_structure,corrupt an unrelated satisfied sibling commitment
+O01,cancel_sibling,omission,omission,omit the entire cancellation operation
+O02,replace_pending_target,omission,omission,omit the entire replacement operation
+O03,activate_override,omission,omission,omit the entire override activation operation
+O04,release_override,omission,omission,omit the entire override release operation
+O05,continuity_invalid,omission,omission,omit the entire conflicting event transition
+O06,continuity_valid,omission,omission,omit acknowledgement while an action remains validly executing

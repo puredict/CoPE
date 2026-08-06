@@ -1,0 +1,13 @@
+case_id,phase,family,source,expected_authorized,expected_directive_class
+no_op,assigned,no_op,public_synthetic,yes,PLAN
+cancel_sibling,assigned,cancellation,public_synthetic,yes,HALT
+replace_pending_target,assigned,replacement,public_synthetic,yes,PLAN
+activate_override,assigned,override,public_synthetic,yes,HALT
+release_override,assigned,release,public_synthetic,yes,PLAN
+world_change_release,assigned,release_world_change,public_synthetic,yes,PLAN
+wrong_source_revoke,assigned,authorization,public_synthetic,no,PLAN
+stale_version,assigned,version,public_synthetic,no,PLAN
+idempotence,assigned,idempotence,public_synthetic,no,PLAN
+irrelevant_sibling_change,assigned,irrelevant_change,public_synthetic,yes,PLAN
+continuity_valid,assigned,continuity,public_synthetic,yes,CONTINUE
+continuity_invalid,assigned,continuity,public_synthetic,yes,CANCEL

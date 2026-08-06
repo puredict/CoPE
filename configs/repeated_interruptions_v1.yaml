@@ -1,0 +1,39 @@
+schema_version: repeated_interruptions_config_v1
+manifest_version: repeated_interruptions_v1
+task_suite: libero_10
+task_ids: [0, 1, 4, 8]
+state_ids: [0, 1, 2, 3, 4]
+seeds: [11, 29, 47]
+interruption_counts: [0, 1, 2, 3]
+methods:
+  - history_augmented_full_regeneration
+  - cope_patch
+policy_step_budget: 220
+high_level_call_budget: 4
+camera_resolution: 256
+checkpoint: /home/lijingsu/vla/models/openvla-7b-finetuned-libero-10
+adapters:
+  # These remain deliberately unset until a production repeated-rollout
+  # binding supplies the formal RecoveryAdapter protocol. The dependency SHA
+  # alone is not a factory implementation.
+  history_augmented_full_regeneration: null
+  cope_patch: null
+dependency_commits:
+  method/cope-state-semantics: fd0e2c501342ed7226360ae63c14615a1fc44c65
+  main_experiment_adapters: e9d19ec358b98c1250c4a3144a987b1aa16ab634
+formal_run_requirements:
+  clean_calibration_min_success_rate: 0.60
+  clean_calibration_states_per_task: 5
+  no_fake_or_scripted_provider: true
+  exact_dependency_commit_required: true
+  manual_intervention_excluded: true
+  timeout_is_not_success: true
+  shared_executor_and_safety_shield: true
+information_budget:
+  event_payload_visibility: identical_full_event_information
+  simulator_truth_visibility: scoring_and_injection_only
+  image_observation: fresh_post_event
+output:
+  resume_completed_episodes: true
+  atomic_episode_json: true
+  record_progress_every_policy_step: true

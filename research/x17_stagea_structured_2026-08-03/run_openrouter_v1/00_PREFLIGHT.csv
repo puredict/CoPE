@@ -1,0 +1,13 @@
+case_id,family,mode,arm_cells,fairness_pass,normalized_request_sha256,order
+X16-C01,cancellation,plain,4,True,848fa17eca3e33f9ce396751baafe91314050f9aba2e56ca3229c817b36f58b8,"[""cope"",""neutral_typed"",""compact_tx"",""fsr_pc""]"
+X16-C01,cancellation,structured,4,True,3a4771ebb06835e70d1ea94bbabec086b13e3a6f59f3d881a9a70dc7a7ab51a5,"[""cope"",""neutral_typed"",""compact_tx"",""fsr_pc""]"
+X16-O01,override,plain,4,True,ff4e9b2beef986379eb3836fa8931f416226ac4ab7be75b114f08155ef688add,"[""neutral_typed"",""compact_tx"",""fsr_pc"",""cope""]"
+X16-O01,override,structured,4,True,1abd600cee2a0b92bf88dec710cf02e3e08bddc626d77da1df16e9d06ebb5f5c,"[""neutral_typed"",""compact_tx"",""fsr_pc"",""cope""]"
+X16-R01,release,plain,4,True,ece8dbf163ffe11ba1d77494430d3dd448528601494cf98f19352430986ad1e4,"[""compact_tx"",""fsr_pc"",""cope"",""neutral_typed""]"
+X16-R01,release,structured,4,True,b231a85eb5552084675a2f7f8318310af92dcdef591dffed1ac0d906e079ba94,"[""compact_tx"",""fsr_pc"",""cope"",""neutral_typed""]"
+X16-W01,world-change release,plain,4,True,5d0789c2da24ce1a544bf8e37f18549eba9755c2ff6aa4e9e931de4b0d3101e4,"[""fsr_pc"",""cope"",""neutral_typed"",""compact_tx""]"
+X16-W01,world-change release,structured,4,True,4a1b1859e4d12d7f570b05bbe74a3d318043dbbe32d117a22f7dd98b3dd924fd,"[""fsr_pc"",""cope"",""neutral_typed"",""compact_tx""]"
+X16-P01,replacement,plain,4,True,003b787dcdaf0b44449a3ab786fcadeee53e56075a2d6e8b13abd129dfeac482,"[""cope"",""neutral_typed"",""compact_tx"",""fsr_pc""]"
+X16-P01,replacement,structured,4,True,818261743ee6b8e6b5c8f8aea6711da0d9681ba7b2fd6150995afa89b6c9f28d,"[""cope"",""neutral_typed"",""compact_tx"",""fsr_pc""]"
+X16-CC01,continuity conflict,plain,4,True,3c41b23242f9b96e46208aba93f3f71bb5c9097c084b56f74c7c9022d3c07548,"[""neutral_typed"",""compact_tx"",""fsr_pc"",""cope""]"
+X16-CC01,continuity conflict,structured,4,True,23612ec61cac8168ec5edcdca6b2511a5afd075c7f9df89a6196275f675013e8,"[""neutral_typed"",""compact_tx"",""fsr_pc"",""cope""]"

@@ -1,0 +1,4 @@
+arm,cases,contract_bytes,median_wire_request_bytes,median_oracle_proposal_bytes,median_request_plus_oracle_bytes,sum_wire_request_bytes,sum_oracle_proposal_bytes,sum_request_plus_oracle_bytes
+cope,12,873,4857.5,166.5,5001.5,58972,2047,61019
+compact_tx,12,1512,5472.5,431.0,5881.0,66352,7091,73443
+fsr_pc,12,711,4634.5,1280.5,5906.0,56296,16837,73133

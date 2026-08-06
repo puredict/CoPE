@@ -1,0 +1,10 @@
+arm,position,assigned,correct
+cope,0,20,9
+cope,1,20,9
+cope,2,20,10
+compact_tx,0,20,8
+compact_tx,1,20,5
+compact_tx,2,20,5
+fsr_pc,0,20,1
+fsr_pc,1,20,3
+fsr_pc,2,20,1

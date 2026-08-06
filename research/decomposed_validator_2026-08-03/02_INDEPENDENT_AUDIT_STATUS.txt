@@ -1,0 +1,1 @@
+{"audit_program_sha256":"5f5e1afb74d55cddfcf291b660ca452f50ecb377c737a612fa30e372c474cdfa","checks_passed":17,"checks_total":17,"decision":"PASS","decomposed_rejected":39,"learned_provider_calls":0,"materialized_fault_candidates":39,"reserved_states_read":false}

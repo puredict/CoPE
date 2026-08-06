@@ -1,0 +1,9 @@
+mutation_id,predicate_group,source_case,deterministic_edit
+M01,authorization_noop,wrong_source_revoke,change evidence event ID despite rejected event
+M02,version_evidence,replace_pending_target,advance state version one extra step
+M03,identity_lifecycle,replace_pending_target,restore superseded target lifecycle to active
+M04,goal_consistency,replace_pending_target,append an unrelated goal atom
+M05,progress_preservation,replace_pending_target,drop the preserved progress ledger
+M06,action_continuity,replace_pending_target,drop the required pending plan
+M07,restoration_entity,replace_pending_target,remove the replacement object entity
+M08,unaffected_scope,replace_pending_target,cancel an unrelated satisfied sibling commitment

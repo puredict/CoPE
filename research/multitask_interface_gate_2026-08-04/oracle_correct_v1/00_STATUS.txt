@@ -1,0 +1,1 @@
+{"assigned_cells":16,"gate":"PASS","passed_cells":16,"provider_calls":0,"runtime_git_commit":"db0329d01a33c1f596f90452fa39c47a02efbfe9","schema":"cope-multitask-interface-gate-result-v1","simulator_states_indexed":0,"task1_states_25_49_indexed":false}

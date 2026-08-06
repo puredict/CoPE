@@ -1,0 +1,41 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import csv
+import json
+import sys
+from collections import defaultdict
+from pathlib import Path
+
+
+run = Path(sys.argv[1])
+out = Path(sys.argv[2])
+rows = list(csv.DictReader((run / "04_PER_SAMPLE_RESULTS.csv").open(newline="", encoding="utf-8")))
+fair = list(csv.DictReader((run / "03_FAIRNESS_INPUT_HASH_AUDIT.csv").open(newline="", encoding="utf-8")))
+status = json.loads((run / "07_RUN_STATUS.txt").read_text(encoding="utf-8"))
+by_arm = {arm: [row for row in rows if row["arm"] == arm] for arm in ("cope", "compact_tx", "fsr_pc")}
+by_case = defaultdict(dict)
+for row in rows:
+    by_case[row["case_id"]][row["arm"]] = row
+checks = [
+    ("assigned_rows_36", len(rows) == 36, str(len(rows))),
+    ("assigned_triplets_12", status["assigned_triplets"] == 12, str(status["assigned_triplets"])),
+    ("fairness_12_of_12", len(fair) == 12 and all(r["fairness_pass"] == "True" for r in fair), str(len(fair))),
+    ("reasoning_none_status", status["reasoning_effort"] == "none", status["reasoning_effort"]),
+    ("reasoning_none_rows", all(r["reasoning_effort"] == "none" for r in rows), ""),
+    ("smoke_pass_and_expanded", status["smoke_gate_pass"] is True and status["expanded"] is True, ""),
+    ("provider_ok_36_of_36", all(r["provider_status"] == "ok" for r in rows), ""),
+    ("cope_correct_7_of_12", sum(r["semantic_correct"] == "True" for r in by_arm["cope"]) == 7, ""),
+    ("compact_correct_3_of_12", sum(r["semantic_correct"] == "True" for r in by_arm["compact_tx"]) == 3, ""),
+    ("fsr_correct_0_of_12", sum(r["semantic_correct"] == "True" for r in by_arm["fsr_pc"]) == 0, ""),
+    ("cope_only_wins_5", sum(x["cope"]["semantic_correct"] == "True" and x["compact_tx"]["semantic_correct"] != "True" for x in by_case.values()) == 5, ""),
+    ("compact_only_wins_1", sum(x["compact_tx"]["semantic_correct"] == "True" and x["cope"]["semantic_correct"] != "True" for x in by_case.values()) == 1, ""),
+    ("response_hashes_present_unique", len({r["response_sha256"] for r in rows}) == 36, ""),
+    ("credential_not_logged_flag", status["credential_logged"] is False, str(status["credential_logged"])),
+]
+with out.open("x", newline="", encoding="utf-8") as stream:
+    writer = csv.writer(stream, lineterminator="\n")
+    writer.writerow(["check", "pass", "detail"])
+    writer.writerows(checks)
+print(f"checks_pass={sum(item[1] for item in checks)}/{len(checks)}")
+raise SystemExit(0 if all(item[1] for item in checks) else 2)

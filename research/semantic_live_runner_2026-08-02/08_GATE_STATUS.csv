@@ -1,0 +1,14 @@
+gate,status,evidence,claim_scope
+assigned_live_cases,pass,04_ASSIGNED_RESULTS.csv:10/10 passed,live CPU wiring only
+production_live_packets,pass,10/10 source_kind=live_libero_eval_predicate and test_only=False,X03 live production path
+production_validator,pass,10/10 validator_is_fake=False done=True pending=False,atomic task-1 predicates
+byte_identical_recovery_input,pass,10/10 native and CoPE input hashes equal,paired high-level input fairness
+independent_materialization,pass,10/10 native/materialized full-state-v2 hashes equal,X04 semantic convergence
+shared_validator_compiler,pass,10/10 canonical states and directives equal,event-bound shared path
+semantic_nonmutation,pass,10/10 qpos/qvel and controller action counts unchanged,no post-event execution
+provider_gpu_reserve_lock,pass,provider_called=False; CUDA hidden; states25/26 not indexed,oracle CPU preflight
+x07_independent_preflight,pass,06_X07_INDEPENDENT_REPLAY.csv:4/4,existing materializer gate
+x07_corruption_audit,pass,07_X07_CONTRACT_REPLAY.csv:123/123 expected decisions,existing corruption gate
+atomicity_regression,pass,67/67 focused atomicity tests,typed patch engine
+full_repository_regression,pass,349/349 tests,repository regression
+x04_decision,pass,all frozen gates passed,not learned recovery performance

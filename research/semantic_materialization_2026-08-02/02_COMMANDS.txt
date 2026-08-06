@@ -1,0 +1,14 @@
+Full-state-v2 materialization preflight command record
+Date: 2026-08-02 Asia/Shanghai
+
+CPU preflight after implementation commit:
+scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python experiments/semantic_materialization_preflight.py --case-manifest research/semantic_materialization_2026-08-02/01_PREFLIGHT_CASES.csv --output-csv research/semantic_materialization_2026-08-02/03_ASSIGNED_RESULTS.csv
+
+Frozen corruption replay:
+scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python research/contract_stress_2026-08-01/02_AUDIT_PROGRAM.txt --result-csv POSTFIX_REPLAY.csv
+
+Atomicity replay:
+scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python -m pytest -q tests/cope/test_atomicity.py tests/cope/test_counterexamples.py tests/cope/test_property_sequences.py
+
+Full regression:
+scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python -m pytest -q

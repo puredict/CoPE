@@ -1,0 +1,26 @@
+{
+  "schema_version": "auditability.v1",
+  "formal_target_episodes": 300,
+  "questions_per_episode": 6,
+  "human_study_minimum_episodes": 120,
+  "ratings_per_package": 3,
+  "seed": 20260724,
+  "bootstrap_iterations": 2000,
+  "failure_layers": [
+    "perception",
+    "event_detection",
+    "full_regeneration",
+    "patch_generation",
+    "schema_parsing",
+    "validation",
+    "planning",
+    "low_level_control",
+    "termination_accounting"
+  ],
+  "preregistered_thresholds": {
+    "typed_patch_qa_accuracy": 0.9,
+    "human_time_reduction": 0.25,
+    "corruption_recall": 0.95
+  },
+  "status": "formal_data_pending"
+}

@@ -1,0 +1,14 @@
+schema_version=x14-fresh60-oracle-qualification-v1
+cases=60
+arm_cells=180
+unique_input_hashes=60/60
+oracle_state_equal=180/180
+validator_pass=180/180
+fairness_pass=180/180
+first_position_counts={'cope': 20, 'compact_tx': 20, 'fsr_pc': 20}
+smoke_first_position_counts={'cope': 2, 'fsr_pc': 2, 'compact_tx': 2}
+maximum_common_input_bytes=8015
+decision=PASS
+provider_calls=0
+gpu_robot_simulator_used=false
+reserved_states_27_49_read=false

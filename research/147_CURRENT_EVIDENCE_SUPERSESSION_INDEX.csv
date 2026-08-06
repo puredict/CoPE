@@ -1,0 +1,21 @@
+artifact,status,current_interpretation,superseded_or_extended_by
+84_NOVELTY_COLLISION_AUDIT.md,PARTIALLY_SUPERSEDED,"Broad local-repair rejection remains valid; its proposed transaction/assurance novelty nucleus is no longer safe after Tang et al. 2026",129_OCCURRENCE_NOVELTY_BOUNDARY.md
+87_PLANAR_FULLTEXT_DIFFERENTIATION.md,CURRENT,"PLanAR contrast and empirical-bar conclusion remain valid",129_OCCURRENCE_NOVELTY_BOUNDARY.md
+92_TYPED_OPERATION_ASSURANCE_EVIDENCE_DECISION.md,CURRENT,"Typed operations reduce tested commission surface; assurance remains necessary; no learned advantage yet",145_OCCURRENCE_ORACLE_CONFOUND_AUDIT.md
+119_FORMAL_V2_RUNNER_READINESS_AUDIT.md,EXTENDED,"Runner design remains frozen; recovery and artifact checks were subsequently strengthened","122_FORMAL_V2_RECOVERY_IMPLEMENTATION_AUDIT.md;142_FORMAL_V2_ANALYZER_ADVERSARIAL_AUDIT.md;146_FORMAL_CSV_JOURNAL_BINDING_AUDIT.md"
+124_OCCURRENCE_RESTORATION_GATE_RESULT.md,CURRENT_MECHANISM_ONLY,"Five carriers express occurrence semantics symbolically; this is not learned or embodied evidence","128_TASK7_STATES1_9_STOP_RESULT.md;130_OCCURRENCE_LEARNED_FORMAL_PREREG.md"
+126_TASK7_OCCURRENCE_STATE0_RESULT.md,SUPERSEDED_FOR_GENERALIZATION,"State0 canary remains a valid local PASS but cannot support physical generalization",128_TASK7_STATES1_9_STOP_RESULT.md
+128_TASK7_STATES1_9_STOP_RESULT.md,CURRENT,"State2 restore failed and states3-49 were correctly stopped",136_REVIEWER_SIMULATION_POST_OCCURRENCE.md
+129_OCCURRENCE_NOVELTY_BOUNDARY.md,CURRENT,"Occurrence identity is prior art; residual is a learned robotics interface/benchmark question",148_PAPER_CLAIM_STACK_CURRENT.md
+131_OCCURRENCE_FORMAL_PREFLIGHT_RESULT.md,CURRENT_PREFLIGHT,"Oracle/request equivalence remains valid; it is not a learned outcome","132_OCCURRENCE_RUNNER_READINESS_AUDIT.md;138_OCCURRENCE_ANALYZER_ADVERSARIAL_AUDIT.md;146_FORMAL_CSV_JOURNAL_BINDING_AUDIT.md"
+132_OCCURRENCE_RUNNER_READINESS_AUDIT.md,EXTENDED,"Zero-retry runner remains ready; analyzer and journal provenance are stronger now","138_OCCURRENCE_ANALYZER_ADVERSARIAL_AUDIT.md;146_FORMAL_CSV_JOURNAL_BINDING_AUDIT.md"
+134_PROVIDER_SMOKE_READINESS_RESULT.md,EXTENDED,"Live smoke remains credential-blocked; implementation is now crash-safe",135_CRITICAL_EXPERIMENT_LAUNCH_DECISION.md
+135_CRITICAL_EXPERIMENT_LAUNCH_DECISION.md,CURRENT,"Smoke then occurrence then conditional embodied order remains authoritative",143_END_TO_END_FORMAL_LAUNCH_CHECKLIST.md
+136_REVIEWER_SIMULATION_POST_OCCURRENCE.md,CURRENT,"Weak reject/HOLD before learned outcomes",148_PAPER_CLAIM_STACK_CURRENT.md
+138_OCCURRENCE_ANALYZER_ADVERSARIAL_AUDIT.md,EXTENDED,"Evidence-shape checks remain; CSV is additionally bound to durable ledger chain",146_FORMAL_CSV_JOURNAL_BINDING_AUDIT.md
+142_FORMAL_V2_ANALYZER_ADVERSARIAL_AUDIT.md,EXTENDED,"Embodied evidence-shape checks remain; CSV is additionally bound to durable ledger chain",146_FORMAL_CSV_JOURNAL_BINDING_AUDIT.md
+143_END_TO_END_FORMAL_LAUNCH_CHECKLIST.md,CURRENT,"Authoritative execution commands and hard stops",NONE
+145_OCCURRENCE_ORACLE_CONFOUND_AUDIT.md,CURRENT,"No CoPE-only oracle guard; exact-contract-conformance interpretation is mandatory",NONE
+146_FORMAL_CSV_JOURNAL_BINDING_AUDIT.md,CURRENT,"Analysis provenance binds intent-response-result-journal-CSV",NONE
+CoPE_AgentChord_Branch_Compilation_and_Unanticipated_Interruption_Stress_Test_2026-07-30.md,REINTEGRATED,"Prepared forward-moving recovery graphs already occupy structured constraint recovery without online full replanning; occurrence-sensitive learned exact editing remains a paper-text non-overlap",162_AGENTCHORD_NEAREST_NEIGHBOR_AUDIT.md
+162_AGENTCHORD_NEAREST_NEIGHBOR_AUDIT.md,CURRENT,"AgentChord blocks broad structured-graph/constraint/local-progress/no-replan novelty and requires a native or faithful abstract closest-system baseline for an embodied submission",NONE

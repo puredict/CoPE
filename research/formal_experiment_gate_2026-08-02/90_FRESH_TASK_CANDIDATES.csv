@@ -1,0 +1,8 @@
+task_suite,task_id,candidate_role,static_exposure,physical_inventory,novel_semantic_axis,decision,reason
+libero_10,0,existing_formal_identity,exposed,qualified,"object replacement in one basket",retain_existing_only,"formal 40x4x2 design already frozen; not independent task replication"
+libero_10,1,possible_secondary_replication,exposed,"four or more replacement objects available","longer object-substitution chain",do_not_call_fresh,"states 25-32 and earlier task1 experiments are already exposed; state33 and states34-49 remain forbidden"
+libero_10,4,alternate_plate_task,exposed,"two goal mugs plus one spare mug","object replacement across two plates",reject_as_fresh,"used by repeated-interruption manifests and progress definitions"
+libero_10,6,relational_development,unexposed,"two goal objects; one spare mug; one unused table region","same-object target change after an object replacement",provisionally_select,"zero unique-name references in repository and a stronger full-atom identity test; on-predicate controller gap must be qualified"
+libero_10,7,alternate_basket_task,exposed,"task inventory previously opened; proposed butter replacement absent","object substitution",reject,"prior task7 inventory report and physical impossibility of the old four-object sequence"
+libero_10,8,alternate_stove_task,exposed,"only two moka pots and no third replacement object","shared-target two-object commitments",reject,"insufficient replacement inventory and already present in progress/repeated-interruption definitions"
+

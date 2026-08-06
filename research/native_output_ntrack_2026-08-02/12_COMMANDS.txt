@@ -1,0 +1,13 @@
+Authoritative command record
+Date: 2026-08-02 Asia/Shanghai
+
+Focused tests:
+scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python -m pytest -q tests/test_native_output_ntrack.py tests/test_openai_compatible_provider.py
+
+Full regression:
+scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python -m pytest -q
+
+Credential-blocked fairness preflight:
+scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python experiments/native_output_ntrack.py --manifest research/native_output_ntrack_2026-08-02/01_CASE_MANIFEST.csv --output-dir research/native_output_ntrack_2026-08-02/run_20260802_credential_preflight_v2 --provider openrouter --endpoint https://openrouter.ai/api/v1/chat/completions --api-key-env OPENROUTER_API_KEY --model qwen/qwen3.5-flash-02-23 --temperature 0 --seed 20260802 --max-tokens 4096 --timeout 90
+
+Expected preflight exit: 3 (credential_unavailable, zero provider calls).

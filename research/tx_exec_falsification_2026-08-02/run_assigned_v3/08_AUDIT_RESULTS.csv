@@ -1,0 +1,5 @@
+audit,checked_symbols,forbidden_symbols_used,pass
+tx_exec_forbidden_constructor_isolation,ConstraintStateEngine;PatchOutput;apply_patch;derive_post_state;expected_patch;materialize_patch,,True
+all_clean_receipts_complete,event;actor;authority;versions;addresses;hashes;validation;rollback,,True
+all_faults_rollback,published;rolled_back;after_hash;pre_state,,True
+reserved_states_27_49_read,none,,True

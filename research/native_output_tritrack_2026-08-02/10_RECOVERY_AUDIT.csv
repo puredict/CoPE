@@ -1,0 +1,14 @@
+check,pass,detail
+assigned_rows_12,True,12
+assigned_triplets_4,True,4
+fairness_4_of_4,True,4
+smoke_gate_failed,True,False
+not_expanded,True,False
+no_configuration_block,True,
+no_outage_or_timeout,True,
+cope_correct_2_of_4,True,
+compact_correct_2_of_4,True,
+fsr_correct_0_of_4,True,
+fsr_budget_violation_4_of_4,True,
+response_hashes_present,True,
+credential_not_logged_flag,True,False

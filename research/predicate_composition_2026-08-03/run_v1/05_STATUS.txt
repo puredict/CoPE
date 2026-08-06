@@ -1,0 +1,15 @@
+schema_version=predicate-composition-status-v1
+clean_pass=12/12
+fault_candidates_changed=64/64
+decomposed_rejected=64/64
+exact_rejected=64/64
+exact_attribution=64/64
+size1_candidates=8/8
+size2_candidates=21/21
+size3_candidates=35/35
+singleton_ablation_fail_open=8/8
+decision=PASS
+evidence_class=offline_white_box_predicate_composition
+learned_provider_calls=0
+gpu_llm_robot_simulator_used=false
+reserved_states_27_49_read=false

@@ -1,0 +1,3 @@
+pair_id,task_suite,task_id,state_id,event_type,stable_steps,deadline,replacement_object,post_event_action_budget,hold_steps,status
+pilot_task01_state25_replace,libero_10,1,25,replace_pending_goal,5,300,alphabet_soup_1,280,0,reserved_uninspected
+pilot_task01_state26_cancel,libero_10,1,26,cancel_pending_goal,5,300,,0,30,reserved_uninspected

@@ -1,0 +1,41 @@
+X13 TEST RECORD — 2026-08-02 Asia/Shanghai
+
+Focused suite after tri-arm implementation:
+  tests/test_native_output_tritrack.py
+  tests/test_openai_compatible_provider.py
+  tests/test_compact_tx.py
+Result: 26 passed in 0.27s
+
+Complete repository regression, attempt 1:
+  Progress observed through 17%, then SSH connection closed by remote host.
+  Exit status from SSH: 255.
+  Classification: transport interruption; no pytest conclusion claimed.
+
+Complete repository regression, fresh attempt 2:
+  406 passed in 46.62s
+  Exit status: 0
+
+Mocked canonical transport control:
+  assigned triplets: 12
+  assigned cells: 36
+  passed cells: 36
+  mocked transport calls: 36
+  learned provider calls: 0
+  first-position counts: cope=4, compact_tx=4, fsr_pc=4
+  GPU/simulator/reserved states: false/false/false
+  decision: PASS
+
+Credential preflight:
+  assigned triplets: 12
+  assigned cells: 36
+  configuration blocked: 36
+  provider calls: 0
+  method evaluable: 0
+  fairness: 12/12
+  expected process exit: 3
+  observed process exit: 3
+
+Independent CSV-only audit:
+  15/15 checks passed
+  decision: PASS
+

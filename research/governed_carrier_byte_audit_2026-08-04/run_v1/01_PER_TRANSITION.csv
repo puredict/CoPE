@@ -1,0 +1,41 @@
+case_id,event_index,sequence_type,arm,proposal_bytes,contract_bytes,json_leaf_count,directive,canonical_equivalent,proposal_to_fsr_ratio
+task0_forward_replace_cancel,1,replace_then_cancel,cope,302,588,6,"place_in(cream_cheese_1, basket_1_contain_region)",True,0.13566936208445643
+task0_forward_replace_cancel,1,replace_then_cancel,neutral_patch,1680,849,45,"place_in(cream_cheese_1, basket_1_contain_region)",True,0.7547169811320755
+task0_forward_replace_cancel,1,replace_then_cancel,governed_delta,1895,1147,47,"place_in(cream_cheese_1, basket_1_contain_region)",True,0.8513027852650494
+task0_forward_replace_cancel,1,replace_then_cancel,fsr_pc,2226,584,62,"place_in(cream_cheese_1, basket_1_contain_region)",True,1.0
+task0_forward_replace_cancel,1,replace_then_cancel,full_replan,331,691,8,"place_in(cream_cheese_1, basket_1_contain_region)",True,0.1486972147349506
+task0_forward_replace_cancel,2,replace_then_cancel,cope,234,588,5,HALT,True,0.12400635930047695
+task0_forward_replace_cancel,2,replace_then_cancel,neutral_patch,593,849,16,HALT,True,0.3142554319024907
+task0_forward_replace_cancel,2,replace_then_cancel,governed_delta,944,1147,21,HALT,True,0.5002649708532061
+task0_forward_replace_cancel,2,replace_then_cancel,fsr_pc,1887,584,50,HALT,True,1.0
+task0_forward_replace_cancel,2,replace_then_cancel,full_replan,364,691,8,HALT,True,0.19289878113407524
+task0_forward_replace_replace,1,replace_then_replace,cope,304,588,6,"place_in(cream_cheese_1, basket_1_contain_region)",True,0.13427561837455831
+task0_forward_replace_replace,1,replace_then_replace,neutral_patch,1683,849,45,"place_in(cream_cheese_1, basket_1_contain_region)",True,0.7433745583038869
+task0_forward_replace_replace,1,replace_then_replace,governed_delta,1899,1147,47,"place_in(cream_cheese_1, basket_1_contain_region)",True,0.8387809187279152
+task0_forward_replace_replace,1,replace_then_replace,fsr_pc,2264,584,64,"place_in(cream_cheese_1, basket_1_contain_region)",True,1.0
+task0_forward_replace_replace,1,replace_then_replace,full_replan,332,691,8,"place_in(cream_cheese_1, basket_1_contain_region)",True,0.14664310954063603
+task0_forward_replace_replace,2,replace_then_replace,cope,298,588,6,"place_in(butter_1, basket_1_contain_region)",True,0.10781476121562952
+task0_forward_replace_replace,2,replace_then_replace,neutral_patch,1635,849,45,"place_in(butter_1, basket_1_contain_region)",True,0.591534008683068
+task0_forward_replace_replace,2,replace_then_replace,governed_delta,1891,1147,48,"place_in(butter_1, basket_1_contain_region)",True,0.6841534008683068
+task0_forward_replace_replace,2,replace_then_replace,fsr_pc,2764,584,77,"place_in(butter_1, basket_1_contain_region)",True,1.0
+task0_forward_replace_replace,2,replace_then_replace,full_replan,375,691,9,"place_in(butter_1, basket_1_contain_region)",True,0.13567293777134587
+task0_reverse_replace_cancel,1,replace_then_cancel,cope,303,588,6,"place_in(cream_cheese_1, basket_1_contain_region)",True,0.13624100719424462
+task0_reverse_replace_cancel,1,replace_then_cancel,neutral_patch,1682,849,45,"place_in(cream_cheese_1, basket_1_contain_region)",True,0.7562949640287769
+task0_reverse_replace_cancel,1,replace_then_cancel,governed_delta,1898,1147,47,"place_in(cream_cheese_1, basket_1_contain_region)",True,0.8534172661870504
+task0_reverse_replace_cancel,1,replace_then_cancel,fsr_pc,2224,584,62,"place_in(cream_cheese_1, basket_1_contain_region)",True,1.0
+task0_reverse_replace_cancel,1,replace_then_cancel,full_replan,331,691,8,"place_in(cream_cheese_1, basket_1_contain_region)",True,0.14883093525179855
+task0_reverse_replace_cancel,2,replace_then_cancel,cope,234,588,5,HALT,True,0.12407211028632026
+task0_reverse_replace_cancel,2,replace_then_cancel,neutral_patch,592,849,16,HALT,True,0.3138918345705196
+task0_reverse_replace_cancel,2,replace_then_cancel,governed_delta,944,1147,21,HALT,True,0.5005302226935313
+task0_reverse_replace_cancel,2,replace_then_cancel,fsr_pc,1886,584,50,HALT,True,1.0
+task0_reverse_replace_cancel,2,replace_then_cancel,full_replan,364,691,8,HALT,True,0.19300106044538706
+task0_reverse_replace_replace,1,replace_then_replace,cope,305,588,6,"place_in(cream_cheese_1, basket_1_contain_region)",True,0.1348364279398762
+task0_reverse_replace_replace,1,replace_then_replace,neutral_patch,1685,849,45,"place_in(cream_cheese_1, basket_1_contain_region)",True,0.7449160035366932
+task0_reverse_replace_replace,1,replace_then_replace,governed_delta,1902,1147,47,"place_in(cream_cheese_1, basket_1_contain_region)",True,0.8408488063660478
+task0_reverse_replace_replace,1,replace_then_replace,fsr_pc,2262,584,64,"place_in(cream_cheese_1, basket_1_contain_region)",True,1.0
+task0_reverse_replace_replace,1,replace_then_replace,full_replan,332,691,8,"place_in(cream_cheese_1, basket_1_contain_region)",True,0.14677276746242263
+task0_reverse_replace_replace,2,replace_then_replace,cope,298,588,6,"place_in(butter_1, basket_1_contain_region)",True,0.10789283128167994
+task0_reverse_replace_replace,2,replace_then_replace,neutral_patch,1633,849,45,"place_in(butter_1, basket_1_contain_region)",True,0.5912382331643736
+task0_reverse_replace_replace,2,replace_then_replace,governed_delta,1890,1147,48,"place_in(butter_1, basket_1_contain_region)",True,0.6842867487328023
+task0_reverse_replace_replace,2,replace_then_replace,fsr_pc,2762,584,77,"place_in(butter_1, basket_1_contain_region)",True,1.0
+task0_reverse_replace_replace,2,replace_then_replace,full_replan,375,691,9,"place_in(butter_1, basket_1_contain_region)",True,0.13577118030412744

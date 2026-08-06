@@ -1,0 +1,15 @@
+check,pass,detail
+assigned_rows_36,True,36
+assigned_triplets_12,True,12
+fairness_12_of_12,True,12
+reasoning_none_status,True,none
+reasoning_none_rows,True,
+smoke_pass_and_expanded,True,
+provider_ok_36_of_36,True,
+cope_correct_7_of_12,True,
+compact_correct_3_of_12,True,
+fsr_correct_0_of_12,True,
+cope_only_wins_5,True,
+compact_only_wins_1,True,
+response_hashes_present_unique,True,
+credential_not_logged_flag,True,False

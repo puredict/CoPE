@@ -1,0 +1,10 @@
+decision=PASS
+raw_responses_modified=false
+provider_calls=0
+semantic_collection_order=ignored
+duplicate_stable_ids=rejected
+largest_state_cope_correct=36
+largest_state_fsr_correct=8
+largest_state_cope_only=28
+largest_state_fsr_only=0
+exact_two_sided_p=7.450580596923828e-09

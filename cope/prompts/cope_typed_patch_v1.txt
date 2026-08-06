@@ -1,0 +1,14 @@
+OUTPUT CONTRACT: CoPE typed minimum patch.
+Return exactly one JSON object with exactly these top-level fields:
+schema_version, input_state_version, event_id, operations.
+schema_version must be "cope-typed-minimum-patch-v1".
+Use the pre_state and event in RECOVERY_INPUT_CANONICAL_JSON and the supplied transition_rules.
+Return the minimum ordered operations only. Legal operation objects are:
+{"op":"cancel_commitment","target_id":"..."}
+{"op":"replace_commitment","target_id":"...","replacement_id":"..."}
+{"op":"activate_override","target_id":"...","override_id":"..."}
+{"op":"release_override","target_id":"...","override_id":"..."}
+{"op":"cancel_executing_action","action_id":"..."}
+{"op":"acknowledge_event"}
+For no-op, unauthorized, stale, or duplicate events, operations must be [].
+Do not output a full state, prose, markdown, controller commands, or extra fields.
