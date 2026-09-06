@@ -1,0 +1,204 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PersistentLedger",
+  "$ref": "#/$defs/PersistentLedger",
+  "$defs": {
+    "PersistentLedger": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "slots": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CommitmentOccurrence"
+          }
+        },
+        "relations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RelationEdge"
+          }
+        },
+        "history_records": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": {}
+          }
+        }
+      },
+      "required": [
+        "revision",
+        "slots"
+      ]
+    },
+    "CommitmentOccurrence": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "family_key": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "occurrence_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "achievement_goal",
+            "maintenance_invariant",
+            "safety_requirement",
+            "user_preference",
+            "grounding_binding"
+          ]
+        },
+        "predicate": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "arguments": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "lifecycle": {
+          "type": "string",
+          "enum": [
+            "active",
+            "suspended",
+            "overridden",
+            "expired"
+          ]
+        },
+        "grounding_validity": {
+          "type": "string",
+          "enum": [
+            "valid",
+            "degraded",
+            "unknown",
+            "invalid"
+          ]
+        },
+        "priority": {
+          "type": "number",
+          "minimum": 0
+        },
+        "hardness": {
+          "enum": [
+            "hard",
+            "soft"
+          ]
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "authority": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "restore_guard": {
+          "type": "object",
+          "additionalProperties": {}
+        },
+        "dependency_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "provenance": {
+          "type": "object",
+          "additionalProperties": {}
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "created_event_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "retired_event_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "family_key",
+        "occurrence_id",
+        "role",
+        "predicate",
+        "arguments",
+        "lifecycle",
+        "grounding_validity",
+        "priority",
+        "hardness",
+        "source",
+        "authority"
+      ]
+    },
+    "RelationEdge": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "relation": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "target_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "source_id",
+        "relation",
+        "target_id"
+      ]
+    }
+  }
+}

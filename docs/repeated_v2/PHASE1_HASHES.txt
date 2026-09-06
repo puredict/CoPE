@@ -1,0 +1,40 @@
+{
+  "audited_git_sha": "84e1e742579899adb67efee92cef16efca063b31",
+  "audited_source_file_hashes": {
+    "README.md": "71d657c3b8d2359bb1b65fbc94f7fee42bc04ceaa8a287aeff635ee43bd16dd4",
+    "configs/repeated_interruptions_v1.yaml": "71658eaff1aa5d1050e223d3a3f6c34531f5e2a98bd1f71ba91aabcef6c23d99",
+    "cope/formal_recovery.py": "8c3322c6c531382ec30989cc938237ee646a2d13590b1abcd54f338d2083e51f",
+    "cope/operations.py": "c65340abdcdce0e8ac5451313c3ef0b8827bb4262b274af1e61dc3cdd5532ef0",
+    "cope/replay.py": "68a3d64c4ee689f6bf21000cb20d96d33e6a9b198f1bf3f2690a641b79f34bc4",
+    "cope/schema.py": "cc0cf422c2a9ae6e5ea746c7ab44e58abe3331895b763fc067d5c16c47935fef",
+    "cope/validator.py": "9c57d2202776d7a06e38f6be6bdd88fb3f4db9cc82d9cb16aaa7459bd5b92801",
+    "cope_benchmark/adapters.py": "fff1228b7766bfa693b424f42c9caa719c08b74c5cf06fbcaae7c624bdc59634",
+    "cope_benchmark/interruption_scheduler.py": "1e99671735e7533cd1ddea5a211d0118331e8f35cba618b393843d19fe3a0d56",
+    "cope_benchmark/interruptions.py": "0aa257a533b3535acf7d38b8ca7cd6849a1d717725e7998dd26381246216bcf3",
+    "cope_benchmark/metrics.py": "dac0de07b639f03986b9b21cc3c8557125eaa00da1eef338816e1ec59cf2afad",
+    "cope_benchmark/oracle_skill_controller.py": "9a5f83e1580357840359670ab8643e6db546bd78ef3b4bfd8123eff3147ed648",
+    "cope_benchmark/repeated_manifest.py": "d7b3d8bd21729053c2a6316d1221204015d2aec659eb30430ce9089766c1b38d",
+    "cope_benchmark/task_progress.py": "48366a77d05a538c75656d7dcf5b231e68154d875d8904d10c51fc601fbe14b0",
+    "docs/EXPERIMENTS_INDEX_BEGINNER_CN.md": "9e6e33873de537e990dcb5f80ca79e56c4af90cb3d454eea2b7fef25546b9dcf",
+    "experiments/repeated_interruptions.py": "c0c75f68a1233efaca6f3b181930666af8c9d85518fbdea8aeee384fde5602f8",
+    "research/167_OCCURRENCE_CONFIRMATORY_V3_RESULT_AND_CLAIM_DECISION.md": "593b01760e1429ed03fc8283e669235baea1eb561a546e7488e6af5e806f1842",
+    "research/168_NEXT_CRITICAL_EXPERIMENT_NONINFERIORITY_PREREG_DRAFT.md": "6e7b53a51c46b8c031cbefa70cb172d7aea6f5878ac80729fe36f1e00226361a"
+  },
+  "config_canonical_sha256": "ab04ad1f021320b6458a57ce583e9fba70d119902ec465c907498ca8ffe37267",
+  "formal_manifest_sha256": null,
+  "formal_manifest_status": "BLOCKED_TASK_CATALOG_GAPS",
+  "phase1_schema_file_hashes": {
+    "schemas/repeated_v2/commitment_occurrence.schema.json": "1342f73bec4968ce2afb30fa4e210701453b0902e035366ab443257c44aeb834",
+    "schemas/repeated_v2/event_evidence.schema.json": "f56ac6272722817f3f199649ce01254ce6bca545b8845d9087da9facee8c5d60",
+    "schemas/repeated_v2/execution_context.schema.json": "cabe8c0848fdf2db38e45240b04b7bbf058110761f193cb09a12bccf3d4b0d77",
+    "schemas/repeated_v2/persistent_ledger.schema.json": "2c5c16f5cbc49f8f54f227a481d7014b82e5fbb0078c98ad4c2e3990465bf4cf",
+    "schemas/repeated_v2/hidden_canonical_effect.schema.json": "624ec9f3d552adec254f7cbd2cfb9e94011a8d0c2d5572ce5711ae465977cee5",
+    "schemas/repeated_v2/planning_problem.schema.json": "a5c8ca79e355347d19775aea50c6042dedcfccff1afa2086c4f5cae50043208a",
+    "schemas/repeated_v2/public_event_payload.schema.json": "fb182ebf3b9d18d134222abb27cd6da67c42e383b583edc3228ff36b26dbcb98"
+  },
+  "preflight_file_sha256": "30f00f1aec721e0048711b1153b9d9cd1f024b66554a3bb5e08a0e3c248461ec",
+  "provider_calls": 0,
+  "supplied_zip_sha256": "6be1a8955465a5eded470ff818e811838593175bbe72fcccf6180f4a2c44b347",
+  "task_catalog_canonical_sha256": "17fca504156fa9aa52303cc1aa8a8c8df129863d14a36463318dc03c318306ff",
+  "vla_calls": 0
+}

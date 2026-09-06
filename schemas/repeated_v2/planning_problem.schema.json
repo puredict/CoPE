@@ -1,0 +1,190 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PlanningProblem",
+  "$ref": "#/$defs/PlanningProblem",
+  "$defs": {
+    "PlanningProblem": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "problem_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "source_method": {
+          "type": "string",
+          "enum": [
+            "cope_typed_edit",
+            "generic_persistent_edit",
+            "full_state_regeneration",
+            "full_history_replan",
+            "rag_replan",
+            "summary_memory_replan",
+            "skill_local_replan",
+            "classical_execution_monitor",
+            "oracle_persistent_update"
+          ]
+        },
+        "source_revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "initial_facts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": {}
+          }
+        },
+        "active_goal_occurrence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "remaining_goals": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": {}
+          }
+        },
+        "hard_constraints": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": {}
+          }
+        },
+        "soft_preferences": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": {}
+          }
+        },
+        "forbidden_regressions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "grounding_bindings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": {}
+          }
+        },
+        "restore_eligibility": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": {}
+          }
+        },
+        "progress_certificates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ProgressCertificate"
+          }
+        },
+        "continuation_assumptions": {
+          "type": "object",
+          "additionalProperties": {}
+        }
+      },
+      "required": [
+        "problem_id",
+        "source_method",
+        "source_revision",
+        "initial_facts",
+        "active_goal_occurrence_ids",
+        "remaining_goals",
+        "hard_constraints",
+        "soft_preferences",
+        "forbidden_regressions",
+        "grounding_bindings",
+        "restore_eligibility",
+        "progress_certificates",
+        "continuation_assumptions"
+      ]
+    },
+    "ProgressCertificate": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "milestone_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "predicate": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "arguments": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "satisfaction": {
+          "type": "string",
+          "enum": [
+            "unresolved",
+            "satisfied",
+            "violated",
+            "unknown"
+          ]
+        },
+        "verifier_record_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "minItems": 1
+        },
+        "verified_at_step": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "affected_by_event_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "currently_preserved": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "milestone_id",
+        "predicate",
+        "arguments",
+        "satisfaction",
+        "verifier_record_id",
+        "evidence_ids",
+        "verified_at_step"
+      ]
+    }
+  }
+}

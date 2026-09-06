@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HiddenCanonicalEffect",
+  "$ref": "#/$defs/HiddenCanonicalEffect",
+  "$defs": {
+    "HiddenCanonicalEffect": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "event_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "true_family": {
+          "type": "string",
+          "enum": [
+            "TARGET_OBJECT_DISPLACED",
+            "GOAL_RECEPTACLE_OR_GROUNDING_CHANGED",
+            "TEMPORARY_NO_GO_APPEARS",
+            "TEMPORARY_NO_GO_CLEARS",
+            "USER_ADDS_PERSISTENT_PREFERENCE",
+            "TOOL_OR_TARGET_TEMPORARILY_UNAVAILABLE",
+            "TOOL_OR_TARGET_AVAILABLE_AGAIN",
+            "USER_REPLACES_ACTIVE_GOAL",
+            "USER_CANCELS_ACTIVE_GOAL",
+            "USER_REISSUES_RETIRED_GOAL"
+          ]
+        },
+        "affected_occurrence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "canonical_effect": {
+          "type": "object",
+          "additionalProperties": {}
+        },
+        "simulator_intervention": {
+          "type": "object",
+          "additionalProperties": {}
+        }
+      },
+      "required": [
+        "event_id",
+        "true_family",
+        "affected_occurrence_ids",
+        "canonical_effect",
+        "simulator_intervention"
+      ]
+    }
+  }
+}

@@ -1,0 +1,1412 @@
+{
+  "schema_version": "repeated_v2_task_catalog_v1",
+  "task_suite": "libero_10",
+  "selection_rule": "all_semantically_eligible",
+  "provenance_kind": "source_backed",
+  "tasks": [
+    {
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "original_instruction": "put both the alphabet soup and the tomato sauce in the basket",
+      "object_aliases": {
+        "alphabet_soup_1": "alphabet_soup_1",
+        "cream_cheese_1": "cream_cheese_1",
+        "tomato_sauce_1": "tomato_sauce_1",
+        "ketchup_1": "ketchup_1",
+        "orange_juice_1": "orange_juice_1",
+        "milk_1": "milk_1",
+        "butter_1": "butter_1",
+        "basket_1": "basket_1"
+      },
+      "receptacle_region_aliases": {
+        "living_room_table": "living_room_table",
+        "living_room_table_basket_init_region": "living_room_table_basket_init_region",
+        "living_room_table_milk_init_region": "living_room_table_milk_init_region",
+        "living_room_table_cream_cheese_init_region": "living_room_table_cream_cheese_init_region",
+        "living_room_table_orange_juice_init_region": "living_room_table_orange_juice_init_region",
+        "living_room_table_tomato_sauce_init_region": "living_room_table_tomato_sauce_init_region",
+        "living_room_table_alphabet_soup_init_region": "living_room_table_alphabet_soup_init_region",
+        "living_room_table_butter_init_region": "living_room_table_butter_init_region",
+        "living_room_table_ketchup_init_region": "living_room_table_ketchup_init_region",
+        "basket_1_contain_region": "basket_1_contain_region"
+      },
+      "initial_achievement_goals": [
+        {
+          "family_key": "goal:in:alphabet_soup_1:basket_1_contain_region",
+          "predicate": "in",
+          "arguments": [
+            "alphabet_soup_1",
+            "basket_1_contain_region"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket.bddl#:goal"
+        },
+        {
+          "family_key": "goal:in:tomato_sauce_1:basket_1_contain_region",
+          "predicate": "in",
+          "arguments": [
+            "tomato_sauce_1",
+            "basket_1_contain_region"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket.bddl#:goal"
+        }
+      ],
+      "maintenance_invariants": [],
+      "hard_safety_constraints": [],
+      "soft_preference_templates": [],
+      "milestone_predicates": [
+        {
+          "milestone_id": "milestone:0",
+          "predicate": "in",
+          "arguments": [
+            "alphabet_soup_1",
+            "basket_1_contain_region"
+          ],
+          "verifier": "LIBERO._eval_predicate",
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket.bddl#:goal"
+        },
+        {
+          "milestone_id": "milestone:1",
+          "predicate": "in",
+          "arguments": [
+            "tomato_sauce_1",
+            "basket_1_contain_region"
+          ],
+          "verifier": "LIBERO._eval_predicate",
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket.bddl#:goal"
+        }
+      ],
+      "alternative_valid_goals": [],
+      "replaceable_goal_families": [],
+      "safe_event_injection_poses": {},
+      "supported_event_families": [],
+      "semantic_triggers": {},
+      "dynamic_evaluator_predicates": [
+        {
+          "predicate": "in",
+          "arguments": [
+            "alphabet_soup_1",
+            "basket_1_contain_region"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket.bddl#:goal"
+        },
+        {
+          "predicate": "in",
+          "arguments": [
+            "tomato_sauce_1",
+            "basket_1_contain_region"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket.bddl#:goal"
+        }
+      ],
+      "planner_compiler_metadata": {},
+      "initial_state_digests": {},
+      "structural_checks": {
+        "two_independently_verifiable_milestones": {
+          "passed": null,
+          "evidence_refs": []
+        },
+        "completed_milestone_preservable": {
+          "passed": null,
+          "evidence_refs": []
+        },
+        "safe_changeable_grounding": {
+          "passed": null,
+          "evidence_refs": []
+        },
+        "cross_skill_requirement_or_persistent_preference": {
+          "passed": null,
+          "evidence_refs": []
+        }
+      },
+      "event_feasibility": {},
+      "calibration_records": [],
+      "source_refs": [
+        {
+          "uri": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/benchmark/libero_suite_task_map.py",
+          "sha256": "0c950df0a785aa55de968bb38ccd865d2017f71ddbe6f48cfd05ac0742b6d62d",
+          "description": "Official LIBERO-10 order at pinned upstream commit 8f1084e3132a39270c3a13ebe37270a43ece2a01"
+        },
+        {
+          "uri": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket.bddl",
+          "sha256": "2e661058917f683a25bce480015197f0a2c1911bcbc2b9dd9d947199069c9618",
+          "description": "Official BDDL source; original goals and simulator identifiers only; initial placement regions are not certified safe intervention poses."
+        }
+      ],
+      "unresolved_fields": [
+        "structural_checks",
+        "maintenance_invariants",
+        "hard_safety_constraints",
+        "soft_preference_templates",
+        "alternative_valid_goals",
+        "replaceable_goal_families",
+        "safe_event_injection_poses",
+        "supported_event_families",
+        "semantic_triggers",
+        "event_feasibility",
+        "planner_compiler_metadata",
+        "calibration_records",
+        "initial_state_digests"
+      ]
+    },
+    {
+      "task_id": 1,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket",
+      "original_instruction": "put both the cream cheese box and the butter in the basket",
+      "object_aliases": {
+        "alphabet_soup_1": "alphabet_soup_1",
+        "cream_cheese_1": "cream_cheese_1",
+        "tomato_sauce_1": "tomato_sauce_1",
+        "ketchup_1": "ketchup_1",
+        "orange_juice_1": "orange_juice_1",
+        "milk_1": "milk_1",
+        "butter_1": "butter_1",
+        "basket_1": "basket_1"
+      },
+      "receptacle_region_aliases": {
+        "living_room_table": "living_room_table",
+        "living_room_table_basket_init_region": "living_room_table_basket_init_region",
+        "living_room_table_milk_init_region": "living_room_table_milk_init_region",
+        "living_room_table_cream_cheese_init_region": "living_room_table_cream_cheese_init_region",
+        "living_room_table_orange_juice_init_region": "living_room_table_orange_juice_init_region",
+        "living_room_table_tomato_sauce_init_region": "living_room_table_tomato_sauce_init_region",
+        "living_room_table_alphabet_soup_init_region": "living_room_table_alphabet_soup_init_region",
+        "living_room_table_butter_init_region": "living_room_table_butter_init_region",
+        "living_room_table_ketchup_init_region": "living_room_table_ketchup_init_region",
+        "basket_1_contain_region": "basket_1_contain_region"
+      },
+      "initial_achievement_goals": [
+        {
+          "family_key": "goal:in:cream_cheese_1:basket_1_contain_region",
+          "predicate": "in",
+          "arguments": [
+            "cream_cheese_1",
+            "basket_1_contain_region"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket.bddl#:goal"
+        },
+        {
+          "family_key": "goal:in:butter_1:basket_1_contain_region",
+          "predicate": "in",
+          "arguments": [
+            "butter_1",
+            "basket_1_contain_region"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket.bddl#:goal"
+        }
+      ],
+      "maintenance_invariants": [],
+      "hard_safety_constraints": [],
+      "soft_preference_templates": [],
+      "milestone_predicates": [
+        {
+          "milestone_id": "milestone:0",
+          "predicate": "in",
+          "arguments": [
+            "cream_cheese_1",
+            "basket_1_contain_region"
+          ],
+          "verifier": "LIBERO._eval_predicate",
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket.bddl#:goal"
+        },
+        {
+          "milestone_id": "milestone:1",
+          "predicate": "in",
+          "arguments": [
+            "butter_1",
+            "basket_1_contain_region"
+          ],
+          "verifier": "LIBERO._eval_predicate",
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket.bddl#:goal"
+        }
+      ],
+      "alternative_valid_goals": [],
+      "replaceable_goal_families": [],
+      "safe_event_injection_poses": {},
+      "supported_event_families": [],
+      "semantic_triggers": {},
+      "dynamic_evaluator_predicates": [
+        {
+          "predicate": "in",
+          "arguments": [
+            "cream_cheese_1",
+            "basket_1_contain_region"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket.bddl#:goal"
+        },
+        {
+          "predicate": "in",
+          "arguments": [
+            "butter_1",
+            "basket_1_contain_region"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket.bddl#:goal"
+        }
+      ],
+      "planner_compiler_metadata": {},
+      "initial_state_digests": {
+        "0": "5abdf8f466f490901dee9f931b32eb181b2928eaa17bb6379742f988581d564a",
+        "1": "cd3e7f86ef217ee7b7d26cc505b3f56ea8f49664ef10f6749270dfcd39dd17a6",
+        "2": "ab6bf2ca98e96f1692d8ec7a5b7ec25eee1ea61c57d45c2816ac3dcc938ea3ee",
+        "3": "3e0d23df2cf22ae6e897e15a1739d5bf25474b4e33196644890b8485f0e880f5",
+        "4": "d2cecde6c34039556fadf729cf7eb15d628b42094f6f0c092d9969c9cf659856"
+      },
+      "structural_checks": {
+        "two_independently_verifiable_milestones": {
+          "passed": null,
+          "evidence_refs": []
+        },
+        "completed_milestone_preservable": {
+          "passed": null,
+          "evidence_refs": []
+        },
+        "safe_changeable_grounding": {
+          "passed": null,
+          "evidence_refs": []
+        },
+        "cross_skill_requirement_or_persistent_preference": {
+          "passed": null,
+          "evidence_refs": []
+        }
+      },
+      "event_feasibility": {},
+      "calibration_records": [],
+      "source_refs": [
+        {
+          "uri": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/benchmark/libero_suite_task_map.py",
+          "sha256": "0c950df0a785aa55de968bb38ccd865d2017f71ddbe6f48cfd05ac0742b6d62d",
+          "description": "Official LIBERO-10 order at pinned upstream commit 8f1084e3132a39270c3a13ebe37270a43ece2a01"
+        },
+        {
+          "uri": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket.bddl",
+          "sha256": "3f552805c7ab34c44debcf38a48b8131d6fee3011dd86c039650b84e0f77d058",
+          "description": "Official BDDL source; original goals and simulator identifiers only; initial placement regions are not certified safe intervention poses."
+        },
+        {
+          "uri": "configs/openvla_libero_10_calibration_v2.yaml",
+          "sha256": "16a6931834585984542dbe9be5ba423e039626eb1b81a04c49765848142b96a8",
+          "description": "Previously audited initial-state hashes only; affine 2027 calibration policy seeds and horizon520 are ineligible for repeated-v2 calibration."
+        }
+      ],
+      "unresolved_fields": [
+        "structural_checks",
+        "maintenance_invariants",
+        "hard_safety_constraints",
+        "soft_preference_templates",
+        "alternative_valid_goals",
+        "replaceable_goal_families",
+        "safe_event_injection_poses",
+        "supported_event_families",
+        "semantic_triggers",
+        "event_feasibility",
+        "planner_compiler_metadata",
+        "calibration_records"
+      ]
+    },
+    {
+      "task_id": 2,
+      "task_name": "KITCHEN_SCENE3_turn_on_the_stove_and_put_the_moka_pot_on_it",
+      "original_instruction": "turn on the stove and put the moka pot on it",
+      "object_aliases": {
+        "chefmate_8_frypan_1": "chefmate_8_frypan_1",
+        "moka_pot_1": "moka_pot_1"
+      },
+      "receptacle_region_aliases": {
+        "kitchen_table": "kitchen_table",
+        "flat_stove_1": "flat_stove_1",
+        "kitchen_table_flat_stove_init_region": "kitchen_table_flat_stove_init_region",
+        "kitchen_table_frypan_init_region": "kitchen_table_frypan_init_region",
+        "kitchen_table_moka_pot_init_region": "kitchen_table_moka_pot_init_region",
+        "flat_stove_1_cook_region": "flat_stove_1_cook_region"
+      },
+      "initial_achievement_goals": [
+        {
+          "family_key": "goal:turnon:flat_stove_1",
+          "predicate": "turnon",
+          "arguments": [
+            "flat_stove_1"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE3_turn_on_the_stove_and_put_the_moka_pot_on_it.bddl#:goal"
+        },
+        {
+          "family_key": "goal:on:moka_pot_1:flat_stove_1_cook_region",
+          "predicate": "on",
+          "arguments": [
+            "moka_pot_1",
+            "flat_stove_1_cook_region"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE3_turn_on_the_stove_and_put_the_moka_pot_on_it.bddl#:goal"
+        }
+      ],
+      "maintenance_invariants": [],
+      "hard_safety_constraints": [],
+      "soft_preference_templates": [],
+      "milestone_predicates": [
+        {
+          "milestone_id": "milestone:0",
+          "predicate": "turnon",
+          "arguments": [
+            "flat_stove_1"
+          ],
+          "verifier": "LIBERO._eval_predicate",
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE3_turn_on_the_stove_and_put_the_moka_pot_on_it.bddl#:goal"
+        },
+        {
+          "milestone_id": "milestone:1",
+          "predicate": "on",
+          "arguments": [
+            "moka_pot_1",
+            "flat_stove_1_cook_region"
+          ],
+          "verifier": "LIBERO._eval_predicate",
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE3_turn_on_the_stove_and_put_the_moka_pot_on_it.bddl#:goal"
+        }
+      ],
+      "alternative_valid_goals": [],
+      "replaceable_goal_families": [],
+      "safe_event_injection_poses": {},
+      "supported_event_families": [],
+      "semantic_triggers": {},
+      "dynamic_evaluator_predicates": [
+        {
+          "predicate": "turnon",
+          "arguments": [
+            "flat_stove_1"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE3_turn_on_the_stove_and_put_the_moka_pot_on_it.bddl#:goal"
+        },
+        {
+          "predicate": "on",
+          "arguments": [
+            "moka_pot_1",
+            "flat_stove_1_cook_region"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE3_turn_on_the_stove_and_put_the_moka_pot_on_it.bddl#:goal"
+        }
+      ],
+      "planner_compiler_metadata": {},
+      "initial_state_digests": {},
+      "structural_checks": {
+        "two_independently_verifiable_milestones": {
+          "passed": null,
+          "evidence_refs": []
+        },
+        "completed_milestone_preservable": {
+          "passed": null,
+          "evidence_refs": []
+        },
+        "safe_changeable_grounding": {
+          "passed": null,
+          "evidence_refs": []
+        },
+        "cross_skill_requirement_or_persistent_preference": {
+          "passed": null,
+          "evidence_refs": []
+        }
+      },
+      "event_feasibility": {},
+      "calibration_records": [],
+      "source_refs": [
+        {
+          "uri": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/benchmark/libero_suite_task_map.py",
+          "sha256": "0c950df0a785aa55de968bb38ccd865d2017f71ddbe6f48cfd05ac0742b6d62d",
+          "description": "Official LIBERO-10 order at pinned upstream commit 8f1084e3132a39270c3a13ebe37270a43ece2a01"
+        },
+        {
+          "uri": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE3_turn_on_the_stove_and_put_the_moka_pot_on_it.bddl",
+          "sha256": "491835cc2eb6956f7ce3d1ee4e266377116168fe453e6529fe105e3b0333635d",
+          "description": "Official BDDL source; original goals and simulator identifiers only; initial placement regions are not certified safe intervention poses."
+        }
+      ],
+      "unresolved_fields": [
+        "structural_checks",
+        "maintenance_invariants",
+        "hard_safety_constraints",
+        "soft_preference_templates",
+        "alternative_valid_goals",
+        "replaceable_goal_families",
+        "safe_event_injection_poses",
+        "supported_event_families",
+        "semantic_triggers",
+        "event_feasibility",
+        "planner_compiler_metadata",
+        "calibration_records",
+        "initial_state_digests"
+      ]
+    },
+    {
+      "task_id": 3,
+      "task_name": "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it",
+      "original_instruction": "put the black bowl in the bottom drawer of the cabinet and close it",
+      "object_aliases": {
+        "akita_black_bowl_1": "akita_black_bowl_1",
+        "wine_bottle_1": "wine_bottle_1"
+      },
+      "receptacle_region_aliases": {
+        "kitchen_table": "kitchen_table",
+        "white_cabinet_1": "white_cabinet_1",
+        "wine_rack_1": "wine_rack_1",
+        "kitchen_table_white_cabinet_init_region": "kitchen_table_white_cabinet_init_region",
+        "kitchen_table_wine_rack_init_region": "kitchen_table_wine_rack_init_region",
+        "kitchen_table_akita_black_bowl_init_region": "kitchen_table_akita_black_bowl_init_region",
+        "kitchen_table_wine_bottle_init_region": "kitchen_table_wine_bottle_init_region",
+        "white_cabinet_1_top_side": "white_cabinet_1_top_side",
+        "white_cabinet_1_top_region": "white_cabinet_1_top_region",
+        "white_cabinet_1_middle_region": "white_cabinet_1_middle_region",
+        "white_cabinet_1_bottom_region": "white_cabinet_1_bottom_region",
+        "wine_rack_1_top_region": "wine_rack_1_top_region"
+      },
+      "initial_achievement_goals": [
+        {
+          "family_key": "goal:close:white_cabinet_1_bottom_region",
+          "predicate": "close",
+          "arguments": [
+            "white_cabinet_1_bottom_region"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it.bddl#:goal"
+        },
+        {
+          "family_key": "goal:in:akita_black_bowl_1:white_cabinet_1_bottom_region",
+          "predicate": "in",
+          "arguments": [
+            "akita_black_bowl_1",
+            "white_cabinet_1_bottom_region"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it.bddl#:goal"
+        }
+      ],
+      "maintenance_invariants": [],
+      "hard_safety_constraints": [],
+      "soft_preference_templates": [],
+      "milestone_predicates": [
+        {
+          "milestone_id": "milestone:0",
+          "predicate": "close",
+          "arguments": [
+            "white_cabinet_1_bottom_region"
+          ],
+          "verifier": "LIBERO._eval_predicate",
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it.bddl#:goal"
+        },
+        {
+          "milestone_id": "milestone:1",
+          "predicate": "in",
+          "arguments": [
+            "akita_black_bowl_1",
+            "white_cabinet_1_bottom_region"
+          ],
+          "verifier": "LIBERO._eval_predicate",
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it.bddl#:goal"
+        }
+      ],
+      "alternative_valid_goals": [],
+      "replaceable_goal_families": [],
+      "safe_event_injection_poses": {},
+      "supported_event_families": [],
+      "semantic_triggers": {},
+      "dynamic_evaluator_predicates": [
+        {
+          "predicate": "close",
+          "arguments": [
+            "white_cabinet_1_bottom_region"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it.bddl#:goal"
+        },
+        {
+          "predicate": "in",
+          "arguments": [
+            "akita_black_bowl_1",
+            "white_cabinet_1_bottom_region"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it.bddl#:goal"
+        }
+      ],
+      "planner_compiler_metadata": {},
+      "initial_state_digests": {},
+      "structural_checks": {
+        "two_independently_verifiable_milestones": {
+          "passed": null,
+          "evidence_refs": []
+        },
+        "completed_milestone_preservable": {
+          "passed": null,
+          "evidence_refs": []
+        },
+        "safe_changeable_grounding": {
+          "passed": null,
+          "evidence_refs": []
+        },
+        "cross_skill_requirement_or_persistent_preference": {
+          "passed": null,
+          "evidence_refs": []
+        }
+      },
+      "event_feasibility": {},
+      "calibration_records": [],
+      "source_refs": [
+        {
+          "uri": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/benchmark/libero_suite_task_map.py",
+          "sha256": "0c950df0a785aa55de968bb38ccd865d2017f71ddbe6f48cfd05ac0742b6d62d",
+          "description": "Official LIBERO-10 order at pinned upstream commit 8f1084e3132a39270c3a13ebe37270a43ece2a01"
+        },
+        {
+          "uri": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it.bddl",
+          "sha256": "5255fe54d7f25fad4dee8fa30a30033d8cb908f1708d953c91ab609264fb4fb8",
+          "description": "Official BDDL source; original goals and simulator identifiers only; initial placement regions are not certified safe intervention poses."
+        }
+      ],
+      "unresolved_fields": [
+        "structural_checks",
+        "maintenance_invariants",
+        "hard_safety_constraints",
+        "soft_preference_templates",
+        "alternative_valid_goals",
+        "replaceable_goal_families",
+        "safe_event_injection_poses",
+        "supported_event_families",
+        "semantic_triggers",
+        "event_feasibility",
+        "planner_compiler_metadata",
+        "calibration_records",
+        "initial_state_digests"
+      ]
+    },
+    {
+      "task_id": 4,
+      "task_name": "LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_and_put_the_yellow_and_white_mug_on_the_right_plate",
+      "original_instruction": "put the white mug on the left plate and put the yellow and white mug on the right plate",
+      "object_aliases": {
+        "porcelain_mug_1": "porcelain_mug_1",
+        "red_coffee_mug_1": "red_coffee_mug_1",
+        "white_yellow_mug_1": "white_yellow_mug_1",
+        "plate_1": "plate_1",
+        "plate_2": "plate_2"
+      },
+      "receptacle_region_aliases": {
+        "living_room_table": "living_room_table",
+        "living_room_table_plate_left_region": "living_room_table_plate_left_region",
+        "living_room_table_plate_right_region": "living_room_table_plate_right_region",
+        "living_room_table_porcelain_mug_init_region": "living_room_table_porcelain_mug_init_region",
+        "living_room_table_white_yellow_mug_init_region": "living_room_table_white_yellow_mug_init_region",
+        "living_room_table_red_coffee_mug_init_region": "living_room_table_red_coffee_mug_init_region",
+        "plate_1": "plate_1",
+        "plate_2": "plate_2"
+      },
+      "initial_achievement_goals": [
+        {
+          "family_key": "goal:on:porcelain_mug_1:plate_1",
+          "predicate": "on",
+          "arguments": [
+            "porcelain_mug_1",
+            "plate_1"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_and_put_the_yellow_and_white_mug_on_the_right_plate.bddl#:goal"
+        },
+        {
+          "family_key": "goal:on:white_yellow_mug_1:plate_2",
+          "predicate": "on",
+          "arguments": [
+            "white_yellow_mug_1",
+            "plate_2"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_and_put_the_yellow_and_white_mug_on_the_right_plate.bddl#:goal"
+        }
+      ],
+      "maintenance_invariants": [],
+      "hard_safety_constraints": [],
+      "soft_preference_templates": [],
+      "milestone_predicates": [
+        {
+          "milestone_id": "milestone:0",
+          "predicate": "on",
+          "arguments": [
+            "porcelain_mug_1",
+            "plate_1"
+          ],
+          "verifier": "LIBERO._eval_predicate",
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_and_put_the_yellow_and_white_mug_on_the_right_plate.bddl#:goal"
+        },
+        {
+          "milestone_id": "milestone:1",
+          "predicate": "on",
+          "arguments": [
+            "white_yellow_mug_1",
+            "plate_2"
+          ],
+          "verifier": "LIBERO._eval_predicate",
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_and_put_the_yellow_and_white_mug_on_the_right_plate.bddl#:goal"
+        }
+      ],
+      "alternative_valid_goals": [],
+      "replaceable_goal_families": [],
+      "safe_event_injection_poses": {},
+      "supported_event_families": [],
+      "semantic_triggers": {},
+      "dynamic_evaluator_predicates": [
+        {
+          "predicate": "on",
+          "arguments": [
+            "porcelain_mug_1",
+            "plate_1"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_and_put_the_yellow_and_white_mug_on_the_right_plate.bddl#:goal"
+        },
+        {
+          "predicate": "on",
+          "arguments": [
+            "white_yellow_mug_1",
+            "plate_2"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_and_put_the_yellow_and_white_mug_on_the_right_plate.bddl#:goal"
+        }
+      ],
+      "planner_compiler_metadata": {},
+      "initial_state_digests": {},
+      "structural_checks": {
+        "two_independently_verifiable_milestones": {
+          "passed": null,
+          "evidence_refs": []
+        },
+        "completed_milestone_preservable": {
+          "passed": null,
+          "evidence_refs": []
+        },
+        "safe_changeable_grounding": {
+          "passed": null,
+          "evidence_refs": []
+        },
+        "cross_skill_requirement_or_persistent_preference": {
+          "passed": null,
+          "evidence_refs": []
+        }
+      },
+      "event_feasibility": {},
+      "calibration_records": [],
+      "source_refs": [
+        {
+          "uri": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/benchmark/libero_suite_task_map.py",
+          "sha256": "0c950df0a785aa55de968bb38ccd865d2017f71ddbe6f48cfd05ac0742b6d62d",
+          "description": "Official LIBERO-10 order at pinned upstream commit 8f1084e3132a39270c3a13ebe37270a43ece2a01"
+        },
+        {
+          "uri": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_and_put_the_yellow_and_white_mug_on_the_right_plate.bddl",
+          "sha256": "0c6749b920bff1e1efe47ffb0e0b801a3e6959a650e710f376dd2b812c74e865",
+          "description": "Official BDDL source; original goals and simulator identifiers only; initial placement regions are not certified safe intervention poses."
+        }
+      ],
+      "unresolved_fields": [
+        "structural_checks",
+        "maintenance_invariants",
+        "hard_safety_constraints",
+        "soft_preference_templates",
+        "alternative_valid_goals",
+        "replaceable_goal_families",
+        "safe_event_injection_poses",
+        "supported_event_families",
+        "semantic_triggers",
+        "event_feasibility",
+        "planner_compiler_metadata",
+        "calibration_records",
+        "initial_state_digests"
+      ]
+    },
+    {
+      "task_id": 5,
+      "task_name": "STUDY_SCENE1_pick_up_the_book_and_place_it_in_the_back_compartment_of_the_caddy",
+      "original_instruction": "pick up the book and place it in the back compartment of the caddy",
+      "object_aliases": {
+        "black_book_1": "black_book_1",
+        "white_yellow_mug_1": "white_yellow_mug_1"
+      },
+      "receptacle_region_aliases": {
+        "study_table": "study_table",
+        "desk_caddy_1": "desk_caddy_1",
+        "study_table_desk_caddy_init_region": "study_table_desk_caddy_init_region",
+        "study_table_black_book_init_region": "study_table_black_book_init_region",
+        "study_table_white_yellow_mug_init_region": "study_table_white_yellow_mug_init_region",
+        "study_table_desk_caddy_right_region": "study_table_desk_caddy_right_region",
+        "desk_caddy_1_right_contain_region": "desk_caddy_1_right_contain_region",
+        "desk_caddy_1_left_contain_region": "desk_caddy_1_left_contain_region",
+        "desk_caddy_1_back_contain_region": "desk_caddy_1_back_contain_region",
+        "desk_caddy_1_front_contain_region": "desk_caddy_1_front_contain_region"
+      },
+      "initial_achievement_goals": [
+        {
+          "family_key": "goal:in:black_book_1:desk_caddy_1_back_contain_region",
+          "predicate": "in",
+          "arguments": [
+            "black_book_1",
+            "desk_caddy_1_back_contain_region"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/STUDY_SCENE1_pick_up_the_book_and_place_it_in_the_back_compartment_of_the_caddy.bddl#:goal"
+        }
+      ],
+      "maintenance_invariants": [],
+      "hard_safety_constraints": [],
+      "soft_preference_templates": [],
+      "milestone_predicates": [
+        {
+          "milestone_id": "milestone:0",
+          "predicate": "in",
+          "arguments": [
+            "black_book_1",
+            "desk_caddy_1_back_contain_region"
+          ],
+          "verifier": "LIBERO._eval_predicate",
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/STUDY_SCENE1_pick_up_the_book_and_place_it_in_the_back_compartment_of_the_caddy.bddl#:goal"
+        }
+      ],
+      "alternative_valid_goals": [],
+      "replaceable_goal_families": [],
+      "safe_event_injection_poses": {},
+      "supported_event_families": [],
+      "semantic_triggers": {},
+      "dynamic_evaluator_predicates": [
+        {
+          "predicate": "in",
+          "arguments": [
+            "black_book_1",
+            "desk_caddy_1_back_contain_region"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/STUDY_SCENE1_pick_up_the_book_and_place_it_in_the_back_compartment_of_the_caddy.bddl#:goal"
+        }
+      ],
+      "planner_compiler_metadata": {},
+      "initial_state_digests": {
+        "0": "407c3d5eb11fd5b33bd2a6dea73a37415a99d7e72f0cc291074de29b1c63c37c",
+        "1": "fbf82707bd0a7721f0e118ac32aad30182e487e7a940bec7128ad6f18457e139",
+        "2": "83ff554be370e25fb3b049d5c3db3f2cf4f20524a0eab8beeda093c6a81bad66",
+        "3": "72e9938805b4da92baeb254ab7611081832edbb30e3f07c8136e1ea8a00fa235",
+        "4": "825a43323d564777617871b44f4c0f871a263f5aac13b1d04f204cc4957134e8"
+      },
+      "structural_checks": {
+        "two_independently_verifiable_milestones": {
+          "passed": null,
+          "evidence_refs": []
+        },
+        "completed_milestone_preservable": {
+          "passed": null,
+          "evidence_refs": []
+        },
+        "safe_changeable_grounding": {
+          "passed": null,
+          "evidence_refs": []
+        },
+        "cross_skill_requirement_or_persistent_preference": {
+          "passed": null,
+          "evidence_refs": []
+        }
+      },
+      "event_feasibility": {},
+      "calibration_records": [],
+      "source_refs": [
+        {
+          "uri": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/benchmark/libero_suite_task_map.py",
+          "sha256": "0c950df0a785aa55de968bb38ccd865d2017f71ddbe6f48cfd05ac0742b6d62d",
+          "description": "Official LIBERO-10 order at pinned upstream commit 8f1084e3132a39270c3a13ebe37270a43ece2a01"
+        },
+        {
+          "uri": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/STUDY_SCENE1_pick_up_the_book_and_place_it_in_the_back_compartment_of_the_caddy.bddl",
+          "sha256": "07ca32c940d70c065e870452ef9c63e6dfa1d8506e6a86cf9b3763f652ba2d9f",
+          "description": "Official BDDL source; original goals and simulator identifiers only; initial placement regions are not certified safe intervention poses."
+        },
+        {
+          "uri": "configs/openvla_libero_10_calibration_v2.yaml",
+          "sha256": "16a6931834585984542dbe9be5ba423e039626eb1b81a04c49765848142b96a8",
+          "description": "Previously audited initial-state hashes only; affine 2027 calibration policy seeds and horizon520 are ineligible for repeated-v2 calibration."
+        }
+      ],
+      "unresolved_fields": [
+        "structural_checks",
+        "maintenance_invariants",
+        "hard_safety_constraints",
+        "soft_preference_templates",
+        "alternative_valid_goals",
+        "replaceable_goal_families",
+        "safe_event_injection_poses",
+        "supported_event_families",
+        "semantic_triggers",
+        "event_feasibility",
+        "planner_compiler_metadata",
+        "calibration_records",
+        "second_independently_verifiable_milestone"
+      ]
+    },
+    {
+      "task_id": 6,
+      "task_name": "LIVING_ROOM_SCENE6_put_the_white_mug_on_the_plate_and_put_the_chocolate_pudding_to_the_right_of_the_plate",
+      "original_instruction": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+      "object_aliases": {
+        "porcelain_mug_1": "porcelain_mug_1",
+        "red_coffee_mug_1": "red_coffee_mug_1",
+        "plate_1": "plate_1",
+        "chocolate_pudding_1": "chocolate_pudding_1"
+      },
+      "receptacle_region_aliases": {
+        "living_room_table": "living_room_table",
+        "living_room_table_plate_left_region": "living_room_table_plate_left_region",
+        "living_room_table_plate_right_region": "living_room_table_plate_right_region",
+        "living_room_table_plate_init_region": "living_room_table_plate_init_region",
+        "living_room_table_porcelain_mug_init_region": "living_room_table_porcelain_mug_init_region",
+        "living_room_table_chocolate_pudding_init_region": "living_room_table_chocolate_pudding_init_region",
+        "living_room_table_red_coffee_mug_init_region": "living_room_table_red_coffee_mug_init_region",
+        "plate_1": "plate_1"
+      },
+      "initial_achievement_goals": [
+        {
+          "family_key": "goal:on:porcelain_mug_1:plate_1",
+          "predicate": "on",
+          "arguments": [
+            "porcelain_mug_1",
+            "plate_1"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE6_put_the_white_mug_on_the_plate_and_put_the_chocolate_pudding_to_the_right_of_the_plate.bddl#:goal"
+        },
+        {
+          "family_key": "goal:on:chocolate_pudding_1:living_room_table_plate_right_region",
+          "predicate": "on",
+          "arguments": [
+            "chocolate_pudding_1",
+            "living_room_table_plate_right_region"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE6_put_the_white_mug_on_the_plate_and_put_the_chocolate_pudding_to_the_right_of_the_plate.bddl#:goal"
+        }
+      ],
+      "maintenance_invariants": [],
+      "hard_safety_constraints": [],
+      "soft_preference_templates": [],
+      "milestone_predicates": [
+        {
+          "milestone_id": "milestone:0",
+          "predicate": "on",
+          "arguments": [
+            "porcelain_mug_1",
+            "plate_1"
+          ],
+          "verifier": "LIBERO._eval_predicate",
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE6_put_the_white_mug_on_the_plate_and_put_the_chocolate_pudding_to_the_right_of_the_plate.bddl#:goal"
+        },
+        {
+          "milestone_id": "milestone:1",
+          "predicate": "on",
+          "arguments": [
+            "chocolate_pudding_1",
+            "living_room_table_plate_right_region"
+          ],
+          "verifier": "LIBERO._eval_predicate",
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE6_put_the_white_mug_on_the_plate_and_put_the_chocolate_pudding_to_the_right_of_the_plate.bddl#:goal"
+        }
+      ],
+      "alternative_valid_goals": [],
+      "replaceable_goal_families": [],
+      "safe_event_injection_poses": {},
+      "supported_event_families": [],
+      "semantic_triggers": {},
+      "dynamic_evaluator_predicates": [
+        {
+          "predicate": "on",
+          "arguments": [
+            "porcelain_mug_1",
+            "plate_1"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE6_put_the_white_mug_on_the_plate_and_put_the_chocolate_pudding_to_the_right_of_the_plate.bddl#:goal"
+        },
+        {
+          "predicate": "on",
+          "arguments": [
+            "chocolate_pudding_1",
+            "living_room_table_plate_right_region"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE6_put_the_white_mug_on_the_plate_and_put_the_chocolate_pudding_to_the_right_of_the_plate.bddl#:goal"
+        }
+      ],
+      "planner_compiler_metadata": {},
+      "initial_state_digests": {},
+      "structural_checks": {
+        "two_independently_verifiable_milestones": {
+          "passed": null,
+          "evidence_refs": []
+        },
+        "completed_milestone_preservable": {
+          "passed": null,
+          "evidence_refs": []
+        },
+        "safe_changeable_grounding": {
+          "passed": null,
+          "evidence_refs": []
+        },
+        "cross_skill_requirement_or_persistent_preference": {
+          "passed": null,
+          "evidence_refs": []
+        }
+      },
+      "event_feasibility": {},
+      "calibration_records": [],
+      "source_refs": [
+        {
+          "uri": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/benchmark/libero_suite_task_map.py",
+          "sha256": "0c950df0a785aa55de968bb38ccd865d2017f71ddbe6f48cfd05ac0742b6d62d",
+          "description": "Official LIBERO-10 order at pinned upstream commit 8f1084e3132a39270c3a13ebe37270a43ece2a01"
+        },
+        {
+          "uri": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE6_put_the_white_mug_on_the_plate_and_put_the_chocolate_pudding_to_the_right_of_the_plate.bddl",
+          "sha256": "dbc9464b424cdc9b771b92d0b8a8c185b1b539f6a4133b323dc858bcf8f6a9c2",
+          "description": "Official BDDL source; original goals and simulator identifiers only; initial placement regions are not certified safe intervention poses."
+        }
+      ],
+      "unresolved_fields": [
+        "structural_checks",
+        "maintenance_invariants",
+        "hard_safety_constraints",
+        "soft_preference_templates",
+        "alternative_valid_goals",
+        "replaceable_goal_families",
+        "safe_event_injection_poses",
+        "supported_event_families",
+        "semantic_triggers",
+        "event_feasibility",
+        "planner_compiler_metadata",
+        "calibration_records",
+        "initial_state_digests"
+      ]
+    },
+    {
+      "task_id": 7,
+      "task_name": "LIVING_ROOM_SCENE1_put_both_the_alphabet_soup_and_the_cream_cheese_box_in_the_basket",
+      "original_instruction": "put both the alphabet soup and the cream cheese box in the basket",
+      "object_aliases": {
+        "alphabet_soup_1": "alphabet_soup_1",
+        "cream_cheese_1": "cream_cheese_1",
+        "tomato_sauce_1": "tomato_sauce_1",
+        "ketchup_1": "ketchup_1",
+        "basket_1": "basket_1"
+      },
+      "receptacle_region_aliases": {
+        "living_room_table": "living_room_table",
+        "living_room_table_basket_init_region": "living_room_table_basket_init_region",
+        "living_room_table_alphabet_soup_init_region": "living_room_table_alphabet_soup_init_region",
+        "living_room_table_cream_cheese_init_region": "living_room_table_cream_cheese_init_region",
+        "living_room_table_tomato_sauce_init_region": "living_room_table_tomato_sauce_init_region",
+        "living_room_table_ketchup_init_region": "living_room_table_ketchup_init_region",
+        "basket_1_contain_region": "basket_1_contain_region"
+      },
+      "initial_achievement_goals": [
+        {
+          "family_key": "goal:in:alphabet_soup_1:basket_1_contain_region",
+          "predicate": "in",
+          "arguments": [
+            "alphabet_soup_1",
+            "basket_1_contain_region"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE1_put_both_the_alphabet_soup_and_the_cream_cheese_box_in_the_basket.bddl#:goal"
+        },
+        {
+          "family_key": "goal:in:cream_cheese_1:basket_1_contain_region",
+          "predicate": "in",
+          "arguments": [
+            "cream_cheese_1",
+            "basket_1_contain_region"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE1_put_both_the_alphabet_soup_and_the_cream_cheese_box_in_the_basket.bddl#:goal"
+        }
+      ],
+      "maintenance_invariants": [],
+      "hard_safety_constraints": [],
+      "soft_preference_templates": [],
+      "milestone_predicates": [
+        {
+          "milestone_id": "milestone:0",
+          "predicate": "in",
+          "arguments": [
+            "alphabet_soup_1",
+            "basket_1_contain_region"
+          ],
+          "verifier": "LIBERO._eval_predicate",
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE1_put_both_the_alphabet_soup_and_the_cream_cheese_box_in_the_basket.bddl#:goal"
+        },
+        {
+          "milestone_id": "milestone:1",
+          "predicate": "in",
+          "arguments": [
+            "cream_cheese_1",
+            "basket_1_contain_region"
+          ],
+          "verifier": "LIBERO._eval_predicate",
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE1_put_both_the_alphabet_soup_and_the_cream_cheese_box_in_the_basket.bddl#:goal"
+        }
+      ],
+      "alternative_valid_goals": [],
+      "replaceable_goal_families": [],
+      "safe_event_injection_poses": {},
+      "supported_event_families": [],
+      "semantic_triggers": {},
+      "dynamic_evaluator_predicates": [
+        {
+          "predicate": "in",
+          "arguments": [
+            "alphabet_soup_1",
+            "basket_1_contain_region"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE1_put_both_the_alphabet_soup_and_the_cream_cheese_box_in_the_basket.bddl#:goal"
+        },
+        {
+          "predicate": "in",
+          "arguments": [
+            "cream_cheese_1",
+            "basket_1_contain_region"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE1_put_both_the_alphabet_soup_and_the_cream_cheese_box_in_the_basket.bddl#:goal"
+        }
+      ],
+      "planner_compiler_metadata": {},
+      "initial_state_digests": {
+        "0": "d02d4d5533fbcab414bfc49e4896182cd40e173dfa6316e39a2b418e902ae826",
+        "1": "44f0d75550c414e622b03a43e56497e8c9bd0fe4a494c1d2b9c0c9625ed80120",
+        "2": "9e8c129dc9a5047a34f8772063534c9948acdba167fee37ece92b48f33ea4b34",
+        "3": "2f4104e7e2996340ed513d08c011e119ca975165933374a1d1d67e78bea6abee",
+        "4": "8a0c2af93cde820ada3c3849d6b732233a61c05a82d655ef26fda87a7d85e708"
+      },
+      "structural_checks": {
+        "two_independently_verifiable_milestones": {
+          "passed": null,
+          "evidence_refs": []
+        },
+        "completed_milestone_preservable": {
+          "passed": null,
+          "evidence_refs": []
+        },
+        "safe_changeable_grounding": {
+          "passed": null,
+          "evidence_refs": []
+        },
+        "cross_skill_requirement_or_persistent_preference": {
+          "passed": null,
+          "evidence_refs": []
+        }
+      },
+      "event_feasibility": {},
+      "calibration_records": [],
+      "source_refs": [
+        {
+          "uri": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/benchmark/libero_suite_task_map.py",
+          "sha256": "0c950df0a785aa55de968bb38ccd865d2017f71ddbe6f48cfd05ac0742b6d62d",
+          "description": "Official LIBERO-10 order at pinned upstream commit 8f1084e3132a39270c3a13ebe37270a43ece2a01"
+        },
+        {
+          "uri": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE1_put_both_the_alphabet_soup_and_the_cream_cheese_box_in_the_basket.bddl",
+          "sha256": "e27ab37f512fe42e35771d6130f531e6a9656929e7b4c60b348b81360cf5675d",
+          "description": "Official BDDL source; original goals and simulator identifiers only; initial placement regions are not certified safe intervention poses."
+        },
+        {
+          "uri": "configs/openvla_libero_10_calibration_v2.yaml",
+          "sha256": "16a6931834585984542dbe9be5ba423e039626eb1b81a04c49765848142b96a8",
+          "description": "Previously audited initial-state hashes only; affine 2027 calibration policy seeds and horizon520 are ineligible for repeated-v2 calibration."
+        }
+      ],
+      "unresolved_fields": [
+        "structural_checks",
+        "maintenance_invariants",
+        "hard_safety_constraints",
+        "soft_preference_templates",
+        "alternative_valid_goals",
+        "replaceable_goal_families",
+        "safe_event_injection_poses",
+        "supported_event_families",
+        "semantic_triggers",
+        "event_feasibility",
+        "planner_compiler_metadata",
+        "calibration_records"
+      ]
+    },
+    {
+      "task_id": 8,
+      "task_name": "KITCHEN_SCENE8_put_both_moka_pots_on_the_stove",
+      "original_instruction": "put both moka pots on the stove",
+      "object_aliases": {
+        "moka_pot_1": "moka_pot_1",
+        "moka_pot_2": "moka_pot_2"
+      },
+      "receptacle_region_aliases": {
+        "kitchen_table": "kitchen_table",
+        "flat_stove_1": "flat_stove_1",
+        "kitchen_table_flat_stove_init_region": "kitchen_table_flat_stove_init_region",
+        "kitchen_table_moka_pot_right_init_region": "kitchen_table_moka_pot_right_init_region",
+        "kitchen_table_moka_pot_left_init_region": "kitchen_table_moka_pot_left_init_region",
+        "flat_stove_1_cook_region": "flat_stove_1_cook_region"
+      },
+      "initial_achievement_goals": [
+        {
+          "family_key": "goal:on:moka_pot_1:flat_stove_1_cook_region",
+          "predicate": "on",
+          "arguments": [
+            "moka_pot_1",
+            "flat_stove_1_cook_region"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE8_put_both_moka_pots_on_the_stove.bddl#:goal"
+        },
+        {
+          "family_key": "goal:on:moka_pot_2:flat_stove_1_cook_region",
+          "predicate": "on",
+          "arguments": [
+            "moka_pot_2",
+            "flat_stove_1_cook_region"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE8_put_both_moka_pots_on_the_stove.bddl#:goal"
+        },
+        {
+          "family_key": "goal:turnon:flat_stove_1",
+          "predicate": "turnon",
+          "arguments": [
+            "flat_stove_1"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE8_put_both_moka_pots_on_the_stove.bddl#:goal"
+        }
+      ],
+      "maintenance_invariants": [],
+      "hard_safety_constraints": [],
+      "soft_preference_templates": [],
+      "milestone_predicates": [
+        {
+          "milestone_id": "milestone:0",
+          "predicate": "on",
+          "arguments": [
+            "moka_pot_1",
+            "flat_stove_1_cook_region"
+          ],
+          "verifier": "LIBERO._eval_predicate",
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE8_put_both_moka_pots_on_the_stove.bddl#:goal"
+        },
+        {
+          "milestone_id": "milestone:1",
+          "predicate": "on",
+          "arguments": [
+            "moka_pot_2",
+            "flat_stove_1_cook_region"
+          ],
+          "verifier": "LIBERO._eval_predicate",
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE8_put_both_moka_pots_on_the_stove.bddl#:goal"
+        },
+        {
+          "milestone_id": "milestone:2",
+          "predicate": "turnon",
+          "arguments": [
+            "flat_stove_1"
+          ],
+          "verifier": "LIBERO._eval_predicate",
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE8_put_both_moka_pots_on_the_stove.bddl#:goal"
+        }
+      ],
+      "alternative_valid_goals": [],
+      "replaceable_goal_families": [],
+      "safe_event_injection_poses": {},
+      "supported_event_families": [],
+      "semantic_triggers": {},
+      "dynamic_evaluator_predicates": [
+        {
+          "predicate": "on",
+          "arguments": [
+            "moka_pot_1",
+            "flat_stove_1_cook_region"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE8_put_both_moka_pots_on_the_stove.bddl#:goal"
+        },
+        {
+          "predicate": "on",
+          "arguments": [
+            "moka_pot_2",
+            "flat_stove_1_cook_region"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE8_put_both_moka_pots_on_the_stove.bddl#:goal"
+        },
+        {
+          "predicate": "turnon",
+          "arguments": [
+            "flat_stove_1"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE8_put_both_moka_pots_on_the_stove.bddl#:goal"
+        }
+      ],
+      "planner_compiler_metadata": {},
+      "initial_state_digests": {},
+      "structural_checks": {
+        "two_independently_verifiable_milestones": {
+          "passed": null,
+          "evidence_refs": []
+        },
+        "completed_milestone_preservable": {
+          "passed": null,
+          "evidence_refs": []
+        },
+        "safe_changeable_grounding": {
+          "passed": null,
+          "evidence_refs": []
+        },
+        "cross_skill_requirement_or_persistent_preference": {
+          "passed": null,
+          "evidence_refs": []
+        }
+      },
+      "event_feasibility": {},
+      "calibration_records": [],
+      "source_refs": [
+        {
+          "uri": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/benchmark/libero_suite_task_map.py",
+          "sha256": "0c950df0a785aa55de968bb38ccd865d2017f71ddbe6f48cfd05ac0742b6d62d",
+          "description": "Official LIBERO-10 order at pinned upstream commit 8f1084e3132a39270c3a13ebe37270a43ece2a01"
+        },
+        {
+          "uri": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE8_put_both_moka_pots_on_the_stove.bddl",
+          "sha256": "ae1299a707d3e810096ad648948c517de40474bcdacca93a15e17d191e34454a",
+          "description": "Official BDDL source; original goals and simulator identifiers only; initial placement regions are not certified safe intervention poses."
+        }
+      ],
+      "unresolved_fields": [
+        "structural_checks",
+        "maintenance_invariants",
+        "hard_safety_constraints",
+        "soft_preference_templates",
+        "alternative_valid_goals",
+        "replaceable_goal_families",
+        "safe_event_injection_poses",
+        "supported_event_families",
+        "semantic_triggers",
+        "event_feasibility",
+        "planner_compiler_metadata",
+        "calibration_records",
+        "initial_state_digests"
+      ]
+    },
+    {
+      "task_id": 9,
+      "task_name": "KITCHEN_SCENE6_put_the_yellow_and_white_mug_in_the_microwave_and_close_it",
+      "original_instruction": "put the yellow and white mug in the microwave and close it",
+      "object_aliases": {
+        "porcelain_mug_1": "porcelain_mug_1",
+        "white_yellow_mug_1": "white_yellow_mug_1"
+      },
+      "receptacle_region_aliases": {
+        "kitchen_table": "kitchen_table",
+        "microwave_1": "microwave_1",
+        "kitchen_table_microwave_init_region": "kitchen_table_microwave_init_region",
+        "kitchen_table_white_yellow_mug_init_region": "kitchen_table_white_yellow_mug_init_region",
+        "kitchen_table_porcelain_mug_init_region": "kitchen_table_porcelain_mug_init_region",
+        "kitchen_table_porcelain_mug_front_region": "kitchen_table_porcelain_mug_front_region",
+        "microwave_1_top_side": "microwave_1_top_side",
+        "microwave_1_heating_region": "microwave_1_heating_region"
+      },
+      "initial_achievement_goals": [
+        {
+          "family_key": "goal:in:white_yellow_mug_1:microwave_1_heating_region",
+          "predicate": "in",
+          "arguments": [
+            "white_yellow_mug_1",
+            "microwave_1_heating_region"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE6_put_the_yellow_and_white_mug_in_the_microwave_and_close_it.bddl#:goal"
+        },
+        {
+          "family_key": "goal:close:microwave_1",
+          "predicate": "close",
+          "arguments": [
+            "microwave_1"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE6_put_the_yellow_and_white_mug_in_the_microwave_and_close_it.bddl#:goal"
+        }
+      ],
+      "maintenance_invariants": [],
+      "hard_safety_constraints": [],
+      "soft_preference_templates": [],
+      "milestone_predicates": [
+        {
+          "milestone_id": "milestone:0",
+          "predicate": "in",
+          "arguments": [
+            "white_yellow_mug_1",
+            "microwave_1_heating_region"
+          ],
+          "verifier": "LIBERO._eval_predicate",
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE6_put_the_yellow_and_white_mug_in_the_microwave_and_close_it.bddl#:goal"
+        },
+        {
+          "milestone_id": "milestone:1",
+          "predicate": "close",
+          "arguments": [
+            "microwave_1"
+          ],
+          "verifier": "LIBERO._eval_predicate",
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE6_put_the_yellow_and_white_mug_in_the_microwave_and_close_it.bddl#:goal"
+        }
+      ],
+      "alternative_valid_goals": [],
+      "replaceable_goal_families": [],
+      "safe_event_injection_poses": {},
+      "supported_event_families": [],
+      "semantic_triggers": {},
+      "dynamic_evaluator_predicates": [
+        {
+          "predicate": "in",
+          "arguments": [
+            "white_yellow_mug_1",
+            "microwave_1_heating_region"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE6_put_the_yellow_and_white_mug_in_the_microwave_and_close_it.bddl#:goal"
+        },
+        {
+          "predicate": "close",
+          "arguments": [
+            "microwave_1"
+          ],
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE6_put_the_yellow_and_white_mug_in_the_microwave_and_close_it.bddl#:goal"
+        }
+      ],
+      "planner_compiler_metadata": {},
+      "initial_state_digests": {},
+      "structural_checks": {
+        "two_independently_verifiable_milestones": {
+          "passed": null,
+          "evidence_refs": []
+        },
+        "completed_milestone_preservable": {
+          "passed": null,
+          "evidence_refs": []
+        },
+        "safe_changeable_grounding": {
+          "passed": null,
+          "evidence_refs": []
+        },
+        "cross_skill_requirement_or_persistent_preference": {
+          "passed": null,
+          "evidence_refs": []
+        }
+      },
+      "event_feasibility": {},
+      "calibration_records": [],
+      "source_refs": [
+        {
+          "uri": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/benchmark/libero_suite_task_map.py",
+          "sha256": "0c950df0a785aa55de968bb38ccd865d2017f71ddbe6f48cfd05ac0742b6d62d",
+          "description": "Official LIBERO-10 order at pinned upstream commit 8f1084e3132a39270c3a13ebe37270a43ece2a01"
+        },
+        {
+          "uri": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE6_put_the_yellow_and_white_mug_in_the_microwave_and_close_it.bddl",
+          "sha256": "456d145f92be049f445fc77673dc583d9d17ea7afe92f6ffcb2fd1fa5565d420",
+          "description": "Official BDDL source; original goals and simulator identifiers only; initial placement regions are not certified safe intervention poses."
+        }
+      ],
+      "unresolved_fields": [
+        "structural_checks",
+        "maintenance_invariants",
+        "hard_safety_constraints",
+        "soft_preference_templates",
+        "alternative_valid_goals",
+        "replaceable_goal_families",
+        "safe_event_injection_poses",
+        "supported_event_families",
+        "semantic_triggers",
+        "event_feasibility",
+        "planner_compiler_metadata",
+        "calibration_records",
+        "initial_state_digests"
+      ]
+    }
+  ]
+}
