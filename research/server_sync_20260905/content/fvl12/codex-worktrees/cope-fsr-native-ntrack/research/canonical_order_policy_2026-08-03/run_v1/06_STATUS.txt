@@ -1,0 +1,16 @@
+schema_version=canonical-order-policy-status-v1
+normalization_version=stable-record-order-v1
+clean_pass=12/12
+legacy_clean_already_strict=0/12
+normalized_clean_strict=12/12
+strict_rejects_reorder=14/14
+normalize_accepts_reorder=14/14
+normalized_bytes_hash_equal=14/14
+key_faults_rejected=7/7
+aggregate_median_normalization_ns=100979
+timing_gate_under_1ms=True
+selected_policy=normalize_before_validate_publish_hash
+decision=PASS
+learned_provider_calls=0
+gpu_llm_robot_simulator_used=false
+reserved_states_27_49_read=false

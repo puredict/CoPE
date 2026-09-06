@@ -1,0 +1,30 @@
+.venv/
+models/
+audit_outputs/
+smoke_outputs/
+disturbance_outputs/
+outputs/
+results/
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+*.pyc
+*.pyo
+*.log
+*.mp4
+
+# Local caches and generated experiment outputs
+cache/
+dashboard_outputs/
+interactive_outputs/
+baseline_outputs/
+second_necessity_outputs/
+disturbance_probe_out/
+tmp/
+
+# External dependency checkouts / large assets managed outside this project repo
+src/
+libero_data/
+
+# Generated local image artifact, kept out without ignoring all PNG files
+synthetic_table.png

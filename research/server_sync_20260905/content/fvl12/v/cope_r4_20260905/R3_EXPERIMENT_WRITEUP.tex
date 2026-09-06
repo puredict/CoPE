@@ -1,0 +1,211 @@
+% Standalone, compile-ready description of the r3 experiment.
+% The body can also be copied into a paper or supplement.
+\documentclass[10pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+
+\newcommand{\CoPE}{\textsc{CoPE}}
+\newcommand{\FSRPC}{\textsc{FSR-PC}}
+\newcommand{\TBD}{\textit{TBD}}
+
+\title{A Persistent-Lineage, Resource-Bounded Evaluation of \CoPE{} and
+\FSRPC{}}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Motivation}
+
+In the preceding r2 benchmark, \CoPE{} and \FSRPC{} maintained visibly
+different internal task states but achieved identical task-completion rates.
+The equality was explained by the execution interface: both representations
+were compiled into the same canonical object--target requirements and then
+passed through the same pick-and-place stack.  Consequently, lifecycle and
+lineage information could improve auditability without affecting behavior.
+
+The r3 experiment removes this insensitivity by constructing a long-horizon
+task in which the correct downstream action sequence is bound to a persistent
+workflow instance.  The experiment tests the resource-bounded hypothesis that,
+under the same model, information, call count, output budget, and wall-clock
+budget, persistent typed editing yields higher end-to-end task completion than
+repeated complete-state regeneration.
+
+\section{Compared Methods}
+
+At every interruption, both methods receive the same current task state, task
+contract, world state, completed progress, current event, full event history,
+and compute budget.  Both use one call to the same fixed language model.
+
+\paragraph{\CoPE{}.}
+The model emits a minimal typed patch, such as \texttt{Suspend},
+\texttt{Override}, \texttt{Restore}, or \texttt{RestoreRoot}.  A persistent
+state store applies the operation atomically and owns stable identity,
+lifecycle history, parent/root relations, and lineage traversal.
+
+\paragraph{\FSRPC{}.}
+The model emits a complete replacement state at every event.  This is a strong
+full-state-regeneration baseline: it may preserve stable identifiers and is
+explicitly allowed to reconstruct complete lifecycle history and lineage.  It
+is not deprived of information.  Its defining constraint is that every slot
+and every retained lifecycle record must be serialized again.
+
+After adaptation, both arms use the same plan compiler and the same privileged
+LIBERO/MuJoCo geometry-oracle controller.  No learned manipulation policy is
+used, so the comparison isolates task-state adaptation rather than visual
+perception or low-level control learning.
+
+\section{Lineage-Dependent Task}
+
+Each episode represents a persistent multi-order fulfillment shift.  Most
+orders have already been completed but remain referenceable persistent records.
+One critical order undergoes suspension, restoration, six nested temporary
+overrides, another suspension/restoration cycle, and a final request to withdraw
+all detours and resume the depth-zero ancestor.
+
+The original root workflow requires the following final plan:
+\begin{enumerate}
+    \item place butter in basket B;
+    \item place the milk receipt token in basket A;
+    \item place the yogurt closure token in basket A.
+\end{enumerate}
+The deepest detour deliberately has the same first action, butter to basket B,
+but binds milk to basket C.  Therefore, the surface object--target pair is
+insufficient: selecting the correct remaining actions requires following the
+parent/root lineage and recovering the continuation stored by the original
+workflow instance.  A registered causal gate confirms that the lineage-aware
+plan succeeds while a surface-only plan with the same first action fails exact
+task completion.
+
+\section{Fixed Model and Registered Profiles}
+
+The first evaluation fixes the model to \texttt{Qwen/Qwen3-32B}, served locally
+through an OpenAI-compatible vLLM endpoint.  Sampling temperature is zero,
+top-$p$ is one, and the random seed is fixed to 20260904.  Each event permits
+one model call, at most 4096 output tokens, and at most 90 seconds.  Method order
+alternates by seed.  Twenty paired seeds are registered for each profile.
+
+\begin{table}[h]
+\centering
+\caption{Registered r3 profiles.  Token sizes are four-character-per-token
+diagnostics used only to check feasibility; server-reported tokenizer usage is
+authoritative in the experiment.}
+\label{tab:r3-profiles}
+\begin{tabular}{lrrrrr}
+\toprule
+Profile & Initial slots & Lineage depth & Events & Max prompt & Max full state \\
+\midrule
+Calibration   &  8 & 2 &  7 &  3050 &  2186 \\
+Lineage-valid & 10 & 6 & 11 &  5229 &  3765 \\
+Long-lineage  & 48 & 6 & 11 & 13398 & 11934 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The common model context is 32768 tokens.  Thus, even the estimated
+long-lineage prompt plus the registered output allowance remains within the
+context window, while an explicit complete-state response is substantially
+larger than the 4096-token output allowance.  The small profiles determine
+whether the methods agree when both output formats are feasible; the
+long-lineage profile is the primary finite-budget condition.
+
+\section{Outcome and Analysis}
+
+The primary endpoint is end-to-end task completion in the long-lineage profile:
+\begin{align}
+\mathrm{Completion} ={}&
+\mathrm{AllEventsProcessed}
+\land \mathrm{AllGenerationsValid} \nonumber\\
+&\land \mathrm{RootLineageRestored}
+\land \mathrm{PlanMatchesRoot}
+\land \mathrm{PhysicalSuccess}.
+\end{align}
+Every attempted episode remains in the denominator.  A timeout, length
+truncation, malformed JSON, schema failure, lifecycle-history loss, inconsistent
+lineage graph, wrong ancestor, wrong continuation, or physical failure is a task
+failure rather than an exclusion.
+
+For each profile, we report completion and valid-generation rates with Wilson
+95\% intervals.  The primary paired comparison uses the exact McNemar test and
+a paired bootstrap interval for the completion-rate difference
+$\CoPE-\FSRPC$.  We additionally report completion among pairs in which both
+methods generated valid states.  This conditional quantity is diagnostic: it
+can reveal a lineage/continuation error after successful serialization, but it
+never replaces the primary endpoint or removes generation failures from it.
+
+\section{Expected Result Pattern}
+
+The preregistered qualitative expectations are:
+\begin{enumerate}
+    \item \textbf{Calibration:} both methods should usually generate valid
+    states and achieve similar completion.  Broad failure of both arms indicates
+    a model/prompt integration problem and triggers a stop.
+    \item \textbf{Lineage-valid:} both output forms remain feasible.  A \CoPE{}
+    advantage here would show lower lifecycle or ancestor-selection error beyond
+    serialization length; parity would still be compatible with a strong
+    regenerator reconstructing the correct state.
+    \item \textbf{Long-lineage:} \CoPE{} should achieve higher primary task
+    completion because its patch remains short, whereas complete regeneration
+    is exposed to truncation, timeout, and whole-state consistency failures
+    under the identical finite budget.
+    \item \textbf{Conditional-valid diagnostic:} the gap should be smaller than
+    the primary gap.  A remaining gap would support an additional lineage
+    correctness benefit; no remaining gap would indicate that the main benefit
+    is resource-bounded serialization reliability.
+\end{enumerate}
+
+\section{Meaning of the Current Engineering Checks}
+
+With an unlimited deterministic oracle generator, \CoPE{} patches and complete
+\FSRPC{} states produce the same correct final-state fingerprint and the same
+successful plan.  This is a desirable fairness result.  It shows that the
+full-state baseline is capable of representing the correct answer, that both
+arms share the same task semantics and executor, and that an eventual bounded
+LLM gap cannot be attributed to intentionally making \FSRPC{} semantically
+incapable.  It does \emph{not} show that \CoPE{} already has higher empirical
+task completion.
+
+Eight of eight local regression tests currently pass.  They cover deterministic
+task construction, lineage traversal, exact path equivalence under the oracle,
+rejection of lost history, failure accounting for output truncation, the
+wrong-but-valid-state diagnostic, paired input fingerprints, and result
+analysis.  The separate causal gate also passes, and the packaged handoff was
+successfully unpacked and retested.  These checks support implementation
+correctness and the validity of the experimental mechanism; they are unit and
+integration tests, not eight robot trials and not statistical evidence for the
+main hypothesis.
+
+\section{Current Evidential Status}
+
+\begin{table}[h]
+\centering
+\caption{Evidence available before the fixed-model GPU run.}
+\begin{tabular}{p{0.38\linewidth}p{0.16\linewidth}p{0.34\linewidth}}
+\toprule
+Claim or check & Status & Interpretation \\
+\midrule
+Lineage is causally load-bearing & Passed & Surface-equivalent first action,
+but wrong continuation fails the task. \\
+Ideal CoPE/FSR-PC semantic parity & Passed & Removes a straw-baseline and
+implementation confound. \\
+Local regression suite & 8/8 passed & Supports covered software invariants and
+failure accounting. \\
+Fixed-LLM generation advantage & \TBD & Requires Qwen3-32B server results. \\
+Real LIBERO task-completion advantage & \TBD & Requires the registered 120
+episode GPU/server run and controller gate. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Accordingly, the current evidence supports the statement that r3 is a valid,
+lineage-sensitive, executable test of the hypothesis.  It does not yet support
+the empirical conclusion that \CoPE{} has higher task completion than
+\FSRPC{}.  That conclusion is warranted only if the preregistered fixed-model
+run passes its controller and calibration gates and shows the predicted paired
+completion advantage in the long-lineage profile.
+
+\end{document}

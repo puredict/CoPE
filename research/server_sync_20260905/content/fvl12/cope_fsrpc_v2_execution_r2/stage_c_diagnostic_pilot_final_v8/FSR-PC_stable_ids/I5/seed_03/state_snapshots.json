@@ -1,0 +1,859 @@
+[
+  {
+    "constraint_state": {
+      "n_active": 5,
+      "n_slots": 5,
+      "override_edges": [],
+      "slots": {
+        "c_gentle": {
+          "grounding": "handle_objects_gently",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "c_gentle",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "kind": "user_preference_as_safety"
+          },
+          "priority": "hard",
+          "priority_snapshot": null,
+          "source": "safety_rule"
+        },
+        "c_no_collision": {
+          "grounding": "avoid_collision",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "c_no_collision",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "kind": "safety"
+          },
+          "priority": "hard",
+          "priority_snapshot": null,
+          "source": "safety_rule"
+        },
+        "g_butter": {
+          "grounding": "place_butter_in_basket_B",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "g_butter",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "object": "butter",
+            "order": 0,
+            "target": "basket_B"
+          },
+          "priority": "soft",
+          "priority_snapshot": null,
+          "source": "initial_task"
+        },
+        "g_milk": {
+          "grounding": "place_milk_in_basket_A",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "g_milk",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "object": "milk",
+            "order": 1,
+            "target": "basket_A"
+          },
+          "priority": "soft",
+          "priority_snapshot": null,
+          "source": "initial_task"
+        },
+        "g_yogurt": {
+          "grounding": "place_yogurt_in_basket_A",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "g_yogurt",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "object": "yogurt",
+            "order": 2,
+            "target": "basket_A"
+          },
+          "priority": "soft",
+          "priority_snapshot": null,
+          "source": "initial_task"
+        }
+      },
+      "version": 1
+    },
+    "label": "initial",
+    "simulator_state_hash": "2271bcffa784ab92e21641ea3c6fb612131e9d6927a3c42f00eeedae634635ab"
+  },
+  {
+    "after": {
+      "n_active": 5,
+      "n_slots": 5,
+      "override_edges": [],
+      "slots": {
+        "c_gentle": {
+          "grounding": "handle_objects_gently",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "c_gentle",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "kind": "user_preference_as_safety"
+          },
+          "priority": "hard",
+          "priority_snapshot": null,
+          "source": "safety_rule"
+        },
+        "c_no_collision": {
+          "grounding": "avoid_collision",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "c_no_collision",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "kind": "safety"
+          },
+          "priority": "hard",
+          "priority_snapshot": null,
+          "source": "safety_rule"
+        },
+        "g_butter": {
+          "grounding": "place_butter_in_basket_B",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "g_butter",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "completed": true,
+            "object": "butter",
+            "order": 0,
+            "target": "basket_B"
+          },
+          "priority": "soft",
+          "priority_snapshot": null,
+          "source": "initial_task"
+        },
+        "g_milk": {
+          "grounding": "place_milk_in_basket_A",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "g_milk",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "object": "milk",
+            "order": 1,
+            "target": "basket_A"
+          },
+          "priority": "soft",
+          "priority_snapshot": null,
+          "source": "initial_task"
+        },
+        "g_yogurt": {
+          "grounding": "place_yogurt_in_basket_A",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "g_yogurt",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "object": "yogurt",
+            "order": 2,
+            "target": "basket_A"
+          },
+          "priority": "soft",
+          "priority_snapshot": null,
+          "source": "initial_task"
+        }
+      },
+      "version": 2
+    },
+    "before": {
+      "n_active": 5,
+      "n_slots": 5,
+      "override_edges": [],
+      "slots": {
+        "c_gentle": {
+          "grounding": "handle_objects_gently",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "c_gentle",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "kind": "user_preference_as_safety"
+          },
+          "priority": "hard",
+          "priority_snapshot": null,
+          "source": "safety_rule"
+        },
+        "c_no_collision": {
+          "grounding": "avoid_collision",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "c_no_collision",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "kind": "safety"
+          },
+          "priority": "hard",
+          "priority_snapshot": null,
+          "source": "safety_rule"
+        },
+        "g_butter": {
+          "grounding": "place_butter_in_basket_B",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "g_butter",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "object": "butter",
+            "order": 0,
+            "target": "basket_B"
+          },
+          "priority": "soft",
+          "priority_snapshot": null,
+          "source": "initial_task"
+        },
+        "g_milk": {
+          "grounding": "place_milk_in_basket_A",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "g_milk",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "object": "milk",
+            "order": 1,
+            "target": "basket_A"
+          },
+          "priority": "soft",
+          "priority_snapshot": null,
+          "source": "initial_task"
+        },
+        "g_yogurt": {
+          "grounding": "place_yogurt_in_basket_A",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "g_yogurt",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "object": "yogurt",
+            "order": 2,
+            "target": "basket_A"
+          },
+          "priority": "soft",
+          "priority_snapshot": null,
+          "source": "initial_task"
+        }
+      },
+      "version": 1
+    },
+    "label": "I5-u1",
+    "simulator_state_hash": "d1f8d7f167cee1daf5e4ac2311742ac636c8437e563028e845510c8fc663d0bc"
+  },
+  {
+    "after": {
+      "n_active": 5,
+      "n_slots": 5,
+      "override_edges": [],
+      "slots": {
+        "c_gentle": {
+          "grounding": "handle_objects_gently",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "c_gentle",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "kind": "user_preference_as_safety"
+          },
+          "priority": "hard",
+          "priority_snapshot": null,
+          "source": "safety_rule"
+        },
+        "c_no_collision": {
+          "grounding": "avoid_collision",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "c_no_collision",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "kind": "safety"
+          },
+          "priority": "hard",
+          "priority_snapshot": null,
+          "source": "safety_rule"
+        },
+        "g_butter": {
+          "grounding": "place_butter_in_basket_B",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "g_butter",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "completed": true,
+            "object": "butter",
+            "order": 0,
+            "target": "basket_B"
+          },
+          "priority": "soft",
+          "priority_snapshot": null,
+          "source": "initial_task"
+        },
+        "g_milk": {
+          "grounding": "place_milk_in_basket_A",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "g_milk",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "completed": true,
+            "object": "milk",
+            "order": 1,
+            "target": "basket_A"
+          },
+          "priority": "soft",
+          "priority_snapshot": null,
+          "source": "initial_task"
+        },
+        "g_yogurt": {
+          "grounding": "place_yogurt_in_basket_A",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "g_yogurt",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "object": "yogurt",
+            "order": 2,
+            "target": "basket_A"
+          },
+          "priority": "soft",
+          "priority_snapshot": null,
+          "source": "initial_task"
+        }
+      },
+      "version": 3
+    },
+    "before": {
+      "n_active": 5,
+      "n_slots": 5,
+      "override_edges": [],
+      "slots": {
+        "c_gentle": {
+          "grounding": "handle_objects_gently",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "c_gentle",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "kind": "user_preference_as_safety"
+          },
+          "priority": "hard",
+          "priority_snapshot": null,
+          "source": "safety_rule"
+        },
+        "c_no_collision": {
+          "grounding": "avoid_collision",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "c_no_collision",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "kind": "safety"
+          },
+          "priority": "hard",
+          "priority_snapshot": null,
+          "source": "safety_rule"
+        },
+        "g_butter": {
+          "grounding": "place_butter_in_basket_B",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "g_butter",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "completed": true,
+            "object": "butter",
+            "order": 0,
+            "target": "basket_B"
+          },
+          "priority": "soft",
+          "priority_snapshot": null,
+          "source": "initial_task"
+        },
+        "g_milk": {
+          "grounding": "place_milk_in_basket_A",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "g_milk",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "object": "milk",
+            "order": 1,
+            "target": "basket_A"
+          },
+          "priority": "soft",
+          "priority_snapshot": null,
+          "source": "initial_task"
+        },
+        "g_yogurt": {
+          "grounding": "place_yogurt_in_basket_A",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "g_yogurt",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "object": "yogurt",
+            "order": 2,
+            "target": "basket_A"
+          },
+          "priority": "soft",
+          "priority_snapshot": null,
+          "source": "initial_task"
+        }
+      },
+      "version": 2
+    },
+    "label": "I5-u2",
+    "simulator_state_hash": "0894b739963a95c18fd6993e4bf7f03bc3198ee0cb59c40f6431ed74676dff02"
+  },
+  {
+    "after": {
+      "n_active": 5,
+      "n_slots": 5,
+      "override_edges": [],
+      "slots": {
+        "c_gentle": {
+          "grounding": "handle_objects_gently",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "c_gentle",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "kind": "user_preference_as_safety"
+          },
+          "priority": "hard",
+          "priority_snapshot": null,
+          "source": "safety_rule"
+        },
+        "c_no_collision": {
+          "grounding": "avoid_collision",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "c_no_collision",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "kind": "safety"
+          },
+          "priority": "hard",
+          "priority_snapshot": null,
+          "source": "safety_rule"
+        },
+        "g_butter": {
+          "grounding": "place_butter_in_basket_B",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "g_butter",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "completed": true,
+            "object": "butter",
+            "order": 0,
+            "target": "basket_B"
+          },
+          "priority": "soft",
+          "priority_snapshot": null,
+          "source": "initial_task"
+        },
+        "g_milk": {
+          "grounding": "place_milk_in_basket_A",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "g_milk",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "completed": true,
+            "object": "milk",
+            "order": 1,
+            "target": "basket_A"
+          },
+          "priority": "soft",
+          "priority_snapshot": null,
+          "source": "initial_task"
+        },
+        "g_yogurt": {
+          "grounding": "place_yogurt_in_basket_A",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "g_yogurt",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "object": "yogurt",
+            "order": 2,
+            "target": "basket_A"
+          },
+          "priority": "soft",
+          "priority_snapshot": null,
+          "source": "initial_task"
+        }
+      },
+      "version": 4
+    },
+    "before": {
+      "n_active": 5,
+      "n_slots": 5,
+      "override_edges": [],
+      "slots": {
+        "c_gentle": {
+          "grounding": "handle_objects_gently",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "c_gentle",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "kind": "user_preference_as_safety"
+          },
+          "priority": "hard",
+          "priority_snapshot": null,
+          "source": "safety_rule"
+        },
+        "c_no_collision": {
+          "grounding": "avoid_collision",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "c_no_collision",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "kind": "safety"
+          },
+          "priority": "hard",
+          "priority_snapshot": null,
+          "source": "safety_rule"
+        },
+        "g_butter": {
+          "grounding": "place_butter_in_basket_B",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "g_butter",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "completed": true,
+            "object": "butter",
+            "order": 0,
+            "target": "basket_B"
+          },
+          "priority": "soft",
+          "priority_snapshot": null,
+          "source": "initial_task"
+        },
+        "g_milk": {
+          "grounding": "place_milk_in_basket_A",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "g_milk",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "completed": true,
+            "object": "milk",
+            "order": 1,
+            "target": "basket_A"
+          },
+          "priority": "soft",
+          "priority_snapshot": null,
+          "source": "initial_task"
+        },
+        "g_yogurt": {
+          "grounding": "place_yogurt_in_basket_A",
+          "has_restore": false,
+          "has_validity": false,
+          "history": [],
+          "id": "g_yogurt",
+          "lineage": {
+            "depends_on": [],
+            "derived_from": null,
+            "inherited_at": [],
+            "overridden_by": null,
+            "overrides": []
+          },
+          "mode": "active",
+          "payload": {
+            "object": "yogurt",
+            "order": 2,
+            "target": "basket_A"
+          },
+          "priority": "soft",
+          "priority_snapshot": null,
+          "source": "initial_task"
+        }
+      },
+      "version": 3
+    },
+    "label": "I5-u3",
+    "simulator_state_hash": "752828968e2f9b89422b8680fc102053040a11cdd82fd9774e85c3ce274063a4"
+  }
+]

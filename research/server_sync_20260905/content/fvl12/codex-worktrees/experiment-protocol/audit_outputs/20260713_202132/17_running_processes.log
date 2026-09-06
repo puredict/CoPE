@@ -1,0 +1,8 @@
+COMMAND: ps -u lijingsu -o pid,ppid,stat,etime,cmd | grep -E 'python|libero|openvla|disturbance|vla' | grep -v grep || true
+START: 2026-07-13T20:26:09+08:00
+END: 2026-07-13T20:26:09+08:00
+EXIT: 0
+
+STDOUT:
+
+STDERR:

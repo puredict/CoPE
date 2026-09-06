@@ -1,0 +1,35 @@
+stage,method_a,method_b,n_pairs,success_a,success_b,a_win_pairs,b_win_pairs,tied_pairs,exact_mcnemar_p,seed_clusters,cluster_sign_p,metric,mean_a_minus_b,cluster_bootstrap_95_low,cluster_bootstrap_95_high,notes
+B,CoPE,FSR-PC,20,17,17,0,0,20,1.000000000,5,1.000000,revised_task_success,0.000000,,,McNemar treats episode pairs; cluster sign groups repeated conditions by seed
+B,CoPE,FSR-PC,20,17,17,0,0,20,1.000000000,5,1.000000,audit_coverage,0.541750,0.541750,0.541750,Five-seed cluster bootstrap; fixed task/condition catalog
+B,CoPE,FSR-PC,20,17,17,0,0,20,1.000000000,5,1.000000,normalized_edit_distance,-0.512700,-0.532700,-0.492700,Five-seed cluster bootstrap; fixed task/condition catalog
+B,CoPE,FSR-PC,20,17,17,0,0,20,1.000000000,5,1.000000,environment_steps,0.000000,0.000000,0.000000,Five-seed cluster bootstrap; fixed task/condition catalog
+B,CoPE,FSR-PC,20,17,17,0,0,20,1.000000000,5,1.000000,adaptation_latency_s,0.000531,-0.016063,0.014861,Wall-clock latency is shared-load confounded
+B,CoPE,no_adaptation,20,17,3,14,0,6,0.000122070,5,0.062500,revised_task_success,0.700000,,,McNemar treats episode pairs; cluster sign groups repeated conditions by seed
+B,CoPE,no_adaptation,20,17,3,14,0,6,0.000122070,5,0.062500,audit_coverage,1.000000,1.000000,1.000000,Five-seed cluster bootstrap; fixed task/condition catalog
+B,CoPE,no_adaptation,20,17,3,14,0,6,0.000122070,5,0.062500,normalized_edit_distance,0.487300,0.467300,0.507300,Five-seed cluster bootstrap; fixed task/condition catalog
+B,CoPE,no_adaptation,20,17,3,14,0,6,0.000122070,5,0.062500,environment_steps,73.700000,38.050000,111.800000,Five-seed cluster bootstrap; fixed task/condition catalog
+B,CoPE,no_adaptation,20,17,3,14,0,6,0.000122070,5,0.062500,adaptation_latency_s,1.231813,0.637321,1.553758,Wall-clock latency is shared-load confounded
+C,CoPE,FSR-PC,15,9,9,0,0,15,1.000000000,5,1.000000,revised_task_success,0.000000,,,McNemar treats episode pairs; cluster sign groups repeated conditions by seed
+C,CoPE,FSR-PC,15,9,9,0,0,15,1.000000000,5,1.000000,audit_coverage,0.655667,0.655667,0.655667,Five-seed cluster bootstrap; fixed task/condition catalog
+C,CoPE,FSR-PC,15,9,9,0,0,15,1.000000000,5,1.000000,normalized_edit_distance,-0.566580,-0.587327,-0.545833,Five-seed cluster bootstrap; fixed task/condition catalog
+C,CoPE,FSR-PC,15,9,9,0,0,15,1.000000000,5,1.000000,environment_steps,2.533333,0.600000,5.400000,Five-seed cluster bootstrap; fixed task/condition catalog
+C,CoPE,FSR-PC,15,9,9,0,0,15,1.000000000,5,1.000000,adaptation_latency_s,5.563892,1.568442,9.559341,Wall-clock latency is shared-load confounded
+C,CoPE,FSR-PC,15,9,9,0,0,15,1.000000000,5,1.000000,candidates_rejected,0.800000,0.200000,1.400000,Five-seed cluster bootstrap; fixed task/condition catalog
+C,CoPE,FSR-PC_stable_ids,15,9,9,0,0,15,1.000000000,5,1.000000,revised_task_success,0.000000,,,McNemar treats episode pairs; cluster sign groups repeated conditions by seed
+C,CoPE,FSR-PC_stable_ids,15,9,9,0,0,15,1.000000000,5,1.000000,audit_coverage,0.655667,0.655667,0.655667,Five-seed cluster bootstrap; fixed task/condition catalog
+C,CoPE,FSR-PC_stable_ids,15,9,9,0,0,15,1.000000000,5,1.000000,normalized_edit_distance,-0.566580,-0.587327,-0.545833,Five-seed cluster bootstrap; fixed task/condition catalog
+C,CoPE,FSR-PC_stable_ids,15,9,9,0,0,15,1.000000000,5,1.000000,environment_steps,2.533333,0.600000,5.400000,Five-seed cluster bootstrap; fixed task/condition catalog
+C,CoPE,FSR-PC_stable_ids,15,9,9,0,0,15,1.000000000,5,1.000000,adaptation_latency_s,5.502045,1.510677,9.493412,Wall-clock latency is shared-load confounded
+C,CoPE,FSR-PC_stable_ids,15,9,9,0,0,15,1.000000000,5,1.000000,candidates_rejected,0.800000,0.200000,1.400000,Five-seed cluster bootstrap; fixed task/condition catalog
+C,CoPE,FSR-PC_provenance,15,9,9,0,0,15,1.000000000,5,1.000000,revised_task_success,0.000000,,,McNemar treats episode pairs; cluster sign groups repeated conditions by seed
+C,CoPE,FSR-PC_provenance,15,9,9,0,0,15,1.000000000,5,1.000000,audit_coverage,0.066667,0.066667,0.066667,Five-seed cluster bootstrap; fixed task/condition catalog
+C,CoPE,FSR-PC_provenance,15,9,9,0,0,15,1.000000000,5,1.000000,normalized_edit_distance,-0.566580,-0.587327,-0.545833,Five-seed cluster bootstrap; fixed task/condition catalog
+C,CoPE,FSR-PC_provenance,15,9,9,0,0,15,1.000000000,5,1.000000,environment_steps,2.533333,0.600000,5.400000,Five-seed cluster bootstrap; fixed task/condition catalog
+C,CoPE,FSR-PC_provenance,15,9,9,0,0,15,1.000000000,5,1.000000,adaptation_latency_s,5.498792,1.506161,9.491424,Wall-clock latency is shared-load confounded
+C,CoPE,FSR-PC_provenance,15,9,9,0,0,15,1.000000000,5,1.000000,candidates_rejected,0.800000,0.200000,1.400000,Five-seed cluster bootstrap; fixed task/condition catalog
+D,CoPE_full,CoPE_no_rollout_verification,15,9,9,0,0,15,1.000000000,5,1.000000,revised_task_success,0.000000,,,McNemar treats episode pairs; cluster sign groups repeated conditions by seed
+D,CoPE_full,CoPE_no_rollout_verification,15,9,9,0,0,15,1.000000000,5,1.000000,audit_coverage,0.000000,0.000000,0.000000,Five-seed cluster bootstrap; fixed task/condition catalog
+D,CoPE_full,CoPE_no_rollout_verification,15,9,9,0,0,15,1.000000000,5,1.000000,normalized_edit_distance,0.000000,0.000000,0.000000,Five-seed cluster bootstrap; fixed task/condition catalog
+D,CoPE_full,CoPE_no_rollout_verification,15,9,9,0,0,15,1.000000000,5,1.000000,environment_steps,-32.200000,-50.066667,-12.266667,Five-seed cluster bootstrap; fixed task/condition catalog
+D,CoPE_full,CoPE_no_rollout_verification,15,9,9,0,0,15,1.000000000,5,1.000000,adaptation_latency_s,10.670922,8.236393,13.242264,Wall-clock latency is shared-load confounded
+D,CoPE_full,CoPE_no_rollout_verification,15,9,9,0,0,15,1.000000000,5,1.000000,candidates_rejected,2.200000,1.533333,2.933333,Five-seed cluster bootstrap; fixed task/condition catalog

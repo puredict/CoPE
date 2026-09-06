@@ -1,0 +1,13 @@
+COMMAND: cd /home/lijingsu/vla && ls -ld .venv src/openvla src/LIBERO models cache 2>&1 || true
+START: 2026-07-13T20:26:07+08:00
+END: 2026-07-13T20:26:07+08:00
+EXIT: 0
+
+STDOUT:
+drwxrwxr-x 7 lijingsu lijingsu 4096 Jul  7 21:58 .venv
+drwxrwxr-x 4 lijingsu lijingsu 4096 Jul  7 19:41 cache
+drwxrwxr-x 4 lijingsu lijingsu 4096 Jul  7 22:21 models
+drwxrwxr-x 9 lijingsu lijingsu 4096 Jul  7 21:56 src/LIBERO
+drwxrwxr-x 8 lijingsu lijingsu 4096 Jul  7 22:28 src/openvla
+
+STDERR:

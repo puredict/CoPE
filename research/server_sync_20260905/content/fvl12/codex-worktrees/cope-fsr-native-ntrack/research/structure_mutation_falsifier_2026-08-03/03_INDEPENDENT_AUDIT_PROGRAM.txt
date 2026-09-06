@@ -1,0 +1,165 @@
+#!/usr/bin/env python3
+"""Independent CSV-only audit for X18 v1/v2; imports no CoPE code."""
+
+from __future__ import annotations
+
+import csv
+import hashlib
+import json
+from collections import Counter, defaultdict
+from pathlib import Path
+
+
+ROOT = Path("research/structure_mutation_falsifier_2026-08-03")
+ALLOWED_ORDER_PATHS = {"/commitments", "/entities", "/progress_ledger"}
+
+
+def read_csv(path: Path) -> list[dict[str, str]]:
+    with path.open(newline="", encoding="utf-8") as stream:
+        return list(csv.DictReader(stream))
+
+
+def truth(value: str) -> bool:
+    if value not in {"True", "False"}:
+        raise ValueError(value)
+    return value == "True"
+
+
+def add(checks: list[dict[str, str]], name: str, passed: bool, observed: object, expected: object) -> None:
+    checks.append({
+        "check": name,
+        "pass": str(bool(passed)),
+        "observed": json.dumps(observed, sort_keys=True, separators=(",", ":")),
+        "expected": json.dumps(expected, sort_keys=True, separators=(",", ":")),
+    })
+
+
+def status_map(path: Path) -> dict[str, str]:
+    result = {}
+    for line in path.read_text(encoding="utf-8").splitlines():
+        key, value = line.split("=", 1)
+        result[key] = value
+    return result
+
+
+def recompute_aggregate(rows: list[dict[str, str]]) -> dict[str, dict[str, int]]:
+    result = {}
+    for operator in sorted({row["operator"] for row in rows}):
+        selected = [row for row in rows if row["operator"] == operator]
+        result[operator] = {
+            "retained_candidates": len(selected),
+            "exact_rejected": sum(not truth(row["exact_accepted"]) for row in selected),
+            "decomposed_rejected": sum(not truth(row["decomposed_accepted"]) for row in selected),
+            "order_only_divergence": sum(truth(row["order_only_divergence"]) for row in selected),
+            "dangerous_blind_spot": sum(truth(row["dangerous_blind_spot"]) for row in selected),
+            "decomposed_crash": sum(truth(row["decomposed_crash"]) for row in selected),
+            "passed": sum(truth(row["pass"]) for row in selected),
+        }
+    return result
+
+
+def aggregate_matches(raw: list[dict[str, str]], aggregate: list[dict[str, str]]) -> bool:
+    expected = recompute_aggregate(raw)
+    actual = {row["operator"]: row for row in aggregate}
+    return set(actual) == set(expected) and all(
+        all(int(actual[operator][field]) == value for field, value in values.items())
+        for operator, values in expected.items()
+    )
+
+
+def main() -> int:
+    operators = read_csv(ROOT / "01_OPERATOR_MANIFEST.csv")
+    v1_clean = read_csv(ROOT / "run_v1/02_CLEAN_CONTROLS.csv")
+    v1 = read_csv(ROOT / "run_v1/03_MUTATION_RESULTS.csv")
+    v1_agg = read_csv(ROOT / "run_v1/04_OPERATOR_AGGREGATE.csv")
+    v1_status = status_map(ROOT / "run_v1/05_STATUS.txt")
+    v2_clean = read_csv(ROOT / "run_v2/02_CLEAN_CONTROLS.csv")
+    v2 = read_csv(ROOT / "run_v2/03_MUTATION_RESULTS.csv")
+    v2_agg = read_csv(ROOT / "run_v2/04_OPERATOR_AGGREGATE.csv")
+    v2_status = status_map(ROOT / "run_v2/05_STATUS.txt")
+    checks: list[dict[str, str]] = []
+
+    operator_names = [row["operator"] for row in operators]
+    add(checks, "operator_manifest_11_unique", len(operator_names) == 11 and len(set(operator_names)) == 11, [len(operator_names), len(set(operator_names))], [11, 11])
+    clean_ok = all(len(rows) == 12 and all(truth(row["pass"]) for row in rows) for rows in (v1_clean, v2_clean))
+    add(checks, "both_runs_clean_12", clean_ok, [sum(truth(row["pass"]) for row in v1_clean), sum(truth(row["pass"]) for row in v2_clean)], [12, 12])
+    add(checks, "both_runs_2352_rows", len(v1) == len(v2) == 2352, [len(v1), len(v2)], [2352, 2352])
+
+    key_fields = ("case_id", "mutation_id", "traversal_index", "operator", "path", "argument", "candidate_sha256", "canonical_sha256")
+    v1_keys = [tuple(row[field] for field in key_fields) for row in v1]
+    v2_keys = [tuple(row[field] for field in key_fields) for row in v2]
+    add(checks, "v1_v2_candidate_identity", v1_keys == v2_keys and len(set(v1_keys)) == 2352, [v1_keys == v2_keys, len(set(v1_keys))], [True, 2352])
+    evidence_ok = all(
+        truth(row["candidate_changed"]) and not truth(row["exact_accepted"])
+        and not truth(row["decomposed_crash"]) and truth(row["caller_state_unchanged"])
+        for row in v1 + v2
+    )
+    add(checks, "common_mutation_evidence_integrity", evidence_ok, sum(truth(row["candidate_changed"]) for row in v1 + v2), 4704)
+    add(checks, "raw_aggregates_recompute", aggregate_matches(v1, v1_agg) and aggregate_matches(v2, v2_agg), [aggregate_matches(v1, v1_agg), aggregate_matches(v2, v2_agg)], [True, True])
+
+    v1_order = [row for row in v1 if truth(row["order_only_divergence"])]
+    v2_order = [row for row in v2 if truth(row["order_only_divergence"])]
+    order_ok = len(v1_order) == len(v2_order) == 14 and all(
+        row["operator"] == "reverse_list" and row["path"] in ALLOWED_ORDER_PATHS
+        and truth(row["decomposed_accepted"]) and not truth(row["exact_accepted"])
+        for row in v1_order + v2_order
+    )
+    add(checks, "frozen_order_only_divergences_14", order_ok, [len(v1_order), len(v2_order)], [14, 14])
+    add(checks, "order_divergence_identity_stable", [(row["case_id"], row["path"], row["candidate_sha256"]) for row in v1_order] == [(row["case_id"], row["path"], row["candidate_sha256"]) for row in v2_order], len(v2_order), 14)
+
+    v1_danger = [row for row in v1 if truth(row["dangerous_blind_spot"])]
+    expected_danger = {
+        ("replace_pending_target", "add_unknown_field", "/commitments/1"),
+        ("continuity_invalid", "add_unknown_field", "/commitments/1"),
+        ("cancel_sibling", "add_unknown_field", "/commitments/1"),
+        ("activate_override", "add_unknown_field", "/commitments/1"),
+    }
+    observed_danger = {(row["case_id"], row["operator"], row["path"]) for row in v1_danger}
+    add(checks, "v1_four_dangerous_blind_spots", len(v1_danger) == 4 and observed_danger == expected_danger, sorted(observed_danger), sorted(expected_danger))
+    v2_by_id = {row["mutation_id"]: row for row in v2}
+    repaired = all(
+        not truth(v2_by_id[row["mutation_id"]]["decomposed_accepted"])
+        and "identity_lifecycle" in v2_by_id[row["mutation_id"]]["violated_groups"].split(";")
+        and not truth(v2_by_id[row["mutation_id"]]["dangerous_blind_spot"])
+        for row in v1_danger
+    )
+    add(checks, "v2_repairs_exact_four", repaired, sum(not truth(v2_by_id[row["mutation_id"]]["decomposed_accepted"]) for row in v1_danger), 4)
+    v2_danger = [row for row in v2 if truth(row["dangerous_blind_spot"])]
+    add(checks, "v2_zero_dangerous_blind_spot", len(v2_danger) == 0, len(v2_danger), 0)
+    add(checks, "v1_fail_v2_pass", v1_status.get("decision") == "FAIL" and v2_status.get("decision") == "PASS", [v1_status.get("decision"), v2_status.get("decision")], ["FAIL", "PASS"])
+    add(checks, "v2_rejection_counts", v2_status.get("decomposed_rejected") == "2338/2352" and v2_status.get("order_only_divergence") == "14/2352" and v2_status.get("dangerous_blind_spot") == "0/2352", [v2_status.get("decomposed_rejected"), v2_status.get("order_only_divergence"), v2_status.get("dangerous_blind_spot")], ["2338/2352", "14/2352", "0/2352"])
+    boundary_ok = all(
+        status.get("learned_provider_calls") == "0"
+        and status.get("gpu_llm_robot_simulator_used") == "false"
+        and status.get("reserved_states_27_49_read") == "false"
+        and status.get("evidence_class") == "offline_structure_agnostic_single_mutation"
+        for status in (v1_status, v2_status)
+    )
+    add(checks, "evidence_resource_boundary", boundary_ok, True, True)
+
+    output = ROOT / "03_INDEPENDENT_AUDIT.csv"
+    with output.open("x", newline="", encoding="utf-8") as stream:
+        writer = csv.DictWriter(stream, fieldnames=["check", "pass", "observed", "expected"], lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(checks)
+    passed = sum(row["pass"] == "True" for row in checks)
+    decision = "PASS" if passed == len(checks) else "FAIL"
+    result = {
+        "audit_program_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        "checks_passed": passed,
+        "checks_total": len(checks),
+        "decision": decision,
+        "retained_mutations": len(v2),
+        "v1_dangerous_blind_spots": len(v1_danger),
+        "v2_dangerous_blind_spots": len(v2_danger),
+        "order_only_divergences": len(v2_order),
+        "learned_provider_calls": 0,
+        "reserved_states_read": False,
+    }
+    (ROOT / "03_INDEPENDENT_AUDIT_STATUS.txt").write_text(json.dumps(result, sort_keys=True, separators=(",", ":")) + "\n", encoding="utf-8")
+    print(json.dumps(result, sort_keys=True))
+    return 0 if decision == "PASS" else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

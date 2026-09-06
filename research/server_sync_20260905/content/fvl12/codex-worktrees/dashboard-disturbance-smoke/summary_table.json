@@ -1,0 +1,11 @@
+[
+  {
+    "label": "interactive-smoke",
+    "run_dir": "interactive_outputs/dashboard_manual_disturbance_smoke/20260714T112420Z_task0_trial0_reactive_disturbed_7698f8dd",
+    "condition": "diagnostic_skipped",
+    "n": 0,
+    "successes": 0,
+    "success_rate": "",
+    "disturbance_applied": 0
+  }
+]

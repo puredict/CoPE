@@ -1,0 +1,1928 @@
+{
+  "artifact_files": {
+    "actions": "actions.jsonl",
+    "events": "events.jsonl",
+    "model_calls": "model_calls.jsonl",
+    "raw_outputs": "raw_outputs/",
+    "states": "state_snapshots.jsonl"
+  },
+  "backend": "libero_mujoco",
+  "compiled_plan": [
+    {
+      "object": "butter",
+      "role": "primary_order",
+      "target": "basket_B"
+    },
+    {
+      "object": "milk",
+      "role": "receipt_token",
+      "target": "basket_A"
+    },
+    {
+      "object": "yogurt",
+      "role": "closure_token",
+      "target": "basket_A"
+    }
+  ],
+  "episode_id": "long_lineage|seed=1000|method=CoPE",
+  "events": [
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "event": {
+        "current_slot_id": "order-critical/root",
+        "event_id": "seed-1000/e01",
+        "kind": "suspend_current",
+        "ordinal": 1,
+        "reason": "temporary station outage",
+        "user_request": "The original station is temporarily unavailable. Suspend this order without deleting it."
+      },
+      "exogenous_fingerprint": "7c1943d31bc94fa2be0b7e003cd8de77ea87ac31ee7beb16bcc7778cdf34bf0e"
+    },
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "event": {
+        "current_slot_id": "order-critical/root",
+        "event_id": "seed-1000/e02",
+        "kind": "restore_current",
+        "ordinal": 2,
+        "reason": "original station revalidated",
+        "user_request": "The original station is available again. Revalidate and resume the suspended order."
+      },
+      "exogenous_fingerprint": "dabe9605a490a19036709da1c92d5b9ad1baece0c1c63260b95d63c9d346d3a2"
+    },
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "event": {
+        "current_slot_id": "order-critical/root",
+        "event_id": "seed-1000/e03",
+        "kind": "override_current",
+        "new_slot": {
+          "grounding": "place_butter_in_basket_C_then_execute_receipt_v2",
+          "logical_id": "order-critical",
+          "payload": {
+            "audit_nonce": "4427748028d6685e00f2",
+            "continuation_key": "receipt-v2",
+            "object": "butter",
+            "order_id": "critical-1000",
+            "plan": [
+              {
+                "object": "butter",
+                "role": "primary_order",
+                "target": "basket_C"
+              },
+              {
+                "object": "milk",
+                "role": "receipt_token",
+                "target": "basket_A"
+              },
+              {
+                "object": "yogurt",
+                "role": "closure_token",
+                "target": "basket_C"
+              }
+            ],
+            "target": "basket_C"
+          },
+          "priority": "soft",
+          "slot_id": "order-critical/detour-01"
+        },
+        "ordinal": 3,
+        "reason": "temporary detour level 1",
+        "user_request": "Temporarily replace the current version with detour 1. Use basket_C and its explicitly registered continuation."
+      },
+      "exogenous_fingerprint": "47490d79bd69b3ae32175e38db0d7d4c72b695f77a9330388941702a741357d9"
+    },
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "event": {
+        "current_slot_id": "order-critical/detour-01",
+        "event_id": "seed-1000/e04",
+        "kind": "override_current",
+        "new_slot": {
+          "grounding": "place_butter_in_basket_A_then_execute_receipt_v3",
+          "logical_id": "order-critical",
+          "payload": {
+            "audit_nonce": "cfd136e42e1ed7d5113a",
+            "continuation_key": "receipt-v3",
+            "object": "butter",
+            "order_id": "critical-1000",
+            "plan": [
+              {
+                "object": "butter",
+                "role": "primary_order",
+                "target": "basket_A"
+              },
+              {
+                "object": "milk",
+                "role": "receipt_token",
+                "target": "basket_B"
+              },
+              {
+                "object": "yogurt",
+                "role": "closure_token",
+                "target": "basket_C"
+              }
+            ],
+            "target": "basket_A"
+          },
+          "priority": "soft",
+          "slot_id": "order-critical/detour-02"
+        },
+        "ordinal": 4,
+        "reason": "temporary detour level 2",
+        "user_request": "Temporarily replace the current version with detour 2. Use basket_A and its explicitly registered continuation."
+      },
+      "exogenous_fingerprint": "fed903a79940d57d89112cca421324d6c1e15987f4530fff89c443e08b28b350"
+    },
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "event": {
+        "current_slot_id": "order-critical/detour-02",
+        "event_id": "seed-1000/e05",
+        "kind": "override_current",
+        "new_slot": {
+          "grounding": "place_butter_in_basket_C_then_execute_receipt_v1",
+          "logical_id": "order-critical",
+          "payload": {
+            "audit_nonce": "05d43f1d76fe503203a0",
+            "continuation_key": "receipt-v1",
+            "object": "butter",
+            "order_id": "critical-1000",
+            "plan": [
+              {
+                "object": "butter",
+                "role": "primary_order",
+                "target": "basket_C"
+              },
+              {
+                "object": "milk",
+                "role": "receipt_token",
+                "target": "basket_C"
+              },
+              {
+                "object": "yogurt",
+                "role": "closure_token",
+                "target": "basket_A"
+              }
+            ],
+            "target": "basket_C"
+          },
+          "priority": "soft",
+          "slot_id": "order-critical/detour-03"
+        },
+        "ordinal": 5,
+        "reason": "temporary detour level 3",
+        "user_request": "Temporarily replace the current version with detour 3. Use basket_C and its explicitly registered continuation."
+      },
+      "exogenous_fingerprint": "78a38d425d04283045f1c9a983c66d1862e4af5e711a5f1c2f5d1860d3958fcb"
+    },
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "event": {
+        "current_slot_id": "order-critical/detour-03",
+        "event_id": "seed-1000/e06",
+        "kind": "override_current",
+        "new_slot": {
+          "grounding": "place_butter_in_basket_B_then_execute_receipt_v2",
+          "logical_id": "order-critical",
+          "payload": {
+            "audit_nonce": "57b4bfb95702bbcdb1c8",
+            "continuation_key": "receipt-v2",
+            "object": "butter",
+            "order_id": "critical-1000",
+            "plan": [
+              {
+                "object": "butter",
+                "role": "primary_order",
+                "target": "basket_B"
+              },
+              {
+                "object": "milk",
+                "role": "receipt_token",
+                "target": "basket_A"
+              },
+              {
+                "object": "yogurt",
+                "role": "closure_token",
+                "target": "basket_C"
+              }
+            ],
+            "target": "basket_B"
+          },
+          "priority": "soft",
+          "slot_id": "order-critical/detour-04"
+        },
+        "ordinal": 6,
+        "reason": "temporary detour level 4",
+        "user_request": "Temporarily replace the current version with detour 4. Use basket_B and its explicitly registered continuation."
+      },
+      "exogenous_fingerprint": "6c5779c72809db502fbd9801fb6e35e2bdc470526aa029c1fe505e120dee6eea"
+    },
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "event": {
+        "current_slot_id": "order-critical/detour-04",
+        "event_id": "seed-1000/e07",
+        "kind": "override_current",
+        "new_slot": {
+          "grounding": "place_butter_in_basket_C_then_execute_receipt_v3",
+          "logical_id": "order-critical",
+          "payload": {
+            "audit_nonce": "1ed101ef59fba376968f",
+            "continuation_key": "receipt-v3",
+            "object": "butter",
+            "order_id": "critical-1000",
+            "plan": [
+              {
+                "object": "butter",
+                "role": "primary_order",
+                "target": "basket_C"
+              },
+              {
+                "object": "milk",
+                "role": "receipt_token",
+                "target": "basket_B"
+              },
+              {
+                "object": "yogurt",
+                "role": "closure_token",
+                "target": "basket_C"
+              }
+            ],
+            "target": "basket_C"
+          },
+          "priority": "soft",
+          "slot_id": "order-critical/detour-05"
+        },
+        "ordinal": 7,
+        "reason": "temporary detour level 5",
+        "user_request": "Temporarily replace the current version with detour 5. Use basket_C and its explicitly registered continuation."
+      },
+      "exogenous_fingerprint": "f89ec77a31cb03024ad247606f7d4c195de5692bc18468086397495714f2335a"
+    },
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "event": {
+        "current_slot_id": "order-critical/detour-05",
+        "event_id": "seed-1000/e08",
+        "kind": "override_current",
+        "new_slot": {
+          "grounding": "place_butter_in_basket_B_then_execute_receipt_v1",
+          "logical_id": "order-critical",
+          "payload": {
+            "audit_nonce": "ba7897d12309483fbb8a",
+            "continuation_key": "receipt-v1",
+            "object": "butter",
+            "order_id": "critical-1000",
+            "plan": [
+              {
+                "object": "butter",
+                "role": "primary_order",
+                "target": "basket_B"
+              },
+              {
+                "object": "milk",
+                "role": "receipt_token",
+                "target": "basket_C"
+              },
+              {
+                "object": "yogurt",
+                "role": "closure_token",
+                "target": "basket_A"
+              }
+            ],
+            "target": "basket_B"
+          },
+          "priority": "soft",
+          "slot_id": "order-critical/detour-06"
+        },
+        "ordinal": 8,
+        "reason": "temporary detour level 6",
+        "user_request": "Temporarily replace the current version with detour 6. Use basket_B and its explicitly registered continuation."
+      },
+      "exogenous_fingerprint": "cced3f7f396a8fff2ba06f5d561fbb01bae14c151a9d2dc407e6fa264518fb2a"
+    },
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "event": {
+        "current_slot_id": "order-critical/detour-06",
+        "event_id": "seed-1000/e09",
+        "kind": "suspend_current",
+        "ordinal": 9,
+        "reason": "brief hold on deepest detour",
+        "user_request": "Pause the currently active deepest detour, but retain its exact restore path."
+      },
+      "exogenous_fingerprint": "6beef8ca49a788c20c80629d6ec4758188cedf62a6982c18498ffdf447881169"
+    },
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "event": {
+        "current_slot_id": "order-critical/detour-06",
+        "event_id": "seed-1000/e10",
+        "kind": "restore_current",
+        "ordinal": 10,
+        "reason": "deepest detour revalidated",
+        "user_request": "Resume the just-suspended deepest detour after revalidation."
+      },
+      "exogenous_fingerprint": "6d4f665c37ec64ad3e41cda7d8512d905ec19272e60716a625e96822b79ebae8"
+    },
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "event": {
+        "current_slot_id": "order-critical/detour-06",
+        "event_id": "seed-1000/e11",
+        "kind": "restore_root",
+        "ordinal": 11,
+        "reason": "all temporary detours withdrawn; original order reinstated",
+        "user_request": "Withdraw every temporary detour in this order's lineage and restore the original root workflow, including its exact downstream receipt and closure continuation. Do not infer the continuation from the surface butter destination."
+      },
+      "exogenous_fingerprint": "2960ce9e279d05d27da554eb8b806e8f6ec44ff44ca2719c55c54b8b5a35d6e2"
+    }
+  ],
+  "final_state_fingerprint": "e067c83fdd1744221a3ac8a868384d75068758037c2f5a5c1ba89a7a63d17ee7",
+  "method": "CoPE",
+  "metrics": {
+    "all_events_processed": true,
+    "all_generations_valid": true,
+    "all_registered_transitions_semantically_matched": true,
+    "candidate_semantic_errors_after_valid_transition": 0,
+    "candidate_transition_rejections": 0,
+    "committed_semantic_errors": 0,
+    "compiled_plan_matches_root": true,
+    "end_to_end_success": true,
+    "first_failure": "",
+    "first_failure_event": null,
+    "n_model_calls": 11,
+    "physical_attempted": true,
+    "physical_success": true,
+    "root_lineage_restored": true,
+    "symbolic_execution_success": null,
+    "task_completion": true,
+    "total_completion_tokens": 1419,
+    "total_model_latency_s": 137.57605609856546,
+    "total_prompt_tokens": 153310,
+    "valid_model_calls": 11
+  },
+  "model": "Qwen/Qwen3-32B",
+  "model_calls": [
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "candidate_rejected_by_transition_validator": false,
+      "candidate_semantic_correct": true,
+      "candidate_state_fingerprint": "975cfe2a41c8e31a6c68e851a2007145d5258cf4dd3f351838d56256b8c265a3",
+      "committed_state_semantic_correct": true,
+      "event_id": "seed-1000/e01",
+      "exogenous_fingerprint": "7c1943d31bc94fa2be0b7e003cd8de77ea87ac31ee7beb16bcc7778cdf34bf0e",
+      "failure_stage": null,
+      "generation": {
+        "cancellation_status": "not_requested",
+        "completion_tokens": 46,
+        "error": "",
+        "finish_reason": "stop",
+        "http_status": 200,
+        "latency_s": 8.699778985232115,
+        "observed_completion_tokens": 46,
+        "observed_output_chars": 144,
+        "observed_token_count_kind": "server_usage_cumulative",
+        "ok": true,
+        "output_chars": 144,
+        "output_sha256": "08ba6c2375a33db3a899291d5c31e4751f9c56c744f9e0ad7229062f3ff2ed0b",
+        "prompt_tokens": 12179,
+        "request_completed": true,
+        "request_id": "bb3f3515-9a1b-4003-ba47-9f2713b85326",
+        "response_id": "chatcmpl-bb3f3515-9a1b-4003-ba47-9f2713b85326",
+        "server_error": "",
+        "status": "ok",
+        "streamed_chunks": 48,
+        "telemetry": {
+          "client_connection_closed": true,
+          "content_chunks": 45,
+          "generation_completed_before_client_deadline": true,
+          "guided_decoding_backend": "xgrammar",
+          "json_valid": true,
+          "last_usage_at_s": 8.699452647939324,
+          "max_output_tokens": 4096,
+          "model_calls": 1,
+          "observed_token_note": "Only server-reported usage; SSE chunks are not tokens.",
+          "protocol": "vllm-0.8.5-streaming-guided-json",
+          "received_done": true,
+          "schema_valid": true,
+          "server_cancellation_confirmed": null,
+          "timeout_s": 90.0
+        },
+        "ttft_s": 7.386925585567951
+      },
+      "json_parse_success": true,
+      "method": "CoPE",
+      "model": "Qwen/Qwen3-32B",
+      "ordinal": 1,
+      "output_schema_valid": true,
+      "packet_fingerprint": "a0b149bba7d016f8df34367bff263414a28fde304fe0f9bd1f832064811fe19b",
+      "raw_output_file": "raw_outputs/event_01.txt",
+      "request_completed": true,
+      "semantic_match_to_registered_transition": true,
+      "state_committed": true,
+      "state_fingerprint_after": "975cfe2a41c8e31a6c68e851a2007145d5258cf4dd3f351838d56256b8c265a3",
+      "state_fingerprint_before": "d0680d147f84c96bc95d6a2d64b7d083ffc24d32b9925b2ceec0d42f0d47fb55",
+      "system_prompt_chars": 3500,
+      "system_prompt_sha256": "e075eaa9f5ddc1b9874a0632dec2187e0ebd5324b6b6a2995c3da1ceb0d00a9c",
+      "transition_valid": true,
+      "user_prompt_chars": 41386,
+      "user_prompt_sha256": "fd3e1f18c008cf40fbc08edd433fcdc62483b5dec60b8c62b293a6d3568876ad",
+      "validation_errors": []
+    },
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "candidate_rejected_by_transition_validator": false,
+      "candidate_semantic_correct": true,
+      "candidate_state_fingerprint": "5b5f2dc1f9325d432ae2ed12f33d5181aff5054c1ee9a1399b84a8b23e09162d",
+      "committed_state_semantic_correct": true,
+      "event_id": "seed-1000/e02",
+      "exogenous_fingerprint": "dabe9605a490a19036709da1c92d5b9ad1baece0c1c63260b95d63c9d346d3a2",
+      "failure_stage": null,
+      "generation": {
+        "cancellation_status": "not_requested",
+        "completion_tokens": 46,
+        "error": "",
+        "finish_reason": "stop",
+        "http_status": 200,
+        "latency_s": 8.705639576539397,
+        "observed_completion_tokens": 46,
+        "observed_output_chars": 144,
+        "observed_token_count_kind": "server_usage_cumulative",
+        "ok": true,
+        "output_chars": 144,
+        "output_sha256": "756ab04fcc358bcb66062ebaccae08f3393b485838e3d9c399e87632cef3147f",
+        "prompt_tokens": 12281,
+        "request_completed": true,
+        "request_id": "cd1a2bbc-ba2a-49e4-a74d-54afa0c41823",
+        "response_id": "chatcmpl-cd1a2bbc-ba2a-49e4-a74d-54afa0c41823",
+        "server_error": "",
+        "status": "ok",
+        "streamed_chunks": 48,
+        "telemetry": {
+          "client_connection_closed": true,
+          "content_chunks": 45,
+          "generation_completed_before_client_deadline": true,
+          "guided_decoding_backend": "xgrammar",
+          "json_valid": true,
+          "last_usage_at_s": 8.705352464690804,
+          "max_output_tokens": 4096,
+          "model_calls": 1,
+          "observed_token_note": "Only server-reported usage; SSE chunks are not tokens.",
+          "protocol": "vllm-0.8.5-streaming-guided-json",
+          "received_done": true,
+          "schema_valid": true,
+          "server_cancellation_confirmed": null,
+          "timeout_s": 90.0
+        },
+        "ttft_s": 7.388380363583565
+      },
+      "json_parse_success": true,
+      "method": "CoPE",
+      "model": "Qwen/Qwen3-32B",
+      "ordinal": 2,
+      "output_schema_valid": true,
+      "packet_fingerprint": "9f32fa4586342d588fcadac5017acb7d09f4bc014e3a572e4b331b5b18f5582c",
+      "raw_output_file": "raw_outputs/event_02.txt",
+      "request_completed": true,
+      "semantic_match_to_registered_transition": true,
+      "state_committed": true,
+      "state_fingerprint_after": "5b5f2dc1f9325d432ae2ed12f33d5181aff5054c1ee9a1399b84a8b23e09162d",
+      "state_fingerprint_before": "975cfe2a41c8e31a6c68e851a2007145d5258cf4dd3f351838d56256b8c265a3",
+      "system_prompt_chars": 3500,
+      "system_prompt_sha256": "e075eaa9f5ddc1b9874a0632dec2187e0ebd5324b6b6a2995c3da1ceb0d00a9c",
+      "transition_valid": true,
+      "user_prompt_chars": 41794,
+      "user_prompt_sha256": "86b46de25455e5a751c0b6299b39eef9ee93a8926d16382d7e0870a6ac790471",
+      "validation_errors": []
+    },
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "candidate_rejected_by_transition_validator": false,
+      "candidate_semantic_correct": true,
+      "candidate_state_fingerprint": "11a10b478528b79ee236e25cdfb807f3666b0700bd5f2313093e8290db6b89aa",
+      "committed_state_semantic_correct": true,
+      "event_id": "seed-1000/e03",
+      "exogenous_fingerprint": "47490d79bd69b3ae32175e38db0d7d4c72b695f77a9330388941702a741357d9",
+      "failure_stage": null,
+      "generation": {
+        "cancellation_status": "not_requested",
+        "completion_tokens": 193,
+        "error": "",
+        "finish_reason": "stop",
+        "http_status": 200,
+        "latency_s": 13.192494625225663,
+        "observed_completion_tokens": 193,
+        "observed_output_chars": 648,
+        "observed_token_count_kind": "server_usage_cumulative",
+        "ok": true,
+        "output_chars": 648,
+        "output_sha256": "579858a8d631b8af6e356e06b23c2c9f3e2565929ba55f25cc4fc9fa9ded1b99",
+        "prompt_tokens": 12535,
+        "request_completed": true,
+        "request_id": "3100d35f-ced5-4b57-852f-e08a5b713aab",
+        "response_id": "chatcmpl-3100d35f-ced5-4b57-852f-e08a5b713aab",
+        "server_error": "",
+        "status": "ok",
+        "streamed_chunks": 195,
+        "telemetry": {
+          "client_connection_closed": true,
+          "content_chunks": 192,
+          "generation_completed_before_client_deadline": true,
+          "guided_decoding_backend": "xgrammar",
+          "json_valid": true,
+          "last_usage_at_s": 13.192157564684749,
+          "max_output_tokens": 4096,
+          "model_calls": 1,
+          "observed_token_note": "Only server-reported usage; SSE chunks are not tokens.",
+          "protocol": "vllm-0.8.5-streaming-guided-json",
+          "received_done": true,
+          "schema_valid": true,
+          "server_cancellation_confirmed": null,
+          "timeout_s": 90.0
+        },
+        "ttft_s": 7.571844771504402
+      },
+      "json_parse_success": true,
+      "method": "CoPE",
+      "model": "Qwen/Qwen3-32B",
+      "ordinal": 3,
+      "output_schema_valid": true,
+      "packet_fingerprint": "153f58141b37f15f1f54b756a3df746a51de43fe81086d6f92ae1952213c5210",
+      "raw_output_file": "raw_outputs/event_03.txt",
+      "request_completed": true,
+      "semantic_match_to_registered_transition": true,
+      "state_committed": true,
+      "state_fingerprint_after": "11a10b478528b79ee236e25cdfb807f3666b0700bd5f2313093e8290db6b89aa",
+      "state_fingerprint_before": "5b5f2dc1f9325d432ae2ed12f33d5181aff5054c1ee9a1399b84a8b23e09162d",
+      "system_prompt_chars": 3500,
+      "system_prompt_sha256": "e075eaa9f5ddc1b9874a0632dec2187e0ebd5324b6b6a2995c3da1ceb0d00a9c",
+      "transition_valid": true,
+      "user_prompt_chars": 42729,
+      "user_prompt_sha256": "6d33ce7fe110f5c89d0a0cf65aff13a1f3b67a1c400bcfe7f96c23603ebc7b6a",
+      "validation_errors": []
+    },
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "candidate_rejected_by_transition_validator": false,
+      "candidate_semantic_correct": true,
+      "candidate_state_fingerprint": "47dc6158f315f3aa8fde1a31715d07ddf6c391893742cb876a806989a7c0a8b7",
+      "committed_state_semantic_correct": true,
+      "event_id": "seed-1000/e04",
+      "exogenous_fingerprint": "fed903a79940d57d89112cca421324d6c1e15987f4530fff89c443e08b28b350",
+      "failure_stage": null,
+      "generation": {
+        "cancellation_status": "not_requested",
+        "completion_tokens": 196,
+        "error": "",
+        "finish_reason": "stop",
+        "http_status": 200,
+        "latency_s": 13.610696095973253,
+        "observed_completion_tokens": 196,
+        "observed_output_chars": 653,
+        "observed_token_count_kind": "server_usage_cumulative",
+        "ok": true,
+        "output_chars": 653,
+        "output_sha256": "f8fec328163400110d35873f84a89de548979a870f5b85f0a032b9f092430891",
+        "prompt_tokens": 13022,
+        "request_completed": true,
+        "request_id": "b403c5c8-078d-4f2f-964a-a7e5ac59fbaf",
+        "response_id": "chatcmpl-b403c5c8-078d-4f2f-964a-a7e5ac59fbaf",
+        "server_error": "",
+        "status": "ok",
+        "streamed_chunks": 198,
+        "telemetry": {
+          "client_connection_closed": true,
+          "content_chunks": 195,
+          "generation_completed_before_client_deadline": true,
+          "guided_decoding_backend": "xgrammar",
+          "json_valid": true,
+          "last_usage_at_s": 13.610373703762889,
+          "max_output_tokens": 4096,
+          "model_calls": 1,
+          "observed_token_note": "Only server-reported usage; SSE chunks are not tokens.",
+          "protocol": "vllm-0.8.5-streaming-guided-json",
+          "received_done": true,
+          "schema_valid": true,
+          "server_cancellation_confirmed": null,
+          "timeout_s": 90.0
+        },
+        "ttft_s": 7.908213326707482
+      },
+      "json_parse_success": true,
+      "method": "CoPE",
+      "model": "Qwen/Qwen3-32B",
+      "ordinal": 4,
+      "output_schema_valid": true,
+      "packet_fingerprint": "9d4b3fb69d0a1d606515686213e7e5029bc89fa553795f5c97bf07a3b062d14f",
+      "raw_output_file": "raw_outputs/event_04.txt",
+      "request_completed": true,
+      "semantic_match_to_registered_transition": true,
+      "state_committed": true,
+      "state_fingerprint_after": "47dc6158f315f3aa8fde1a31715d07ddf6c391893742cb876a806989a7c0a8b7",
+      "state_fingerprint_before": "11a10b478528b79ee236e25cdfb807f3666b0700bd5f2313093e8290db6b89aa",
+      "system_prompt_chars": 3500,
+      "system_prompt_sha256": "e075eaa9f5ddc1b9874a0632dec2187e0ebd5324b6b6a2995c3da1ceb0d00a9c",
+      "transition_valid": true,
+      "user_prompt_chars": 44472,
+      "user_prompt_sha256": "cd9f99dbb3683b7de893cb119afb710ac80972f48765c135ab2df9dca6ebbd82",
+      "validation_errors": []
+    },
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "candidate_rejected_by_transition_validator": false,
+      "candidate_semantic_correct": true,
+      "candidate_state_fingerprint": "ac16b6af6b65623f51c5813479851769b4dbe7461a99e89e97eafaa10d54445e",
+      "committed_state_semantic_correct": true,
+      "event_id": "seed-1000/e05",
+      "exogenous_fingerprint": "78a38d425d04283045f1c9a983c66d1862e4af5e711a5f1c2f5d1860d3958fcb",
+      "failure_stage": null,
+      "generation": {
+        "cancellation_status": "not_requested",
+        "completion_tokens": 197,
+        "error": "",
+        "finish_reason": "stop",
+        "http_status": 200,
+        "latency_s": 14.040822423994541,
+        "observed_completion_tokens": 197,
+        "observed_output_chars": 653,
+        "observed_token_count_kind": "server_usage_cumulative",
+        "ok": true,
+        "output_chars": 653,
+        "output_sha256": "e7de8a1c5e730228c526d0d2f23a9855b8d990d2a46f6cc0cf09c6c6b58516bd",
+        "prompt_tokens": 13513,
+        "request_completed": true,
+        "request_id": "5867ebdc-3264-4a7a-9141-39dec80e83a6",
+        "response_id": "chatcmpl-5867ebdc-3264-4a7a-9141-39dec80e83a6",
+        "server_error": "",
+        "status": "ok",
+        "streamed_chunks": 199,
+        "telemetry": {
+          "client_connection_closed": true,
+          "content_chunks": 196,
+          "generation_completed_before_client_deadline": true,
+          "guided_decoding_backend": "xgrammar",
+          "json_valid": true,
+          "last_usage_at_s": 14.040503095835447,
+          "max_output_tokens": 4096,
+          "model_calls": 1,
+          "observed_token_note": "Only server-reported usage; SSE chunks are not tokens.",
+          "protocol": "vllm-0.8.5-streaming-guided-json",
+          "received_done": true,
+          "schema_valid": true,
+          "server_cancellation_confirmed": null,
+          "timeout_s": 90.0
+        },
+        "ttft_s": 8.307646347209811
+      },
+      "json_parse_success": true,
+      "method": "CoPE",
+      "model": "Qwen/Qwen3-32B",
+      "ordinal": 5,
+      "output_schema_valid": true,
+      "packet_fingerprint": "b1db3169ea0ddd56a66f5910d619845f0038cd718d02af2c30fca5218002c3d8",
+      "raw_output_file": "raw_outputs/event_05.txt",
+      "request_completed": true,
+      "semantic_match_to_registered_transition": true,
+      "state_committed": true,
+      "state_fingerprint_after": "ac16b6af6b65623f51c5813479851769b4dbe7461a99e89e97eafaa10d54445e",
+      "state_fingerprint_before": "47dc6158f315f3aa8fde1a31715d07ddf6c391893742cb876a806989a7c0a8b7",
+      "system_prompt_chars": 3500,
+      "system_prompt_sha256": "e075eaa9f5ddc1b9874a0632dec2187e0ebd5324b6b6a2995c3da1ceb0d00a9c",
+      "transition_valid": true,
+      "user_prompt_chars": 46220,
+      "user_prompt_sha256": "0b34cb7e818ee99bda691b2bbbaa23e5ef6ef0b1f533df1f4cf1cc876adfdcca",
+      "validation_errors": []
+    },
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "candidate_rejected_by_transition_validator": false,
+      "candidate_semantic_correct": true,
+      "candidate_state_fingerprint": "82428f6232e6358103efd040965017168ab1fb96b983ec145877e3a5f828673a",
+      "committed_state_semantic_correct": true,
+      "event_id": "seed-1000/e06",
+      "exogenous_fingerprint": "6c5779c72809db502fbd9801fb6e35e2bdc470526aa029c1fe505e120dee6eea",
+      "failure_stage": null,
+      "generation": {
+        "cancellation_status": "not_requested",
+        "completion_tokens": 194,
+        "error": "",
+        "finish_reason": "stop",
+        "http_status": 200,
+        "latency_s": 14.122464306652546,
+        "observed_completion_tokens": 194,
+        "observed_output_chars": 653,
+        "observed_token_count_kind": "server_usage_cumulative",
+        "ok": true,
+        "output_chars": 653,
+        "output_sha256": "7016b42b728860bb1442abc4b58280c3c55740fb0f6633f9ac4f818affcf1f1c",
+        "prompt_tokens": 14002,
+        "request_completed": true,
+        "request_id": "ce97ee83-53b2-4f07-9255-97f499d86bcf",
+        "response_id": "chatcmpl-ce97ee83-53b2-4f07-9255-97f499d86bcf",
+        "server_error": "",
+        "status": "ok",
+        "streamed_chunks": 196,
+        "telemetry": {
+          "client_connection_closed": true,
+          "content_chunks": 193,
+          "generation_completed_before_client_deadline": true,
+          "guided_decoding_backend": "xgrammar",
+          "json_valid": true,
+          "last_usage_at_s": 14.12211605720222,
+          "max_output_tokens": 4096,
+          "model_calls": 1,
+          "observed_token_note": "Only server-reported usage; SSE chunks are not tokens.",
+          "protocol": "vllm-0.8.5-streaming-guided-json",
+          "received_done": true,
+          "schema_valid": true,
+          "server_cancellation_confirmed": null,
+          "timeout_s": 90.0
+        },
+        "ttft_s": 8.467090612277389
+      },
+      "json_parse_success": true,
+      "method": "CoPE",
+      "model": "Qwen/Qwen3-32B",
+      "ordinal": 6,
+      "output_schema_valid": true,
+      "packet_fingerprint": "58533917eb9aa0b6e5afe750714ee7450a2552d98b0fb8cdb80d3b487492be47",
+      "raw_output_file": "raw_outputs/event_06.txt",
+      "request_completed": true,
+      "semantic_match_to_registered_transition": true,
+      "state_committed": true,
+      "state_fingerprint_after": "82428f6232e6358103efd040965017168ab1fb96b983ec145877e3a5f828673a",
+      "state_fingerprint_before": "ac16b6af6b65623f51c5813479851769b4dbe7461a99e89e97eafaa10d54445e",
+      "system_prompt_chars": 3500,
+      "system_prompt_sha256": "e075eaa9f5ddc1b9874a0632dec2187e0ebd5324b6b6a2995c3da1ceb0d00a9c",
+      "transition_valid": true,
+      "user_prompt_chars": 47968,
+      "user_prompt_sha256": "fd9231a51b3021c06c0dd3013b0409baf3a761e42b77e3add5279c5b4484f6b0",
+      "validation_errors": []
+    },
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "candidate_rejected_by_transition_validator": false,
+      "candidate_semantic_correct": true,
+      "candidate_state_fingerprint": "5a896b793b37e087ce5ca3e8b35b1f8858a008266de4c503dab3a101cd514501",
+      "committed_state_semantic_correct": true,
+      "event_id": "seed-1000/e07",
+      "exogenous_fingerprint": "f89ec77a31cb03024ad247606f7d4c195de5692bc18468086397495714f2335a",
+      "failure_stage": null,
+      "generation": {
+        "cancellation_status": "not_requested",
+        "completion_tokens": 195,
+        "error": "",
+        "finish_reason": "stop",
+        "http_status": 200,
+        "latency_s": 15.129956651479006,
+        "observed_completion_tokens": 195,
+        "observed_output_chars": 653,
+        "observed_token_count_kind": "server_usage_cumulative",
+        "ok": true,
+        "output_chars": 653,
+        "output_sha256": "83f1ec2edde784ca8caa86a6cb75a7781ee32a595d9102a8e39bf7bd1f266a9b",
+        "prompt_tokens": 14489,
+        "request_completed": true,
+        "request_id": "60d5a1a6-9a85-42de-a730-ff86add82409",
+        "response_id": "chatcmpl-60d5a1a6-9a85-42de-a730-ff86add82409",
+        "server_error": "",
+        "status": "ok",
+        "streamed_chunks": 197,
+        "telemetry": {
+          "client_connection_closed": true,
+          "content_chunks": 194,
+          "generation_completed_before_client_deadline": true,
+          "guided_decoding_backend": "xgrammar",
+          "json_valid": true,
+          "last_usage_at_s": 15.129623804241419,
+          "max_output_tokens": 4096,
+          "model_calls": 1,
+          "observed_token_note": "Only server-reported usage; SSE chunks are not tokens.",
+          "protocol": "vllm-0.8.5-streaming-guided-json",
+          "received_done": true,
+          "schema_valid": true,
+          "server_cancellation_confirmed": null,
+          "timeout_s": 90.0
+        },
+        "ttft_s": 9.42789718694985
+      },
+      "json_parse_success": true,
+      "method": "CoPE",
+      "model": "Qwen/Qwen3-32B",
+      "ordinal": 7,
+      "output_schema_valid": true,
+      "packet_fingerprint": "33c8b9ab8ed83b93742832a547472a1d3d145960af11b180372f6e8d9dbcd4ab",
+      "raw_output_file": "raw_outputs/event_07.txt",
+      "request_completed": true,
+      "semantic_match_to_registered_transition": true,
+      "state_committed": true,
+      "state_fingerprint_after": "5a896b793b37e087ce5ca3e8b35b1f8858a008266de4c503dab3a101cd514501",
+      "state_fingerprint_before": "82428f6232e6358103efd040965017168ab1fb96b983ec145877e3a5f828673a",
+      "system_prompt_chars": 3500,
+      "system_prompt_sha256": "e075eaa9f5ddc1b9874a0632dec2187e0ebd5324b6b6a2995c3da1ceb0d00a9c",
+      "transition_valid": true,
+      "user_prompt_chars": 49716,
+      "user_prompt_sha256": "1f6e183047348ec220ecdd42ef4ea10d19036953b1221b2a535234c299d2b884",
+      "validation_errors": []
+    },
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "candidate_rejected_by_transition_validator": false,
+      "candidate_semantic_correct": true,
+      "candidate_state_fingerprint": "bb61a914325d95cb3af9d845c263d5e9acb8872aa78db50fdf2876db9b80a976",
+      "committed_state_semantic_correct": true,
+      "event_id": "seed-1000/e08",
+      "exogenous_fingerprint": "cced3f7f396a8fff2ba06f5d561fbb01bae14c151a9d2dc407e6fa264518fb2a",
+      "failure_stage": null,
+      "generation": {
+        "cancellation_status": "not_requested",
+        "completion_tokens": 196,
+        "error": "",
+        "finish_reason": "stop",
+        "http_status": 200,
+        "latency_s": 15.409947413951159,
+        "observed_completion_tokens": 196,
+        "observed_output_chars": 653,
+        "observed_token_count_kind": "server_usage_cumulative",
+        "ok": true,
+        "output_chars": 653,
+        "output_sha256": "9f2809431c37cdbf568b3c0cb20973a77054f6c0016cb91bd5fd3dbf4f67c815",
+        "prompt_tokens": 14978,
+        "request_completed": true,
+        "request_id": "c00d8e6b-bb98-4af6-ac56-4b96b90a0e62",
+        "response_id": "chatcmpl-c00d8e6b-bb98-4af6-ac56-4b96b90a0e62",
+        "server_error": "",
+        "status": "ok",
+        "streamed_chunks": 198,
+        "telemetry": {
+          "client_connection_closed": true,
+          "content_chunks": 195,
+          "generation_completed_before_client_deadline": true,
+          "guided_decoding_backend": "xgrammar",
+          "json_valid": true,
+          "last_usage_at_s": 15.409615436568856,
+          "max_output_tokens": 4096,
+          "model_calls": 1,
+          "observed_token_note": "Only server-reported usage; SSE chunks are not tokens.",
+          "protocol": "vllm-0.8.5-streaming-guided-json",
+          "received_done": true,
+          "schema_valid": true,
+          "server_cancellation_confirmed": null,
+          "timeout_s": 90.0
+        },
+        "ttft_s": 9.662889763712883
+      },
+      "json_parse_success": true,
+      "method": "CoPE",
+      "model": "Qwen/Qwen3-32B",
+      "ordinal": 8,
+      "output_schema_valid": true,
+      "packet_fingerprint": "c1e13a53a93bb6b7d61610fe78db2279339b753899c662784e88056c39ebbed3",
+      "raw_output_file": "raw_outputs/event_08.txt",
+      "request_completed": true,
+      "semantic_match_to_registered_transition": true,
+      "state_committed": true,
+      "state_fingerprint_after": "bb61a914325d95cb3af9d845c263d5e9acb8872aa78db50fdf2876db9b80a976",
+      "state_fingerprint_before": "5a896b793b37e087ce5ca3e8b35b1f8858a008266de4c503dab3a101cd514501",
+      "system_prompt_chars": 3500,
+      "system_prompt_sha256": "e075eaa9f5ddc1b9874a0632dec2187e0ebd5324b6b6a2995c3da1ceb0d00a9c",
+      "transition_valid": true,
+      "user_prompt_chars": 51464,
+      "user_prompt_sha256": "bbfd59af28a0f3dfb048fb5e036ad782025f504684748f02160d7e06ac1816db",
+      "validation_errors": []
+    },
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "candidate_rejected_by_transition_validator": false,
+      "candidate_semantic_correct": true,
+      "candidate_state_fingerprint": "91a6ed53c9cac483e6ca5091fedfc5f3603a129eeca0f7bc8da8bab78ef064b9",
+      "committed_state_semantic_correct": true,
+      "event_id": "seed-1000/e09",
+      "exogenous_fingerprint": "6beef8ca49a788c20c80629d6ec4758188cedf62a6982c18498ffdf447881169",
+      "failure_stage": null,
+      "generation": {
+        "cancellation_status": "not_requested",
+        "completion_tokens": 51,
+        "error": "",
+        "finish_reason": "stop",
+        "http_status": 200,
+        "latency_s": 11.414104908704758,
+        "observed_completion_tokens": 51,
+        "observed_output_chars": 149,
+        "observed_token_count_kind": "server_usage_cumulative",
+        "ok": true,
+        "output_chars": 149,
+        "output_sha256": "784c0949ee01b5cd47dc5e024e092353ab4ce19a6270574437cb9bfe341d9c3a",
+        "prompt_tokens": 15318,
+        "request_completed": true,
+        "request_id": "a061d7dd-453f-4448-a407-de75e780dbcf",
+        "response_id": "chatcmpl-a061d7dd-453f-4448-a407-de75e780dbcf",
+        "server_error": "",
+        "status": "ok",
+        "streamed_chunks": 53,
+        "telemetry": {
+          "client_connection_closed": true,
+          "content_chunks": 50,
+          "generation_completed_before_client_deadline": true,
+          "guided_decoding_backend": "xgrammar",
+          "json_valid": true,
+          "last_usage_at_s": 11.413802960887551,
+          "max_output_tokens": 4096,
+          "model_calls": 1,
+          "observed_token_note": "Only server-reported usage; SSE chunks are not tokens.",
+          "protocol": "vllm-0.8.5-streaming-guided-json",
+          "received_done": true,
+          "schema_valid": true,
+          "server_cancellation_confirmed": null,
+          "timeout_s": 90.0
+        },
+        "ttft_s": 9.935785837471485
+      },
+      "json_parse_success": true,
+      "method": "CoPE",
+      "model": "Qwen/Qwen3-32B",
+      "ordinal": 9,
+      "output_schema_valid": true,
+      "packet_fingerprint": "33dae66601e255c826172b9c297af1a3eb6e276b575f5940e025692f268a1fd3",
+      "raw_output_file": "raw_outputs/event_09.txt",
+      "request_completed": true,
+      "semantic_match_to_registered_transition": true,
+      "state_committed": true,
+      "state_fingerprint_after": "91a6ed53c9cac483e6ca5091fedfc5f3603a129eeca0f7bc8da8bab78ef064b9",
+      "state_fingerprint_before": "bb61a914325d95cb3af9d845c263d5e9acb8872aa78db50fdf2876db9b80a976",
+      "system_prompt_chars": 3500,
+      "system_prompt_sha256": "e075eaa9f5ddc1b9874a0632dec2187e0ebd5324b6b6a2995c3da1ceb0d00a9c",
+      "transition_valid": true,
+      "user_prompt_chars": 52678,
+      "user_prompt_sha256": "dace8a21968d7b0aed7ee0c445068a19de64dc213ce89de131f96c8a9d32eedf",
+      "validation_errors": []
+    },
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "candidate_rejected_by_transition_validator": false,
+      "candidate_semantic_correct": true,
+      "candidate_state_fingerprint": "b38b292cff2f10f1a1706e3019e64bd9d6b96ed4bf03880b3a7345049d85a937",
+      "committed_state_semantic_correct": true,
+      "event_id": "seed-1000/e10",
+      "exogenous_fingerprint": "6d4f665c37ec64ad3e41cda7d8512d905ec19272e60716a625e96822b79ebae8",
+      "failure_stage": null,
+      "generation": {
+        "cancellation_status": "not_requested",
+        "completion_tokens": 51,
+        "error": "",
+        "finish_reason": "stop",
+        "http_status": 200,
+        "latency_s": 11.603190055117011,
+        "observed_completion_tokens": 51,
+        "observed_output_chars": 149,
+        "observed_token_count_kind": "server_usage_cumulative",
+        "ok": true,
+        "output_chars": 149,
+        "output_sha256": "e68800193fdced0b753e781e4644a8b82433890635ee157f363abb540223ae3e",
+        "prompt_tokens": 15428,
+        "request_completed": true,
+        "request_id": "38734de3-c8f5-4e19-9519-f253a72d0ce9",
+        "response_id": "chatcmpl-38734de3-c8f5-4e19-9519-f253a72d0ce9",
+        "server_error": "",
+        "status": "ok",
+        "streamed_chunks": 53,
+        "telemetry": {
+          "client_connection_closed": true,
+          "content_chunks": 50,
+          "generation_completed_before_client_deadline": true,
+          "guided_decoding_backend": "xgrammar",
+          "json_valid": true,
+          "last_usage_at_s": 11.60289179906249,
+          "max_output_tokens": 4096,
+          "model_calls": 1,
+          "observed_token_note": "Only server-reported usage; SSE chunks are not tokens.",
+          "protocol": "vllm-0.8.5-streaming-guided-json",
+          "received_done": true,
+          "schema_valid": true,
+          "server_cancellation_confirmed": null,
+          "timeout_s": 90.0
+        },
+        "ttft_s": 10.129167772829533
+      },
+      "json_parse_success": true,
+      "method": "CoPE",
+      "model": "Qwen/Qwen3-32B",
+      "ordinal": 10,
+      "output_schema_valid": true,
+      "packet_fingerprint": "5f070a9c54f165dbb749592ddf6b4eafc6c302b9ac87200a227540b248ebd3d0",
+      "raw_output_file": "raw_outputs/event_10.txt",
+      "request_completed": true,
+      "semantic_match_to_registered_transition": true,
+      "state_committed": true,
+      "state_fingerprint_after": "b38b292cff2f10f1a1706e3019e64bd9d6b96ed4bf03880b3a7345049d85a937",
+      "state_fingerprint_before": "91a6ed53c9cac483e6ca5091fedfc5f3603a129eeca0f7bc8da8bab78ef064b9",
+      "system_prompt_chars": 3500,
+      "system_prompt_sha256": "e075eaa9f5ddc1b9874a0632dec2187e0ebd5324b6b6a2995c3da1ceb0d00a9c",
+      "transition_valid": true,
+      "user_prompt_chars": 53072,
+      "user_prompt_sha256": "6b1be2c240e90fa89e427643074caf61bc0e460edfd21addffa012e40b4df402",
+      "validation_errors": []
+    },
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "candidate_rejected_by_transition_validator": false,
+      "candidate_semantic_correct": true,
+      "candidate_state_fingerprint": "e067c83fdd1744221a3ac8a868384d75068758037c2f5a5c1ba89a7a63d17ee7",
+      "committed_state_semantic_correct": true,
+      "event_id": "seed-1000/e11",
+      "exogenous_fingerprint": "2960ce9e279d05d27da554eb8b806e8f6ec44ff44ca2719c55c54b8b5a35d6e2",
+      "failure_stage": null,
+      "generation": {
+        "cancellation_status": "not_requested",
+        "completion_tokens": 54,
+        "error": "",
+        "finish_reason": "stop",
+        "http_status": 200,
+        "latency_s": 11.64696105569601,
+        "observed_completion_tokens": 54,
+        "observed_output_chars": 160,
+        "observed_token_count_kind": "server_usage_cumulative",
+        "ok": true,
+        "output_chars": 160,
+        "output_sha256": "1df9a88ce37c94d57a2a471b1312c80e212c2c3c19eb9a9027901672788f9004",
+        "prompt_tokens": 15565,
+        "request_completed": true,
+        "request_id": "674f00a9-bba6-4f3b-adfd-f9618f586072",
+        "response_id": "chatcmpl-674f00a9-bba6-4f3b-adfd-f9618f586072",
+        "server_error": "",
+        "status": "ok",
+        "streamed_chunks": 56,
+        "telemetry": {
+          "client_connection_closed": true,
+          "content_chunks": 53,
+          "generation_completed_before_client_deadline": true,
+          "guided_decoding_backend": "xgrammar",
+          "json_valid": true,
+          "last_usage_at_s": 11.646658930927515,
+          "max_output_tokens": 4096,
+          "model_calls": 1,
+          "observed_token_note": "Only server-reported usage; SSE chunks are not tokens.",
+          "protocol": "vllm-0.8.5-streaming-guided-json",
+          "received_done": true,
+          "schema_valid": true,
+          "server_cancellation_confirmed": null,
+          "timeout_s": 90.0
+        },
+        "ttft_s": 10.104596823453903
+      },
+      "json_parse_success": true,
+      "method": "CoPE",
+      "model": "Qwen/Qwen3-32B",
+      "ordinal": 11,
+      "output_schema_valid": true,
+      "packet_fingerprint": "3cbdc8f531c87dd73312cfc2e45c01b554f5a44db3ef68cac39ff9e189fa3c13",
+      "raw_output_file": "raw_outputs/event_11.txt",
+      "request_completed": true,
+      "semantic_match_to_registered_transition": true,
+      "state_committed": true,
+      "state_fingerprint_after": "e067c83fdd1744221a3ac8a868384d75068758037c2f5a5c1ba89a7a63d17ee7",
+      "state_fingerprint_before": "b38b292cff2f10f1a1706e3019e64bd9d6b96ed4bf03880b3a7345049d85a937",
+      "system_prompt_chars": 3500,
+      "system_prompt_sha256": "e075eaa9f5ddc1b9874a0632dec2187e0ebd5324b6b6a2995c3da1ceb0d00a9c",
+      "transition_valid": true,
+      "user_prompt_chars": 53655,
+      "user_prompt_sha256": "172eadc36a49110573175ed0a006a3ef95743f3579bfd2f8264a646a2c628710",
+      "validation_errors": []
+    }
+  ],
+  "model_request_contract": {
+    "calls_per_event": 1,
+    "max_output_tokens": 4096,
+    "model": "Qwen/Qwen3-32B",
+    "timeout_s": 90.0
+  },
+  "pairing_key": "long_lineage|seed=1000",
+  "physical": {
+    "actions": [
+      {
+        "begin": {
+          "goal_id": "r3-action-00",
+          "object": "butter",
+          "sim_object": "butter_1",
+          "sim_target_region": "basket_2_contain_region",
+          "target": "basket_B"
+        },
+        "index": 0,
+        "object": "butter",
+        "pick": {
+          "captured_eef_position": [
+            0.19285688751540017,
+            -0.1789350181385472,
+            0.6440463783558978
+          ],
+          "failure_reason": null,
+          "grasp_acquired": true,
+          "object_lift_m": 0.19643841032025305,
+          "object_name": "butter_1",
+          "object_start_position": [
+            0.2034814016103422,
+            -0.18229321488397962,
+            0.44546993484165615
+          ],
+          "phases": [
+            {
+              "done": false,
+              "final_error_m": 0.005253201593914034,
+              "phase": "approach_object",
+              "reward": 0.0,
+              "steps": 26
+            },
+            {
+              "done": false,
+              "final_error_m": 0.0027811618814336586,
+              "phase": "descend_to_grasp",
+              "reward": 0.0,
+              "steps": 20
+            },
+            {
+              "done": false,
+              "final_error_m": null,
+              "phase": "close_gripper",
+              "reward": 0.0,
+              "steps": 20
+            },
+            {
+              "done": false,
+              "final_error_m": 0.0051112025222723725,
+              "phase": "lift_object",
+              "reward": 0.0,
+              "steps": 20
+            }
+          ],
+          "success": true,
+          "total_steps": 86
+        },
+        "place": {
+          "failure_reason": null,
+          "grasp_acquired": true,
+          "object_lift_m": 0.19643841032025305,
+          "object_name": "butter_1",
+          "phases": [
+            {
+              "done": false,
+              "final_error_m": 0.00480188395364427,
+              "phase": "transfer_above_target",
+              "reward": 0.0,
+              "steps": 37
+            },
+            {
+              "done": false,
+              "final_error_m": 0.0051134075743348665,
+              "phase": "descend_to_release",
+              "reward": 0.0,
+              "steps": 16
+            },
+            {
+              "done": false,
+              "final_error_m": null,
+              "phase": "open_gripper",
+              "reward": 0.0,
+              "steps": 10
+            },
+            {
+              "done": false,
+              "final_error_m": 0.0023755993414432373,
+              "phase": "retreat",
+              "reward": 0.0,
+              "steps": 16
+            },
+            {
+              "done": false,
+              "final_error_m": null,
+              "phase": "settle",
+              "reward": 0.0,
+              "steps": 40
+            }
+          ],
+          "released": true,
+          "success": true,
+          "target_predicate": true,
+          "target_region_name": "basket_2_contain_region",
+          "total_steps": 119
+        },
+        "role": "primary_order",
+        "success": true,
+        "target": "basket_B"
+      },
+      {
+        "begin": {
+          "goal_id": "r3-action-01",
+          "object": "milk",
+          "sim_object": "milk_1",
+          "sim_target_region": "basket_1_contain_region",
+          "target": "basket_A"
+        },
+        "index": 1,
+        "object": "milk",
+        "pick": {
+          "captured_eef_position": [
+            -0.18054669036106588,
+            -0.18665402856915242,
+            0.7385370080943915
+          ],
+          "failure_reason": null,
+          "grasp_acquired": true,
+          "object_lift_m": 0.20282755073188785,
+          "object_name": "milk_1",
+          "object_start_position": [
+            -0.21534661187937962,
+            -0.1831518892171341,
+            0.506509843038735
+          ],
+          "phases": [
+            {
+              "done": false,
+              "final_error_m": 0.003762239027967335,
+              "phase": "approach_object",
+              "reward": 0.0,
+              "steps": 38
+            },
+            {
+              "done": false,
+              "final_error_m": 0.037840304248569774,
+              "phase": "descend_to_grasp",
+              "reward": 0.0,
+              "steps": 60
+            },
+            {
+              "done": false,
+              "final_error_m": null,
+              "phase": "close_gripper",
+              "reward": 0.0,
+              "steps": 20
+            },
+            {
+              "done": false,
+              "final_error_m": 0.002722863863044607,
+              "phase": "lift_object",
+              "reward": 0.0,
+              "steps": 21
+            }
+          ],
+          "success": true,
+          "total_steps": 139
+        },
+        "place": {
+          "failure_reason": null,
+          "grasp_acquired": true,
+          "object_lift_m": 0.20282755073188785,
+          "object_name": "milk_1",
+          "phases": [
+            {
+              "done": false,
+              "final_error_m": 0.003286807678442307,
+              "phase": "transfer_above_target",
+              "reward": 0.0,
+              "steps": 37
+            },
+            {
+              "done": false,
+              "final_error_m": 0.005926095761616788,
+              "phase": "descend_to_release",
+              "reward": 0.0,
+              "steps": 16
+            },
+            {
+              "done": false,
+              "final_error_m": null,
+              "phase": "open_gripper",
+              "reward": 0.0,
+              "steps": 10
+            },
+            {
+              "done": false,
+              "final_error_m": 0.004363020533081659,
+              "phase": "retreat",
+              "reward": 0.0,
+              "steps": 17
+            },
+            {
+              "done": false,
+              "final_error_m": null,
+              "phase": "settle",
+              "reward": 0.0,
+              "steps": 40
+            }
+          ],
+          "released": true,
+          "success": true,
+          "target_predicate": true,
+          "target_region_name": "basket_1_contain_region",
+          "total_steps": 120
+        },
+        "role": "receipt_token",
+        "success": true,
+        "target": "basket_A"
+      },
+      {
+        "begin": {
+          "goal_id": "r3-action-02",
+          "object": "yogurt",
+          "sim_object": "cream_cheese_1",
+          "sim_target_region": "basket_1_contain_region",
+          "target": "basket_A"
+        },
+        "index": 2,
+        "object": "yogurt",
+        "pick": {
+          "captured_eef_position": [
+            -0.008557621042698964,
+            -0.197294172100243,
+            0.6471936765457702
+          ],
+          "failure_reason": null,
+          "grasp_acquired": true,
+          "object_lift_m": 0.1977055116823182,
+          "object_name": "cream_cheese_1",
+          "object_start_position": [
+            -0.002156917443823174,
+            -0.19635486960095233,
+            0.44569592152000004
+          ],
+          "phases": [
+            {
+              "done": false,
+              "final_error_m": 0.003771720116373213,
+              "phase": "approach_object",
+              "reward": 0.0,
+              "steps": 35
+            },
+            {
+              "done": false,
+              "final_error_m": 0.004449345313137787,
+              "phase": "descend_to_grasp",
+              "reward": 0.0,
+              "steps": 16
+            },
+            {
+              "done": false,
+              "final_error_m": null,
+              "phase": "close_gripper",
+              "reward": 0.0,
+              "steps": 20
+            },
+            {
+              "done": false,
+              "final_error_m": 0.0027394291704940727,
+              "phase": "lift_object",
+              "reward": 0.0,
+              "steps": 20
+            }
+          ],
+          "success": true,
+          "total_steps": 91
+        },
+        "place": {
+          "failure_reason": null,
+          "grasp_acquired": true,
+          "object_lift_m": 0.1977055116823182,
+          "object_name": "cream_cheese_1",
+          "phases": [
+            {
+              "done": false,
+              "final_error_m": 0.004083076875808739,
+              "phase": "transfer_above_target",
+              "reward": 0.0,
+              "steps": 39
+            },
+            {
+              "done": false,
+              "final_error_m": 0.006148017365680577,
+              "phase": "descend_to_release",
+              "reward": 0.0,
+              "steps": 17
+            },
+            {
+              "done": true,
+              "final_error_m": null,
+              "phase": "open_gripper",
+              "reward": 1.0,
+              "steps": 9
+            },
+            {
+              "done": true,
+              "final_error_m": 0.14410296413664264,
+              "phase": "retreat",
+              "reward": 1.0,
+              "steps": 1
+            },
+            {
+              "done": true,
+              "final_error_m": null,
+              "phase": "settle",
+              "reward": 1.0,
+              "steps": 1
+            }
+          ],
+          "released": true,
+          "success": true,
+          "target_predicate": true,
+          "target_region_name": "basket_1_contain_region",
+          "total_steps": 67
+        },
+        "role": "closure_token",
+        "success": true,
+        "target": "basket_A"
+      }
+    ],
+    "backend": "libero_mujoco",
+    "backend_meta": {
+      "backend": "libero_mujoco",
+      "bddl_file": "/home/lijingsu/v/cope_r4_20260905/configs_gpu/cope_basket_sorting.bddl",
+      "controller": "OSC_POSE via privileged geometry oracle",
+      "learned_policy_used": false,
+      "mujoco_gl": "osmesa",
+      "mujoco_version": "2.3.7",
+      "robosuite_version": "1.4.1",
+      "simulator": "LIBERO/robosuite/MuJoCo"
+    },
+    "controller_error": "",
+    "exact_assignment": true,
+    "expected_assignment": {
+      "butter": "basket_B",
+      "milk": "basket_A",
+      "yogurt": "basket_A"
+    },
+    "finish": {
+      "backend": "libero_mujoco",
+      "collision": false,
+      "contacts": 19390,
+      "frames": 647,
+      "seed": 1000,
+      "state_hash": "40c384ed8875f7bb0ce5da15e5f0da657b617f968a71b6015b685337f58c99cf",
+      "steps": 646
+    },
+    "initialized": true,
+    "invalid_action_count": 0,
+    "observed_assignment": {},
+    "physical_success": true,
+    "reset_meta": {
+      "backend": "libero_mujoco",
+      "language": "place the milk and cream cheese in basket a and the butter in basket b",
+      "objects": [
+        "basket_1",
+        "basket_2",
+        "basket_3",
+        "butter_1",
+        "cream_cheese_1",
+        "milk_1"
+      ],
+      "regions": [
+        "basket_1_contain_region",
+        "basket_2_contain_region",
+        "basket_3_contain_region"
+      ],
+      "seed": 1000,
+      "state_hash": "462f140821341b2c5ec377ffcdcc95fd943c4e9763973a11b4bfd2522f506d68",
+      "warmup_steps": 10
+    },
+    "settle": {
+      "consecutive_stable_steps": 10,
+      "final": {
+        "butter": {
+          "angular_speed_rad_s": 5.6931316597941104e-15,
+          "linear_speed_m_s": 2.147966910973941e-14,
+          "stable": true
+        },
+        "milk": {
+          "angular_speed_rad_s": 2.3811687214801166e-06,
+          "linear_speed_m_s": 1.3013939956341306e-07,
+          "stable": true
+        },
+        "yogurt": {
+          "angular_speed_rad_s": 1.9265857915623917e-05,
+          "linear_speed_m_s": 2.817512285662316e-07,
+          "stable": true
+        }
+      },
+      "max_steps": 200,
+      "required_consecutive_steps": 10,
+      "samples": [
+        {
+          "consecutive_stable": 0,
+          "objects": {
+            "butter": {
+              "angular_speed_rad_s": 4.8194577462244455e-15,
+              "linear_speed_m_s": 2.147745006690065e-14,
+              "stable": true
+            },
+            "milk": {
+              "angular_speed_rad_s": 5.486375819325899e-05,
+              "linear_speed_m_s": 5.388637262638267e-06,
+              "stable": true
+            },
+            "yogurt": {
+              "angular_speed_rad_s": 2.293917537672146,
+              "linear_speed_m_s": 0.16957369011936752,
+              "stable": false
+            }
+          },
+          "step": 633
+        },
+        {
+          "consecutive_stable": 1,
+          "objects": {
+            "butter": {
+              "angular_speed_rad_s": 4.7630163345963325e-15,
+              "linear_speed_m_s": 2.130414581986467e-14,
+              "stable": true
+            },
+            "milk": {
+              "angular_speed_rad_s": 0.02601818392515054,
+              "linear_speed_m_s": 0.0019830145728202057,
+              "stable": true
+            },
+            "yogurt": {
+              "angular_speed_rad_s": 0.23702772025639407,
+              "linear_speed_m_s": 0.0021232669964937885,
+              "stable": true
+            }
+          },
+          "step": 637
+        },
+        {
+          "consecutive_stable": 2,
+          "objects": {
+            "butter": {
+              "angular_speed_rad_s": 5.711620477548963e-15,
+              "linear_speed_m_s": 2.130602841391372e-14,
+              "stable": true
+            },
+            "milk": {
+              "angular_speed_rad_s": 0.0005356167627080681,
+              "linear_speed_m_s": 4.035700567475319e-05,
+              "stable": true
+            },
+            "yogurt": {
+              "angular_speed_rad_s": 0.00035112467410437797,
+              "linear_speed_m_s": 4.266639277951519e-05,
+              "stable": true
+            }
+          },
+          "step": 638
+        },
+        {
+          "consecutive_stable": 3,
+          "objects": {
+            "butter": {
+              "angular_speed_rad_s": 9.111994248870128e-15,
+              "linear_speed_m_s": 2.1240471311440717e-14,
+              "stable": true
+            },
+            "milk": {
+              "angular_speed_rad_s": 1.3434262925189925e-05,
+              "linear_speed_m_s": 1.1085834166185747e-06,
+              "stable": true
+            },
+            "yogurt": {
+              "angular_speed_rad_s": 3.282385516390819e-05,
+              "linear_speed_m_s": 1.9061560387706437e-06,
+              "stable": true
+            }
+          },
+          "step": 639
+        },
+        {
+          "consecutive_stable": 4,
+          "objects": {
+            "butter": {
+              "angular_speed_rad_s": 1.993273272433396e-15,
+              "linear_speed_m_s": 2.1305512456238156e-14,
+              "stable": true
+            },
+            "milk": {
+              "angular_speed_rad_s": 4.581337428813658e-06,
+              "linear_speed_m_s": 2.629730173246499e-07,
+              "stable": true
+            },
+            "yogurt": {
+              "angular_speed_rad_s": 2.9269202064988626e-05,
+              "linear_speed_m_s": 6.920417168943459e-07,
+              "stable": true
+            }
+          },
+          "step": 640
+        },
+        {
+          "consecutive_stable": 5,
+          "objects": {
+            "butter": {
+              "angular_speed_rad_s": 4.860500331908395e-15,
+              "linear_speed_m_s": 2.1479471030601304e-14,
+              "stable": true
+            },
+            "milk": {
+              "angular_speed_rad_s": 4.545740174896761e-06,
+              "linear_speed_m_s": 2.6659530103950765e-07,
+              "stable": true
+            },
+            "yogurt": {
+              "angular_speed_rad_s": 2.7299520456526316e-05,
+              "linear_speed_m_s": 5.789308828271808e-07,
+              "stable": true
+            }
+          },
+          "step": 641
+        },
+        {
+          "consecutive_stable": 6,
+          "objects": {
+            "butter": {
+              "angular_speed_rad_s": 5.552091474236746e-15,
+              "linear_speed_m_s": 2.147912862787251e-14,
+              "stable": true
+            },
+            "milk": {
+              "angular_speed_rad_s": 3.998432897823243e-06,
+              "linear_speed_m_s": 2.3217864318778777e-07,
+              "stable": true
+            },
+            "yogurt": {
+              "angular_speed_rad_s": 2.5451348561752006e-05,
+              "linear_speed_m_s": 4.989495844207177e-07,
+              "stable": true
+            }
+          },
+          "step": 642
+        },
+        {
+          "consecutive_stable": 7,
+          "objects": {
+            "butter": {
+              "angular_speed_rad_s": 9.322729455258478e-15,
+              "linear_speed_m_s": 2.1508249667581693e-14,
+              "stable": true
+            },
+            "milk": {
+              "angular_speed_rad_s": 3.505482350105588e-06,
+              "linear_speed_m_s": 2.0102360025831066e-07,
+              "stable": true
+            },
+            "yogurt": {
+              "angular_speed_rad_s": 2.3729369552949026e-05,
+              "linear_speed_m_s": 4.311876983496814e-07,
+              "stable": true
+            }
+          },
+          "step": 643
+        },
+        {
+          "consecutive_stable": 8,
+          "objects": {
+            "butter": {
+              "angular_speed_rad_s": 1.8451713120827207e-15,
+              "linear_speed_m_s": 2.1479620171269988e-14,
+              "stable": true
+            },
+            "milk": {
+              "angular_speed_rad_s": 3.07696229442438e-06,
+              "linear_speed_m_s": 1.73968709034506e-07,
+              "stable": true
+            },
+            "yogurt": {
+              "angular_speed_rad_s": 2.212814473872582e-05,
+              "linear_speed_m_s": 3.7334061666907306e-07,
+              "stable": true
+            }
+          },
+          "step": 644
+        },
+        {
+          "consecutive_stable": 9,
+          "objects": {
+            "butter": {
+              "angular_speed_rad_s": 4.890580801355424e-15,
+              "linear_speed_m_s": 2.1477787440250382e-14,
+              "stable": true
+            },
+            "milk": {
+              "angular_speed_rad_s": 2.7047202613191936e-06,
+              "linear_speed_m_s": 1.5050165270902708e-07,
+              "stable": true
+            },
+            "yogurt": {
+              "angular_speed_rad_s": 2.064215210200848e-05,
+              "linear_speed_m_s": 3.2393880429137613e-07,
+              "stable": true
+            }
+          },
+          "step": 645
+        },
+        {
+          "consecutive_stable": 10,
+          "objects": {
+            "butter": {
+              "angular_speed_rad_s": 5.6931316597941104e-15,
+              "linear_speed_m_s": 2.147966910973941e-14,
+              "stable": true
+            },
+            "milk": {
+              "angular_speed_rad_s": 2.3811687214801166e-06,
+              "linear_speed_m_s": 1.3013939956341306e-07,
+              "stable": true
+            },
+            "yogurt": {
+              "angular_speed_rad_s": 1.9265857915623917e-05,
+              "linear_speed_m_s": 2.817512285662316e-07,
+              "stable": true
+            }
+          },
+          "step": 646
+        }
+      ],
+      "stable": true,
+      "steps": 14,
+      "thresholds": {
+        "max_angular_speed_rad_s": 0.5,
+        "max_linear_speed_m_s": 0.02
+      }
+    },
+    "task_metrics": {
+      "all_objects_stable": true,
+      "cancellation_violation": false,
+      "cancelled_object_regions": {},
+      "collision": false,
+      "environment_steps": 646,
+      "expected_predicates": {
+        "butter": {
+          "predicate": true,
+          "target": "basket_B"
+        },
+        "milk": {
+          "predicate": true,
+          "target": "basket_A"
+        },
+        "yogurt": {
+          "predicate": true,
+          "target": "basket_A"
+        }
+      },
+      "no_task_object_attached": true,
+      "object_attachment": {
+        "butter": false,
+        "milk": false,
+        "yogurt": false
+      },
+      "object_positions": {
+        "butter": [
+          0.006477752230291877,
+          0.23452049543433817,
+          0.46246967380274884
+        ],
+        "milk": [
+          -0.2835218566832281,
+          0.23541449068703263,
+          0.5235096050070763
+        ],
+        "yogurt": [
+          -0.22586722485076377,
+          0.23348135290076072,
+          0.49257029741301767
+        ]
+      },
+      "object_stability": {
+        "butter": {
+          "angular_speed_rad_s": 5.6931316597941104e-15,
+          "linear_speed_m_s": 2.147966910973941e-14,
+          "stable": true
+        },
+        "milk": {
+          "angular_speed_rad_s": 2.3811687214801166e-06,
+          "linear_speed_m_s": 1.3013939956341306e-07,
+          "stable": true
+        },
+        "yogurt": {
+          "angular_speed_rad_s": 1.9265857915623917e-05,
+          "linear_speed_m_s": 2.817512285662316e-07,
+          "stable": true
+        }
+      },
+      "progress_completed": 3,
+      "progress_fraction": 1.0,
+      "progress_total": 3,
+      "redirected_goal_success": true,
+      "revised_task_success": true,
+      "stability_thresholds": {
+        "max_angular_speed_rad_s": 0.5,
+        "max_linear_speed_m_s": 0.02
+      },
+      "stale_goal_by_object": {
+        "butter": false,
+        "milk": false,
+        "yogurt": false
+      },
+      "stale_goal_execution": false,
+      "task_time": 32.300000000000004,
+      "task_time_s": 32.300000000000004,
+      "unsafe_contact": false
+    },
+    "video": {
+      "bytes": 130358,
+      "fps": 20,
+      "frames": 647,
+      "path": "/home/lijingsu/cope_outputs/cope_r4_dev_fixed_long_1000_v2_20260905/long_lineage/CoPE/seed_1000/video.mp4",
+      "written": true
+    }
+  },
+  "plan_error": "",
+  "platform": "Linux-5.19.0-50-generic-x86_64-with-glibc2.35",
+  "profile": "long_lineage",
+  "python": "3.10.12",
+  "registered_design": {
+    "critical_logical_id": "order-critical",
+    "expected_plan": [
+      {
+        "object": "butter",
+        "role": "primary_order",
+        "target": "basket_B"
+      },
+      {
+        "object": "milk",
+        "role": "receipt_token",
+        "target": "basket_A"
+      },
+      {
+        "object": "yogurt",
+        "role": "closure_token",
+        "target": "basket_A"
+      }
+    ],
+    "initial_slots": 48,
+    "lineage_depth": 6,
+    "max_output_tokens": 4096,
+    "model_timeout_s": 90.0,
+    "n_events": 11
+  },
+  "run_mode": "free_running",
+  "schema_version": "cope-fsrpc-r4-episode-v1",
+  "seed": 1000,
+  "task_contract": {
+    "critical_logical_id": "order-critical",
+    "lineage_rule": "restore_root follows parent_id edges to depth zero; the root payload is authoritative even when a detour has the same primary target",
+    "objects": [
+      "butter",
+      "milk",
+      "yogurt"
+    ],
+    "root_slot_id": "order-critical/root",
+    "success_definition": {
+      "all_model_updates_valid": true,
+      "exact_object_assignment": true,
+      "no_completed_action_repeated": true,
+      "no_expired_detour_executed": true,
+      "required_final_plan": [
+        {
+          "object": "butter",
+          "role": "primary_order",
+          "target": "basket_B"
+        },
+        {
+          "object": "milk",
+          "role": "receipt_token",
+          "target": "basket_A"
+        },
+        {
+          "object": "yogurt",
+          "role": "closure_token",
+          "target": "basket_A"
+        }
+      ]
+    },
+    "targets": [
+      "basket_A",
+      "basket_B",
+      "basket_C"
+    ],
+    "task_name": "persistent_multi_order_fulfillment"
+  },
+  "utc": "2026-09-05T02:33:02.482319+00:00"
+}

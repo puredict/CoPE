@@ -1,0 +1,21 @@
+{
+  "modes": [
+    "target_from_reset"
+  ],
+  "physical_gpu": "1",
+  "replacement_target": "desk_caddy_1_right_contain_region",
+  "results": [
+    {
+      "back_target_violation": true,
+      "current_goal_success": false,
+      "event_reached": false,
+      "event_step": null,
+      "mode": "target_from_reset",
+      "policy_steps_consumed": 205,
+      "runtime_seconds": 116.52171988785267,
+      "termination_reason": "back_target_violation"
+    }
+  ],
+  "schema_version": "task5-target-substitution-worker-summary-v1",
+  "state_id": 0
+}

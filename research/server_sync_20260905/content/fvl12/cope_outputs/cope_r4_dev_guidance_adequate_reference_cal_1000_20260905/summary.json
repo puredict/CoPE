@@ -1,0 +1,29 @@
+[
+  {
+    "profile": "calibration",
+    "seed": 1000,
+    "method": "FSR-PC",
+    "metrics": {
+      "task_completion": null,
+      "end_to_end_success": null,
+      "all_generations_valid": false,
+      "all_registered_transitions_semantically_matched": false,
+      "all_events_processed": true,
+      "root_lineage_restored": null,
+      "compiled_plan_matches_root": null,
+      "physical_attempted": false,
+      "physical_success": null,
+      "symbolic_execution_success": null,
+      "n_model_calls": 7,
+      "valid_model_calls": 6,
+      "candidate_transition_rejections": 1,
+      "candidate_semantic_errors_after_valid_transition": 0,
+      "committed_semantic_errors": 0,
+      "total_prompt_tokens": 21926,
+      "total_completion_tokens": 14112,
+      "total_model_latency_s": 405.7631017267704,
+      "first_failure": "schema_validation_failure",
+      "first_failure_event": "seed-1000/e04"
+    }
+  }
+]

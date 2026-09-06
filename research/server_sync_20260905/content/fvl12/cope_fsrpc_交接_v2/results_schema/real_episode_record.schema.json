@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CoPE/FSR-PC LIBERO episode record",
+  "type": "object",
+  "required": [
+    "episode_id",
+    "pairing_key",
+    "backend",
+    "backend_meta",
+    "reset_meta",
+    "condition",
+    "seed",
+    "method",
+    "expected_final",
+    "legs",
+    "events",
+    "repair_outcomes",
+    "metrics",
+    "task_metrics",
+    "final_settle",
+    "denominators",
+    "infrastructure_errors",
+    "video",
+    "final_simulator_state_hash"
+  ],
+  "properties": {
+    "episode_id": {"type": "string"},
+    "pairing_key": {
+      "type": "string",
+      "description": "task|condition|seed; method deliberately excluded"
+    },
+    "backend": {"const": "libero_mujoco"},
+    "condition": {"enum": ["nominal", "I1", "I2", "I3", "I4"]},
+    "seed": {"type": "integer", "minimum": 0},
+    "method": {"enum": ["CoPE", "FSR-PC", "no_adaptation"]},
+    "backend_meta": {
+      "type": "object",
+      "required": ["simulator", "mujoco_version", "robosuite_version", "controller", "learned_policy_used"]
+    },
+    "reset_meta": {
+      "type": "object",
+      "required": ["seed", "state_hash", "objects", "regions"]
+    },
+    "expected_final": {"type": "object"},
+    "legs": {"type": "array"},
+    "events": {"type": "array"},
+    "repair_outcomes": {"type": "array"},
+    "metrics": {
+      "type": "object",
+      "required": [
+        "revised_task_success",
+        "completed_progress_preserved",
+        "cancelled_goal_violations",
+        "stale_goal_executions",
+        "collision",
+        "safe_fallback",
+        "completion_steps",
+        "repairs_invoked",
+        "pipelines_complete",
+        "candidates_generated",
+        "rollouts_run",
+        "splices",
+        "restores_validated",
+        "stages_resumed"
+      ]
+    },
+    "task_metrics": {
+      "type": "object",
+      "required": [
+        "revised_task_success",
+        "expected_predicates",
+        "completed_progress_preserved",
+        "cancelled_goal_violation",
+        "stale_goal_execution",
+        "redirected_goal_success",
+        "object_positions",
+        "object_stability",
+        "all_objects_stable",
+        "object_attachment",
+        "no_task_object_attached",
+        "stability_gate_passed",
+        "collision",
+        "unsafe_contact",
+        "task_time"
+      ]
+    },
+    "final_settle": {
+      "type": "object",
+      "required": ["stable", "steps"]
+    },
+    "denominators": {
+      "type": "object",
+      "required": [
+        "attempted_episodes",
+        "valid_episodes",
+        "attempted_candidates",
+        "evaluated_candidates",
+        "valid_candidates",
+        "accepted_candidates",
+        "rejected_candidates",
+        "candidate_isolation_valid"
+      ]
+    },
+    "infrastructure_errors": {"type": "array", "items": {"type": "string"}},
+    "video": {
+      "type": "object",
+      "required": ["written", "path", "frames", "fps", "bytes"]
+    },
+    "final_simulator_state_hash": {"type": "string", "minLength": 64}
+  }
+}

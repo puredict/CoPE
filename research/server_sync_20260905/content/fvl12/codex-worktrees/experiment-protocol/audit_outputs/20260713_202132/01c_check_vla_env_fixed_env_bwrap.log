@@ -1,0 +1,21 @@
+COMMAND: bwrap --bind / / --dev-bind /dev /dev --proc /proc --bind /home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind /home/lijingsu/vla/smoke_outputs bash -lc 'cd /home/lijingsu/vla && source .venv/bin/activate && unset LD_LIBRARY_PATH && export PYTHONPATH=$HOME/vla/src/openvla:$HOME/vla/src/LIBERO:${PYTHONPATH:-} && export MUJOCO_GL=osmesa && export PYOPENGL_PLATFORM=osmesa && export HF_HOME=$HOME/vla/cache/huggingface && export TRANSFORMERS_CACHE=$HOME/vla/cache/transformers && export TOKENIZERS_PARALLELISM=false && python check_vla_env.py'
+START: 2026-07-13T20:50:02+08:00
+END: 2026-07-13T20:50:03+08:00
+EXIT: 0
+
+STDOUT:
+torch: 2.5.1+cu121
+transformers: 4.40.1
+cuda_available: True
+gpu_0: NVIDIA GeForce RTX 3090, 23.7 GiB
+gpu_1: NVIDIA GeForce RTX 3090, 23.7 GiB
+gpu_2: NVIDIA GeForce RTX 3090, 23.7 GiB
+gpu_3: NVIDIA GeForce RTX 3090, 23.7 GiB
+gpu_4: NVIDIA GeForce RTX 3090, 23.7 GiB
+gpu_5: NVIDIA GeForce RTX 3090, 23.7 GiB
+gpu_6: NVIDIA GeForce RTX 3090, 23.7 GiB
+gpu_7: NVIDIA GeForce RTX 3090, 23.7 GiB
+
+STDERR:
+/home/lijingsu/vla/.venv/lib/python3.10/site-packages/transformers/utils/hub.py:124: FutureWarning: Using `TRANSFORMERS_CACHE` is deprecated and will be removed in v5 of Transformers. Use `HF_HOME` instead.
+  warnings.warn(

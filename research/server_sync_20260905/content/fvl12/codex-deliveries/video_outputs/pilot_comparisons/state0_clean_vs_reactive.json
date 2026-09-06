@@ -1,0 +1,51 @@
+{
+  "tool": "compose_rollout_comparison",
+  "inputs": [
+    {
+      "label": "clean",
+      "mode": "clean",
+      "source": "/home/lijingsu/vla/audit_outputs/stage2_1_three_state_pilot/2026_07_13-23_33_36/task0_initial_state0_seed7_clean",
+      "video_path": "/home/lijingsu/vla/audit_outputs/stage2_1_three_state_pilot/2026_07_13-23_33_36/task0_initial_state0_seed7_clean/raw.mp4",
+      "frame_count": 75,
+      "source_fps_render_only": 30.0,
+      "policy_step_range": [
+        0,
+        74
+      ],
+      "disturbance_step": 70,
+      "anchor_step": 70,
+      "camera": "policy",
+      "warnings": [
+        "camera is policy; output will not label it as observer or third-person"
+      ]
+    },
+    {
+      "label": "reactive_disturbed",
+      "mode": "reactive_disturbed",
+      "source": "/home/lijingsu/vla/audit_outputs/stage2_1_three_state_pilot/2026_07_13-23_33_36/task0_initial_state0_seed7_reactive_disturbed",
+      "video_path": "/home/lijingsu/vla/audit_outputs/stage2_1_three_state_pilot/2026_07_13-23_33_36/task0_initial_state0_seed7_reactive_disturbed/raw.mp4",
+      "frame_count": 220,
+      "source_fps_render_only": 30.0,
+      "policy_step_range": [
+        0,
+        219
+      ],
+      "disturbance_step": 70,
+      "anchor_step": 70,
+      "camera": "policy",
+      "warnings": [
+        "camera is policy; output will not label it as observer or third-person"
+      ]
+    }
+  ],
+  "output_path": "/home/lijingsu/codex-deliveries/video_outputs/pilot_comparisons/state0_clean_vs_reactive.mp4",
+  "sidecar_path": "/home/lijingsu/codex-deliveries/video_outputs/pilot_comparisons/state0_clean_vs_reactive.json",
+  "alignment": "policy_step",
+  "padding": "freeze-last",
+  "timeline_start": 0,
+  "timeline_end": 219,
+  "output_frames": 220,
+  "output_fps_render_only": 30.0,
+  "cell_width": 224,
+  "cell_height": 224
+}

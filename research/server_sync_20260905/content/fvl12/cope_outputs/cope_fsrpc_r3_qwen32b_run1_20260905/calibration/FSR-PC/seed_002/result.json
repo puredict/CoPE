@@ -1,0 +1,365 @@
+{
+  "artifact_files": {
+    "actions": "actions.jsonl",
+    "events": "events.jsonl",
+    "model_calls": "model_calls.jsonl",
+    "raw_outputs": "raw_outputs/",
+    "states": "state_snapshots.jsonl"
+  },
+  "backend": "libero_mujoco",
+  "compiled_plan": [],
+  "episode_id": "calibration|seed=2|method=FSR-PC",
+  "events": [
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "event": {
+        "current_slot_id": "order-critical/root",
+        "event_id": "seed-0002/e01",
+        "kind": "suspend_current",
+        "ordinal": 1,
+        "reason": "temporary station outage",
+        "user_request": "The original station is temporarily unavailable. Suspend this order without deleting it."
+      },
+      "exogenous_fingerprint": "7bee5cb95f1929a17b422dcd265b552a2c1a241d1d1ff67f3b65745356cbe297"
+    },
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "event": {
+        "current_slot_id": "order-critical/root",
+        "event_id": "seed-0002/e02",
+        "kind": "restore_current",
+        "ordinal": 2,
+        "reason": "original station revalidated",
+        "user_request": "The original station is available again. Revalidate and resume the suspended order."
+      },
+      "exogenous_fingerprint": "52b9958ea28e6031e79284ed741d3b931f807bf76cc2f44f6583071a5cd549bc"
+    },
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "event": {
+        "current_slot_id": "order-critical/root",
+        "event_id": "seed-0002/e03",
+        "kind": "override_current",
+        "new_slot": {
+          "grounding": "place_butter_in_basket_C_then_execute_receipt_v2",
+          "logical_id": "order-critical",
+          "payload": {
+            "audit_nonce": "be84db10a7dbeff2eb19",
+            "continuation_key": "receipt-v2",
+            "object": "butter",
+            "order_id": "critical-0002",
+            "plan": [
+              {
+                "object": "butter",
+                "role": "primary_order",
+                "target": "basket_C"
+              },
+              {
+                "object": "milk",
+                "role": "receipt_token",
+                "target": "basket_A"
+              },
+              {
+                "object": "yogurt",
+                "role": "closure_token",
+                "target": "basket_C"
+              }
+            ],
+            "target": "basket_C"
+          },
+          "priority": "soft",
+          "slot_id": "order-critical/detour-01"
+        },
+        "ordinal": 3,
+        "reason": "temporary detour level 1",
+        "user_request": "Temporarily replace the current version with detour 1. Use basket_C and its explicitly registered continuation."
+      },
+      "exogenous_fingerprint": "6d8b0359e60040b2afb9eb15624df23b78a20d4165b72e5b31f7fa5ec0a375e9"
+    },
+    {
+      "adaptation_status": "timeout",
+      "adaptation_valid": false,
+      "event": {
+        "current_slot_id": "order-critical/detour-01",
+        "event_id": "seed-0002/e04",
+        "kind": "override_current",
+        "new_slot": {
+          "grounding": "place_butter_in_basket_B_then_execute_receipt_v3",
+          "logical_id": "order-critical",
+          "payload": {
+            "audit_nonce": "0b9c0ccc5c504a60c26e",
+            "continuation_key": "receipt-v3",
+            "object": "butter",
+            "order_id": "critical-0002",
+            "plan": [
+              {
+                "object": "butter",
+                "role": "primary_order",
+                "target": "basket_B"
+              },
+              {
+                "object": "milk",
+                "role": "receipt_token",
+                "target": "basket_B"
+              },
+              {
+                "object": "yogurt",
+                "role": "closure_token",
+                "target": "basket_C"
+              }
+            ],
+            "target": "basket_B"
+          },
+          "priority": "soft",
+          "slot_id": "order-critical/detour-02"
+        },
+        "ordinal": 4,
+        "reason": "temporary detour level 2",
+        "user_request": "Temporarily replace the current version with detour 2. Use basket_B and its explicitly registered continuation."
+      },
+      "exogenous_fingerprint": "6a8ac3d46274666b8e58868083d3a63ec788ca4d5c57d66076a72cc6657fbb80"
+    }
+  ],
+  "final_state_fingerprint": "c3584f7c39008b7a4af3ce8c1585f4c335bc84f7cff950c7d94107448d985944",
+  "method": "FSR-PC",
+  "metrics": {
+    "all_events_processed": false,
+    "all_generations_valid": false,
+    "all_registered_transitions_semantically_matched": false,
+    "compiled_plan_matches_root": false,
+    "first_failure": "timeout",
+    "n_model_calls": 4,
+    "physical_success": false,
+    "root_lineage_restored": false,
+    "task_completion": false,
+    "total_completion_tokens": 7791,
+    "total_model_latency_s": 312.2724224589765,
+    "total_prompt_tokens": 7568,
+    "valid_model_calls": 3
+  },
+  "model": "Qwen/Qwen3-32B",
+  "model_calls": [
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "event_id": "seed-0002/e01",
+      "exogenous_fingerprint": "7bee5cb95f1929a17b422dcd265b552a2c1a241d1d1ff67f3b65745356cbe297",
+      "generation": {
+        "completion_tokens": 2417,
+        "error": "",
+        "finish_reason": "stop",
+        "latency_s": 68.74708131700754,
+        "ok": true,
+        "output_chars": 8945,
+        "output_sha256": "31569586bf353c2187c437333280102048d73a45ce530fbccf3e684e88ecc29d",
+        "prompt_tokens": 2372,
+        "response_id": "chatcmpl-7f7867fa29884a699438c19dcbad4dfb",
+        "status": "ok"
+      },
+      "method": "FSR-PC",
+      "model": "Qwen/Qwen3-32B",
+      "ordinal": 1,
+      "packet_fingerprint": "31a4a5bb9efde61752b7349dfe45c9028bca9da6f147d6e4a0d3d8d78f46a2d0",
+      "raw_output_file": "raw_outputs/event_01.txt",
+      "semantic_match_to_registered_transition": true,
+      "state_fingerprint_before": "b42dbbc42de8145c92c635b317395ac53f234f74e20d49b882d703a5f3c1f107",
+      "system_prompt_chars": 2471,
+      "system_prompt_sha256": "f5b517d2f8501f42ea6b8dcbf76cf1d977c40e073f310c556dd7f3094bd6ebad",
+      "user_prompt_chars": 6989,
+      "user_prompt_sha256": "356f38651a2f7cad7e8576b3dba4ec1751902b32a94a77724bcf3970f09d5043",
+      "validation_errors": []
+    },
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "event_id": "seed-0002/e02",
+      "exogenous_fingerprint": "52b9958ea28e6031e79284ed741d3b931f807bf76cc2f44f6583071a5cd549bc",
+      "generation": {
+        "completion_tokens": 2477,
+        "error": "",
+        "finish_reason": "stop",
+        "latency_s": 70.53318587876856,
+        "ok": true,
+        "output_chars": 9179,
+        "output_sha256": "285ac676a87889cff882407444490372861a4dabc1f92e7a635f3c4de25cf67e",
+        "prompt_tokens": 2474,
+        "response_id": "chatcmpl-a53b120fc1aa43208b8a1b9198b0a082",
+        "status": "ok"
+      },
+      "method": "FSR-PC",
+      "model": "Qwen/Qwen3-32B",
+      "ordinal": 2,
+      "packet_fingerprint": "ade1cacc7e46d8e53576a9fe93737d079594246a281e0a91b80e378d8b9bf44a",
+      "raw_output_file": "raw_outputs/event_02.txt",
+      "semantic_match_to_registered_transition": true,
+      "state_fingerprint_before": "86de50f5d225d5cd454283754fe72b96293ed857959034ae9041e2b4ecd61e59",
+      "system_prompt_chars": 2471,
+      "system_prompt_sha256": "f5b517d2f8501f42ea6b8dcbf76cf1d977c40e073f310c556dd7f3094bd6ebad",
+      "user_prompt_chars": 7397,
+      "user_prompt_sha256": "6ffbef7c8a4c8b30e818fd20f35ce925bea68f1b25e94fcf2af2866101cc479c",
+      "validation_errors": []
+    },
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "event_id": "seed-0002/e03",
+      "exogenous_fingerprint": "6d8b0359e60040b2afb9eb15624df23b78a20d4165b72e5b31f7fa5ec0a375e9",
+      "generation": {
+        "completion_tokens": 2897,
+        "error": "",
+        "finish_reason": "stop",
+        "latency_s": 82.90339829400182,
+        "ok": true,
+        "output_chars": 10742,
+        "output_sha256": "c1b830ca6f7b80b5d0f0161c1bd435b0e3702fe5125520a651fa2e9aa4a61912",
+        "prompt_tokens": 2722,
+        "response_id": "chatcmpl-e013fb3e7eb64fc38a7dab71c83ba4cb",
+        "status": "ok"
+      },
+      "method": "FSR-PC",
+      "model": "Qwen/Qwen3-32B",
+      "ordinal": 3,
+      "packet_fingerprint": "b8449aadb3881e3bde92f752f49d3b289a18790c016641e8fcb951c0d5b72007",
+      "raw_output_file": "raw_outputs/event_03.txt",
+      "semantic_match_to_registered_transition": false,
+      "state_fingerprint_before": "39726e3358556619506ba7eb111b85d83065d605debc907c96c6a66ac305f36e",
+      "system_prompt_chars": 2471,
+      "system_prompt_sha256": "f5b517d2f8501f42ea6b8dcbf76cf1d977c40e073f310c556dd7f3094bd6ebad",
+      "user_prompt_chars": 8332,
+      "user_prompt_sha256": "24af67ceda986cbf96f0183b4255ee8816234b1fd7ed0ea266437990472deb11",
+      "validation_errors": []
+    },
+    {
+      "adaptation_status": "timeout",
+      "adaptation_valid": false,
+      "event_id": "seed-0002/e04",
+      "exogenous_fingerprint": "6a8ac3d46274666b8e58868083d3a63ec788ca4d5c57d66076a72cc6657fbb80",
+      "generation": {
+        "completion_tokens": null,
+        "error": "timed out",
+        "finish_reason": "",
+        "latency_s": 90.08875696919858,
+        "ok": false,
+        "output_chars": 0,
+        "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "prompt_tokens": null,
+        "response_id": "",
+        "status": "timeout"
+      },
+      "method": "FSR-PC",
+      "model": "Qwen/Qwen3-32B",
+      "ordinal": 4,
+      "packet_fingerprint": "83e8072f733254637d53dad43199a699ee586519e0cf8e1617af81ba0bc71b48",
+      "raw_output_file": "raw_outputs/event_04.txt",
+      "semantic_match_to_registered_transition": false,
+      "state_fingerprint_before": "c3584f7c39008b7a4af3ce8c1585f4c335bc84f7cff950c7d94107448d985944",
+      "system_prompt_chars": 2471,
+      "system_prompt_sha256": "f5b517d2f8501f42ea6b8dcbf76cf1d977c40e073f310c556dd7f3094bd6ebad",
+      "user_prompt_chars": 10071,
+      "user_prompt_sha256": "ef18410260794db138e09983bfb6c46c86c63668fb114998939212a513449c69",
+      "validation_errors": []
+    }
+  ],
+  "model_request_contract": {
+    "calls_per_event": 1,
+    "max_output_tokens": 4096,
+    "model": "Qwen/Qwen3-32B",
+    "timeout_s": 90.0
+  },
+  "pairing_key": "calibration|seed=2",
+  "physical": {
+    "actions": [],
+    "backend": "libero_mujoco",
+    "controller_error": "",
+    "exact_assignment": false,
+    "expected_assignment": {
+      "butter": "basket_B",
+      "milk": "basket_A",
+      "yogurt": "basket_A"
+    },
+    "finish": {},
+    "initialized": false,
+    "invalid_action_count": 0,
+    "observed_assignment": {},
+    "physical_success": false,
+    "skipped_reason": "timeout",
+    "video": {
+      "skipped": true,
+      "written": false
+    }
+  },
+  "plan_error": "",
+  "platform": "Linux-5.19.0-50-generic-x86_64-with-glibc2.35",
+  "profile": "calibration",
+  "python": "3.10.12",
+  "registered_design": {
+    "critical_logical_id": "order-critical",
+    "expected_plan": [
+      {
+        "object": "butter",
+        "role": "primary_order",
+        "target": "basket_B"
+      },
+      {
+        "object": "milk",
+        "role": "receipt_token",
+        "target": "basket_A"
+      },
+      {
+        "object": "yogurt",
+        "role": "closure_token",
+        "target": "basket_A"
+      }
+    ],
+    "initial_slots": 8,
+    "lineage_depth": 2,
+    "max_output_tokens": 4096,
+    "model_timeout_s": 90.0,
+    "n_events": 7
+  },
+  "schema_version": "cope-fsrpc-r3-episode-v1",
+  "seed": 2,
+  "task_contract": {
+    "critical_logical_id": "order-critical",
+    "lineage_rule": "restore_root follows parent_id edges to depth zero; the root payload is authoritative even when a detour has the same primary target",
+    "objects": [
+      "butter",
+      "milk",
+      "yogurt"
+    ],
+    "root_slot_id": "order-critical/root",
+    "success_definition": {
+      "all_model_updates_valid": true,
+      "exact_object_assignment": true,
+      "no_completed_action_repeated": true,
+      "no_expired_detour_executed": true,
+      "required_final_plan": [
+        {
+          "object": "butter",
+          "role": "primary_order",
+          "target": "basket_B"
+        },
+        {
+          "object": "milk",
+          "role": "receipt_token",
+          "target": "basket_A"
+        },
+        {
+          "object": "yogurt",
+          "role": "closure_token",
+          "target": "basket_A"
+        }
+      ]
+    },
+    "targets": [
+      "basket_A",
+      "basket_B",
+      "basket_C"
+    ],
+    "task_name": "persistent_multi_order_fulfillment"
+  },
+  "utc": "2026-09-05T01:06:25.502842+00:00"
+}

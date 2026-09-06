@@ -1,0 +1,11 @@
+COMMAND: df -h /home /tmp
+START: 2026-07-13T20:26:08+08:00
+END: 2026-07-13T20:26:08+08:00
+EXIT: 0
+
+STDOUT:
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda2       879G  735G  100G  89% /
+/dev/sda2       879G  735G  100G  89% /
+
+STDERR:

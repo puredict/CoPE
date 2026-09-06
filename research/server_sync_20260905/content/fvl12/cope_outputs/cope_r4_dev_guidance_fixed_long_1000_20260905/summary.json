@@ -1,0 +1,56 @@
+[
+  {
+    "profile": "long_lineage",
+    "seed": 1000,
+    "method": "CoPE",
+    "metrics": {
+      "task_completion": true,
+      "end_to_end_success": true,
+      "all_generations_valid": true,
+      "all_registered_transitions_semantically_matched": true,
+      "all_events_processed": true,
+      "root_lineage_restored": true,
+      "compiled_plan_matches_root": true,
+      "physical_attempted": true,
+      "physical_success": true,
+      "symbolic_execution_success": null,
+      "n_model_calls": 11,
+      "valid_model_calls": 11,
+      "candidate_transition_rejections": 0,
+      "candidate_semantic_errors_after_valid_transition": 0,
+      "committed_semantic_errors": 0,
+      "total_prompt_tokens": 153310,
+      "total_completion_tokens": 1419,
+      "total_model_latency_s": 137.61354644224048,
+      "first_failure": "",
+      "first_failure_event": null
+    }
+  },
+  {
+    "profile": "long_lineage",
+    "seed": 1000,
+    "method": "FSR-PC",
+    "metrics": {
+      "task_completion": false,
+      "end_to_end_success": false,
+      "all_generations_valid": false,
+      "all_registered_transitions_semantically_matched": false,
+      "all_events_processed": false,
+      "root_lineage_restored": null,
+      "compiled_plan_matches_root": null,
+      "physical_attempted": false,
+      "physical_success": null,
+      "symbolic_execution_success": null,
+      "n_model_calls": 1,
+      "valid_model_calls": 0,
+      "candidate_transition_rejections": 0,
+      "candidate_semantic_errors_after_valid_transition": 0,
+      "committed_semantic_errors": 0,
+      "total_prompt_tokens": 11946,
+      "total_completion_tokens": 2791,
+      "total_model_latency_s": 90.00027024745941,
+      "first_failure": "client_timeout",
+      "first_failure_event": "seed-1000/e01"
+    }
+  }
+]

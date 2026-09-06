@@ -1,0 +1,8 @@
+[run_project_env] Using project-isolated LIBERO/OpenVLA environment for this subprocess only.
+[run_project_env] LD_LIBRARY_PATH is unset here to avoid the broken system CUDA nvJitLink path.
+Traceback (most recent call last):
+  File "/home/lijingsu/codex-worktrees/cope-x15-learned-live/experiments/live_semantic_runner.py", line 441, in <module>
+    raise SystemExit(main())
+  File "/home/lijingsu/codex-worktrees/cope-x15-learned-live/experiments/live_semantic_runner.py", line 210, in main
+    raise RuntimeError("X15 Phase A is CPU-only; set CUDA_VISIBLE_DEVICES to empty")
+RuntimeError: X15 Phase A is CPU-only; set CUDA_VISIBLE_DEVICES to empty

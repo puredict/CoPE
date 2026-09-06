@@ -1,0 +1,90 @@
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /home/lijingsu/vla/.venv/lib/python3.10/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+{
+  "config": "/home/lijingsu/v/cope_r3_20260905_v2/cope_fsrpc_r3_lineage/configs_r3/experiment.json",
+  "gpus": [
+    "NVIDIA GeForce RTX 3090, 24576 MiB",
+    "NVIDIA GeForce RTX 3090, 24576 MiB",
+    "NVIDIA GeForce RTX 3090, 24576 MiB",
+    "NVIDIA GeForce RTX 3090, 24576 MiB",
+    "NVIDIA GeForce RTX 3090, 24576 MiB",
+    "NVIDIA GeForce RTX 3090, 24576 MiB",
+    "NVIDIA GeForce RTX 3090, 24576 MiB",
+    "NVIDIA GeForce RTX 3090, 24576 MiB"
+  ],
+  "libero": {
+    "available": true,
+    "meta": {
+      "backend": "libero_mujoco",
+      "bddl_file": "/home/lijingsu/v/cope_r3_20260905_v2/cope_fsrpc_r3_lineage/configs_gpu/cope_basket_sorting.bddl",
+      "controller": "OSC_POSE via privileged geometry oracle",
+      "learned_policy_used": false,
+      "mujoco_gl": "osmesa",
+      "mujoco_version": "2.3.7",
+      "robosuite_version": "1.4.1",
+      "simulator": "LIBERO/robosuite/MuJoCo"
+    },
+    "requested": true
+  },
+  "passed": false,
+  "platform": "Linux-5.19.0-50-generic-x86_64-with-glibc2.35",
+  "profile_size_diagnostics": {
+    "calibration": {
+      "approx_full_state_tokens_max": 2186,
+      "approx_patch_tokens_max": 164,
+      "approx_prompt_tokens_max": 3050,
+      "events": 7,
+      "full_state_fits_char4_estimate": true,
+      "initial_slots": 8,
+      "lineage_depth": 2,
+      "note": "four characters/token is diagnostic only; live tokenizer usage is authoritative",
+      "prompt_plus_output_fits_char4_estimate": true,
+      "registered_context_limit": 32768,
+      "registered_output_budget": 4096
+    },
+    "lineage_valid": {
+      "approx_full_state_tokens_max": 3765,
+      "approx_patch_tokens_max": 164,
+      "approx_prompt_tokens_max": 5229,
+      "events": 11,
+      "full_state_fits_char4_estimate": true,
+      "initial_slots": 10,
+      "lineage_depth": 6,
+      "note": "four characters/token is diagnostic only; live tokenizer usage is authoritative",
+      "prompt_plus_output_fits_char4_estimate": true,
+      "registered_context_limit": 32768,
+      "registered_output_budget": 4096
+    },
+    "long_lineage": {
+      "approx_full_state_tokens_max": 11934,
+      "approx_patch_tokens_max": 164,
+      "approx_prompt_tokens_max": 13398,
+      "events": 11,
+      "full_state_fits_char4_estimate": false,
+      "initial_slots": 48,
+      "lineage_depth": 6,
+      "note": "four characters/token is diagnostic only; live tokenizer usage is authoritative",
+      "prompt_plus_output_fits_char4_estimate": true,
+      "registered_context_limit": 32768,
+      "registered_output_budget": 4096
+    }
+  },
+  "python": "3.10.12",
+  "required_files": {
+    "code/cope/backends/libero_mujoco.py": true,
+    "code/cope/lineage_benchmark/runner.py": true,
+    "configs_gpu/cope_basket_sorting.bddl": true,
+    "configs_gpu/task_assets.yaml": true
+  },
+  "schema_version": "cope-fsrpc-r3-preflight-v1",
+  "server": {
+    "error": "<urlopen error [Errno 111] Connection refused>",
+    "healthy": false,
+    "requested": true
+  }
+}

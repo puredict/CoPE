@@ -1,0 +1,72 @@
+Protocol: 3 families x 6 conditions x 3 severities x 50 paired seeds = 2700 episodes/method
+          6 methods -> 16200 episodes total
+
+============================================================================================
+OVERALL (Wilson 95% CI).  SD=safe delivery  CFR=collision-free recovery  TS=task success
+============================================================================================
+method                                SD                    CFR                     TS
+path_only           0.436 [0.418, 0.455]   0.776 [0.759, 0.791]   0.182 [0.168, 0.197]
+safe_stop           0.623 [0.604, 0.641]   0.962 [0.954, 0.968]   0.266 [0.249, 0.283]
+template_repair     0.429 [0.411, 0.448]   0.427 [0.408, 0.445]   0.262 [0.246, 0.279]
+offline_atomic      0.593 [0.574, 0.611]   0.593 [0.574, 0.611]   0.423 [0.404, 0.442]
+offline_exact       0.973 [0.966, 0.978]   0.973 [0.966, 0.978]   0.683 [0.665, 0.700]
+online_repair       0.973 [0.966, 0.978]   0.973 [0.966, 0.978]   0.683 [0.665, 0.700]
+
+============================================================================================
+PAIRED vs online_repair: risk difference [bootstrap 95% CI], exact McNemar (Holm-adjusted)
+============================================================================================
+
+-- safe_delivery
+   method              online-other               95% CI   disc(o+/o-)    p_holm
+   path_only                 +0.537 [+0.518, +0.556]   1450/1         0.0000*
+   safe_stop                 +0.350 [+0.332, +0.369]    948/2         0.0000*
+   template_repair           +0.544 [+0.525, +0.563]   1468/0         0.0000*
+   offline_atomic            +0.380 [+0.362, +0.399]   1026/0         0.0000*
+   offline_exact             +0.000 [+0.000, +0.000]      0/0         1.0000 
+
+-- collision_free_recovery
+   method              online-other               95% CI   disc(o+/o-)    p_holm
+   path_only                 +0.197 [+0.182, +0.213]    546/13        0.0000*
+   safe_stop                 +0.011 [+0.006, +0.017]     44/14        0.0002*
+   template_repair           +0.546 [+0.527, +0.565]   1475/0         0.0000*
+   offline_atomic            +0.380 [+0.362, +0.399]   1026/0         0.0000*
+   offline_exact             +0.000 [+0.000, +0.000]      0/0         1.0000 
+
+-- task_success
+   method              online-other               95% CI   disc(o+/o-)    p_holm
+   path_only                 +0.501 [+0.482, +0.520]   1352/0         0.0000*
+   safe_stop                 +0.417 [+0.399, +0.436]   1126/0         0.0000*
+   template_repair           +0.421 [+0.401, +0.440]   1143/7         0.0000*
+   offline_atomic            +0.260 [+0.243, +0.276]    701/0         0.0000*
+   offline_exact             +0.000 [+0.000, +0.000]      0/0         1.0000 
+
+============================================================================================
+SAFE DELIVERY by condition (rate)
+============================================================================================
+condition                   path_only      safe_stop  template_repa  offline_atomi  offline_exact  online_repair
+obstacle                        0.431          0.984          0.984          0.984          0.984          0.984
+slip                            0.042          0.042          1.000          1.000          1.000          1.000
+relocation                      1.000          1.000          0.018          1.000          1.000          1.000
+obstacle+slip                   0.293          0.673          0.573          0.573          0.864          0.864
+obstacle+relocation             0.802          0.987          0.000          0.000          0.989          0.989
+slip+relocation                 0.049          0.049          0.000          0.000          1.000          1.000
+
+============================================================================================
+COST (means)
+============================================================================================
+method             latency_ms  repairs  rep_len  cand_gen  cand_rej   expand  branches   graph  compile
+path_only                0.40     0.00     0.00      0.00      0.00     0.00       0.0     0.0      0.0
+safe_stop                0.68     0.00     0.00      0.00      0.00     0.00       0.0     0.0      0.0
+template_repair          1.37     0.52     2.35      1.40      0.62     0.00       0.0     0.0      0.0
+offline_atomic           1.75     0.81     4.33      1.69      0.03     0.00       6.0    32.0     31.0
+offline_exact            4.17     1.40     7.85      3.40      0.04     0.00      17.0   109.0    157.0
+online_repair            2.95     1.40     7.85      3.73      0.04    15.16       0.0     0.0      0.0
+
+NOTES
+ * SD, CFR and TS are distinct. TS is the strict end-to-end criterion;
+   SD ignores terminal orientation and the proximity-weighted spill bound.
+ * latency_ms is WHOLE-EPISODE wall time and, for offline methods,
+   INCLUDES the one-off precompilation done in reset(). In deployment
+   that cost is amortized across episodes, so offline runtime selection
+   is cheaper than this column suggests; compare 'compile' separately.
+ * 'expand' (operator-search expansions) is the online-only search cost.

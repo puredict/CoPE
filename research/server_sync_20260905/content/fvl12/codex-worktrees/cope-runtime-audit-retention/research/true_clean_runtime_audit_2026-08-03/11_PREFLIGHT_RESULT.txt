@@ -1,0 +1,33 @@
+timestamp=2026-08-03T13:18+08:00
+host=fvl12
+command=scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python /home/lijingsu/codex-worktrees/cope-runtime-config-20260803/preflight_check.txt --output-dir /home/lijingsu/codex-deliveries/cope_formal_RESERVED_RUN_ID_REQUIRED
+result=PASS
+checks_passed=53
+checks_total=53
+nvidia_smi=PASS;8xRTX3090;driver=535.54.03;12MiB_each;0pct_util
+cope_commit=21b90aed9e2e64152a7bfe0c85553f2ffbc5e730
+cope_clean=true
+openvla_commit=9bf418e79d019d416860990d60379d66f0c06220
+openvla_clean=true
+libero_commit=8f1084e3132a39270c3a13ebe37270a43ece2a01
+libero_tree=99f4ada3f1d62e026fc9ff2390eb4ff8a1760e60
+libero_clean=true
+libero_content_sha256=9d34b952bdd5577ddef9861272767c3eb5bce5aa2c9e885f4b705d9e3454c213
+checkpoint_files=15
+checkpoint_bytes=15085049428
+checkpoint_aggregate_sha256=2990c991ffa194ff3e720115454b815e4d83897250c6a88d2f7d70d817543af7
+python_freeze_sha256=d238fb71daef95ecf4157a277a083c795e7b96bdc0ff8e2e297c87c79183e4c4
+pip_check=PASS
+reserved_state_ids=27-49
+permanent_reserve=47-49
+reserved_state_inventory=PASS
+output_target_absent=true
+provider_calls=0
+simulator_runs=0
+reserved_state_packets_read=0
+output_created=false
+
+Interpretation: PASS applies to the currently established host runtime and its
+fail-closed identity gate. It does not establish a hash-locked cold Python
+rebuild and does not authorize a formal embodied run.
+

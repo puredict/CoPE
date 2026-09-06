@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "utc": "2026-08-07T04:57:12.418029+00:00",
+    "git_rev": "ce79dc2db05a1ded03b08e243c9a77dd4089bb73",
+    "python": "3.12.2",
+    "platform": "macOS-26.2-arm64-arm-64bit",
+    "executor": "physical",
+    "p_success": 0.97,
+    "seeds": 5,
+    "gate_seeds": 10
+  },
+  "probe": {
+    "CoPE_full": {
+      "n_candidates": 4,
+      "n_rejected": 4,
+      "n_accepted": 0,
+      "selected": null,
+      "rejected_by_reason": {
+        "collision_or_unsafe_contact": [
+          "Suspend+UpdateTargetContract+Stabilize+Retreat+WaitUntilClear+Realign+Resume",
+          "Suspend+Stabilize+UpdateTargetContract+Retreat+WaitUntilClear+Realign+Resume",
+          "Suspend+UpdateTargetContract+Retreat+Stabilize+WaitUntilClear+Realign+Resume",
+          "Suspend+Retreat+UpdateTargetContract+Stabilize+WaitUntilClear+Realign+Resume"
+        ]
+      },
+      "verifier_discriminated": false,
+      "rollout_verification_enabled": true,
+      "lines": [
+        "CANDIDATE_REJECTED Suspend+UpdateTargetContract+Stabilize+Retreat+WaitUntilClear+Realign+Resume reason=collision_or_unsafe_contact",
+        "CANDIDATE_REJECTED Suspend+Stabilize+UpdateTargetContract+Retreat+WaitUntilClear+Realign+Resume reason=collision_or_unsafe_contact",
+        "CANDIDATE_REJECTED Suspend+UpdateTargetContract+Retreat+Stabilize+WaitUntilClear+Realign+Resume reason=collision_or_unsafe_contact",
+        "CANDIDATE_REJECTED Suspend+Retreat+UpdateTargetContract+Stabilize+WaitUntilClear+Realign+Resume reason=collision_or_unsafe_contact"
+      ],
+      "safe_fallback": true,
+      "probe": "verifier_probe|butter|basket_B|0"
+    },
+    "CoPE_no_rollout_verification": {
+      "n_candidates": 4,
+      "n_rejected": 0,
+      "n_accepted": 4,
+      "selected": "Suspend+UpdateTargetContract+Stabilize+Retreat+WaitUntilClear+Realign+Resume",
+      "rejected_by_reason": {},
+      "verifier_discriminated": false,
+      "rollout_verification_enabled": false,
+      "lines": [
+        "CANDIDATE_SELECTED Suspend+UpdateTargetContract+Stabilize+Retreat+WaitUntilClear+Realign+Resume"
+      ],
+      "safe_fallback": false,
+      "probe": "verifier_probe|butter|basket_B|0"
+    },
+    "verifier_changed_the_decision": true,
+    "n_rejected_full": 4,
+    "n_rejected_ablated": 0
+  }
+}

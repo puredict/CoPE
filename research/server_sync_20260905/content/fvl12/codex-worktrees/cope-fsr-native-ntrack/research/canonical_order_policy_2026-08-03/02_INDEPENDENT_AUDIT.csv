@@ -1,0 +1,12 @@
+check,pass,observed,expected
+clean_12,True,12,12
+legacy_zero_normalized_twelve,True,"[0,12]","[0,12]"
+clean_idempotent_semantic,True,12,12
+reorder_14,True,"[14,14]","[14,14]"
+strict_rejects_14,True,14,14
+normalize_accepts_equal_14,True,14,14
+faults_reject_7,True,7,7
+timing_12x1000,True,12,12
+timing_status_recomputed,True,100979,"""100979"""
+policy_selected,True,"[""normalize_before_validate_publish_hash"",""PASS""]","[""normalize_before_validate_publish_hash"",""PASS""]"
+resource_boundary,True,"[""0"",""false"",""false""]","[""0"",""false"",""false""]"

@@ -1,0 +1,55 @@
+COMMAND: cd /home/lijingsu/vla && if [ -d .venv ]; then source .venv/bin/activate; fi; python - <<'PY'
+import importlib, json, platform, sys
+mods = ["torch", "transformers", "mujoco", "robosuite", "libero"]
+info = {"python": sys.version, "platform": platform.platform()}
+for name in mods:
+    try:
+        mod = importlib.import_module(name)
+        info[name] = getattr(mod, "__version__", "<no __version__>")
+    except Exception as e:
+        info[name] = f"ERROR {type(e).__name__}: {e}"
+try:
+    import torch
+    info["torch_cuda_available"] = torch.cuda.is_available()
+    info["torch_cuda_version"] = torch.version.cuda
+    info["torch_device_count"] = torch.cuda.device_count()
+except Exception as e:
+    info["torch_cuda_probe_error"] = repr(e)
+print(json.dumps(info, indent=2, sort_keys=True))
+PY
+START: 2026-07-13T20:26:08+08:00
+END: 2026-07-13T20:26:09+08:00
+EXIT: 0
+
+STDOUT:
+{
+  "libero": "ERROR ModuleNotFoundError: No module named 'libero'",
+  "mujoco": "2.3.7",
+  "platform": "Linux-5.19.0-50-generic-x86_64-with-glibc2.35",
+  "python": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
+  "robosuite": "1.4.1",
+  "torch": "ERROR ImportError: /share/apps/cuda/12.2/lib64/libnvJitLink.so.12: cannot read file data: Input/output error",
+  "torch_cuda_probe_error": "ImportError('/share/apps/cuda/12.2/lib64/libnvJitLink.so.12: cannot read file data: Input/output error')",
+  "transformers": "ERROR ImportError: /share/apps/cuda/12.2/lib64/libnvJitLink.so.12: cannot read file data: Input/output error"
+}
+
+STDERR:
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /home/lijingsu/vla/.venv/lib/python3.10/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+libEGL warning: egl: failed to create dri2 screen
+libEGL warning: egl: failed to create dri2 screen
+libEGL warning: egl: failed to create dri2 screen
+libEGL warning: egl: failed to create dri2 screen
+libEGL warning: egl: failed to create dri2 screen
+libEGL warning: egl: failed to create dri2 screen
+libEGL warning: egl: failed to create dri2 screen
+libEGL warning: egl: failed to create dri2 screen
+libEGL warning: egl: failed to create dri2 screen
+libEGL warning: egl: failed to create dri2 screen
+libEGL warning: egl: failed to create dri2 screen
+libEGL warning: egl: failed to create dri2 screen
+libEGL warning: egl: failed to create dri2 screen
+libEGL warning: egl: failed to create dri2 screen
+libEGL warning: egl: failed to create dri2 screen
+libEGL warning: egl: failed to create dri2 screen

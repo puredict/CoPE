@@ -1,0 +1,267 @@
+{
+  "checkpoint": {
+    "action_dim": 7,
+    "action_mask": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      false
+    ],
+    "action_q01": [
+      -0.6348214149475098,
+      -0.7741071581840515,
+      -0.7633928656578064,
+      -0.09749999642372131,
+      -0.14819999992847435,
+      -0.2742857038974762,
+      0.0
+    ],
+    "action_q99": [
+      0.7714285850524902,
+      0.8464285731315613,
+      0.9375,
+      0.13928571343421936,
+      0.15964286029338837,
+      0.3246428668498993,
+      1.0
+    ],
+    "adapter_state_dim": 8,
+    "checkpoint_proprio_statistics_all_zero": true,
+    "checkpoint_proprio_statistics_dim": 7,
+    "files_manifest_sha256": "58773a8ef85515f695c99402f692dc5afe0fb71efd7f3984ff44c1f117c4f034",
+    "model_consumes_proprio": false,
+    "model_index_sha256": "ca8b53fed8133ee2afcd2fc483de8febf7f5bb0f6bcb09f91189772e59e8f659",
+    "normalization_statistics_sha256": "54ca346948d5e62e9519a9ed93e45f0a069b9ec997ad1f48f1d8867d4d2d86d2",
+    "path": "/home/lijingsu/vla/models/openvla-7b-finetuned-libero-10",
+    "repository": "openvla/openvla-7b-finetuned-libero-10",
+    "revision": "80970322773f81baa2e22fe495d0487b93a05cfa",
+    "unnorm_key": "libero_10",
+    "weight_shards": [
+      {
+        "bytes": 4925122448,
+        "name": "model-00001-of-00004.safetensors",
+        "sha256": "72f7196d8768c104073d7e9104ad8023cb27727191de1a490612886428b18c51"
+      },
+      {
+        "bytes": 4947392496,
+        "name": "model-00002-of-00004.safetensors",
+        "sha256": "92a60a88c7dad2ba1fccc4acbebef98fc7a894891bc49f2e21cfbf1600daf413"
+      },
+      {
+        "bytes": 4947417456,
+        "name": "model-00003-of-00004.safetensors",
+        "sha256": "12b45ae85535565148907e379d6f35bcba83b9497006ff3b66658fa412ffac85"
+      },
+      {
+        "bytes": 262668432,
+        "name": "model-00004-of-00004.safetensors",
+        "sha256": "d3b8e759db56b86709c56f8d156952415dd64e101feccfd01e701487041dd8c1"
+      }
+    ]
+  },
+  "config_hash": "6977d88607a0cdb52af52035dcd9cc98b37dcbc4dcd2333bddbe761306fda79c",
+  "config_path": "/home/lijingsu/cope-integration-20260724/configs/openvla_libero_10_calibration_v1.yaml",
+  "entries": [
+    {
+      "episode_id": "calibration__task00__state00__seed20260724",
+      "initial_state_id": 0,
+      "seed": 20260724,
+      "task_id": 0
+    },
+    {
+      "episode_id": "calibration__task00__state01__seed20260725",
+      "initial_state_id": 1,
+      "seed": 20260725,
+      "task_id": 0
+    },
+    {
+      "episode_id": "calibration__task00__state02__seed20260726",
+      "initial_state_id": 2,
+      "seed": 20260726,
+      "task_id": 0
+    },
+    {
+      "episode_id": "calibration__task00__state03__seed20260727",
+      "initial_state_id": 3,
+      "seed": 20260727,
+      "task_id": 0
+    },
+    {
+      "episode_id": "calibration__task00__state04__seed20260728",
+      "initial_state_id": 4,
+      "seed": 20260728,
+      "task_id": 0
+    },
+    {
+      "episode_id": "calibration__task01__state00__seed20260824",
+      "initial_state_id": 0,
+      "seed": 20260824,
+      "task_id": 1
+    },
+    {
+      "episode_id": "calibration__task01__state01__seed20260825",
+      "initial_state_id": 1,
+      "seed": 20260825,
+      "task_id": 1
+    },
+    {
+      "episode_id": "calibration__task01__state02__seed20260826",
+      "initial_state_id": 2,
+      "seed": 20260826,
+      "task_id": 1
+    },
+    {
+      "episode_id": "calibration__task01__state03__seed20260827",
+      "initial_state_id": 3,
+      "seed": 20260827,
+      "task_id": 1
+    },
+    {
+      "episode_id": "calibration__task01__state04__seed20260828",
+      "initial_state_id": 4,
+      "seed": 20260828,
+      "task_id": 1
+    },
+    {
+      "episode_id": "calibration__task04__state00__seed20260924",
+      "initial_state_id": 0,
+      "seed": 20260924,
+      "task_id": 4
+    },
+    {
+      "episode_id": "calibration__task04__state01__seed20260925",
+      "initial_state_id": 1,
+      "seed": 20260925,
+      "task_id": 4
+    },
+    {
+      "episode_id": "calibration__task04__state02__seed20260926",
+      "initial_state_id": 2,
+      "seed": 20260926,
+      "task_id": 4
+    },
+    {
+      "episode_id": "calibration__task04__state03__seed20260927",
+      "initial_state_id": 3,
+      "seed": 20260927,
+      "task_id": 4
+    },
+    {
+      "episode_id": "calibration__task04__state04__seed20260928",
+      "initial_state_id": 4,
+      "seed": 20260928,
+      "task_id": 4
+    },
+    {
+      "episode_id": "calibration__task08__state00__seed20261024",
+      "initial_state_id": 0,
+      "seed": 20261024,
+      "task_id": 8
+    },
+    {
+      "episode_id": "calibration__task08__state01__seed20261025",
+      "initial_state_id": 1,
+      "seed": 20261025,
+      "task_id": 8
+    },
+    {
+      "episode_id": "calibration__task08__state02__seed20261026",
+      "initial_state_id": 2,
+      "seed": 20261026,
+      "task_id": 8
+    },
+    {
+      "episode_id": "calibration__task08__state03__seed20261027",
+      "initial_state_id": 3,
+      "seed": 20261027,
+      "task_id": 8
+    },
+    {
+      "episode_id": "calibration__task08__state04__seed20261028",
+      "initial_state_id": 4,
+      "seed": 20261028,
+      "task_id": 8
+    }
+  ],
+  "git": {
+    "clean": true,
+    "commit": "e5c44ea919255210ff940dd2a4987602da535258",
+    "status": ""
+  },
+  "invariants": {
+    "atomic_o_excl_claim": true,
+    "fixed_checkpoint": true,
+    "fixed_task_state_seed_entries": true,
+    "independent_worker_output_directories": true,
+    "one_model_per_worker": true,
+    "policy_step_budget": 220,
+    "shared_model_server": false,
+    "success_predicate": "libero_done_or_sparse_reward_ge_1",
+    "terminal_episode_json_atomic": true
+  },
+  "launcher_id": "calibration-parallel-7997903aa2ef140d",
+  "original_manifest": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_v1/run_manifest.json",
+  "original_root": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_v1",
+  "original_terminal_episode_ids": [
+    "calibration__task00__state00__seed20260724",
+    "calibration__task00__state01__seed20260725",
+    "calibration__task00__state02__seed20260726",
+    "calibration__task00__state03__seed20260727",
+    "calibration__task00__state04__seed20260728",
+    "calibration__task01__state00__seed20260824"
+  ],
+  "partition": {
+    "0": [
+      "calibration__task00__state00__seed20260724",
+      "calibration__task01__state03__seed20260827",
+      "calibration__task08__state01__seed20261025"
+    ],
+    "1": [
+      "calibration__task00__state01__seed20260725",
+      "calibration__task01__state04__seed20260828",
+      "calibration__task08__state02__seed20261026"
+    ],
+    "2": [
+      "calibration__task00__state02__seed20260726",
+      "calibration__task04__state00__seed20260924",
+      "calibration__task08__state03__seed20261027"
+    ],
+    "3": [
+      "calibration__task00__state03__seed20260727",
+      "calibration__task04__state01__seed20260925",
+      "calibration__task08__state04__seed20261028"
+    ],
+    "4": [
+      "calibration__task00__state04__seed20260728",
+      "calibration__task04__state02__seed20260926"
+    ],
+    "5": [
+      "calibration__task01__state00__seed20260824",
+      "calibration__task04__state03__seed20260927"
+    ],
+    "6": [
+      "calibration__task01__state01__seed20260825",
+      "calibration__task04__state04__seed20260928"
+    ],
+    "7": [
+      "calibration__task01__state02__seed20260826",
+      "calibration__task08__state00__seed20261024"
+    ]
+  },
+  "prepared_at": "2026-07-24T10:50:43Z",
+  "resume_traces": {
+    "calibration__task01__state01__seed20260825": {
+      "path": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_v1/episodes/calibration__task01__state01__seed20260825/attempt-001.jsonl",
+      "policy_steps": 56,
+      "resume_mode": "deterministic_action_replay_without_model_reinference",
+      "sha256": "63917b7b144ae1b27cd76ab2102f5f117994f497fbf307c952be84effa1b43a4"
+    }
+  },
+  "schema_version": "openvla-libero-calibration-parallel-v1",
+  "smoke_report": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_smoke_v3/smoke_report.json",
+  "smoke_report_sha256": "edbb8c31f15c3b2d0e4d6024ef594acea236c036b23353f21abda73b3b173943",
+  "worker_count": 8
+}

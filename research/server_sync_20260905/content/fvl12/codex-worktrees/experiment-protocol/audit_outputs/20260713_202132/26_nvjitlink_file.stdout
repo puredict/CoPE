@@ -1,0 +1,10 @@
+lrwxrwxrwx 1 root root 18 Jul 11  2023 /share/apps/cuda/12.2/lib64/libnvJitLink.so -> libnvJitLink.so.12
+lrwxrwxrwx 1 root root 23 Jul 11  2023 /share/apps/cuda/12.2/lib64/libnvJitLink.so.12 -> libnvJitLink.so.12.2.91
+  File: /share/apps/cuda/12.2/lib64/libnvJitLink.so.12 -> libnvJitLink.so.12.2.91
+  Size: 23        	Blocks: 0          IO Block: 1048576 symbolic link
+Device: 3ah/58d	Inode: 412734328   Links: 1
+Access: (0777/lrwxrwxrwx)  Uid: (    0/    root)   Gid: (    0/    root)
+Access: 2026-05-06 15:32:40.016384987 +0800
+Modify: 2023-07-11 21:01:34.894927785 +0800
+Change: 2023-07-11 21:01:34.894927785 +0800
+ Birth: -

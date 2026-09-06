@@ -1,0 +1,186 @@
+{
+  "passed": true,
+  "task_suite": "libero_spatial",
+  "task_id": 0,
+  "trial_id": 0,
+  "task_description": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+  "target_joint": "akita_black_bowl_1_joint0",
+  "target_selection": {
+    "selected_joint": "akita_black_bowl_1_joint0",
+    "candidates": [
+      {
+        "name": "akita_black_bowl_1_joint0",
+        "joint_id": 9,
+        "qpos_addr": 9,
+        "object_name": "akita_black_bowl_1",
+        "score": 2,
+        "candidate_tokens": [
+          "akita",
+          "black",
+          "bowl"
+        ],
+        "matched_task_tokens": [
+          "black",
+          "bowl"
+        ],
+        "score_reason": "2 overlapping task/object tokens"
+      },
+      {
+        "name": "akita_black_bowl_2_joint0",
+        "joint_id": 10,
+        "qpos_addr": 16,
+        "object_name": "akita_black_bowl_2",
+        "score": 2,
+        "candidate_tokens": [
+          "akita",
+          "black",
+          "bowl"
+        ],
+        "matched_task_tokens": [
+          "black",
+          "bowl"
+        ],
+        "score_reason": "2 overlapping task/object tokens"
+      },
+      {
+        "name": "glazed_rim_porcelain_ramekin_1_joint0",
+        "joint_id": 12,
+        "qpos_addr": 30,
+        "object_name": "glazed_rim_porcelain_ramekin_1",
+        "score": 1,
+        "candidate_tokens": [
+          "glazed",
+          "porcelain",
+          "ramekin",
+          "rim"
+        ],
+        "matched_task_tokens": [
+          "ramekin"
+        ],
+        "score_reason": "1 overlapping task/object tokens"
+      },
+      {
+        "name": "plate_1_joint0",
+        "joint_id": 13,
+        "qpos_addr": 37,
+        "object_name": "plate_1",
+        "score": 1,
+        "candidate_tokens": [
+          "plate"
+        ],
+        "matched_task_tokens": [
+          "plate"
+        ],
+        "score_reason": "1 overlapping task/object tokens"
+      },
+      {
+        "name": "cookies_1_joint0",
+        "joint_id": 11,
+        "qpos_addr": 23,
+        "object_name": "cookies_1",
+        "score": 0,
+        "candidate_tokens": [
+          "cookies"
+        ],
+        "matched_task_tokens": [],
+        "score_reason": "0 overlapping task/object tokens"
+      }
+    ],
+    "reason": "explicit_target_joint",
+    "requested_joint": "akita_black_bowl_1_joint0",
+    "ambiguous": false
+  },
+  "step_return_len": 4,
+  "step_reward": 0.0,
+  "step_done": false,
+  "step_info_keys": [],
+  "before_qpos": [
+    -0.06348251426733297,
+    0.20206123354277347,
+    0.9573198566089519,
+    0.707106781610956,
+    -8.06446738065082e-06,
+    5.052076808400239e-06,
+    0.7071067806981041
+  ],
+  "after_qpos": [
+    0.13651748573266703,
+    0.20206123354277347,
+    0.9573198566089519,
+    0.707106781610956,
+    -8.06446738065082e-06,
+    5.052076808400239e-06,
+    0.7071067806981041
+  ],
+  "fresh_qpos": [
+    0.13651748573266703,
+    0.20206123354277347,
+    0.9573198566089519,
+    0.707106781610956,
+    -8.06446738065082e-06,
+    5.052076808400239e-06,
+    0.7071067806981041
+  ],
+  "qpos_delta_xy": [
+    0.2,
+    0.0
+  ],
+  "qpos_reflects_mutation": true,
+  "old_obs_reused_pixel_delta": {
+    "mean_abs": 0.0,
+    "max_abs": 0.0,
+    "changed_pixels": 0
+  },
+  "fresh_obs_pixel_delta": {
+    "mean_abs": 2.7256876627604165,
+    "max_abs": 186.0,
+    "changed_pixels": 10734
+  },
+  "old_obs_is_stale": true,
+  "fresh_obs_is_new": true,
+  "refresh": {
+    "method": "env.env._get_observations(force_update=True)",
+    "operations": [
+      "sim.forward",
+      "env.check_success",
+      "env._post_process",
+      "env._update_observables",
+      "env.env._post_process",
+      "env.env._update_observables"
+    ],
+    "consumed_noop_env_step": false
+  },
+  "disturbance": {
+    "joint": "akita_black_bowl_1_joint0",
+    "joint_id": 9,
+    "qpos_addr": 9,
+    "before_qpos": [
+      -0.06348251426733297,
+      0.20206123354277347,
+      0.9573198566089519,
+      0.707106781610956,
+      -8.06446738065082e-06,
+      5.052076808400239e-06,
+      0.7071067806981041
+    ],
+    "after_qpos": [
+      0.13651748573266703,
+      0.20206123354277347,
+      0.9573198566089519,
+      0.707106781610956,
+      -8.06446738065082e-06,
+      5.052076808400239e-06,
+      0.7071067806981041
+    ],
+    "delta_xy": [
+      0.2,
+      0.0
+    ],
+    "applied_at": "2026-07-13T14:07:41.469970+00:00"
+  },
+  "images": {
+    "before": "/home/lijingsu/vla/audit_outputs/correctness_gate_refresh/20260713_220716/before.png",
+    "stale_from_old_obs": "/home/lijingsu/vla/audit_outputs/correctness_gate_refresh/20260713_220716/stale_from_old_obs.png",
+    "fresh_after_refresh": "/home/lijingsu/vla/audit_outputs/correctness_gate_refresh/20260713_220716/fresh_after_refresh.png"
+  }
+}

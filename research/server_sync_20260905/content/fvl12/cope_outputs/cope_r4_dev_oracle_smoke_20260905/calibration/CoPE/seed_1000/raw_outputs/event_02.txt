@@ -1,0 +1,1 @@
+{"base_revision":1,"event_id":"seed-1000/e02","ops":[{"op":"restore","slot_id":"order-critical/root"}],"schema_version":"cope-lineage-patch-v1"}

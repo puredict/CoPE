@@ -1,0 +1,161 @@
+COMMAND: bwrap --bind / / --dev-bind /dev /dev --proc /proc --bind /home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind /home/lijingsu/vla/smoke_outputs bash -lc 'cd /home/lijingsu/vla && source .venv/bin/activate && unset LD_LIBRARY_PATH && export PYTHONPATH=$HOME/vla/src/openvla:$HOME/vla/src/LIBERO:${PYTHONPATH:-} && export MUJOCO_GL=osmesa && export PYOPENGL_PLATFORM=osmesa && export HF_HOME=$HOME/vla/cache/huggingface && export TRANSFORMERS_CACHE=$HOME/vla/cache/transformers && export TOKENIZERS_PARALLELISM=false && python openvla_smoke.py'
+START: 2026-07-13T20:50:03+08:00
+END: 2026-07-13T20:55:39+08:00
+EXIT: 1
+
+STDOUT:
+
+STDERR:
+/home/lijingsu/vla/.venv/lib/python3.10/site-packages/transformers/utils/hub.py:124: FutureWarning: Using `TRANSFORMERS_CACHE` is deprecated and will be removed in v5 of Transformers. Use `HF_HOME` instead.
+  warnings.warn(
+2026-07-13 20:50:05.469227: I tensorflow/core/util/port.cc:113] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-07-13 20:50:05.504432: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:9261] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+2026-07-13 20:50:05.504480: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:607] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2026-07-13 20:50:05.505348: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:1515] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2026-07-13 20:50:05.510657: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2026-07-13 20:50:06.162783: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+/home/lijingsu/vla/.venv/lib/python3.10/site-packages/huggingface_hub/file_download.py:949: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+'(MaxRetryError('HTTPSConnectionPool(host=\'huggingface.co\', port=443): Max retries exceeded with url: /openvla/openvla-7b/resolve/main/processor_config.json (Caused by NewConnectionError("HTTPSConnection(host=\'huggingface.co\', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable"))'), '(Request ID: 77685f1b-a480-4af5-b8ff-81d9ff657c3e)')' thrown while requesting HEAD https://huggingface.co/openvla/openvla-7b/resolve/main/processor_config.json
+Retrying in 1s [Retry 1/5].
+'(MaxRetryError('HTTPSConnectionPool(host=\'huggingface.co\', port=443): Max retries exceeded with url: /openvla/openvla-7b/resolve/main/processor_config.json (Caused by NewConnectionError("HTTPSConnection(host=\'huggingface.co\', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable"))'), '(Request ID: ee7402d5-f085-4959-a6db-580a5203a703)')' thrown while requesting HEAD https://huggingface.co/openvla/openvla-7b/resolve/main/processor_config.json
+Retrying in 2s [Retry 2/5].
+'(MaxRetryError('HTTPSConnectionPool(host=\'huggingface.co\', port=443): Max retries exceeded with url: /openvla/openvla-7b/resolve/main/processor_config.json (Caused by NewConnectionError("HTTPSConnection(host=\'huggingface.co\', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable"))'), '(Request ID: f0573d15-783f-4e38-bde5-d93e002f29ff)')' thrown while requesting HEAD https://huggingface.co/openvla/openvla-7b/resolve/main/processor_config.json
+Retrying in 4s [Retry 3/5].
+'(MaxRetryError('HTTPSConnectionPool(host=\'huggingface.co\', port=443): Max retries exceeded with url: /openvla/openvla-7b/resolve/main/processor_config.json (Caused by NewConnectionError("HTTPSConnection(host=\'huggingface.co\', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable"))'), '(Request ID: 20a5f53c-7cb5-4606-989a-a4710b97b600)')' thrown while requesting HEAD https://huggingface.co/openvla/openvla-7b/resolve/main/processor_config.json
+Retrying in 8s [Retry 4/5].
+'(MaxRetryError('HTTPSConnectionPool(host=\'huggingface.co\', port=443): Max retries exceeded with url: /openvla/openvla-7b/resolve/main/processor_config.json (Caused by NewConnectionError("HTTPSConnection(host=\'huggingface.co\', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable"))'), '(Request ID: 1a1c7a6b-6723-4584-ab5a-cb15f75e599a)')' thrown while requesting HEAD https://huggingface.co/openvla/openvla-7b/resolve/main/processor_config.json
+Retrying in 8s [Retry 5/5].
+'(MaxRetryError('HTTPSConnectionPool(host=\'huggingface.co\', port=443): Max retries exceeded with url: /openvla/openvla-7b/resolve/main/processor_config.json (Caused by NewConnectionError("HTTPSConnection(host=\'huggingface.co\', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable"))'), '(Request ID: 51140a80-ec39-4762-ad67-e2a0cc4fbc3f)')' thrown while requesting HEAD https://huggingface.co/openvla/openvla-7b/resolve/main/processor_config.json
+'(MaxRetryError('HTTPSConnectionPool(host=\'huggingface.co\', port=443): Max retries exceeded with url: /openvla/openvla-7b/resolve/main/preprocessor_config.json (Caused by NewConnectionError("HTTPSConnection(host=\'huggingface.co\', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable"))'), '(Request ID: 2379700e-5ac1-4285-a4ef-c96a2e8c5b62)')' thrown while requesting HEAD https://huggingface.co/openvla/openvla-7b/resolve/main/preprocessor_config.json
+Retrying in 1s [Retry 1/5].
+'(MaxRetryError('HTTPSConnectionPool(host=\'huggingface.co\', port=443): Max retries exceeded with url: /openvla/openvla-7b/resolve/main/preprocessor_config.json (Caused by NewConnectionError("HTTPSConnection(host=\'huggingface.co\', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable"))'), '(Request ID: fcbd3d0f-78f7-476b-a961-5af53a29fa4e)')' thrown while requesting HEAD https://huggingface.co/openvla/openvla-7b/resolve/main/preprocessor_config.json
+Retrying in 2s [Retry 2/5].
+'(MaxRetryError('HTTPSConnectionPool(host=\'huggingface.co\', port=443): Max retries exceeded with url: /openvla/openvla-7b/resolve/main/preprocessor_config.json (Caused by NewConnectionError("HTTPSConnection(host=\'huggingface.co\', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable"))'), '(Request ID: 6aab9e9e-89f8-4cdd-8a6b-3dfc8f41958d)')' thrown while requesting HEAD https://huggingface.co/openvla/openvla-7b/resolve/main/preprocessor_config.json
+Retrying in 4s [Retry 3/5].
+'(MaxRetryError('HTTPSConnectionPool(host=\'huggingface.co\', port=443): Max retries exceeded with url: /openvla/openvla-7b/resolve/main/preprocessor_config.json (Caused by NewConnectionError("HTTPSConnection(host=\'huggingface.co\', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable"))'), '(Request ID: eb660dd0-fa97-4e21-ad7c-b007f0f2cef1)')' thrown while requesting HEAD https://huggingface.co/openvla/openvla-7b/resolve/main/preprocessor_config.json
+Retrying in 8s [Retry 4/5].
+'(MaxRetryError('HTTPSConnectionPool(host=\'huggingface.co\', port=443): Max retries exceeded with url: /openvla/openvla-7b/resolve/main/preprocessor_config.json (Caused by NewConnectionError("HTTPSConnection(host=\'huggingface.co\', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable"))'), '(Request ID: 9d46d3d2-da27-48bc-a7ec-05cf247af498)')' thrown while requesting HEAD https://huggingface.co/openvla/openvla-7b/resolve/main/preprocessor_config.json
+Retrying in 8s [Retry 5/5].
+'(MaxRetryError('HTTPSConnectionPool(host=\'huggingface.co\', port=443): Max retries exceeded with url: /openvla/openvla-7b/resolve/main/preprocessor_config.json (Caused by NewConnectionError("HTTPSConnection(host=\'huggingface.co\', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable"))'), '(Request ID: c3650554-6560-4474-bda2-bfffc8009167)')' thrown while requesting HEAD https://huggingface.co/openvla/openvla-7b/resolve/main/preprocessor_config.json
+'(MaxRetryError('HTTPSConnectionPool(host=\'huggingface.co\', port=443): Max retries exceeded with url: /openvla/openvla-7b/resolve/main/tokenizer_config.json (Caused by NewConnectionError("HTTPSConnection(host=\'huggingface.co\', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable"))'), '(Request ID: c2ce801c-b615-472d-a5ab-17c1dc006190)')' thrown while requesting HEAD https://huggingface.co/openvla/openvla-7b/resolve/main/tokenizer_config.json
+Retrying in 1s [Retry 1/5].
+'(MaxRetryError('HTTPSConnectionPool(host=\'huggingface.co\', port=443): Max retries exceeded with url: /openvla/openvla-7b/resolve/main/tokenizer_config.json (Caused by NewConnectionError("HTTPSConnection(host=\'huggingface.co\', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable"))'), '(Request ID: 04689676-a6db-4b71-8cbb-b4057c10a1c1)')' thrown while requesting HEAD https://huggingface.co/openvla/openvla-7b/resolve/main/tokenizer_config.json
+Retrying in 2s [Retry 2/5].
+'(MaxRetryError('HTTPSConnectionPool(host=\'huggingface.co\', port=443): Max retries exceeded with url: /openvla/openvla-7b/resolve/main/tokenizer_config.json (Caused by NewConnectionError("HTTPSConnection(host=\'huggingface.co\', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable"))'), '(Request ID: 4442b2c2-fb9f-4e5f-8230-be026d9dc27a)')' thrown while requesting HEAD https://huggingface.co/openvla/openvla-7b/resolve/main/tokenizer_config.json
+Retrying in 4s [Retry 3/5].
+'(MaxRetryError('HTTPSConnectionPool(host=\'huggingface.co\', port=443): Max retries exceeded with url: /openvla/openvla-7b/resolve/main/tokenizer_config.json (Caused by NewConnectionError("HTTPSConnection(host=\'huggingface.co\', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable"))'), '(Request ID: 48a18c6e-25a2-4b9d-aef4-79ae85c75e6d)')' thrown while requesting HEAD https://huggingface.co/openvla/openvla-7b/resolve/main/tokenizer_config.json
+Retrying in 8s [Retry 4/5].
+'(MaxRetryError('HTTPSConnectionPool(host=\'huggingface.co\', port=443): Max retries exceeded with url: /openvla/openvla-7b/resolve/main/tokenizer_config.json (Caused by NewConnectionError("HTTPSConnection(host=\'huggingface.co\', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable"))'), '(Request ID: 39e59a13-ec00-4901-98ca-b11b8116104f)')' thrown while requesting HEAD https://huggingface.co/openvla/openvla-7b/resolve/main/tokenizer_config.json
+Retrying in 8s [Retry 5/5].
+'(MaxRetryError('HTTPSConnectionPool(host=\'huggingface.co\', port=443): Max retries exceeded with url: /openvla/openvla-7b/resolve/main/tokenizer_config.json (Caused by NewConnectionError("HTTPSConnection(host=\'huggingface.co\', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable"))'), '(Request ID: ff5c1622-5ddd-4d3d-99c4-9e7888baeccf)')' thrown while requesting HEAD https://huggingface.co/openvla/openvla-7b/resolve/main/tokenizer_config.json
+'(MaxRetryError('HTTPSConnectionPool(host=\'huggingface.co\', port=443): Max retries exceeded with url: /openvla/openvla-7b/resolve/main/config.json (Caused by NewConnectionError("HTTPSConnection(host=\'huggingface.co\', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable"))'), '(Request ID: fd1f3de7-1bb3-4d2d-a11b-977222739e17)')' thrown while requesting HEAD https://huggingface.co/openvla/openvla-7b/resolve/main/config.json
+Retrying in 1s [Retry 1/5].
+'(MaxRetryError('HTTPSConnectionPool(host=\'huggingface.co\', port=443): Max retries exceeded with url: /openvla/openvla-7b/resolve/main/config.json (Caused by NewConnectionError("HTTPSConnection(host=\'huggingface.co\', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable"))'), '(Request ID: 79ce5f48-5d94-4bc6-b5a1-a851956d0a4d)')' thrown while requesting HEAD https://huggingface.co/openvla/openvla-7b/resolve/main/config.json
+Retrying in 2s [Retry 2/5].
+'(MaxRetryError('HTTPSConnectionPool(host=\'huggingface.co\', port=443): Max retries exceeded with url: /openvla/openvla-7b/resolve/main/config.json (Caused by NewConnectionError("HTTPSConnection(host=\'huggingface.co\', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable"))'), '(Request ID: a6981fcf-e4be-4582-baa5-40dfcf78039b)')' thrown while requesting HEAD https://huggingface.co/openvla/openvla-7b/resolve/main/config.json
+Retrying in 4s [Retry 3/5].
+'(MaxRetryError('HTTPSConnectionPool(host=\'huggingface.co\', port=443): Max retries exceeded with url: /openvla/openvla-7b/resolve/main/config.json (Caused by NewConnectionError("HTTPSConnection(host=\'huggingface.co\', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable"))'), '(Request ID: 8adc3709-b294-4154-9a17-3b560a0320ce)')' thrown while requesting HEAD https://huggingface.co/openvla/openvla-7b/resolve/main/config.json
+Retrying in 8s [Retry 4/5].
+'(MaxRetryError('HTTPSConnectionPool(host=\'huggingface.co\', port=443): Max retries exceeded with url: /openvla/openvla-7b/resolve/main/config.json (Caused by NewConnectionError("HTTPSConnection(host=\'huggingface.co\', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable"))'), '(Request ID: dd04ed51-066c-41a0-a800-7742a6783da0)')' thrown while requesting HEAD https://huggingface.co/openvla/openvla-7b/resolve/main/config.json
+Retrying in 8s [Retry 5/5].
+'(MaxRetryError('HTTPSConnectionPool(host=\'huggingface.co\', port=443): Max retries exceeded with url: /openvla/openvla-7b/resolve/main/config.json (Caused by NewConnectionError("HTTPSConnection(host=\'huggingface.co\', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable"))'), '(Request ID: b55a03de-6e4d-4905-ab22-77d331a7c35e)')' thrown while requesting HEAD https://huggingface.co/openvla/openvla-7b/resolve/main/config.json
+Traceback (most recent call last):
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/urllib3/connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/urllib3/util/connection.py", line 85, in create_connection
+    raise err
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/urllib3/util/connection.py", line 73, in create_connection
+    sock.connect(sa)
+OSError: [Errno 101] Network is unreachable
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/urllib3/connectionpool.py", line 788, in urlopen
+    response = self._make_request(
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/urllib3/connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/urllib3/connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/urllib3/connectionpool.py", line 1106, in _validate_conn
+    conn.connect()
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/urllib3/connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/urllib3/connection.py", line 219, in _new_conn
+    raise NewConnectionError(
+urllib3.exceptions.NewConnectionError: HTTPSConnection(host='huggingface.co', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/requests/adapters.py", line 696, in send
+    resp = conn.urlopen(
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/urllib3/connectionpool.py", line 842, in urlopen
+    retries = retries.increment(
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/urllib3/util/retry.py", line 543, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='huggingface.co', port=443): Max retries exceeded with url: /openvla/openvla-7b/resolve/main/config.json (Caused by NewConnectionError("HTTPSConnection(host='huggingface.co', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 1550, in _get_metadata_or_catch_error
+    metadata = get_hf_file_metadata(
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+    return fn(*args, **kwargs)
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 1467, in get_hf_file_metadata
+    r = _request_wrapper(
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 283, in _request_wrapper
+    response = _request_wrapper(
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 306, in _request_wrapper
+    response = http_backoff(method=method, url=url, **params)
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/huggingface_hub/utils/_http.py", line 326, in http_backoff
+    raise err
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/huggingface_hub/utils/_http.py", line 307, in http_backoff
+    response = session.request(method=method, url=url, **kwargs)
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/requests/sessions.py", line 651, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/requests/sessions.py", line 784, in send
+    r = adapter.send(request, **kwargs)
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/huggingface_hub/utils/_http.py", line 96, in send
+    return super().send(request, *args, **kwargs)
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/requests/adapters.py", line 729, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: (MaxRetryError('HTTPSConnectionPool(host=\'huggingface.co\', port=443): Max retries exceeded with url: /openvla/openvla-7b/resolve/main/config.json (Caused by NewConnectionError("HTTPSConnection(host=\'huggingface.co\', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable"))'), '(Request ID: b55a03de-6e4d-4905-ab22-77d331a7c35e)')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/transformers/utils/hub.py", line 398, in cached_file
+    resolved_file = hf_hub_download(
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+    return fn(*args, **kwargs)
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 1014, in hf_hub_download
+    return _hf_hub_download_to_cache_dir(
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 1121, in _hf_hub_download_to_cache_dir
+    _raise_on_head_call_error(head_call_error, force_download, local_files_only)
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 1665, in _raise_on_head_call_error
+    raise LocalEntryNotFoundError(
+huggingface_hub.errors.LocalEntryNotFoundError: An error happened while trying to locate the file on the Hub and we cannot find the requested files in the local cache. Please check your connection and try again or make sure your Internet connection is on.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/lijingsu/vla/openvla_smoke.py", line 49, in <module>
+    main()
+  File "/home/lijingsu/vla/openvla_smoke.py", line 21, in main
+    processor = AutoProcessor.from_pretrained(
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/transformers/models/auto/processing_auto.py", line 285, in from_pretrained
+    config = AutoConfig.from_pretrained(
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/transformers/models/auto/configuration_auto.py", line 928, in from_pretrained
+    config_dict, unused_kwargs = PretrainedConfig.get_config_dict(pretrained_model_name_or_path, **kwargs)
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/transformers/configuration_utils.py", line 631, in get_config_dict
+    config_dict, kwargs = cls._get_config_dict(pretrained_model_name_or_path, **kwargs)
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/transformers/configuration_utils.py", line 686, in _get_config_dict
+    resolved_config_file = cached_file(
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/transformers/utils/hub.py", line 441, in cached_file
+    raise EnvironmentError(
+OSError: We couldn't connect to 'https://huggingface.co' to load this file, couldn't find it in the cached files and it looks like openvla/openvla-7b is not the path to a directory containing a file named config.json.
+Checkout your internet connection or see how to run the library in offline mode at 'https://huggingface.co/docs/transformers/installation#offline-mode'.

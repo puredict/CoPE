@@ -1,0 +1,133 @@
+#!/usr/bin/env python3
+"""Fail-closed wrapper for the hash-locked cold-rebuild runtime.
+
+The first external command is nvidia-smi.  This script is read-only: it does
+not create the requested output directory, load a model, instantiate LIBERO,
+call a provider, or inspect an individual reserved-state packet.
+"""
+from __future__ import annotations
+
+import contextlib
+import hashlib
+import io
+from pathlib import Path
+import re
+import runpy
+import subprocess
+import sys
+
+BASE = Path("/home/lijingsu/codex-worktrees/cope-runtime-config-20260803/preflight_check.txt")
+LOCK = Path("/home/lijingsu/codex-worktrees/cope-runtime-config-20260803/requirements-lock.txt")
+WHEELHOUSE = Path("/home/lijingsu/codex-worktrees/cope-python-wheelhouse-20260803")
+PYTHON = Path("/home/lijingsu/codex-worktrees/cope-runtime-python-20260803/bin/python")
+LIBERO = Path("/home/lijingsu/codex-worktrees/libero-cope-cleanroom-v2")
+LIBERO_GIT = Path("/home/lijingsu/codex-worktrees/libero-cope-cleanroom-metadata.git/worktrees/libero-cope-cleanroom-v2")
+
+EXPECTED_BASE = "20fc15d1f2eba34370206ab806890a9ea45eac73689b30a12005c65f9838be89"
+EXPECTED_LOCK = "0b7e3eac2e14ea7ea7bec84af09a2707b6c60126e8b39561ebfa66f0ba5e8dc5"
+EXPECTED_FREEZE = "4cf8a2c18914cd631b8ef38e8b8010aa6f86ae5b0e2faca1a30089beb08380e5"
+EXPECTED_WHEELHOUSE = "cfecc598db43bbd033393902a220ab1fa23b57c7a11400669f52a07647a5776d"
+EXPECTED_ARTIFACTS = 203
+EXPECTED_ARTIFACT_BYTES = 4_026_960_133
+EXPECTED_LOCKED_WHEELS = 199
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(8 * 1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def wheelhouse_address() -> tuple[int, int, str, set[str]]:
+    aggregate = hashlib.sha256()
+    total = 0
+    hashes: set[str] = set()
+    files = sorted(path for path in WHEELHOUSE.iterdir() if path.is_file())
+    for path in files:
+        size = path.stat().st_size
+        digest = sha256_file(path)
+        total += size
+        hashes.add(digest)
+        aggregate.update(
+            path.name.encode() + b"\0" + str(size).encode() + b"\0" + digest.encode() + b"\n"
+        )
+    return len(files), total, aggregate.hexdigest(), hashes
+
+
+def main() -> int:
+    # Mandatory first external command; query only, no GPU allocation.
+    first_smi = subprocess.run(
+        ["nvidia-smi", "--query-gpu=index,name,driver_version,memory.used,utilization.gpu", "--format=csv,noheader"],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    extra: list[tuple[str, bool, str]] = []
+    def check(name: str, ok: bool, evidence: object) -> None:
+        extra.append((name, bool(ok), str(evidence).replace("\n", " | ")))
+
+    check("first_command_nvidia_smi", first_smi.returncode == 0, first_smi.stdout.strip() or first_smi.stderr.strip())
+    base_hash = sha256_file(BASE) if BASE.is_file() else "MISSING"
+    lock_hash = sha256_file(LOCK) if LOCK.is_file() else "MISSING"
+    check("base_preflight_hash", base_hash == EXPECTED_BASE, base_hash)
+    check("requirements_lock_hash", lock_hash == EXPECTED_LOCK, lock_hash)
+    check("cold_python_selected", Path(sys.executable).resolve() == PYTHON.resolve(), sys.executable)
+
+    artifact_hashes: set[str] = set()
+    if WHEELHOUSE.is_dir():
+        count, total, aggregate, artifact_hashes = wheelhouse_address()
+    else:
+        count, total, aggregate = 0, 0, "MISSING"
+    check(
+        "wheelhouse_content_address",
+        (count, total, aggregate) == (EXPECTED_ARTIFACTS, EXPECTED_ARTIFACT_BYTES, EXPECTED_WHEELHOUSE),
+        f"artifacts={count};bytes={total};sha256={aggregate}",
+    )
+
+    lock_text = LOCK.read_text(encoding="utf-8") if LOCK.is_file() else ""
+    locked_hashes = re.findall(r"--hash=sha256:([0-9a-f]{64})", lock_text)
+    check(
+        "requirements_artifact_coverage",
+        len(locked_hashes) == EXPECTED_LOCKED_WHEELS
+        and len(set(locked_hashes)) == EXPECTED_LOCKED_WHEELS
+        and set(locked_hashes).issubset(artifact_hashes),
+        f"lock_entries={len(locked_hashes)};distinct={len(set(locked_hashes))};present={len(set(locked_hashes) & artifact_hashes)}",
+    )
+
+    if not all(ok for _, ok, _ in extra):
+        for name, ok, evidence in extra:
+            print(f"{name}\t{'PASS' if ok else 'FAIL'}\t{evidence}")
+        print(f"FINAL\tFAIL\tchecks={len(extra)};provider_calls=0;simulator_runs=0;reserved_state_packets_read=0;output_created=false")
+        return 1
+
+    namespace = runpy.run_path(str(BASE), run_name="cope_base_preflight")
+    # runpy may return a distinct mapping from the function's live globals;
+    # patch the actual function namespace so stale paths cannot survive.
+    base_globals = namespace["main"].__globals__
+    base_globals["LIBERO"] = LIBERO
+    base_globals["LIBERO_GIT"] = LIBERO_GIT
+    base_globals["PYTHON"] = PYTHON
+    base_globals["EXPECTED_FREEZE"] = EXPECTED_FREEZE
+
+    captured = io.StringIO()
+    with contextlib.redirect_stdout(captured):
+        base_rc = int(namespace["main"]())
+    base_lines = captured.getvalue().splitlines()
+    base_checks = [line for line in base_lines if not line.startswith("FINAL\t")]
+    for line in base_checks:
+        print(line)
+    for name, ok, evidence in extra:
+        print(f"{name}\t{'PASS' if ok else 'FAIL'}\t{evidence}")
+    passed = base_rc == 0 and all(ok for _, ok, _ in extra)
+    print(
+        f"FINAL\t{'PASS' if passed else 'FAIL'}\tchecks={len(base_checks) + len(extra)};"
+        "provider_calls=0;simulator_runs=0;reserved_state_packets_read=0;output_created=false"
+    )
+    return 0 if passed else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

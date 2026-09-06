@@ -1,0 +1,1294 @@
+{
+  "backend": "libero_mujoco",
+  "backend_finish": {
+    "backend": "libero_mujoco",
+    "collision": false,
+    "contacts": 25130,
+    "frames": 787,
+    "seed": 0,
+    "state_hash": "74d97d05e7a797886829dcce0ef0d6bb10a67ebbb3239a3df4fac71d031b0347",
+    "steps": 786
+  },
+  "backend_meta": {
+    "backend": "libero_mujoco",
+    "bddl_file": "/home/lijingsu/cope_fsrpc_\u4ea4\u63a5_v2/configs_gpu/cope_basket_sorting.bddl",
+    "controller": "OSC_POSE via privileged geometry oracle",
+    "learned_policy_used": false,
+    "mujoco_gl": "osmesa",
+    "mujoco_version": "2.3.7",
+    "robosuite_version": "1.4.1",
+    "simulator": "LIBERO/robosuite/MuJoCo"
+  },
+  "cancelled_expected": [],
+  "condition": "I3",
+  "denominators": {
+    "accepted_candidates": 6,
+    "attempted_candidates": 6,
+    "attempted_episodes": 1,
+    "candidate_isolation_valid": true,
+    "evaluated_candidates": 6,
+    "rejected_candidates": 0,
+    "valid_candidates": 6,
+    "valid_episodes": 1
+  },
+  "episode_id": "basket_sorting|I3|0|FSR-PC",
+  "events": [
+    {
+      "condition": "I3",
+      "event_id": "I3-u1",
+      "ordinal": 1,
+      "pipeline_complete": true,
+      "pipeline_markers": [
+        "EVENT",
+        "REGENERATION",
+        "CONTINUATION_CAPTURED",
+        "REPAIR_GOAL_COMPILED",
+        "CANDIDATES_GENERATED",
+        "ROLLOUT_RESULTS",
+        "CANDIDATE_SELECTED",
+        "GRAPH_SPLICED",
+        "RESTORE_VALIDATED",
+        "STAGE_RESUMED"
+      ],
+      "simulator_state_hash_after_adaptation": "4fbcf38bb793e1d2c393650cf20ad13d997e96336996ac3b2c4bf4ef2238da6a",
+      "simulator_state_hash_before_adaptation": "df33472f0fa0e15dfe6908b263286823b5efeca17ed208a24d4756e578c7cae4",
+      "simulator_step": 348,
+      "update": {
+        "redirect": {
+          "g_butter": "basket_A"
+        },
+        "user_request": "actually put the butter in basket A"
+      },
+      "world": {
+        "moved_targets": [],
+        "unavailable_targets": []
+      },
+      "world_application": {
+        "requested_world": {},
+        "simulator_changes": [],
+        "world_changed": false
+      }
+    },
+    {
+      "condition": "I3",
+      "event_id": "I3-u2",
+      "ordinal": 2,
+      "pipeline_complete": true,
+      "pipeline_markers": [
+        "EVENT",
+        "REGENERATION",
+        "CONTINUATION_CAPTURED",
+        "REPAIR_GOAL_COMPILED",
+        "CANDIDATES_GENERATED",
+        "ROLLOUT_RESULTS",
+        "CANDIDATE_SELECTED",
+        "GRAPH_SPLICED",
+        "RESTORE_VALIDATED",
+        "STAGE_RESUMED"
+      ],
+      "simulator_state_hash_after_adaptation": "ba9d2cfe8e3b8b8218e3012b42e9b3052bb1f46585ae83ba7afabbf8cf196b1f",
+      "simulator_state_hash_before_adaptation": "a6598bee933417f97e58826e0094004ed7af32e744859cbda8da2f2d8d0e3abb",
+      "simulator_step": 578,
+      "update": {
+        "insert_safety": [
+          {
+            "grounding": "keep_object_upright",
+            "id": "c_keep_upright",
+            "reason": "user asked for careful handling"
+          }
+        ],
+        "redirect": {
+          "g_butter": "basket_C"
+        },
+        "user_request": "sorry, basket C in the end"
+      },
+      "world": {
+        "moved_targets": [],
+        "unavailable_targets": []
+      },
+      "world_application": {
+        "requested_world": {},
+        "simulator_changes": [],
+        "world_changed": false
+      }
+    }
+  ],
+  "expected_final": {
+    "butter": "basket_C",
+    "milk": "basket_A",
+    "yogurt": "basket_A"
+  },
+  "final_settle": {
+    "consecutive_stable_steps": 10,
+    "final": {
+      "butter": {
+        "angular_speed_rad_s": 1.776583937558285e-14,
+        "linear_speed_m_s": 5.34135416542933e-13,
+        "stable": true
+      },
+      "milk": {
+        "angular_speed_rad_s": 3.9236894943811663e-07,
+        "linear_speed_m_s": 1.9479106618135127e-08,
+        "stable": true
+      },
+      "yogurt": {
+        "angular_speed_rad_s": 5.2685346977062675e-06,
+        "linear_speed_m_s": 5.545291318379227e-08,
+        "stable": true
+      }
+    },
+    "max_steps": 200,
+    "required_consecutive_steps": 10,
+    "samples": [
+      {
+        "consecutive_stable": 1,
+        "objects": {
+          "butter": {
+            "angular_speed_rad_s": 1.7235415327299314e-14,
+            "linear_speed_m_s": 5.343105931291118e-13,
+            "stable": true
+          },
+          "milk": {
+            "angular_speed_rad_s": 3.9236645487560375e-07,
+            "linear_speed_m_s": 1.9479029757333913e-08,
+            "stable": true
+          },
+          "yogurt": {
+            "angular_speed_rad_s": 5.268509387613336e-06,
+            "linear_speed_m_s": 5.545232588900514e-08,
+            "stable": true
+          }
+        },
+        "step": 777
+      },
+      {
+        "consecutive_stable": 2,
+        "objects": {
+          "butter": {
+            "angular_speed_rad_s": 1.7393488884170536e-14,
+            "linear_speed_m_s": 5.344317321331277e-13,
+            "stable": true
+          },
+          "milk": {
+            "angular_speed_rad_s": 3.923667326920571e-07,
+            "linear_speed_m_s": 1.9479039602926675e-08,
+            "stable": true
+          },
+          "yogurt": {
+            "angular_speed_rad_s": 5.268512162300517e-06,
+            "linear_speed_m_s": 5.5452395548655106e-08,
+            "stable": true
+          }
+        },
+        "step": 778
+      },
+      {
+        "consecutive_stable": 3,
+        "objects": {
+          "butter": {
+            "angular_speed_rad_s": 1.7024863943994935e-14,
+            "linear_speed_m_s": 5.34579702095039e-13,
+            "stable": true
+          },
+          "milk": {
+            "angular_speed_rad_s": 3.923670098386198e-07,
+            "linear_speed_m_s": 1.947904645458351e-08,
+            "stable": true
+          },
+          "yogurt": {
+            "angular_speed_rad_s": 5.268515008348416e-06,
+            "linear_speed_m_s": 5.5452459136286036e-08,
+            "stable": true
+          }
+        },
+        "step": 779
+      },
+      {
+        "consecutive_stable": 4,
+        "objects": {
+          "butter": {
+            "angular_speed_rad_s": 1.7236726341120552e-14,
+            "linear_speed_m_s": 5.344586302372644e-13,
+            "stable": true
+          },
+          "milk": {
+            "angular_speed_rad_s": 3.923672865461567e-07,
+            "linear_speed_m_s": 1.9479057927931926e-08,
+            "stable": true
+          },
+          "yogurt": {
+            "angular_speed_rad_s": 5.268517877547395e-06,
+            "linear_speed_m_s": 5.545252308436975e-08,
+            "stable": true
+          }
+        },
+        "step": 780
+      },
+      {
+        "consecutive_stable": 5,
+        "objects": {
+          "butter": {
+            "angular_speed_rad_s": 1.7647000633767027e-14,
+            "linear_speed_m_s": 5.345794002628559e-13,
+            "stable": true
+          },
+          "milk": {
+            "angular_speed_rad_s": 3.9236756360187145e-07,
+            "linear_speed_m_s": 1.947906623943873e-08,
+            "stable": true
+          },
+          "yogurt": {
+            "angular_speed_rad_s": 5.268520652050843e-06,
+            "linear_speed_m_s": 5.545258933709913e-08,
+            "stable": true
+          }
+        },
+        "step": 781
+      },
+      {
+        "consecutive_stable": 6,
+        "objects": {
+          "butter": {
+            "angular_speed_rad_s": 1.7032436027782754e-14,
+            "linear_speed_m_s": 5.345797094654295e-13,
+            "stable": true
+          },
+          "milk": {
+            "angular_speed_rad_s": 3.9236784141920197e-07,
+            "linear_speed_m_s": 1.947907459448355e-08,
+            "stable": true
+          },
+          "yogurt": {
+            "angular_speed_rad_s": 5.268523377397939e-06,
+            "linear_speed_m_s": 5.545265592744838e-08,
+            "stable": true
+          }
+        },
+        "step": 782
+      },
+      {
+        "consecutive_stable": 7,
+        "objects": {
+          "butter": {
+            "angular_speed_rad_s": 1.7059112441085543e-14,
+            "linear_speed_m_s": 5.344583880092758e-13,
+            "stable": true
+          },
+          "milk": {
+            "angular_speed_rad_s": 3.923681180097444e-07,
+            "linear_speed_m_s": 1.9479083450526106e-08,
+            "stable": true
+          },
+          "yogurt": {
+            "angular_speed_rad_s": 5.268526306747851e-06,
+            "linear_speed_m_s": 5.545271731504797e-08,
+            "stable": true
+          }
+        },
+        "step": 783
+      },
+      {
+        "consecutive_stable": 8,
+        "objects": {
+          "butter": {
+            "angular_speed_rad_s": 1.7480308021386767e-14,
+            "linear_speed_m_s": 5.344340733799208e-13,
+            "stable": true
+          },
+          "milk": {
+            "angular_speed_rad_s": 3.923683945699111e-07,
+            "linear_speed_m_s": 1.9479091857332326e-08,
+            "stable": true
+          },
+          "yogurt": {
+            "angular_speed_rad_s": 5.268529110326068e-06,
+            "linear_speed_m_s": 5.54527827482593e-08,
+            "stable": true
+          }
+        },
+        "step": 784
+      },
+      {
+        "consecutive_stable": 9,
+        "objects": {
+          "butter": {
+            "angular_speed_rad_s": 1.696046659775574e-14,
+            "linear_speed_m_s": 5.344585493613627e-13,
+            "stable": true
+          },
+          "milk": {
+            "angular_speed_rad_s": 3.923686717451892e-07,
+            "linear_speed_m_s": 1.9479101011901605e-08,
+            "stable": true
+          },
+          "yogurt": {
+            "angular_speed_rad_s": 5.268531881777376e-06,
+            "linear_speed_m_s": 5.5452848882388815e-08,
+            "stable": true
+          }
+        },
+        "step": 785
+      },
+      {
+        "consecutive_stable": 10,
+        "objects": {
+          "butter": {
+            "angular_speed_rad_s": 1.776583937558285e-14,
+            "linear_speed_m_s": 5.34135416542933e-13,
+            "stable": true
+          },
+          "milk": {
+            "angular_speed_rad_s": 3.9236894943811663e-07,
+            "linear_speed_m_s": 1.9479106618135127e-08,
+            "stable": true
+          },
+          "yogurt": {
+            "angular_speed_rad_s": 5.2685346977062675e-06,
+            "linear_speed_m_s": 5.545291318379227e-08,
+            "stable": true
+          }
+        },
+        "step": 786
+      }
+    ],
+    "stable": true,
+    "steps": 10,
+    "thresholds": {
+      "max_angular_speed_rad_s": 0.5,
+      "max_linear_speed_m_s": 0.02
+    }
+  },
+  "final_simulator_state_hash": "74d97d05e7a797886829dcce0ef0d6bb10a67ebbb3239a3df4fac71d031b0347",
+  "final_state": {
+    "n_active": 6,
+    "n_slots": 6,
+    "override_edges": [],
+    "slots": {
+      "c_gentle#r2": {
+        "grounding": "handle_objects_gently",
+        "has_restore": false,
+        "has_validity": false,
+        "history": [],
+        "id": "c_gentle#r2",
+        "lineage": {
+          "depends_on": [],
+          "derived_from": null,
+          "inherited_at": [],
+          "overridden_by": null,
+          "overrides": []
+        },
+        "mode": "active",
+        "payload": {
+          "kind": "user_preference_as_safety"
+        },
+        "priority": "hard",
+        "priority_snapshot": null,
+        "source": "safety_rule"
+      },
+      "c_keep_upright#r2": {
+        "grounding": "keep_object_upright",
+        "has_restore": false,
+        "has_validity": false,
+        "history": [],
+        "id": "c_keep_upright#r2",
+        "lineage": {
+          "depends_on": [],
+          "derived_from": null,
+          "inherited_at": [],
+          "overridden_by": null,
+          "overrides": []
+        },
+        "mode": "active",
+        "payload": {},
+        "priority": "hard",
+        "priority_snapshot": null,
+        "source": "safety_rule"
+      },
+      "c_no_collision#r2": {
+        "grounding": "avoid_collision",
+        "has_restore": false,
+        "has_validity": false,
+        "history": [],
+        "id": "c_no_collision#r2",
+        "lineage": {
+          "depends_on": [],
+          "derived_from": null,
+          "inherited_at": [],
+          "overridden_by": null,
+          "overrides": []
+        },
+        "mode": "active",
+        "payload": {
+          "kind": "safety"
+        },
+        "priority": "hard",
+        "priority_snapshot": null,
+        "source": "safety_rule"
+      },
+      "g_butter#r2": {
+        "grounding": "place_butter_in_basket_C",
+        "has_restore": false,
+        "has_validity": false,
+        "history": [],
+        "id": "g_butter#r2",
+        "lineage": {
+          "depends_on": [],
+          "derived_from": null,
+          "inherited_at": [],
+          "overridden_by": null,
+          "overrides": []
+        },
+        "mode": "active",
+        "payload": {
+          "object": "butter",
+          "order": 2,
+          "target": "basket_C"
+        },
+        "priority": "soft",
+        "priority_snapshot": null,
+        "source": "initial_task"
+      },
+      "g_milk#r2": {
+        "grounding": "place_milk_in_basket_A",
+        "has_restore": false,
+        "has_validity": false,
+        "history": [],
+        "id": "g_milk#r2",
+        "lineage": {
+          "depends_on": [],
+          "derived_from": null,
+          "inherited_at": [],
+          "overridden_by": null,
+          "overrides": []
+        },
+        "mode": "active",
+        "payload": {
+          "completed": true,
+          "object": "milk",
+          "order": 0,
+          "target": "basket_A"
+        },
+        "priority": "soft",
+        "priority_snapshot": null,
+        "source": "initial_task"
+      },
+      "g_yogurt#r2": {
+        "grounding": "place_yogurt_in_basket_A",
+        "has_restore": false,
+        "has_validity": false,
+        "history": [],
+        "id": "g_yogurt#r2",
+        "lineage": {
+          "depends_on": [],
+          "derived_from": null,
+          "inherited_at": [],
+          "overridden_by": null,
+          "overrides": []
+        },
+        "mode": "active",
+        "payload": {
+          "completed": true,
+          "object": "yogurt",
+          "order": 1,
+          "target": "basket_A"
+        },
+        "priority": "soft",
+        "priority_snapshot": null,
+        "source": "initial_task"
+      }
+    },
+    "version": 3
+  },
+  "infrastructure_errors": [],
+  "legs": [
+    {
+      "collision": false,
+      "goal_id": "g_milk",
+      "leg_index": 0,
+      "object": "milk",
+      "pick": {
+        "captured_eef_position": [
+          -0.1670950471785411,
+          -0.19556103438430136,
+          0.7387555362208945
+        ],
+        "failure_reason": null,
+        "grasp_acquired": true,
+        "object_lift_m": 0.20291162153227937,
+        "object_name": "milk_1",
+        "object_start_position": [
+          -0.20073617716247152,
+          -0.1923175362517874,
+          0.5065098417619691
+        ],
+        "phases": [
+          {
+            "done": false,
+            "final_error_m": 0.001877294680087673,
+            "phase": "approach_object",
+            "reward": 0.0,
+            "steps": 25
+          },
+          {
+            "done": false,
+            "final_error_m": 0.036963544499336295,
+            "phase": "descend_to_grasp",
+            "reward": 0.0,
+            "steps": 60
+          },
+          {
+            "done": false,
+            "final_error_m": null,
+            "phase": "close_gripper",
+            "reward": 0.0,
+            "steps": 20
+          },
+          {
+            "done": false,
+            "final_error_m": 0.0024404567100249886,
+            "phase": "lift_object",
+            "reward": 0.0,
+            "steps": 21
+          }
+        ],
+        "success": true,
+        "total_steps": 126
+      },
+      "placed": true,
+      "placement": {
+        "failure_reason": null,
+        "grasp_acquired": true,
+        "object_lift_m": 0.20291162153227937,
+        "object_name": "milk_1",
+        "phases": [
+          {
+            "done": false,
+            "final_error_m": 0.0030289918451345843,
+            "phase": "transfer_above_target",
+            "reward": 0.0,
+            "steps": 38
+          },
+          {
+            "done": false,
+            "final_error_m": 0.005847844400487949,
+            "phase": "descend_to_release",
+            "reward": 0.0,
+            "steps": 16
+          },
+          {
+            "done": false,
+            "final_error_m": null,
+            "phase": "open_gripper",
+            "reward": 0.0,
+            "steps": 10
+          },
+          {
+            "done": false,
+            "final_error_m": 0.004385631353245095,
+            "phase": "retreat",
+            "reward": 0.0,
+            "steps": 17
+          },
+          {
+            "done": false,
+            "final_error_m": null,
+            "phase": "settle",
+            "reward": 0.0,
+            "steps": 40
+          }
+        ],
+        "released": true,
+        "success": true,
+        "target_predicate": true,
+        "target_region_name": "basket_1_contain_region",
+        "total_steps": 121
+      },
+      "step_end": 257,
+      "step_start": 10,
+      "target_after": "basket_A",
+      "target_before": "basket_A"
+    },
+    {
+      "collision": false,
+      "goal_id": "g_yogurt",
+      "leg_index": 1,
+      "object": "yogurt",
+      "pick": {
+        "captured_eef_position": [
+          -0.005062056413248441,
+          -0.18263699487573412,
+          0.6470834477987821
+        ],
+        "failure_reason": null,
+        "grasp_acquired": true,
+        "object_lift_m": 0.19811704706189748,
+        "object_name": "cream_cheese_1",
+        "object_start_position": [
+          0.0013608912218786469,
+          -0.1814880672341468,
+          0.44569592152000004
+        ],
+        "phases": [
+          {
+            "done": false,
+            "final_error_m": 0.004940701116117404,
+            "phase": "approach_object",
+            "reward": 0.0,
+            "steps": 35
+          },
+          {
+            "done": false,
+            "final_error_m": 0.00453399143128819,
+            "phase": "descend_to_grasp",
+            "reward": 0.0,
+            "steps": 16
+          },
+          {
+            "done": false,
+            "final_error_m": null,
+            "phase": "close_gripper",
+            "reward": 0.0,
+            "steps": 20
+          },
+          {
+            "done": false,
+            "final_error_m": 0.002669941431121978,
+            "phase": "lift_object",
+            "reward": 0.0,
+            "steps": 20
+          }
+        ],
+        "success": true,
+        "total_steps": 91
+      },
+      "placed": true,
+      "placement": {
+        "failure_reason": null,
+        "grasp_acquired": true,
+        "object_lift_m": 0.19811704706189748,
+        "object_name": "cream_cheese_1",
+        "phases": [
+          {
+            "done": false,
+            "final_error_m": 0.004689596539733414,
+            "phase": "transfer_above_target",
+            "reward": 0.0,
+            "steps": 39
+          },
+          {
+            "done": false,
+            "final_error_m": 0.006926695047919684,
+            "phase": "descend_to_release",
+            "reward": 0.0,
+            "steps": 17
+          },
+          {
+            "done": false,
+            "final_error_m": null,
+            "phase": "open_gripper",
+            "reward": 0.0,
+            "steps": 10
+          },
+          {
+            "done": false,
+            "final_error_m": 0.004368779890600675,
+            "phase": "retreat",
+            "reward": 0.0,
+            "steps": 17
+          },
+          {
+            "done": false,
+            "final_error_m": null,
+            "phase": "settle",
+            "reward": 0.0,
+            "steps": 40
+          }
+        ],
+        "released": true,
+        "success": true,
+        "target_predicate": true,
+        "target_region_name": "basket_1_contain_region",
+        "total_steps": 123
+      },
+      "step_end": 473,
+      "step_start": 257,
+      "target_after": "basket_A",
+      "target_before": "basket_A"
+    },
+    {
+      "collision": false,
+      "goal_id": "g_butter#r1",
+      "leg_index": 2,
+      "object": "butter",
+      "pick": {
+        "captured_eef_position": [
+          0.19223471230645228,
+          -0.19529236642827594,
+          0.6437645514000429
+        ],
+        "failure_reason": null,
+        "grasp_acquired": true,
+        "object_lift_m": 0.1969605918260134,
+        "object_name": "butter_1",
+        "object_start_position": [
+          0.2038582090552565,
+          -0.19959559118585848,
+          0.44546993445868416
+        ],
+        "phases": [
+          {
+            "done": false,
+            "final_error_m": 0.007757559091051182,
+            "phase": "approach_object",
+            "reward": 0.0,
+            "steps": 44
+          },
+          {
+            "done": false,
+            "final_error_m": 0.0026712489317684725,
+            "phase": "descend_to_grasp",
+            "reward": 0.0,
+            "steps": 21
+          },
+          {
+            "done": false,
+            "final_error_m": null,
+            "phase": "close_gripper",
+            "reward": 0.0,
+            "steps": 20
+          },
+          {
+            "done": false,
+            "final_error_m": 0.004836142383745459,
+            "phase": "lift_object",
+            "reward": 0.0,
+            "steps": 20
+          }
+        ],
+        "success": true,
+        "total_steps": 105
+      },
+      "placed": true,
+      "placement": {
+        "failure_reason": null,
+        "grasp_acquired": true,
+        "object_lift_m": 0.1969605918260134,
+        "object_name": "butter_1",
+        "phases": [
+          {
+            "done": false,
+            "final_error_m": 0.022710916010430845,
+            "phase": "transfer_above_target",
+            "reward": 0.0,
+            "steps": 60
+          },
+          {
+            "done": false,
+            "final_error_m": 0.006688267811421699,
+            "phase": "descend_to_release",
+            "reward": 0.0,
+            "steps": 26
+          },
+          {
+            "done": false,
+            "final_error_m": null,
+            "phase": "open_gripper",
+            "reward": 0.0,
+            "steps": 10
+          },
+          {
+            "done": false,
+            "final_error_m": 0.016632377562983,
+            "phase": "retreat",
+            "reward": 0.0,
+            "steps": 60
+          },
+          {
+            "done": false,
+            "final_error_m": null,
+            "phase": "settle",
+            "reward": 0.0,
+            "steps": 40
+          }
+        ],
+        "released": true,
+        "success": true,
+        "target_predicate": true,
+        "target_region_name": "basket_3_contain_region",
+        "total_steps": 196
+      },
+      "retarget": {
+        "after": "basket_C",
+        "before": "basket_A",
+        "target_position": [
+          0.2523657723979487,
+          0.24310818343052387,
+          0.5040412700222289
+        ]
+      },
+      "step_end": 776,
+      "step_start": 473,
+      "target_after": "basket_C",
+      "target_before": "basket_A"
+    }
+  ],
+  "method": "FSR-PC",
+  "metrics": {
+    "adaptation_latency_s": 10.628559,
+    "audit_answerable": {
+      "Q1_which_goal_cancelled": null,
+      "Q2_which_completed_preserved": true,
+      "Q3_why_suspended": null,
+      "Q4_restore_condition": null,
+      "Q5_replacement_state": false
+    },
+    "audit_coverage": 0.5,
+    "cancelled_goal_violations": 0,
+    "candidates_generated": 6,
+    "candidates_rejected": 0,
+    "collision": false,
+    "completed_goals_repeated": 0,
+    "completed_progress_preserved": true,
+    "completion_steps": 786,
+    "condition": "I3",
+    "engine_safe_fallbacks": 0,
+    "history_monotonic": true,
+    "identity_preserved": false,
+    "invalid_action_count": 0,
+    "invalid_restore_count": 0,
+    "lifecycle_transitions_legal": true,
+    "lineage_correct": true,
+    "method": "FSR-PC",
+    "normalized_edit_distance": 1.0,
+    "notes": "",
+    "ops_per_event": 0.0,
+    "pipelines_complete": 2,
+    "planner_calls": 2,
+    "recovery_after_repeat": null,
+    "remaining_goal_correct": true,
+    "repairs_invoked": 2,
+    "restore_preceded_by_revalidation": null,
+    "restores_validated": 2,
+    "revised_task_success": true,
+    "rollouts_run": 6,
+    "safe_fallback": false,
+    "seed": 0,
+    "slots_edited": 11,
+    "slots_regenerated": 11,
+    "slots_touched_per_event": 5.5,
+    "splices": 2,
+    "stages_resumed": 2,
+    "stale_goal_executions": 0,
+    "state_churn": 1.0,
+    "token_usage": null
+  },
+  "pairing_key": "basket_sorting|I3|0",
+  "repair_outcomes": [
+    {
+      "abstract_plans": [
+        [
+          [
+            "Suspend",
+            "UpdateTargetContract",
+            "Stabilize",
+            "Realign",
+            "Resume"
+          ],
+          6.5
+        ],
+        [
+          [
+            "Suspend",
+            "Stabilize",
+            "UpdateTargetContract",
+            "Realign",
+            "Resume"
+          ],
+          6.5
+        ],
+        [
+          [
+            "Suspend",
+            "Stabilize",
+            "Realign",
+            "UpdateTargetContract",
+            "Resume"
+          ],
+          6.5
+        ]
+      ],
+      "candidate_names": [
+        "Suspend+UpdateTargetContract+Stabilize+Realign+Resume",
+        "Suspend+Stabilize+UpdateTargetContract+Realign+Resume",
+        "Suspend+Stabilize+Realign+UpdateTargetContract+Resume"
+      ],
+      "event_id": "I3-u1",
+      "fallback_reason": "",
+      "markers": [
+        "EVENT",
+        "REGENERATION",
+        "CONTINUATION_CAPTURED",
+        "REPAIR_GOAL_COMPILED",
+        "CANDIDATES_GENERATED",
+        "ROLLOUT_RESULTS",
+        "CANDIDATE_SELECTED",
+        "GRAPH_SPLICED",
+        "RESTORE_VALIDATED",
+        "STAGE_RESUMED"
+      ],
+      "n_candidates": 3,
+      "n_rejected": 0,
+      "pipeline_complete": true,
+      "pipeline_problems": [],
+      "planner_expanded": 13,
+      "program_size_after": 7,
+      "program_size_before": 1,
+      "rejections": [],
+      "repair_steps": 2,
+      "requirements": {
+        "abstract_init_true": [
+          "safe_clearance",
+          "object_grasped",
+          "target_changed",
+          "new_target_known"
+        ],
+        "affected_entities": [
+          "g_butter"
+        ],
+        "event_id": "I3-u1",
+        "event_type": "TARGET_RELOCATION",
+        "goal_label": "active->overridden",
+        "needs_physical_repair": true,
+        "note": "",
+        "predicates_active": [
+          "target_relocated"
+        ],
+        "required_false": [],
+        "required_true": [
+          "aligned_to_current_target",
+          "restore_valid"
+        ],
+        "severity": 0.5,
+        "sources": [
+          {
+            "reason": "derived by the engine from the active predicate set",
+            "requirement": "aligned_to_current_target",
+            "slot_id": "(world)",
+            "transition": "observed_predicates"
+          },
+          {
+            "reason": "derived by the engine from the active predicate set",
+            "requirement": "restore_valid",
+            "slot_id": "(world)",
+            "transition": "observed_predicates"
+          },
+          {
+            "reason": "goal g_butter was re-grounded onto a new target; the program must adopt the new target contract before resuming",
+            "requirement": "aligned_to_current_target",
+            "slot_id": "g_butter",
+            "transition": "active->overridden"
+          },
+          {
+            "reason": "goal g_butter was re-grounded onto a new target; the program must adopt the new target contract before resuming",
+            "requirement": "restore_valid",
+            "slot_id": "g_butter",
+            "transition": "active->overridden"
+          }
+        ]
+      },
+      "requirements_fingerprint": "6af956e3eb3de6c0",
+      "restore_handoff_error": 0.00082,
+      "restore_validated": true,
+      "rollouts": [
+        [
+          "Suspend+UpdateTargetContract+Stabilize+Realign+Resume",
+          "{\"attachment\":\"grasped\",\"backend\":\"libero_mujoco\",\"checkpoint_hash\":\"df33472f0fa0e15dfe6908b263286823b5efeca17ed208a24d4756e578c7cae4\",\"checkpoint_id\":\"libero-s0-t348-c1-candidate-Suspend+UpdateTargetContract+Stabilize+Realign+Resume\",\"checks\":[{\"attached\":true,\"guard\":\"one_step\",\"new_unsafe_contact\":false,\"stage\":\"suspend#0\",\"state_hash\":\"df33472f0fa0e15dfe6908b263286823b5efeca17ed208a24d4756e578c7cae4\",\"step_in_stage\":0,\"total_step\":0},{\"attached\":true,\"guard\":\"one_step\",\"new_unsafe_contact\":false,\"stage\":\"suspend#0\",\"state_hash\":\"b924842222ebc245d6d06f1f6d2be488a20e7cfb7b069bd61f7ee78e59e31c60\",\"step_in_stage\":1,\"total_step\":1},{\"attached\":true,\"guard\":\"one_step\",\"new_unsafe_contact\":false,\"stage\":\"updatetargetcontract#1\",\"state_hash\":\"b924842222ebc245d6d06f1f6d2be488a20e7cfb7b069bd61f7ee78e59e31c60\",\"step_in_stage\":0,\"total_step\":1},{\"attached\":true,\"guard\":\"one_step\",\"new_unsafe_contact\":false,\"stage\":\"updatetargetcontract#1\",\"state_hash\":\"4fbcf38bb793e1d2c393650cf20ad13d997e96336996ac3b2c4bf4ef2238da6a\",\"step_in_stage\":1,\"total_step\":2},{\"attached\":true,\"guard\":\"theta_hold\",\"new_unsafe_contact\":false,\"stage\":\"stabilize#2\",\"state_hash\":\"4fbcf38bb793e1d2c393650cf20ad13d997e96336996ac3b2c4bf4ef2238da6a\",\"step_in_stage\":0,\"total_step\":2},{\"attached\":true,\"guard\":\"theta_hold\",\"new_unsafe_contact\":false,\"stage\":\"stabilize#2\",\"state_hash\":\"02b62d3fe2f31427bfba7a0162bc7a0322e1517d1e185f0f4d72639d2f8e2c4a\",\"step_in_stage\":1,\"total_step\":3},{\"attached\":true,\"guard\":\"handoff_reached\",\"new_unsafe_contact\":false,\"stage\":\"realign#3\",\"state_hash\":\"02b62d3fe2f31427bfba7a0162bc7a0322e1517d1e185f0f4d72639d2f8e2c4a\",\"step_in_stage\":0,\"total_step\":3},{\"attached\":true,\"guard\":\"handoff_reached\",\"new_unsafe_contact\":false,\"stage\":\"realign#3\",\"state_hash\":\"8392fe71a5f677ce622f4cf7ae717d9d07ff064271903c3dc77af2633308391b\",\"step_in_stage\":1,\"total_step\":4},{\"attached\":true,\"guard\":\"restore_contract\",\"new_unsafe_contact\":false,\"stage\":\"resume#4\",\"state_hash\":\"8392fe71a5f677ce622f4cf7ae717d9d07ff064271903c3dc77af2633308391b\",\"step_in_stage\":0,\"total_step\":4},{\"attached\":true,\"guard\":\"restore_contract\",\"new_unsafe_contact\":false,\"stage\":\"resume#4\",\"state_hash\":\"8d5cf75881aae37cd464a2f13c98e2789551d4599fb3bfccd2b6b7a650852eae\",\"step_in_stage\":1,\"total_step\":5}],\"collision\":false,\"controls\":[{\"behavior\":\"hold\",\"clipped_action\":[0.0,0.0,0.0],\"collision\":false,\"desired_action\":[0.0,0.0,0.0],\"done\":false,\"env_action\":[0.0,0.0,0.0,0.0,0.0,0.0,1.0],\"reward\":0.0,\"stage\":\"suspend#0\",\"step\":349,\"unsafe_contact_count\":0},{\"behavior\":\"hold\",\"clipped_action\":[0.0,0.0,0.0],\"collision\":false,\"desired_action\":[0.0,0.0,0.0],\"done\":false,\"env_action\":[0.0,0.0,0.0,0.0,0.0,0.0,1.0],\"reward\":0.0,\"stage\":\"updatetargetcontract#1\",\"step\":350,\"unsafe_contact_count\":0},{\"behavior\":\"hold\",\"clipped_action\":[0.0,0.0,0.0],\"collision\":false,\"desired_action\":[0.0,0.0,0.0],\"done\":false,\"env_action\":[0.0,0.0,0.0,0.0,0.0,0.0,1.0],\"reward\":0.0,\"stage\":\"stabilize#2\",\"step\":351,\"unsafe_contact_count\":0},{\"behavior\":\"to_handoff\",\"clipped_action\":[-0.0005865434199982442,0.00013530597289139468,0.0],\"collision\":false,\"desired_action\":[-0.0005865434199982442,0.00013530597289139468,0.0],\"done\":false,\"env_action\":[-0.011730868399964884,0.0027061194578278935,0.0,0.0,0.0,0.0,1.0],\"reward\":0.0,\"stage\":\"realign#3\",\"step\":352,\"unsafe_contact_count\":0},{\"behavior\":\"to_handoff\",\"clipped_action\":[-0.0006976719221937345,0.00015720828990740954,0.0],\"collision\":false,\"desired_action\":[-0.0006976719221937345,0.00015720828990740954,0.0],\"done\":false,\"env_action\":[-0.01395343844387469,0.0031441657981481907,0.0,0.0,0.0,0.0,1.0],\"reward\":0.0,\"stage\":\"resume#4\",\"step\":353,\"unsafe_contact_count\":0}],\"duration\":5,\"event_residual\":[],\"failure_class\":\"\",\"guard_failures\":[],\"handoff_error\":0.0015429293350434472,\"ok\":true,\"reason\":\"ok\",\"restore_contract_ok\":true,\"restore_exact\":true,\"restore_hash\":\"df33472f0fa0e15dfe6908b263286823b5efeca17ed208a24d4756e578c7cae4\"}"
+        ],
+        [
+          "Suspend+Stabilize+UpdateTargetContract+Realign+Resume",
+          "{\"attachment\":\"grasped\",\"backend\":\"libero_mujoco\",\"checkpoint_hash\":\"df33472f0fa0e15dfe6908b263286823b5efeca17ed208a24d4756e578c7cae4\",\"checkpoint_id\":\"libero-s0-t348-c2-candidate-Suspend+Stabilize+UpdateTargetContract+Realign+Resume\",\"checks\":[{\"attached\":true,\"guard\":\"one_step\",\"new_unsafe_contact\":false,\"stage\":\"suspend#0\",\"state_hash\":\"df33472f0fa0e15dfe6908b263286823b5efeca17ed208a24d4756e578c7cae4\",\"step_in_stage\":0,\"total_step\":0},{\"attached\":true,\"guard\":\"one_step\",\"new_unsafe_contact\":false,\"stage\":\"suspend#0\",\"state_hash\":\"b924842222ebc245d6d06f1f6d2be488a20e7cfb7b069bd61f7ee78e59e31c60\",\"step_in_stage\":1,\"total_step\":1},{\"attached\":true,\"guard\":\"theta_hold\",\"new_unsafe_contact\":false,\"stage\":\"stabilize#1\",\"state_hash\":\"b924842222ebc245d6d06f1f6d2be488a20e7cfb7b069bd61f7ee78e59e31c60\",\"step_in_stage\":0,\"total_step\":1},{\"attached\":true,\"guard\":\"theta_hold\",\"new_unsafe_contact\":false,\"stage\":\"stabilize#1\",\"state_hash\":\"4fbcf38bb793e1d2c393650cf20ad13d997e96336996ac3b2c4bf4ef2238da6a\",\"step_in_stage\":1,\"total_step\":2},{\"attached\":true,\"guard\":\"one_step\",\"new_unsafe_contact\":false,\"stage\":\"updatetargetcontract#2\",\"state_hash\":\"4fbcf38bb793e1d2c393650cf20ad13d997e96336996ac3b2c4bf4ef2238da6a\",\"step_in_stage\":0,\"total_step\":2},{\"attached\":true,\"guard\":\"one_step\",\"new_unsafe_contact\":false,\"stage\":\"updatetargetcontract#2\",\"state_hash\":\"02b62d3fe2f31427bfba7a0162bc7a0322e1517d1e185f0f4d72639d2f8e2c4a\",\"step_in_stage\":1,\"total_step\":3},{\"attached\":true,\"guard\":\"handoff_reached\",\"new_unsafe_contact\":false,\"stage\":\"realign#3\",\"state_hash\":\"02b62d3fe2f31427bfba7a0162bc7a0322e1517d1e185f0f4d72639d2f8e2c4a\",\"step_in_stage\":0,\"total_step\":3},{\"attached\":true,\"guard\":\"handoff_reached\",\"new_unsafe_contact\":false,\"stage\":\"realign#3\",\"state_hash\":\"7a27d349800dc25f9039b37f2a6a78f0c951df0ac4a1dac270569e9f3e2f621b\",\"step_in_stage\":1,\"total_step\":4},{\"attached\":true,\"guard\":\"restore_contract\",\"new_unsafe_contact\":false,\"stage\":\"resume#4\",\"state_hash\":\"7a27d349800dc25f9039b37f2a6a78f0c951df0ac4a1dac270569e9f3e2f621b\",\"step_in_stage\":0,\"total_step\":4},{\"attached\":true,\"guard\":\"restore_contract\",\"new_unsafe_contact\":false,\"stage\":\"resume#4\",\"state_hash\":\"abde6186d9cc029fc1aff8e6ff242f1521defa7a109d63bec1482564b38ea7dc\",\"step_in_stage\":1,\"total_step\":5}],\"collision\":false,\"controls\":[{\"behavior\":\"hold\",\"clipped_action\":[0.0,0.0,0.0],\"collision\":false,\"desired_action\":[0.0,0.0,0.0],\"done\":false,\"env_action\":[0.0,0.0,0.0,0.0,0.0,0.0,1.0],\"reward\":0.0,\"stage\":\"suspend#0\",\"step\":349,\"unsafe_contact_count\":0},{\"behavior\":\"hold\",\"clipped_action\":[0.0,0.0,0.0],\"collision\":false,\"desired_action\":[0.0,0.0,0.0],\"done\":false,\"env_action\":[0.0,0.0,0.0,0.0,0.0,0.0,1.0],\"reward\":0.0,\"stage\":\"stabilize#1\",\"step\":350,\"unsafe_contact_count\":0},{\"behavior\":\"hold\",\"clipped_action\":[0.0,0.0,0.0],\"collision\":false,\"desired_action\":[0.0,0.0,0.0],\"done\":false,\"env_action\":[0.0,0.0,0.0,0.0,0.0,0.0,1.0],\"reward\":0.0,\"stage\":\"updatetargetcontract#2\",\"step\":351,\"unsafe_contact_count\":0},{\"behavior\":\"to_handoff\",\"clipped_action\":[-0.000580459944617607,0.0001341247377828897,0.0],\"collision\":false,\"desired_action\":[-0.000580459944617607,0.0001341247377828897,0.0],\"done\":false,\"env_action\":[-0.01160919889235214,0.002682494755657794,0.0,0.0,0.0,0.0,1.0],\"reward\":0.0,\"stage\":\"realign#3\",\"step\":352,\"unsafe_contact_count\":0},{\"behavior\":\"to_handoff\",\"clipped_action\":[-0.0006948479626154051,0.0001566438559868072,0.0],\"collision\":false,\"desired_action\":[-0.0006948479626154051,0.0001566438559868072,0.0],\"done\":false,\"env_action\":[-0.013896959252308102,0.003132877119736144,0.0,0.0,0.0,0.0,1.0],\"reward\":0.0,\"stage\":\"resume#4\",\"step\":353,\"unsafe_contact_count\":0}],\"duration\":5,\"event_residual\":[],\"failure_class\":\"\",\"guard_failures\":[],\"handoff_error\":0.0015414133118462387,\"ok\":true,\"reason\":\"ok\",\"restore_contract_ok\":true,\"restore_exact\":true,\"restore_hash\":\"df33472f0fa0e15dfe6908b263286823b5efeca17ed208a24d4756e578c7cae4\"}"
+        ],
+        [
+          "Suspend+Stabilize+Realign+UpdateTargetContract+Resume",
+          "{\"attachment\":\"grasped\",\"backend\":\"libero_mujoco\",\"checkpoint_hash\":\"df33472f0fa0e15dfe6908b263286823b5efeca17ed208a24d4756e578c7cae4\",\"checkpoint_id\":\"libero-s0-t348-c3-candidate-Suspend+Stabilize+Realign+UpdateTargetContract+Resume\",\"checks\":[{\"attached\":true,\"guard\":\"one_step\",\"new_unsafe_contact\":false,\"stage\":\"suspend#0\",\"state_hash\":\"df33472f0fa0e15dfe6908b263286823b5efeca17ed208a24d4756e578c7cae4\",\"step_in_stage\":0,\"total_step\":0},{\"attached\":true,\"guard\":\"one_step\",\"new_unsafe_contact\":false,\"stage\":\"suspend#0\",\"state_hash\":\"b924842222ebc245d6d06f1f6d2be488a20e7cfb7b069bd61f7ee78e59e31c60\",\"step_in_stage\":1,\"total_step\":1},{\"attached\":true,\"guard\":\"theta_hold\",\"new_unsafe_contact\":false,\"stage\":\"stabilize#1\",\"state_hash\":\"b924842222ebc245d6d06f1f6d2be488a20e7cfb7b069bd61f7ee78e59e31c60\",\"step_in_stage\":0,\"total_step\":1},{\"attached\":true,\"guard\":\"theta_hold\",\"new_unsafe_contact\":false,\"stage\":\"stabilize#1\",\"state_hash\":\"4fbcf38bb793e1d2c393650cf20ad13d997e96336996ac3b2c4bf4ef2238da6a\",\"step_in_stage\":1,\"total_step\":2},{\"attached\":true,\"guard\":\"handoff_reached\",\"new_unsafe_contact\":false,\"stage\":\"realign#2\",\"state_hash\":\"4fbcf38bb793e1d2c393650cf20ad13d997e96336996ac3b2c4bf4ef2238da6a\",\"step_in_stage\":0,\"total_step\":2},{\"attached\":true,\"guard\":\"handoff_reached\",\"new_unsafe_contact\":false,\"stage\":\"realign#2\",\"state_hash\":\"a8da3bd32f7a7a4480e8f3ac38e93cd1fcb4bb3017691c642945a0015a122035\",\"step_in_stage\":1,\"total_step\":3},{\"attached\":true,\"guard\":\"one_step\",\"new_unsafe_contact\":false,\"stage\":\"updatetargetcontract#3\",\"state_hash\":\"a8da3bd32f7a7a4480e8f3ac38e93cd1fcb4bb3017691c642945a0015a122035\",\"step_in_stage\":0,\"total_step\":3},{\"attached\":true,\"guard\":\"one_step\",\"new_unsafe_contact\":false,\"stage\":\"updatetargetcontract#3\",\"state_hash\":\"4e8b6c788398d8ee9d168ff01db0441d043816815ca45a560c4f8a19267773fa\",\"step_in_stage\":1,\"total_step\":4},{\"attached\":true,\"guard\":\"restore_contract\",\"new_unsafe_contact\":false,\"stage\":\"resume#4\",\"state_hash\":\"4e8b6c788398d8ee9d168ff01db0441d043816815ca45a560c4f8a19267773fa\",\"step_in_stage\":0,\"total_step\":4},{\"attached\":true,\"guard\":\"restore_contract\",\"new_unsafe_contact\":false,\"stage\":\"resume#4\",\"state_hash\":\"23a619778c9a1c3a61b4434ed17c4598b669cef4cb13e668c91c8d91fdb17119\",\"step_in_stage\":1,\"total_step\":5}],\"collision\":false,\"controls\":[{\"behavior\":\"hold\",\"clipped_action\":[0.0,0.0,0.0],\"collision\":false,\"desired_action\":[0.0,0.0,0.0],\"done\":false,\"env_action\":[0.0,0.0,0.0,0.0,0.0,0.0,1.0],\"reward\":0.0,\"stage\":\"suspend#0\",\"step\":349,\"unsafe_contact_count\":0},{\"behavior\":\"hold\",\"clipped_action\":[0.0,0.0,0.0],\"collision\":false,\"desired_action\":[0.0,0.0,0.0],\"done\":false,\"env_action\":[0.0,0.0,0.0,0.0,0.0,0.0,1.0],\"reward\":0.0,\"stage\":\"stabilize#1\",\"step\":350,\"unsafe_contact_count\":0},{\"behavior\":\"to_handoff\",\"clipped_action\":[-0.00040363618974832705,0.00010131862950321646,0.0],\"collision\":false,\"desired_action\":[-0.00040363618974832705,0.00010131862950321646,0.0],\"done\":false,\"env_action\":[-0.008072723794966541,0.0020263725900643292,0.0,0.0,0.0,0.0,1.0],\"reward\":0.0,\"stage\":\"realign#2\",\"step\":351,\"unsafe_contact_count\":0},{\"behavior\":\"hold\",\"clipped_action\":[0.0,0.0,0.0],\"collision\":false,\"desired_action\":[0.0,0.0,0.0],\"done\":false,\"env_action\":[0.0,0.0,0.0,0.0,0.0,0.0,1.0],\"reward\":0.0,\"stage\":\"updatetargetcontract#3\",\"step\":352,\"unsafe_contact_count\":0},{\"behavior\":\"to_handoff\",\"clipped_action\":[-0.0006834513498759046,0.00015476893552636428,0.0],\"collision\":false,\"desired_action\":[-0.0006834513498759046,0.00015476893552636428,0.0],\"done\":false,\"env_action\":[-0.013669026997518091,0.0030953787105272856,0.0,0.0,0.0,0.0,1.0],\"reward\":0.0,\"stage\":\"resume#4\",\"step\":353,\"unsafe_contact_count\":0}],\"duration\":5,\"event_residual\":[],\"failure_class\":\"\",\"guard_failures\":[],\"handoff_error\":0.0015643256286112799,\"ok\":true,\"reason\":\"ok\",\"restore_contract_ok\":true,\"restore_exact\":true,\"restore_hash\":\"df33472f0fa0e15dfe6908b263286823b5efeca17ed208a24d4756e578c7cae4\"}"
+        ]
+      ],
+      "safe_fallback": false,
+      "selected": "Suspend+Stabilize+UpdateTargetContract+Realign+Resume",
+      "selected_score": 2.1530828266236925,
+      "skip_reason": "",
+      "skipped": false,
+      "spliced_stage_ids": [
+        "suspend#0",
+        "stabilize#1",
+        "updatetargetcontract#2",
+        "realign#3",
+        "resume#4"
+      ],
+      "stage_resumed": true
+    },
+    {
+      "abstract_plans": [
+        [
+          [
+            "Suspend",
+            "UpdateTargetContract",
+            "Stabilize",
+            "Realign",
+            "Resume"
+          ],
+          6.5
+        ],
+        [
+          [
+            "Suspend",
+            "Stabilize",
+            "UpdateTargetContract",
+            "Realign",
+            "Resume"
+          ],
+          6.5
+        ],
+        [
+          [
+            "Suspend",
+            "Stabilize",
+            "Realign",
+            "UpdateTargetContract",
+            "Resume"
+          ],
+          6.5
+        ]
+      ],
+      "candidate_names": [
+        "Suspend+UpdateTargetContract+Stabilize+Realign+Resume",
+        "Suspend+Stabilize+UpdateTargetContract+Realign+Resume",
+        "Suspend+Stabilize+Realign+UpdateTargetContract+Resume"
+      ],
+      "event_id": "I3-u2",
+      "fallback_reason": "",
+      "markers": [
+        "EVENT",
+        "REGENERATION",
+        "CONTINUATION_CAPTURED",
+        "REPAIR_GOAL_COMPILED",
+        "CANDIDATES_GENERATED",
+        "ROLLOUT_RESULTS",
+        "CANDIDATE_SELECTED",
+        "GRAPH_SPLICED",
+        "RESTORE_VALIDATED",
+        "STAGE_RESUMED"
+      ],
+      "n_candidates": 3,
+      "n_rejected": 0,
+      "pipeline_complete": true,
+      "pipeline_problems": [],
+      "planner_expanded": 13,
+      "program_size_after": 7,
+      "program_size_before": 1,
+      "rejections": [],
+      "repair_steps": 2,
+      "requirements": {
+        "abstract_init_true": [
+          "safe_clearance",
+          "object_grasped",
+          "target_changed",
+          "new_target_known"
+        ],
+        "affected_entities": [
+          "g_butter"
+        ],
+        "event_id": "I3-u2",
+        "event_type": "TARGET_RELOCATION",
+        "goal_label": "active->overridden+insert",
+        "needs_physical_repair": true,
+        "note": "",
+        "predicates_active": [
+          "target_relocated"
+        ],
+        "required_false": [
+          "obstacle_present"
+        ],
+        "required_true": [
+          "aligned_to_current_target",
+          "restore_valid",
+          "safe_clearance"
+        ],
+        "severity": 0.5,
+        "sources": [
+          {
+            "reason": "derived by the engine from the active predicate set",
+            "requirement": "aligned_to_current_target",
+            "slot_id": "(world)",
+            "transition": "observed_predicates"
+          },
+          {
+            "reason": "derived by the engine from the active predicate set",
+            "requirement": "restore_valid",
+            "slot_id": "(world)",
+            "transition": "observed_predicates"
+          },
+          {
+            "reason": "goal g_butter was re-grounded onto a new target; the program must adopt the new target contract before resuming",
+            "requirement": "aligned_to_current_target",
+            "slot_id": "g_butter",
+            "transition": "active->overridden"
+          },
+          {
+            "reason": "goal g_butter was re-grounded onto a new target; the program must adopt the new target contract before resuming",
+            "requirement": "restore_valid",
+            "slot_id": "g_butter",
+            "transition": "active->overridden"
+          },
+          {
+            "reason": "new hard safety constraint 'keep_object_upright' must hold before the task may resume",
+            "requirement": "safe_clearance",
+            "slot_id": "c_keep_upright#r2",
+            "transition": "insert"
+          }
+        ]
+      },
+      "requirements_fingerprint": "13e6a7d6881594d9",
+      "restore_handoff_error": 0.00043,
+      "restore_validated": true,
+      "rollouts": [
+        [
+          "Suspend+UpdateTargetContract+Stabilize+Realign+Resume",
+          "{\"attachment\":\"grasped\",\"backend\":\"libero_mujoco\",\"checkpoint_hash\":\"a6598bee933417f97e58826e0094004ed7af32e744859cbda8da2f2d8d0e3abb\",\"checkpoint_id\":\"libero-s0-t578-c4-candidate-Suspend+UpdateTargetContract+Stabilize+Realign+Resume\",\"checks\":[{\"attached\":true,\"guard\":\"one_step\",\"new_unsafe_contact\":false,\"stage\":\"suspend#0\",\"state_hash\":\"a6598bee933417f97e58826e0094004ed7af32e744859cbda8da2f2d8d0e3abb\",\"step_in_stage\":0,\"total_step\":0},{\"attached\":true,\"guard\":\"one_step\",\"new_unsafe_contact\":false,\"stage\":\"suspend#0\",\"state_hash\":\"71de9638eab376246b0b844eaa391a30294324d5c755c7115bf8d6d0fbc260af\",\"step_in_stage\":1,\"total_step\":1},{\"attached\":true,\"guard\":\"one_step\",\"new_unsafe_contact\":false,\"stage\":\"updatetargetcontract#1\",\"state_hash\":\"71de9638eab376246b0b844eaa391a30294324d5c755c7115bf8d6d0fbc260af\",\"step_in_stage\":0,\"total_step\":1},{\"attached\":true,\"guard\":\"one_step\",\"new_unsafe_contact\":false,\"stage\":\"updatetargetcontract#1\",\"state_hash\":\"ff105868ef5481668689aca09f097efdb87df4dcc46c6f5f8295088793bee7bd\",\"step_in_stage\":1,\"total_step\":2},{\"attached\":true,\"guard\":\"theta_hold\",\"new_unsafe_contact\":false,\"stage\":\"stabilize#2\",\"state_hash\":\"ff105868ef5481668689aca09f097efdb87df4dcc46c6f5f8295088793bee7bd\",\"step_in_stage\":0,\"total_step\":2},{\"attached\":true,\"guard\":\"theta_hold\",\"new_unsafe_contact\":false,\"stage\":\"stabilize#2\",\"state_hash\":\"bb75c3e1dd0481c130781ac648e2705dec5e2b2180345a7dc274442bc9aff519\",\"step_in_stage\":1,\"total_step\":3},{\"attached\":true,\"guard\":\"handoff_reached\",\"new_unsafe_contact\":false,\"stage\":\"realign#3\",\"state_hash\":\"bb75c3e1dd0481c130781ac648e2705dec5e2b2180345a7dc274442bc9aff519\",\"step_in_stage\":0,\"total_step\":3},{\"attached\":true,\"guard\":\"handoff_reached\",\"new_unsafe_contact\":false,\"stage\":\"realign#3\",\"state_hash\":\"4e38e15605d38da86f7dad86aaff2bdc716c5ebad7f2b99f676fb261495b1444\",\"step_in_stage\":1,\"total_step\":4},{\"attached\":true,\"guard\":\"restore_contract\",\"new_unsafe_contact\":false,\"stage\":\"resume#4\",\"state_hash\":\"4e38e15605d38da86f7dad86aaff2bdc716c5ebad7f2b99f676fb261495b1444\",\"step_in_stage\":0,\"total_step\":4},{\"attached\":true,\"guard\":\"restore_contract\",\"new_unsafe_contact\":false,\"stage\":\"resume#4\",\"state_hash\":\"3ba021af4e70c2a918dd4d0c744a8e334ea65e58eb470652ddcc5d8e9c01d440\",\"step_in_stage\":1,\"total_step\":5}],\"collision\":false,\"controls\":[{\"behavior\":\"hold\",\"clipped_action\":[0.0,0.0,0.0],\"collision\":false,\"desired_action\":[0.0,0.0,0.0],\"done\":false,\"env_action\":[0.0,0.0,0.0,0.0,0.0,0.0,1.0],\"reward\":0.0,\"stage\":\"suspend#0\",\"step\":579,\"unsafe_contact_count\":0},{\"behavior\":\"hold\",\"clipped_action\":[0.0,0.0,0.0],\"collision\":false,\"desired_action\":[0.0,0.0,0.0],\"done\":false,\"env_action\":[0.0,0.0,0.0,0.0,0.0,0.0,1.0],\"reward\":0.0,\"stage\":\"updatetargetcontract#1\",\"step\":580,\"unsafe_contact_count\":0},{\"behavior\":\"hold\",\"clipped_action\":[0.0,0.0,0.0],\"collision\":false,\"desired_action\":[0.0,0.0,0.0],\"done\":false,\"env_action\":[0.0,0.0,0.0,0.0,0.0,0.0,1.0],\"reward\":0.0,\"stage\":\"stabilize#2\",\"step\":581,\"unsafe_contact_count\":0},{\"behavior\":\"to_handoff\",\"clipped_action\":[0.000321196582753952,-0.00013956523689220846,0.0],\"collision\":false,\"desired_action\":[0.000321196582753952,-0.00013956523689220846,0.0],\"done\":false,\"env_action\":[0.00642393165507904,-0.002791304737844169,0.0,0.0,0.0,0.0,1.0],\"reward\":0.0,\"stage\":\"realign#3\",\"step\":582,\"unsafe_contact_count\":0},{\"behavior\":\"to_handoff\",\"clipped_action\":[0.00038815183547276366,-0.0001699593082363643,0.0],\"collision\":false,\"desired_action\":[0.00038815183547276366,-0.0001699593082363643,0.0],\"done\":false,\"env_action\":[0.007763036709455273,-0.003399186164727286,0.0,0.0,0.0,0.0,1.0],\"reward\":0.0,\"stage\":\"resume#4\",\"step\":583,\"unsafe_contact_count\":0}],\"duration\":5,\"event_residual\":[],\"failure_class\":\"\",\"guard_failures\":[],\"handoff_error\":0.0009163658684477877,\"ok\":true,\"reason\":\"ok\",\"restore_contract_ok\":true,\"restore_exact\":true,\"restore_hash\":\"a6598bee933417f97e58826e0094004ed7af32e744859cbda8da2f2d8d0e3abb\"}"
+        ],
+        [
+          "Suspend+Stabilize+UpdateTargetContract+Realign+Resume",
+          "{\"attachment\":\"grasped\",\"backend\":\"libero_mujoco\",\"checkpoint_hash\":\"a6598bee933417f97e58826e0094004ed7af32e744859cbda8da2f2d8d0e3abb\",\"checkpoint_id\":\"libero-s0-t578-c5-candidate-Suspend+Stabilize+UpdateTargetContract+Realign+Resume\",\"checks\":[{\"attached\":true,\"guard\":\"one_step\",\"new_unsafe_contact\":false,\"stage\":\"suspend#0\",\"state_hash\":\"a6598bee933417f97e58826e0094004ed7af32e744859cbda8da2f2d8d0e3abb\",\"step_in_stage\":0,\"total_step\":0},{\"attached\":true,\"guard\":\"one_step\",\"new_unsafe_contact\":false,\"stage\":\"suspend#0\",\"state_hash\":\"177000c49c41f513ee275806425d51635db94f19ee201ead62db5f1d5ef9cdd6\",\"step_in_stage\":1,\"total_step\":1},{\"attached\":true,\"guard\":\"theta_hold\",\"new_unsafe_contact\":false,\"stage\":\"stabilize#1\",\"state_hash\":\"177000c49c41f513ee275806425d51635db94f19ee201ead62db5f1d5ef9cdd6\",\"step_in_stage\":0,\"total_step\":1},{\"attached\":true,\"guard\":\"theta_hold\",\"new_unsafe_contact\":false,\"stage\":\"stabilize#1\",\"state_hash\":\"a66f6d23812e16ae67f0ad2557076e474022f84c44bc23b79133f4c1929fc5ec\",\"step_in_stage\":1,\"total_step\":2},{\"attached\":true,\"guard\":\"one_step\",\"new_unsafe_contact\":false,\"stage\":\"updatetargetcontract#2\",\"state_hash\":\"a66f6d23812e16ae67f0ad2557076e474022f84c44bc23b79133f4c1929fc5ec\",\"step_in_stage\":0,\"total_step\":2},{\"attached\":true,\"guard\":\"one_step\",\"new_unsafe_contact\":false,\"stage\":\"updatetargetcontract#2\",\"state_hash\":\"c8483043cc8557908890f0f597b2c6d695f1df6106dae4c3aa0c09ae6710f30a\",\"step_in_stage\":1,\"total_step\":3},{\"attached\":true,\"guard\":\"handoff_reached\",\"new_unsafe_contact\":false,\"stage\":\"realign#3\",\"state_hash\":\"c8483043cc8557908890f0f597b2c6d695f1df6106dae4c3aa0c09ae6710f30a\",\"step_in_stage\":0,\"total_step\":3},{\"attached\":true,\"guard\":\"handoff_reached\",\"new_unsafe_contact\":false,\"stage\":\"realign#3\",\"state_hash\":\"a588fa0ebb5c0f96a28cf3ca2e9144524149c56b482b8d13407aa7513217a476\",\"step_in_stage\":1,\"total_step\":4},{\"attached\":true,\"guard\":\"restore_contract\",\"new_unsafe_contact\":false,\"stage\":\"resume#4\",\"state_hash\":\"a588fa0ebb5c0f96a28cf3ca2e9144524149c56b482b8d13407aa7513217a476\",\"step_in_stage\":0,\"total_step\":4},{\"attached\":true,\"guard\":\"restore_contract\",\"new_unsafe_contact\":false,\"stage\":\"resume#4\",\"state_hash\":\"c8cb241be8af697e24c2e4ce23e712712f16ff3f0f47f61df977bfcecb574562\",\"step_in_stage\":1,\"total_step\":5}],\"collision\":false,\"controls\":[{\"behavior\":\"hold\",\"clipped_action\":[0.0,0.0,0.0],\"collision\":false,\"desired_action\":[0.0,0.0,0.0],\"done\":false,\"env_action\":[0.0,0.0,0.0,0.0,0.0,0.0,1.0],\"reward\":0.0,\"stage\":\"suspend#0\",\"step\":579,\"unsafe_contact_count\":0},{\"behavior\":\"hold\",\"clipped_action\":[0.0,0.0,0.0],\"collision\":false,\"desired_action\":[0.0,0.0,0.0],\"done\":false,\"env_action\":[0.0,0.0,0.0,0.0,0.0,0.0,1.0],\"reward\":0.0,\"stage\":\"stabilize#1\",\"step\":580,\"unsafe_contact_count\":0},{\"behavior\":\"hold\",\"clipped_action\":[0.0,0.0,0.0],\"collision\":false,\"desired_action\":[0.0,0.0,0.0],\"done\":false,\"env_action\":[0.0,0.0,0.0,0.0,0.0,0.0,1.0],\"reward\":0.0,\"stage\":\"updatetargetcontract#2\",\"step\":581,\"unsafe_contact_count\":0},{\"behavior\":\"to_handoff\",\"clipped_action\":[0.0003174855606487559,-0.00013797265621945387,0.0],\"collision\":false,\"desired_action\":[0.0003174855606487559,-0.00013797265621945387,0.0],\"done\":false,\"env_action\":[0.006349711212975118,-0.0027594531243890774,0.0,0.0,0.0,0.0,1.0],\"reward\":0.0,\"stage\":\"realign#3\",\"step\":582,\"unsafe_contact_count\":0},{\"behavior\":\"to_handoff\",\"clipped_action\":[0.00038648801552466916,-0.00016913124312531447,0.0],\"collision\":false,\"desired_action\":[0.00038648801552466916,-0.00016913124312531447,0.0],\"done\":false,\"env_action\":[0.007729760310493383,-0.0033826248625062894,0.0,0.0,0.0,0.0,1.0],\"reward\":0.0,\"stage\":\"resume#4\",\"step\":583,\"unsafe_contact_count\":0}],\"duration\":5,\"event_residual\":[],\"failure_class\":\"\",\"guard_failures\":[],\"handoff_error\":0.0009153517492210425,\"ok\":true,\"reason\":\"ok\",\"restore_contract_ok\":true,\"restore_exact\":true,\"restore_hash\":\"a6598bee933417f97e58826e0094004ed7af32e744859cbda8da2f2d8d0e3abb\"}"
+        ],
+        [
+          "Suspend+Stabilize+Realign+UpdateTargetContract+Resume",
+          "{\"attachment\":\"grasped\",\"backend\":\"libero_mujoco\",\"checkpoint_hash\":\"a6598bee933417f97e58826e0094004ed7af32e744859cbda8da2f2d8d0e3abb\",\"checkpoint_id\":\"libero-s0-t578-c6-candidate-Suspend+Stabilize+Realign+UpdateTargetContract+Resume\",\"checks\":[{\"attached\":true,\"guard\":\"one_step\",\"new_unsafe_contact\":false,\"stage\":\"suspend#0\",\"state_hash\":\"a6598bee933417f97e58826e0094004ed7af32e744859cbda8da2f2d8d0e3abb\",\"step_in_stage\":0,\"total_step\":0},{\"attached\":true,\"guard\":\"one_step\",\"new_unsafe_contact\":false,\"stage\":\"suspend#0\",\"state_hash\":\"177000c49c41f513ee275806425d51635db94f19ee201ead62db5f1d5ef9cdd6\",\"step_in_stage\":1,\"total_step\":1},{\"attached\":true,\"guard\":\"theta_hold\",\"new_unsafe_contact\":false,\"stage\":\"stabilize#1\",\"state_hash\":\"177000c49c41f513ee275806425d51635db94f19ee201ead62db5f1d5ef9cdd6\",\"step_in_stage\":0,\"total_step\":1},{\"attached\":true,\"guard\":\"theta_hold\",\"new_unsafe_contact\":false,\"stage\":\"stabilize#1\",\"state_hash\":\"ba9d2cfe8e3b8b8218e3012b42e9b3052bb1f46585ae83ba7afabbf8cf196b1f\",\"step_in_stage\":1,\"total_step\":2},{\"attached\":true,\"guard\":\"handoff_reached\",\"new_unsafe_contact\":false,\"stage\":\"realign#2\",\"state_hash\":\"ba9d2cfe8e3b8b8218e3012b42e9b3052bb1f46585ae83ba7afabbf8cf196b1f\",\"step_in_stage\":0,\"total_step\":2},{\"attached\":true,\"guard\":\"handoff_reached\",\"new_unsafe_contact\":false,\"stage\":\"realign#2\",\"state_hash\":\"8c75108d2923d863f9e0acbd58d1684a960d8ec059c79df6bad304fcfd03226b\",\"step_in_stage\":1,\"total_step\":3},{\"attached\":true,\"guard\":\"one_step\",\"new_unsafe_contact\":false,\"stage\":\"updatetargetcontract#3\",\"state_hash\":\"8c75108d2923d863f9e0acbd58d1684a960d8ec059c79df6bad304fcfd03226b\",\"step_in_stage\":0,\"total_step\":3},{\"attached\":true,\"guard\":\"one_step\",\"new_unsafe_contact\":false,\"stage\":\"updatetargetcontract#3\",\"state_hash\":\"821b5c4d89329d79833762fd310b08aeffc6c7be0a6885d846b5bd3a02dce548\",\"step_in_stage\":1,\"total_step\":4},{\"attached\":true,\"guard\":\"restore_contract\",\"new_unsafe_contact\":false,\"stage\":\"resume#4\",\"state_hash\":\"821b5c4d89329d79833762fd310b08aeffc6c7be0a6885d846b5bd3a02dce548\",\"step_in_stage\":0,\"total_step\":4},{\"attached\":true,\"guard\":\"restore_contract\",\"new_unsafe_contact\":false,\"stage\":\"resume#4\",\"state_hash\":\"092ff9864c3749225f73d624f4d1019a6fda484b5ffae2c068041d318a2efc8c\",\"step_in_stage\":1,\"total_step\":5}],\"collision\":false,\"controls\":[{\"behavior\":\"hold\",\"clipped_action\":[0.0,0.0,0.0],\"collision\":false,\"desired_action\":[0.0,0.0,0.0],\"done\":false,\"env_action\":[0.0,0.0,0.0,0.0,0.0,0.0,1.0],\"reward\":0.0,\"stage\":\"suspend#0\",\"step\":579,\"unsafe_contact_count\":0},{\"behavior\":\"hold\",\"clipped_action\":[0.0,0.0,0.0],\"collision\":false,\"desired_action\":[0.0,0.0,0.0],\"done\":false,\"env_action\":[0.0,0.0,0.0,0.0,0.0,0.0,1.0],\"reward\":0.0,\"stage\":\"stabilize#1\",\"step\":580,\"unsafe_contact_count\":0},{\"behavior\":\"to_handoff\",\"clipped_action\":[0.0002025661311182425,-8.982304654386875e-05,0.0],\"collision\":false,\"desired_action\":[0.0002025661311182425,-8.982304654386875e-05,0.0],\"done\":false,\"env_action\":[0.00405132262236485,-0.001796460930877375,0.0,0.0,0.0,0.0,1.0],\"reward\":0.0,\"stage\":\"realign#2\",\"step\":581,\"unsafe_contact_count\":0},{\"behavior\":\"hold\",\"clipped_action\":[0.0,0.0,0.0],\"collision\":false,\"desired_action\":[0.0,0.0,0.0],\"done\":false,\"env_action\":[0.0,0.0,0.0,0.0,0.0,0.0,1.0],\"reward\":0.0,\"stage\":\"updatetargetcontract#3\",\"step\":582,\"unsafe_contact_count\":0},{\"behavior\":\"to_handoff\",\"clipped_action\":[0.000380705077366289,-0.00016620346634606264,0.0],\"collision\":false,\"desired_action\":[0.000380705077366289,-0.00016620346634606264,0.0],\"done\":false,\"env_action\":[0.00761410154732578,-0.003324069326921253,0.0,0.0,0.0,0.0,1.0],\"reward\":0.0,\"stage\":\"resume#4\",\"step\":583,\"unsafe_contact_count\":0}],\"duration\":5,\"event_residual\":[],\"failure_class\":\"\",\"guard_failures\":[],\"handoff_error\":0.0009316768247166673,\"ok\":true,\"reason\":\"ok\",\"restore_contract_ok\":true,\"restore_exact\":true,\"restore_hash\":\"a6598bee933417f97e58826e0094004ed7af32e744859cbda8da2f2d8d0e3abb\"}"
+        ]
+      ],
+      "safe_fallback": false,
+      "selected": "Suspend+Stabilize+UpdateTargetContract+Realign+Resume",
+      "selected_score": 2.151830703498442,
+      "skip_reason": "",
+      "skipped": false,
+      "spliced_stage_ids": [
+        "suspend#0",
+        "stabilize#1",
+        "updatetargetcontract#2",
+        "realign#3",
+        "resume#4"
+      ],
+      "stage_resumed": true
+    }
+  ],
+  "reset_meta": {
+    "backend": "libero_mujoco",
+    "language": "place the milk and cream cheese in basket a and the butter in basket b",
+    "objects": [
+      "basket_1",
+      "basket_2",
+      "basket_3",
+      "butter_1",
+      "cream_cheese_1",
+      "milk_1"
+    ],
+    "regions": [
+      "basket_1_contain_region",
+      "basket_2_contain_region",
+      "basket_3_contain_region"
+    ],
+    "seed": 0,
+    "state_hash": "d5c396120ad33e2cccfe3484ae8a9df5724ffa8575d481a2421d638d4e4ffa75",
+    "warmup_steps": 10
+  },
+  "seed": 0,
+  "task_metrics": {
+    "all_objects_stable": true,
+    "cancellation_violation": false,
+    "cancelled_goal_violation": false,
+    "cancelled_object_regions": {},
+    "collision": false,
+    "completed_progress_preserved": true,
+    "environment_steps": 786,
+    "expected_predicates": {
+      "butter": {
+        "predicate": true,
+        "target": "basket_C"
+      },
+      "milk": {
+        "predicate": true,
+        "target": "basket_A"
+      },
+      "yogurt": {
+        "predicate": true,
+        "target": "basket_A"
+      }
+    },
+    "no_task_object_attached": true,
+    "object_attachment": {
+      "butter": false,
+      "milk": false,
+      "yogurt": false
+    },
+    "object_positions": {
+      "butter": [
+        0.25274908440064847,
+        0.24252278398580598,
+        0.46246974529420226
+      ],
+      "milk": [
+        -0.28673167200493,
+        0.24346931283665987,
+        0.5235095963145084
+      ],
+      "yogurt": [
+        -0.23134483135737252,
+        0.24360197281038912,
+        0.49293141097040966
+      ]
+    },
+    "object_stability": {
+      "butter": {
+        "angular_speed_rad_s": 1.776583937558285e-14,
+        "linear_speed_m_s": 5.34135416542933e-13,
+        "stable": true
+      },
+      "milk": {
+        "angular_speed_rad_s": 3.9236894943811663e-07,
+        "linear_speed_m_s": 1.9479106618135127e-08,
+        "stable": true
+      },
+      "yogurt": {
+        "angular_speed_rad_s": 5.2685346977062675e-06,
+        "linear_speed_m_s": 5.545291318379227e-08,
+        "stable": true
+      }
+    },
+    "progress_completed": 3,
+    "progress_fraction": 1.0,
+    "progress_total": 3,
+    "redirected_goal_success": true,
+    "revised_task_success": true,
+    "safe_fallback": false,
+    "stability_gate_passed": true,
+    "stability_thresholds": {
+      "max_angular_speed_rad_s": 0.5,
+      "max_linear_speed_m_s": 0.02
+    },
+    "stale_goal_by_object": {
+      "butter": false,
+      "milk": false,
+      "yogurt": false
+    },
+    "stale_goal_execution": false,
+    "task_time": 39.300000000000004,
+    "task_time_s": 39.300000000000004,
+    "unsafe_contact": false
+  },
+  "video": {
+    "bytes": 155336,
+    "fps": 20,
+    "frames": 787,
+    "path": "/home/lijingsu/cope_outputs/paired_debug_20260804_v1/FSR-PC/I3/seed_00/video.mp4",
+    "written": true
+  }
+}

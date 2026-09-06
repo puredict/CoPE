@@ -1,0 +1,10 @@
+[run_project_env] Using project-isolated LIBERO/OpenVLA environment for this subprocess only.
+[run_project_env] LD_LIBRARY_PATH is unset here to avoid the broken system CUDA nvJitLink path.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /home/lijingsu/vla/.venv/lib/python3.10/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+{"denominators": {"accepted_candidates": 4, "attempted_candidates": 4, "attempted_episodes": 1, "candidate_isolation_valid": true, "evaluated_candidates": 4, "rejected_candidates": 0, "valid_candidates": 4, "valid_episodes": 1}, "episode_id": "basket_sorting|I4|0|CoPE", "infrastructure_errors": [], "pipelines_complete": 2, "success": true}

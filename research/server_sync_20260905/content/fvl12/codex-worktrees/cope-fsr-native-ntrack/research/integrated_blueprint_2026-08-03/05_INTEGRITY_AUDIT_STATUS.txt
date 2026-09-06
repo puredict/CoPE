@@ -1,0 +1,1 @@
+{"checks_passed":15,"checks_total":15,"decision":"PASS","wilson_lower_25_of_30":0.664356}

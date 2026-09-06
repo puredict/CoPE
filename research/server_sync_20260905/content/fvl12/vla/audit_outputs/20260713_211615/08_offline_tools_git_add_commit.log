@@ -1,0 +1,2 @@
+COMMAND: git add explicit offline launcher files; git status --short; git diff --cached --stat; git commit offline tools
+START: 2026-07-13T21:33:07+08:00

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "cope-fsrpc-r3-episode.schema.json",
+  "title": "CoPE FSR-PC r3 episode",
+  "type": "object",
+  "required": [
+    "schema_version", "episode_id", "pairing_key", "profile", "seed",
+    "method", "model", "backend", "registered_design", "metrics",
+    "compiled_plan", "physical", "events", "model_calls",
+    "final_state_fingerprint", "artifact_files"
+  ],
+  "properties": {
+    "schema_version": {"const": "cope-fsrpc-r3-episode-v1"},
+    "episode_id": {"type": "string"},
+    "pairing_key": {"type": "string"},
+    "profile": {"type": "string"},
+    "seed": {"type": "integer", "minimum": 0},
+    "method": {"enum": ["CoPE", "FSR-PC"]},
+    "model": {"type": "string"},
+    "backend": {"enum": ["symbolic_basket", "libero_mujoco"]},
+    "metrics": {
+      "type": "object",
+      "required": [
+        "task_completion", "all_generations_valid", "all_events_processed",
+        "root_lineage_restored", "compiled_plan_matches_root", "physical_success",
+        "n_model_calls", "valid_model_calls", "first_failure"
+      ],
+      "properties": {
+        "task_completion": {"type": "boolean"},
+        "all_generations_valid": {"type": "boolean"},
+        "all_events_processed": {"type": "boolean"},
+        "root_lineage_restored": {"type": "boolean"},
+        "compiled_plan_matches_root": {"type": "boolean"},
+        "physical_success": {"type": "boolean"},
+        "n_model_calls": {"type": "integer", "minimum": 1},
+        "valid_model_calls": {"type": "integer", "minimum": 0},
+        "first_failure": {"type": "string"}
+      }
+    },
+    "events": {"type": "array"},
+    "model_calls": {"type": "array"},
+    "compiled_plan": {"type": "array"}
+  }
+}
+

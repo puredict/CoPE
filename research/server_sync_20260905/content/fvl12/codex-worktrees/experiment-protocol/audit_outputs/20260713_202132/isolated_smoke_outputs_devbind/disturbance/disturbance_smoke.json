@@ -1,0 +1,265 @@
+{
+  "task": "put both the alphabet soup and the tomato sauce in the basket",
+  "disturbance": "target_displacement at t=6",
+  "rows": [
+    {
+      "t": 0,
+      "phase": "wait",
+      "event": null,
+      "target_pos_before_action": [
+        -0.117541,
+        0.05571,
+        0.48
+      ],
+      "reward": 0.0,
+      "done": false,
+      "action": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -1.0
+      ]
+    },
+    {
+      "t": 1,
+      "phase": "wait",
+      "event": null,
+      "target_pos_before_action": [
+        -0.116913,
+        0.05575,
+        0.475332
+      ],
+      "reward": 0.0,
+      "done": false,
+      "action": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -1.0
+      ]
+    },
+    {
+      "t": 2,
+      "phase": "wait",
+      "event": null,
+      "target_pos_before_action": [
+        -0.117284,
+        0.055746,
+        0.475163
+      ],
+      "reward": 0.0,
+      "done": false,
+      "action": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -1.0
+      ]
+    },
+    {
+      "t": 3,
+      "phase": "vla",
+      "event": null,
+      "target_pos_before_action": [
+        -0.117287,
+        0.055748,
+        0.475169
+      ],
+      "reward": 0.0,
+      "done": false,
+      "action": [
+        -0.002669,
+        0.00249,
+        0.002877,
+        0.014549,
+        0.001899,
+        -0.024244,
+        1.0
+      ]
+    },
+    {
+      "t": 4,
+      "phase": "vla",
+      "event": null,
+      "target_pos_before_action": [
+        -0.117287,
+        0.055748,
+        0.475169
+      ],
+      "reward": 0.0,
+      "done": false,
+      "action": [
+        -0.003564,
+        0.007346,
+        -0.00154,
+        0.01838,
+        0.000559,
+        -0.040362,
+        1.0
+      ]
+    },
+    {
+      "t": 5,
+      "phase": "vla",
+      "event": null,
+      "target_pos_before_action": [
+        -0.117287,
+        0.055748,
+        0.475169
+      ],
+      "reward": 0.0,
+      "done": false,
+      "action": [
+        -0.001103,
+        0.006375,
+        -0.00154,
+        0.010079,
+        0.008598,
+        0.004769,
+        1.0
+      ]
+    },
+    {
+      "t": 6,
+      "phase": "vla",
+      "event": {
+        "type": "target_displacement",
+        "joint": "tomato_sauce_1_joint0",
+        "delta_xy": [
+          0.1,
+          0.05
+        ]
+      },
+      "target_pos_before_action": [
+        -0.017287,
+        0.105748,
+        0.475169
+      ],
+      "reward": 0.0,
+      "done": false,
+      "action": [
+        -0.001103,
+        0.004432,
+        0.003136,
+        -0.025683,
+        0.008598,
+        -0.030691,
+        1.0
+      ]
+    },
+    {
+      "t": 7,
+      "phase": "vla",
+      "event": null,
+      "target_pos_before_action": [
+        -0.017287,
+        0.105748,
+        0.475169
+      ],
+      "reward": 0.0,
+      "done": false,
+      "action": [
+        -0.002669,
+        0.00249,
+        0.003136,
+        0.015826,
+        0.011947,
+        -0.001679,
+        1.0
+      ]
+    },
+    {
+      "t": 8,
+      "phase": "vla",
+      "event": null,
+      "target_pos_before_action": [
+        -0.017287,
+        0.105748,
+        0.475169
+      ],
+      "reward": 0.0,
+      "done": false,
+      "action": [
+        -0.000209,
+        -0.00269,
+        1.9e-05,
+        0.001777,
+        0.004578,
+        0.019275,
+        -1.0
+      ]
+    },
+    {
+      "t": 9,
+      "phase": "vla",
+      "event": null,
+      "target_pos_before_action": [
+        -0.017287,
+        0.105748,
+        0.475169
+      ],
+      "reward": 0.0,
+      "done": false,
+      "action": [
+        0.002028,
+        -0.009166,
+        0.005475,
+        -0.018658,
+        -0.022216,
+        0.028946,
+        -1.0
+      ]
+    },
+    {
+      "t": 10,
+      "phase": "vla",
+      "event": null,
+      "target_pos_before_action": [
+        -0.017287,
+        0.105748,
+        0.475169
+      ],
+      "reward": 0.0,
+      "done": false,
+      "action": [
+        0.002028,
+        -0.009166,
+        0.005475,
+        -0.016742,
+        -0.014178,
+        0.028946,
+        -1.0
+      ]
+    },
+    {
+      "t": 11,
+      "phase": "vla",
+      "event": null,
+      "target_pos_before_action": [
+        -0.017287,
+        0.105748,
+        0.475169
+      ],
+      "reward": 0.0,
+      "done": false,
+      "action": [
+        0.002252,
+        -0.02244,
+        0.002097,
+        -0.053142,
+        0.018645,
+        0.009604,
+        1.0
+      ]
+    }
+  ]
+}

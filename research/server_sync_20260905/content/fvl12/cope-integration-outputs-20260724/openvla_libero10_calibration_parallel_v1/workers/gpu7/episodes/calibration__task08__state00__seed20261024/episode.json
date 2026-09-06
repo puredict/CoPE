@@ -1,0 +1,92 @@
+{
+  "action_schema_valid": true,
+  "action_spec_source": "env.env.action_spec",
+  "artifacts": {
+    "episode": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_parallel_v1/workers/gpu7/episodes/calibration__task08__state00__seed20261024/episode.json",
+    "interrupted_source_trace": null,
+    "trace": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_parallel_v1/workers/gpu7/episodes/calibration__task08__state00__seed20261024/attempt-001.jsonl"
+  },
+  "attempt_number": 1,
+  "checkpoint": {
+    "path": "/home/lijingsu/vla/models/openvla-7b-finetuned-libero-10",
+    "revision": "80970322773f81baa2e22fe495d0487b93a05cfa",
+    "unnorm_key": "libero_10"
+  },
+  "complete": true,
+  "config_hash": "6977d88607a0cdb52af52035dcd9cc98b37dcbc4dcd2333bddbe761306fda79c",
+  "episode_id": "calibration__task08__state00__seed20261024",
+  "evidence_admissibility": "calibration_only_excluded_from_evaluation",
+  "exception": null,
+  "fake_scripted_or_noop_policy": false,
+  "final_done": false,
+  "final_info": {},
+  "final_reward": 0.0,
+  "gpu": {
+    "allocated_bytes": 15138074624,
+    "cuda_available": true,
+    "device": "cuda:0",
+    "name": "NVIDIA GeForce RTX 3090",
+    "peak_allocated_bytes": 15475995136,
+    "peak_reserved_bytes": 15573450752,
+    "reserved_bytes": 15573450752,
+    "total_bytes": 25438126080
+  },
+  "initial_state_digest": "61a34575b44313156895ce73996cf18dd243c396572fd0e1cd476e0e9fbe70af",
+  "initial_state_id": 0,
+  "logical_reset_count_including_interrupted_attempt": 1,
+  "manual_intervention": false,
+  "max_inference_seconds": 1.04636515583843,
+  "mean_inference_seconds": 0.7793366388587112,
+  "observation_initial": {
+    "frame_dtype": "uint8",
+    "frame_sha256": "1298b7ee8f7c396211f4bd8793176a6e8c9f3380acb88c193a096bfb2c6611d3",
+    "frame_shape": [
+      224,
+      224,
+      3
+    ],
+    "keys": [
+      "agentview_image",
+      "moka_pot_1_pos",
+      "moka_pot_1_quat",
+      "moka_pot_1_to_robot0_eef_pos",
+      "moka_pot_1_to_robot0_eef_quat",
+      "moka_pot_2_pos",
+      "moka_pot_2_quat",
+      "moka_pot_2_to_robot0_eef_pos",
+      "moka_pot_2_to_robot0_eef_quat",
+      "object-state",
+      "robot0_eef_pos",
+      "robot0_eef_quat",
+      "robot0_eye_in_hand_image",
+      "robot0_gripper_qpos",
+      "robot0_gripper_qvel",
+      "robot0_joint_pos",
+      "robot0_joint_pos_cos",
+      "robot0_joint_pos_sin",
+      "robot0_joint_vel",
+      "robot0_proprio-state"
+    ],
+    "proprio_finite": true,
+    "proprio_shape": [
+      8
+    ]
+  },
+  "phase": "calibration",
+  "policy_step_budget": 220,
+  "policy_steps_consumed": 220,
+  "reset_count": 1,
+  "resume": null,
+  "resumed_from_interrupted_trace": false,
+  "rollback_count": 0,
+  "runtime_seconds": 231.6181049067527,
+  "schema_version": "openvla-libero-clean-calibration-episode-v1",
+  "seed": 20261024,
+  "selective_rerun": false,
+  "success": false,
+  "task_id": 8,
+  "task_prompt": "put both moka pots on the stove",
+  "task_suite": "libero_10",
+  "termination_reason": "policy_step_budget_exhausted",
+  "warmup_simulator_steps": 10
+}

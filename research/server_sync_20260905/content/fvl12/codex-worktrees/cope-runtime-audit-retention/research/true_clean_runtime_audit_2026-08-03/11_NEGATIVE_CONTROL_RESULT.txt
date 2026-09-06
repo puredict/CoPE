@@ -1,0 +1,22 @@
+timestamp=2026-08-03T13:24+08:00
+method=in-memory expectation and return-code injection; no filesystem mutation
+process_exit_code=1
+final=FAIL_EXPECTED
+nvidia_smi=PASS
+output_collision_injected=FAIL_BLOCKED
+cope_commit_mismatch_injected=FAIL_BLOCKED
+cope_tracked_diff_injected=FAIL_BLOCKED
+reserved_manifest_hash_mismatch_injected=FAIL_BLOCKED
+checkpoint_hash_mismatch_injected=FAIL_BLOCKED
+checkpoint_aggregate_injected=FAIL_BLOCKED
+runner_config_hash_mismatch_injected=FAIL_BLOCKED
+real_runtime_files_modified=false
+provider_calls=0
+simulator_runs=0
+reserved_state_packets_read=0
+output_created=false
+
+The negative control changed only the preflight module's in-memory expected
+values and mocked the tracked-diff command return code. It proves that all six
+required mismatch classes force a nonzero exit without corrupting the clean
+runtime.

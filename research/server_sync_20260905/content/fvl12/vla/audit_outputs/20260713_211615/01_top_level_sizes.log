@@ -1,0 +1,58 @@
+COMMAND: du -sh .[!.]* * 2>/dev/null | sort -h
+START: 2026-07-13T21:20:16+08:00
+END: 2026-07-13T21:20:17+08:00
+EXIT: 0
+
+STDOUT:
+4.0K	README.md
+4.0K	README_LIBERO_DASHBOARD.md
+4.0K	check_vla_env.py
+4.0K	disturbance_probe.py
+4.0K	download_openvla.log
+4.0K	download_openvla.py
+4.0K	download_openvla_libero_spatial.py
+4.0K	libero_base_closed_loop_smoke.py
+4.0K	libero_disturbance_smoke.py
+4.0K	openvla_smoke.py
+4.0K	requirements-dashboard.txt
+4.0K	run_baseline_base_openvla.sh
+4.0K	run_expanded_spatial_3trials.sh
+4.0K	run_full_spatial_disturbance.sh
+4.0K	run_libero_dashboard.sh
+4.0K	run_magnitude_large.sh
+4.0K	run_magnitude_small.sh
+4.0K	run_one_probe.py
+4.0K	run_timing_step120.sh
+4.0K	run_timing_step30.sh
+4.0K	run_timing_step60.sh
+4.0K	summarize_disturbance_results.py
+4.0K	synthetic_table.png
+4.0K	tmp
+4.0K	wait_and_collect_disturbance_results.sh
+8.0K	baseline_reset_rollback_eval.py
+8.0K	baseline_stage_backtrack_eval.py
+8.0K	libero_data
+8.0K	openpi_libero_config
+8.0K	second_necessity_intervention.py
+12K	baseline_current_world_replan_eval.py
+12K	libero_disturbance_eval.py
+12K	verifier_vs_recovery_state_eval.py
+16K	libero_dashboard.py
+24K	disturbance_probe_out
+24K	libero_experiment_core.py
+32K	.pytest_cache
+56K	libero_dashboard_controller.py
+56K	tests
+124K	__pycache__
+136K	dashboard_outputs
+916K	smoke_outputs
+1.9M	audit_outputs
+2.5M	second_necessity_outputs
+3.1M	cache
+6.5M	baseline_outputs
+42M	disturbance_outputs
+8.5G	.venv
+9.3G	src
+29G	models
+
+STDERR:

@@ -1,0 +1,80 @@
+# COMMANDS.log for G_EXPERIMENT_PROTOCOL
+
+All commands were static/documentation-oriented. No GPU, OpenVLA model load, LIBERO rollout, dependency install, or experiment run was executed.
+
+## Uploaded package inspection
+
+exit 0: pwd
+exit 0: ls -la
+exit 0: ls -la /Users/lijingsu/Downloads/G_EXPERIMENT_PROTOCOL
+exit 0: find /Users/lijingsu/Downloads/G_EXPERIMENT_PROTOCOL -maxdepth 3 -type f
+exit 0: cat /Users/lijingsu/Downloads/G_EXPERIMENT_PROTOCOL/START_HERE.txt
+exit 0: cat /Users/lijingsu/Downloads/G_EXPERIMENT_PROTOCOL/MANIFEST.md
+exit 0: cat /Users/lijingsu/Downloads/G_EXPERIMENT_PROTOCOL/PROJECT_CONTEXT.md
+exit 0: cat /Users/lijingsu/Downloads/G_EXPERIMENT_PROTOCOL/TASK_SPEC.md
+exit 0: cat /Users/lijingsu/Downloads/G_EXPERIMENT_PROTOCOL/WORKTREE_PROTOCOL.md
+exit 0: cat /Users/lijingsu/Downloads/G_EXPERIMENT_PROTOCOL/references/CURRENT_CODE_AUDIT.md
+exit 0: cat /Users/lijingsu/Downloads/G_EXPERIMENT_PROTOCOL/references/PHASE_CHECKLIST.md
+exit 0: cat /Users/lijingsu/Downloads/G_EXPERIMENT_PROTOCOL/references/RESEARCH_WORKFLOW_NOTES.md
+exit 0: tar -tzf /Users/lijingsu/Downloads/G_EXPERIMENT_PROTOCOL/original_source_snapshot.tar.gz
+
+## Source/project orientation
+
+exit 1: ls -la /home/lijingsu
+exit 128: ssh -i <key> -p 26575 lijingsu@10.176.53.120 'cd /home/lijingsu/vla && pwd && git status --short && git rev-parse --show-toplevel && git rev-parse HEAD'
+exit 0: ssh -i <key> -p 26575 lijingsu@10.176.53.120 'ls -la /home/lijingsu/vla'
+exit 0: ssh -i <key> -p 26575 lijingsu@10.176.53.120 'find /home/lijingsu -maxdepth 3 -name .git -type d'
+exit 128: ssh -i <key> -p 26575 lijingsu@10.176.53.120 'git -C /home/lijingsu/vla status --short'
+exit 0: ssh -i <key> -p 26575 lijingsu@10.176.53.120 'ls -la /home/lijingsu'
+
+Finding: /home/lijingsu/vla exists but is not a git repository. Standard git worktree creation was impossible.
+
+## Isolated worktree substitute
+
+exit 0: ssh -i <key> -p 26575 lijingsu@10.176.53.120 'set -u; SOURCE=/home/lijingsu/vla; WORKTREE=/home/lijingsu/codex-worktrees/experiment-protocol; BRANCH=codex/experiment-protocol; command -v rsync; test -e "$WORKTREE" && { echo "Worktree path already exists: $WORKTREE" >&2; exit 3; }; mkdir -p /home/lijingsu/codex-worktrees /home/lijingsu/codex-deliveries; mkdir -p "$WORKTREE"; rsync -a --exclude=.git --exclude=.venv --exclude=models --exclude=outputs --exclude=disturbance_outputs --exclude=videos --exclude=__pycache__ --exclude=.pytest_cache "$SOURCE/" "$WORKTREE/"; cd "$WORKTREE"; git init; git checkout -b "$BRANCH"; git status --short'
+
+## Static code/output audit
+
+exit 0: mkdir -p /Users/lijingsu/Documents/Codex/2026-07-13/files-mentioned-by-the-user-g/work/source_snapshot
+exit 0: tar -xzf /Users/lijingsu/Downloads/G_EXPERIMENT_PROTOCOL/original_source_snapshot.tar.gz -C /Users/lijingsu/Documents/Codex/2026-07-13/files-mentioned-by-the-user-g/work/source_snapshot
+exit 0: rg -n "episodes|summary|success|done|timeout|mode|disturb|steps|video|jsonl|json" work/source_snapshot/libero_disturbance_eval.py
+exit 0: rg -n "episodes|summary|success|done|timeout|mode|rollback|reset|steps|video|jsonl|json" work/source_snapshot/baseline_reset_rollback_eval.py
+exit 0: rg -n "episodes|summary|success|done|timeout|mode|stage|verifier|prompt|steps|video|jsonl|json" work/source_snapshot/baseline_stage_backtrack_eval.py
+exit 0: rg -n "episodes|summary|success|done|timeout|mode|relocal|verifier|prompt|steps|video|jsonl|json" work/source_snapshot/second_necessity_intervention.py
+exit 0: rg -n "oracle_verifier|minimal_structured|rate|success|capability|preset|summary|json" work/source_snapshot/verifier_vs_recovery_state_eval.py
+exit 0: sed -n '1,320p' work/source_snapshot/libero_disturbance_eval.py
+exit 0: sed -n '1,180p' work/source_snapshot/baseline_reset_rollback_eval.py
+exit 0: sed -n '1,170p' work/source_snapshot/baseline_stage_backtrack_eval.py
+exit 0: sed -n '1,170p' work/source_snapshot/second_necessity_intervention.py
+exit 0: sed -n '1,220p' work/source_snapshot/summarize_disturbance_results.py
+exit 0: sed -n '1,220p' work/source_snapshot/verifier_vs_recovery_state_eval.py
+
+## Document generation and static checks
+
+exit 0: mkdir -p /Users/lijingsu/Documents/Codex/2026-07-13/files-mentioned-by-the-user-g/work/generated_docs
+exit 0: apply_patch added EXPERIMENT_PROTOCOL.md
+exit 0: apply_patch added METRICS_AND_CLAIMS.md
+exit 0: apply_patch added FAILURE_TAXONOMY.md
+exit 0: apply_patch added PAPER_EVIDENCE_CHECKLIST.md
+exit 0: apply_patch added experiment_matrix.example.yaml
+exit 0: cp experiment_matrix.example.yaml EXPERIMENT_CONFIG_MATRIX.example.yaml
+exit 0: apply_patch updated EXPERIMENT_PROTOCOL.md to define trial_id/initial_state_id
+exit 0: ls -la work/generated_docs
+exit 0: wc -l work/generated_docs/EXPERIMENT_PROTOCOL.md work/generated_docs/METRICS_AND_CLAIMS.md work/generated_docs/FAILURE_TAXONOMY.md work/generated_docs/PAPER_EVIDENCE_CHECKLIST.md work/generated_docs/experiment_matrix.example.yaml work/generated_docs/EXPERIMENT_CONFIG_MATRIX.example.yaml
+exit 0: rg -n "oracle_rollback|full_reset_replan|verifier_stop|preset|manual|paired|clean baseline|observer" work/generated_docs/METRICS_AND_CLAIMS.md
+exit 0: rg -n "Research Questions|Hypotheses|Model Checkpoints|LIBERO Suite|Experimental Units|Disturbance Variables|Formal Modes|Fair Action Budget|Warmup|Reset and Rollback|Manual Intervention|Success, Failure|Video and Log|Sample Size|Debug and Formal|Environment and Code|Statistical|Ablation|Failure Case" work/generated_docs/EXPERIMENT_PROTOCOL.md
+exit 0: diff -q work/generated_docs/experiment_matrix.example.yaml work/generated_docs/EXPERIMENT_CONFIG_MATRIX.example.yaml
+exit 0: rg -n "perception_failure|wrong_object_selection|localization_failure|approach_failure|grasp_failure|dropped_object|transport_failure|placement_failure|stale_observation|prompt_recovery_selection_failure|timeout|simulator_infrastructure_error" work/generated_docs/FAILURE_TAXONOMY.md
+exit 0: rg -n "disturbed_success_rate|clean_to_disturbed_degradation|recovery_gain_over_reactive|paired_outcome_transitions|post_disturbance_recovery_steps|object_rediscovery_steps|recontact_steps|regrasp_steps|timeout_rate|stop_rate|recovery_attempt_count" work/generated_docs/experiment_matrix.example.yaml
+
+## Upload, commit, and verification
+
+exit 0: scp -i <key> -P 26575 work/generated_docs/EXPERIMENT_PROTOCOL.md work/generated_docs/METRICS_AND_CLAIMS.md work/generated_docs/PAPER_EVIDENCE_CHECKLIST.md work/generated_docs/FAILURE_TAXONOMY.md work/generated_docs/experiment_matrix.example.yaml work/generated_docs/EXPERIMENT_CONFIG_MATRIX.example.yaml lijingsu@10.176.53.120:/home/lijingsu/codex-worktrees/experiment-protocol/
+exit 0: ssh -i <key> -p 26575 lijingsu@10.176.53.120 'cd /home/lijingsu/codex-worktrees/experiment-protocol && git status --short && git add EXPERIMENT_PROTOCOL.md METRICS_AND_CLAIMS.md PAPER_EVIDENCE_CHECKLIST.md FAILURE_TAXONOMY.md experiment_matrix.example.yaml EXPERIMENT_CONFIG_MATRIX.example.yaml && git diff --cached --check && git -c user.name="Codex Parallel Session" -c user.email="codex-parallel@example.invalid" commit -m "docs: define disturbance recovery experiment protocol" && git rev-parse HEAD'
+exit 0: ssh -i <key> -p 26575 lijingsu@10.176.53.120 'cd /home/lijingsu/codex-worktrees/experiment-protocol && git status --short --untracked-files=no'
+exit 0: ssh -i <key> -p 26575 lijingsu@10.176.53.120 'cd /home/lijingsu/codex-worktrees/experiment-protocol && git show --name-status --format=fuller --stat HEAD'
+exit 0: ssh -i <key> -p 26575 lijingsu@10.176.53.120 'cd /home/lijingsu/codex-worktrees/experiment-protocol && git branch --show-current && git rev-parse HEAD'
+
+## Delivery
+
+exit 0: ssh -i <key> -p 26575 lijingsu@10.176.53.120 'mkdir -p /home/lijingsu/codex-deliveries/experiment-protocol'

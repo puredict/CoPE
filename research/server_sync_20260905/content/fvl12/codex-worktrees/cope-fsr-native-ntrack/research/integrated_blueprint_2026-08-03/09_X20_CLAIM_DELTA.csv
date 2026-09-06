@@ -1,0 +1,2 @@
+claim,prior_decision,updated_decision,evidence,remaining_boundary
+"Canonical order can be normalized for stable-key record collections",OPEN,SUPPORTED_SYNTHETIC,"12/12 clean controls; 14/14 reorder normalization and byte/hash equality; 7/7 malformed-key faults rejected; independent audit 11/11; full regression 436 passed","Only commitments/entities/progress-ledger on small synthetic states; profile larger graphs and never generalize to semantic sequences"

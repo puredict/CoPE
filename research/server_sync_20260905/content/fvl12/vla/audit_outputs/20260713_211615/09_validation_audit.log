@@ -1,0 +1,108 @@
+COMMAND: validate offline smoke outputs, final GPU/process/git state, old smoke isolation
+START: 2026-07-13T21:37:39+08:00
+END: 2026-07-13T21:37:40+08:00
+EXIT: 0
+
+STDOUT:
+{
+  "baseline_commit": "88afdea6b571454958fac57abd19c038d149f069",
+  "offline_tools_commit": "68c3cddcc8393da78c28bdc1b90f869ab00b045f",
+  "command_exits": [
+    [
+      "00_gpu_before",
+      0
+    ],
+    [
+      "01_check_vla_env",
+      0
+    ],
+    [
+      "02_openvla_smoke",
+      0
+    ],
+    [
+      "03_libero_base_closed_loop_smoke",
+      0
+    ],
+    [
+      "04_libero_disturbance_smoke",
+      0
+    ],
+    [
+      "98_generated_files",
+      0
+    ],
+    [
+      "99_gpu_after",
+      0
+    ]
+  ],
+  "openvla_action": {
+    "length": 7,
+    "all_finite": true,
+    "values": [
+      0.01164595,
+      0.00475603,
+      0.00469544,
+      -0.00397045,
+      0.03070304,
+      0.01443947,
+      0.99607843
+    ],
+    "gripper": 0.99607843
+  },
+  "overall_actions": {
+    "count": 22,
+    "lengths": [
+      7
+    ],
+    "all_finite": true
+  },
+  "disturbance_delta": {
+    "before_t5": [
+      -0.117287,
+      0.055748,
+      0.475169
+    ],
+    "after_t6": [
+      -0.017287,
+      0.105748,
+      0.475169
+    ],
+    "delta": [
+      0.1,
+      0.05,
+      0.0
+    ],
+    "event": {
+      "type": "target_displacement",
+      "joint": "tomato_sauce_1_joint0",
+      "delta_xy": [
+        0.1,
+        0.05
+      ]
+    }
+  },
+  "image_summary": {
+    "count": 16,
+    "shapes": [
+      [
+        224,
+        224,
+        3
+      ]
+    ],
+    "dtypes": [
+      "uint8"
+    ]
+  },
+  "git_status_short": [],
+  "final_relevant_processes": [
+    "1800330 1800288 Sl         00:00 python -"
+  ],
+  "validation_json": "/home/lijingsu/vla/audit_outputs/20260713_211615/stage_1_5_validation_audit.json"
+}
+
+STDERR:
+[run_project_env] Using project-isolated LIBERO/OpenVLA environment for this subprocess only.
+[run_project_env] LD_LIBRARY_PATH is unset here to avoid the broken system CUDA nvJitLink path.

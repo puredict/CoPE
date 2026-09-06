@@ -1,0 +1,91 @@
+{
+  "calibration_gate": {
+    "minimum_valid_generation_rate_per_method": 0.8,
+    "profile": "calibration"
+  },
+  "experiment_name": "persistent_lineage_fixed_llm",
+  "methods": [
+    "CoPE",
+    "FSR-PC"
+  ],
+  "model": {
+    "api_key_env": "COPE_LLM_API_KEY",
+    "base_url": "http://127.0.0.1:8000",
+    "max_context_tokens": 32768,
+    "name": "Qwen/Qwen3-32B",
+    "seed": 20260904,
+    "temperature": 0.0,
+    "top_p": 1.0
+  },
+  "nominal_gate": {
+    "required_successes": 8,
+    "seeds": 10
+  },
+  "physical_backend": {
+    "config": "configs_gpu/task_assets.yaml",
+    "controller": "OSC_POSE via privileged geometry oracle",
+    "learned_policy_used": false,
+    "name": "libero_mujoco",
+    "rendering": "CPU OSMesa"
+  },
+  "primary_profile": "long_lineage",
+  "profiles": {
+    "calibration": {
+      "initial_slots": 8,
+      "lineage_depth": 2
+    },
+    "lineage_valid": {
+      "initial_slots": 10,
+      "lineage_depth": 6
+    },
+    "long_lineage": {
+      "initial_slots": 48,
+      "lineage_depth": 6
+    }
+  },
+  "run": {
+    "backend": "libero_mujoco",
+    "client": "openai",
+    "method_order_rule": "even seeds CoPE first; odd seeds FSR-PC first",
+    "methods": [
+      "CoPE",
+      "FSR-PC"
+    ],
+    "model": "Qwen/Qwen3-32B",
+    "profiles": [
+      "calibration",
+      "lineage_valid",
+      "long_lineage"
+    ],
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19
+    ],
+    "utc": "2026-09-05T00:50:10.468323+00:00"
+  },
+  "schema_version": "cope-fsrpc-r3-config-v1",
+  "seeds": 20,
+  "shared_budget": {
+    "calls_per_event": 1,
+    "max_output_tokens": 4096,
+    "timeout_s": 90.0
+  }
+}

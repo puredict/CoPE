@@ -1,0 +1,22 @@
+COMMAND: bwrap --bind / / --dev-bind /dev /dev --proc /proc --bind /home/lijingsu/vla/audit_outputs/20260713_213433_offline_smokes/isolated_smoke_outputs /home/lijingsu/vla/smoke_outputs /home/lijingsu/vla/scripts/run_project_env.sh python openvla_smoke.py --model /home/lijingsu/vla/models/openvla-7b --device cuda:0 --unnorm-key bridge_orig
+START: 2026-07-13T21:34:35+08:00
+END: 2026-07-13T21:35:02+08:00
+EXIT: 0
+
+STDOUT:
+action: [ 0.01164595  0.00475603  0.00469544 -0.00397045  0.03070304  0.01443947
+  0.99607843]
+
+STDERR:
+[run_project_env] Using project-isolated LIBERO/OpenVLA environment for this subprocess only.
+[run_project_env] LD_LIBRARY_PATH is unset here to avoid the broken system CUDA nvJitLink path.
+/home/lijingsu/vla/.venv/lib/python3.10/site-packages/transformers/utils/hub.py:124: FutureWarning: Using `TRANSFORMERS_CACHE` is deprecated and will be removed in v5 of Transformers. Use `HF_HOME` instead.
+  warnings.warn(
+2026-07-13 21:34:36.575741: I tensorflow/core/util/port.cc:113] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-07-13 21:34:36.613094: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:9261] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+2026-07-13 21:34:36.613149: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:607] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2026-07-13 21:34:36.614018: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:1515] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2026-07-13 21:34:36.619426: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2026-07-13 21:34:37.274721: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  33%|███▎      | 1/3 [00:00<00:01,  1.49it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:01<00:00,  1.60it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:01<00:00,  2.25it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:01<00:00,  2.01it/s]

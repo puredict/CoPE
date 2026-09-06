@@ -1,0 +1,497 @@
+{
+  "acceptance": {
+    "all_interruption_events_delivered": true,
+    "all_required_artifacts_present": true,
+    "all_results_completed": true,
+    "attempt_count_exact": true,
+    "failure_layers_present": true,
+    "paired_fairness_passed": true,
+    "repair_pipelines_complete_or_classified": true
+  },
+  "analysis_primary": {
+    "binary": {
+      "completed_progress_preserved": {
+        "n": 0,
+        "note": "not applicable in this pilot"
+      },
+      "history_monotonic": {
+        "n": 0,
+        "note": "not applicable in this pilot"
+      },
+      "identity_preserved": {
+        "n": 0,
+        "note": "not applicable in this pilot"
+      },
+      "lifecycle_transitions_legal": {
+        "n": 0,
+        "note": "not applicable in this pilot"
+      },
+      "lineage_correct": {
+        "n": 0,
+        "note": "not applicable in this pilot"
+      },
+      "remaining_goal_correct": {
+        "n": 0,
+        "note": "not applicable in this pilot"
+      },
+      "revised_task_success": {
+        "n": 0,
+        "note": "not applicable in this pilot"
+      }
+    },
+    "continuous": {
+      "adaptation_latency_s": {
+        "n": 0,
+        "note": "not applicable"
+      },
+      "audit_coverage": {
+        "n": 0,
+        "note": "not applicable"
+      },
+      "candidates_generated": {
+        "n": 0,
+        "note": "not applicable"
+      },
+      "completion_steps": {
+        "n": 0,
+        "note": "not applicable"
+      },
+      "invalid_action_count": {
+        "n": 0,
+        "note": "not applicable"
+      },
+      "normalized_edit_distance": {
+        "n": 0,
+        "note": "not applicable"
+      },
+      "repairs_invoked": {
+        "n": 0,
+        "note": "not applicable"
+      },
+      "restores_validated": {
+        "n": 0,
+        "note": "not applicable"
+      },
+      "rollouts_run": {
+        "n": 0,
+        "note": "not applicable"
+      },
+      "slots_touched_per_event": {
+        "n": 0,
+        "note": "not applicable"
+      },
+      "splices": {
+        "n": 0,
+        "note": "not applicable"
+      },
+      "stages_resumed": {
+        "n": 0,
+        "note": "not applicable"
+      }
+    },
+    "holm_corrected_p": {},
+    "per_condition": {
+      "I1": {
+        "CoPE": {
+          "n": 0,
+          "success": 0
+        },
+        "FSR-PC": {
+          "n": 0,
+          "success": 0
+        },
+        "no_adaptation": {
+          "n": 0,
+          "success": 0
+        }
+      },
+      "I2": {
+        "CoPE": {
+          "n": 0,
+          "success": 0
+        },
+        "FSR-PC": {
+          "n": 0,
+          "success": 0
+        },
+        "no_adaptation": {
+          "n": 0,
+          "success": 0
+        }
+      },
+      "I3": {
+        "CoPE": {
+          "n": 0,
+          "success": 0
+        },
+        "FSR-PC": {
+          "n": 0,
+          "success": 0
+        },
+        "no_adaptation": {
+          "n": 0,
+          "success": 0
+        }
+      },
+      "I4": {
+        "CoPE": {
+          "n": 0,
+          "success": 0
+        },
+        "FSR-PC": {
+          "n": 0,
+          "success": 0
+        },
+        "no_adaptation": {
+          "n": 0,
+          "success": 0
+        }
+      }
+    }
+  },
+  "denominators": {
+    "accepted_candidates": 6,
+    "adaptation_valid_episodes": 2,
+    "all_events_delivered_episodes": 2,
+    "attempted_candidates": 12,
+    "attempted_episodes": 2,
+    "completed_episodes": 2,
+    "controller_valid_episodes": 2,
+    "evaluable_episodes": 2,
+    "evaluated_candidates": 6,
+    "events_delivered": 4,
+    "events_scheduled": 4,
+    "final_task_successes": 2,
+    "rejected_candidates": 0,
+    "valid_candidates": 6,
+    "valid_episodes": 2
+  },
+  "episodes": [
+    {
+      "adaptation_input_fingerprints": [
+        "a088e2eb05af70d7f1091facdbf3cd690cf98ead57410d08f65b4f7a06f75deb",
+        "d52a2b876402eccec2b03da2efd696369c8373adada924abbaf79108438f5415"
+      ],
+      "condition": "I3",
+      "denominators": {
+        "accepted_candidates": 6,
+        "adaptation_valid_episodes": 1,
+        "all_events_delivered_episodes": 1,
+        "attempted_candidates": 6,
+        "attempted_episodes": 1,
+        "candidate_isolation_valid": true,
+        "completed_episodes": 1,
+        "controller_valid_episodes": 1,
+        "evaluable_episodes": 1,
+        "evaluated_candidates": 6,
+        "events_delivered": 2,
+        "events_scheduled": 2,
+        "final_task_successes": 1,
+        "rejected_candidates": 0,
+        "valid_candidates": 6,
+        "valid_episodes": 1
+      },
+      "episode_dir": "/home/lijingsu/cope_fsrpc_v2_execution_r2/stage_d_verifier_schema_debug_v7/CoPE_full/I3/seed_00",
+      "episode_id": "basket_sorting|I3|0|CoPE_full",
+      "exogenous_adaptation_fingerprints": [
+        "5dbb8dcf43b3ef8c9477a3173cf09257de94ca807a5db3a27d0c485fc83d7ad7",
+        "e5c138a66309a767436a88b9fc7cc99b0fd3930984112db35a43203db4512adb"
+      ],
+      "fairness_fingerprint": "4ca64fe070d8fb7c2c7cddde7c3a449ef9f4b013551f87547675e8568e33844c",
+      "layers": {
+        "adaptation_failure": false,
+        "adaptation_input_valid": true,
+        "all_required_events_delivered": true,
+        "candidate_generation_complete": true,
+        "continuation_captured": true,
+        "controller_failure": false,
+        "controller_success": true,
+        "event_schedule_valid": true,
+        "failure_detail": "",
+        "failure_layer": "none",
+        "graph_splice_complete": true,
+        "grasp_success": true,
+        "infrastructure_failure": false,
+        "patch_or_regeneration_valid": true,
+        "placement_success": true,
+        "repair_goal_compiled": true,
+        "restore_contract_valid": null,
+        "restore_event_delivered": null,
+        "revalidation_performed": null,
+        "revised_task_success": true,
+        "rollout_verification_complete": true,
+        "stage_resumed": true,
+        "state_update_valid": true,
+        "task_failure_reason": ""
+      },
+      "method": "CoPE_full",
+      "metrics": {
+        "adaptation_failure": null,
+        "adaptation_latency_s": 8.067324,
+        "all_required_events_delivered": null,
+        "audit_answerable": {
+          "Q1_which_goal_cancelled": null,
+          "Q2_which_completed_preserved": true,
+          "Q3_why_suspended": null,
+          "Q4_restore_condition": null,
+          "Q5_replacement_state": true
+        },
+        "audit_coverage": 1.0,
+        "cancelled_goal_violations": 0,
+        "candidates_generated": 6,
+        "candidates_rejected": 0,
+        "collision": false,
+        "completed_goals_repeated": 0,
+        "completed_progress_preserved": true,
+        "completion_steps": 786,
+        "condition": "I3",
+        "controller_failure": null,
+        "engine_safe_fallbacks": 0,
+        "failure_layer": "",
+        "history_monotonic": true,
+        "identity_preserved": true,
+        "infrastructure_failure": null,
+        "invalid_action_count": 0,
+        "invalid_restore_count": 0,
+        "lifecycle_transitions_legal": true,
+        "lineage_correct": true,
+        "method": "CoPE_full",
+        "normalized_edit_distance": 0.5625,
+        "notes": "",
+        "ops_per_event": 3.0,
+        "pipelines_complete": 2,
+        "planner_calls": 2,
+        "recovery_after_repeat": null,
+        "remaining_goal_correct": true,
+        "repairs_invoked": 2,
+        "restore_preceded_by_revalidation": null,
+        "restores_validated": 2,
+        "revised_task_success": true,
+        "rollouts_run": 6,
+        "safe_fallback": false,
+        "seed": 0,
+        "slots_edited": 8,
+        "slots_regenerated": 0,
+        "slots_touched_per_event": 4.0,
+        "splices": 2,
+        "stages_resumed": 2,
+        "stale_goal_executions": 0,
+        "state_churn": 1.0,
+        "token_usage": null
+      },
+      "pairing_key": "basket_sorting|I3|0",
+      "requirement_fingerprints": [
+        "6af956e3eb3de6c0",
+        "13e6a7d6881594d9"
+      ],
+      "seed": 0
+    },
+    {
+      "adaptation_input_fingerprints": [
+        "a088e2eb05af70d7f1091facdbf3cd690cf98ead57410d08f65b4f7a06f75deb",
+        "d52a2b876402eccec2b03da2efd696369c8373adada924abbaf79108438f5415"
+      ],
+      "condition": "I3",
+      "denominators": {
+        "accepted_candidates": 0,
+        "adaptation_valid_episodes": 1,
+        "all_events_delivered_episodes": 1,
+        "attempted_candidates": 6,
+        "attempted_episodes": 1,
+        "candidate_isolation_valid": true,
+        "completed_episodes": 1,
+        "controller_valid_episodes": 1,
+        "evaluable_episodes": 1,
+        "evaluated_candidates": 0,
+        "events_delivered": 2,
+        "events_scheduled": 2,
+        "final_task_successes": 1,
+        "rejected_candidates": 0,
+        "valid_candidates": 0,
+        "valid_episodes": 1
+      },
+      "episode_dir": "/home/lijingsu/cope_fsrpc_v2_execution_r2/stage_d_verifier_schema_debug_v7/CoPE_no_rollout_verification/I3/seed_00",
+      "episode_id": "basket_sorting|I3|0|CoPE_no_rollout_verification",
+      "exogenous_adaptation_fingerprints": [
+        "5dbb8dcf43b3ef8c9477a3173cf09257de94ca807a5db3a27d0c485fc83d7ad7",
+        "e5c138a66309a767436a88b9fc7cc99b0fd3930984112db35a43203db4512adb"
+      ],
+      "fairness_fingerprint": "4ca64fe070d8fb7c2c7cddde7c3a449ef9f4b013551f87547675e8568e33844c",
+      "layers": {
+        "adaptation_failure": false,
+        "adaptation_input_valid": true,
+        "all_required_events_delivered": true,
+        "candidate_generation_complete": true,
+        "continuation_captured": true,
+        "controller_failure": false,
+        "controller_success": true,
+        "event_schedule_valid": true,
+        "failure_detail": "",
+        "failure_layer": "none",
+        "graph_splice_complete": true,
+        "grasp_success": true,
+        "infrastructure_failure": false,
+        "patch_or_regeneration_valid": true,
+        "placement_success": true,
+        "repair_goal_compiled": true,
+        "restore_contract_valid": null,
+        "restore_event_delivered": null,
+        "revalidation_performed": null,
+        "revised_task_success": true,
+        "rollout_verification_complete": true,
+        "stage_resumed": true,
+        "state_update_valid": true,
+        "task_failure_reason": ""
+      },
+      "method": "CoPE_no_rollout_verification",
+      "metrics": {
+        "adaptation_failure": null,
+        "adaptation_latency_s": 0.575359,
+        "all_required_events_delivered": null,
+        "audit_answerable": {
+          "Q1_which_goal_cancelled": null,
+          "Q2_which_completed_preserved": true,
+          "Q3_why_suspended": null,
+          "Q4_restore_condition": null,
+          "Q5_replacement_state": true
+        },
+        "audit_coverage": 1.0,
+        "cancelled_goal_violations": 0,
+        "candidates_generated": 6,
+        "candidates_rejected": 0,
+        "collision": false,
+        "completed_goals_repeated": 0,
+        "completed_progress_preserved": true,
+        "completion_steps": 787,
+        "condition": "I3",
+        "controller_failure": null,
+        "engine_safe_fallbacks": 0,
+        "failure_layer": "",
+        "history_monotonic": true,
+        "identity_preserved": true,
+        "infrastructure_failure": null,
+        "invalid_action_count": 0,
+        "invalid_restore_count": 0,
+        "lifecycle_transitions_legal": true,
+        "lineage_correct": true,
+        "method": "CoPE_no_rollout_verification",
+        "normalized_edit_distance": 0.5625,
+        "notes": "",
+        "ops_per_event": 3.0,
+        "pipelines_complete": 2,
+        "planner_calls": 2,
+        "recovery_after_repeat": null,
+        "remaining_goal_correct": true,
+        "repairs_invoked": 2,
+        "restore_preceded_by_revalidation": null,
+        "restores_validated": 2,
+        "revised_task_success": true,
+        "rollouts_run": 0,
+        "safe_fallback": false,
+        "seed": 0,
+        "slots_edited": 8,
+        "slots_regenerated": 0,
+        "slots_touched_per_event": 4.0,
+        "splices": 2,
+        "stages_resumed": 2,
+        "stale_goal_executions": 0,
+        "state_churn": 1.0,
+        "token_usage": null
+      },
+      "pairing_key": "basket_sorting|I3|0",
+      "requirement_fingerprints": [
+        "6af956e3eb3de6c0",
+        "13e6a7d6881594d9"
+      ],
+      "seed": 0
+    }
+  ],
+  "meta": {
+    "backend": "libero_mujoco",
+    "backend_config": "/home/lijingsu/cope_fsrpc_\u4ea4\u63a5_v2_r2/configs_gpu/task_assets.yaml",
+    "comparison_kind": "verifier_ablation",
+    "conditions": [
+      "I3"
+    ],
+    "controller_privilege": "simulator_geometry_oracle",
+    "evidence_stratum": "mechanism",
+    "fairness_protocol": "all_event_exogenous_plus_pre_treatment_causal_pairing",
+    "gate_seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "git_rev": "13c2a7b439550528426ac14d29c58304696feebb",
+    "gpu_compute_used": false,
+    "learned_policy_used": false,
+    "methods": [
+      "CoPE_full",
+      "CoPE_no_rollout_verification"
+    ],
+    "platform": "Linux-5.19.0-50-generic-x86_64-with-glibc2.35",
+    "preserved_incomplete_episode_dirs": [],
+    "python": "3.10.12",
+    "rendering": "CPU OSMesa",
+    "resume_requested": false,
+    "resumed_completed_episodes": 0,
+    "seeds": [
+      0
+    ],
+    "stage": "verifier_probe",
+    "utc": "2026-08-10T13:56:40.423578+00:00"
+  },
+  "missing_artifacts": [],
+  "paired_fairness": [
+    {
+      "condition": "I3",
+      "methods": [
+        "CoPE_full",
+        "CoPE_no_rollout_verification"
+      ],
+      "passed": true,
+      "post_treatment_adaptation_inputs_equal": true,
+      "post_treatment_compiled_repair_goals_equal": true,
+      "same_backend_config": true,
+      "same_candidate_budget": true,
+      "same_exogenous_adaptation_inputs": true,
+      "same_fairness_fingerprint": true,
+      "same_initial_simulator_state": true,
+      "same_pre_treatment_adaptation_input": true,
+      "same_pre_treatment_candidate_set": true,
+      "same_pre_treatment_compiled_repair_goal": true,
+      "same_registered_schedule": true,
+      "seed": 0
+    }
+  ],
+  "per_method_condition": {
+    "CoPE_full|I3": {
+      "adaptation_failures": 0,
+      "adaptation_valid": 1,
+      "all_events_delivered": 1,
+      "attempted": 1,
+      "controller_failures": 0,
+      "controller_valid": 1,
+      "infrastructure_failures": 0,
+      "task_success": 1,
+      "valid": 1
+    },
+    "CoPE_no_rollout_verification|I3": {
+      "adaptation_failures": 0,
+      "adaptation_valid": 1,
+      "all_events_delivered": 1,
+      "attempted": 1,
+      "controller_failures": 0,
+      "controller_valid": 1,
+      "infrastructure_failures": 0,
+      "task_success": 1,
+      "valid": 1
+    }
+  }
+}

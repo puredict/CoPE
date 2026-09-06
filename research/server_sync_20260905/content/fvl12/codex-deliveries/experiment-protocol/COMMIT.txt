@@ -1,0 +1,7 @@
+branch: codex/experiment-protocol
+commit: bc6fc0d3d0da1c40cb7fd2af3aa87a24410bba95
+message: docs: define disturbance recovery experiment protocol
+worktree_path: /home/lijingsu/codex-worktrees/experiment-protocol
+delivery_path: /home/lijingsu/codex-deliveries/experiment-protocol
+
+Note: /home/lijingsu/vla was accessible but was not a git repository, so a standard git worktree could not be created. An isolated copy was made at the requested worktree path and initialized on branch codex/experiment-protocol. The commit contains only the protocol documents and config examples.

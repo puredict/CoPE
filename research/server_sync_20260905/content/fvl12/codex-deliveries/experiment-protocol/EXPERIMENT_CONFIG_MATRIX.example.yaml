@@ -1,0 +1,275 @@
+# Example schema for LIBERO / OpenVLA disturbance recovery experiments.
+# This file is not a claim that the current scripts can consume this schema directly.
+
+schema_version: 0.1
+example_only: true
+protocol_files:
+  - EXPERIMENT_PROTOCOL.md
+  - METRICS_AND_CLAIMS.md
+  - FAILURE_TAXONOMY.md
+  - PAPER_EVIDENCE_CHECKLIST.md
+
+run_identity:
+  project: libero_openvla_disturbance_recovery
+  study_phase: formal_minimum   # smoke | pilot | formal_minimum | extended
+  run_group: example_formal_spatial
+  operator: autonomous_cli
+  manual_intervention_allowed: false
+
+source_freeze:
+  source_root: /home/lijingsu/vla
+  git_commit: null              # required for formal runs if the source is a git repository
+  source_snapshot_sha256: null   # required when no git commit is available
+  diff_allowed: false
+  command_log_required: true
+
+environment_freeze:
+  hostname: null
+  python_version: null
+  libero_version_or_commit: null
+  robosuite_version: null
+  mujoco_version: null
+  openvla_version_or_commit: null
+  torch_version: null
+  transformers_version: null
+  cuda_version: null
+  driver_version: null
+  headless: true
+  gpu_required: true             # true for actual model rollout; this protocol-writing session must not use GPU
+
+checkpoints:
+  - checkpoint_id: base_openvla
+    family: openvla
+    path: /home/lijingsu/vla/models/openvla-7b
+    normalization_key: libero_spatial
+    role: base
+    checksum_or_manifest: null
+  - checkpoint_id: libero_spatial_finetuned
+    family: openvla
+    path: /home/lijingsu/vla/models/openvla-7b-finetuned-libero-spatial
+    normalization_key: libero_spatial
+    role: finetuned
+    checksum_or_manifest: null
+
+suite:
+  primary_suite: libero_spatial
+  task_selection:
+    mode: preregistered_subset
+    task_ids: [0, 1, 2, 3, 4]
+    require_task_description_log: true
+  initial_states:
+    mode: indexed
+    ids_per_task: [0, 1, 2, 3, 4]
+    require_state_index_log: true
+
+seeds:
+  policy_and_env_seeds: [7, 13, 23]
+  require_all_random_sources_logged: true
+
+budgets:
+  max_policy_steps_after_warmup: 220
+  warmup_env_steps: 10
+  count_warmup_in_policy_budget: false
+  count_warmup_in_total_env_steps: true
+  count_reset_warmup_in_total_env_steps: true
+  count_rollback_refresh_in_total_env_steps: true
+  require_total_env_steps: true
+
+modes:
+  - name: clean
+    class: baseline_control
+    disturbance_enabled: false
+    reset_privilege: false
+    rollback_privilege: false
+    oracle_information: false
+    extra_prompt_information: false
+  - name: reactive_disturbed
+    class: disturbed_baseline
+    disturbance_enabled: true
+    reset_privilege: false
+    rollback_privilege: false
+    oracle_information: false
+    extra_prompt_information: false
+  - name: verifier_stop
+    class: safety_stop_baseline
+    disturbance_enabled: true
+    reset_privilege: false
+    rollback_privilege: false
+    oracle_information: verifier_or_scripted_disturbance_event
+    extra_prompt_information: false
+    success_interpretation: stop_is_not_recovery
+  - name: structured_relocalize_prompt
+    class: current_world_prompt_intervention
+    disturbance_enabled: true
+    reset_privilege: false
+    rollback_privilege: false
+    oracle_information: affected_object_if_script_provided
+    extra_prompt_information: relocalize_current_position_prompt
+  - name: stage_backtrack_subgoal
+    class: current_world_prompt_intervention
+    disturbance_enabled: true
+    reset_privilege: false
+    rollback_privilege: false
+    oracle_information: affected_stage_if_script_provided
+    extra_prompt_information: stage_backtrack_subgoal_prompt
+  - name: full_reset_replan
+    class: reset_baseline
+    disturbance_enabled: true
+    reset_privilege: true
+    rollback_privilege: false
+    oracle_information: false
+    extra_prompt_information: false
+    success_interpretation: removes_post_disturbance_world
+  - name: oracle_rollback
+    class: ideal_upper_bound
+    disturbance_enabled: true
+    reset_privilege: false
+    rollback_privilege: true
+    oracle_information: pre_disturbance_simulator_state
+    extra_prompt_information: false
+    success_interpretation: ideal_upper_bound_only
+
+disturbance_matrix:
+  trigger:
+    type: policy_step
+    steps: [30, 60, 90, 120]
+    semantic_phase_labels:
+      enabled: false
+      allowed_values: [pre_contact, approach, grasp_contact, lift, transport, placement, post_placement, unknown]
+  magnitude:
+    coordinate_frame: simulator_world_xy
+    levels:
+      - name: small
+        delta: [0.05, 0.00, 0.00]
+      - name: medium
+        delta: [0.10, 0.05, 0.00]
+      - name: large
+        delta: [0.20, 0.10, 0.00]
+  direction:
+    levels:
+      - name: plus_x
+        unit_xy: [1.0, 0.0]
+      - name: minus_x
+        unit_xy: [-1.0, 0.0]
+      - name: plus_y
+        unit_xy: [0.0, 1.0]
+      - name: minus_y
+        unit_xy: [0.0, -1.0]
+  target_object:
+    selection_mode: explicit_or_audited_heuristic
+    require_joint_name: true
+    require_body_name_when_available: true
+    allow_distractor_negative_controls: true
+    formal_primary_target: task_relevant_object
+
+pairing:
+  strict_pair_key:
+    - checkpoint_id
+    - suite
+    - task_id
+    - initial_state_id
+    - seed
+    - disturbance_trigger
+    - disturbance_magnitude
+    - disturbance_direction
+    - target_object
+    - task_phase
+  missing_pair_policy: exclude_from_paired_statistics_and_report_count
+  clean_condition_required_for_degradation_claim: true
+  reactive_condition_required_for_recovery_gain: true
+
+logging:
+  output_root: /home/lijingsu/vla/formal_outputs/disturbance_recovery
+  immutable_timestamped_run_dir: true
+  required_files:
+    - run_manifest.json
+    - episodes.jsonl
+    - events.jsonl
+    - summary.json
+    - raw_videos/
+    - commands.log
+    - environment_manifest.json
+  required_episode_fields:
+    - episode_id
+    - pair_key
+    - condition_or_mode
+    - checkpoint_id
+    - suite
+    - task_id
+    - task_description
+    - initial_state_id
+    - seed
+    - target_joint
+    - disturbance
+    - success
+    - termination_reason
+    - num_policy_steps
+    - total_env_steps
+    - warmup_env_steps
+    - reset_cost_steps
+    - rollback_refresh_steps
+    - video_path
+    - manual_intervention
+
+inclusion_exclusion:
+  include_formal_only_if:
+    - headless_cli
+    - manual_intervention_false
+    - config_frozen
+    - success_semantics_audited
+    - video_and_json_present
+  exclude_from_autonomous_success_rate:
+    - manual_intervention
+    - simulator_infrastructure_error
+    - corrupted_or_missing_episode_record
+    - debug_or_dashboard_run
+  report_separately:
+    - timeout
+    - verifier_stop
+    - stale_observation
+    - reset_or_rollback_cost
+
+metrics:
+  primary:
+    - disturbed_success_rate
+    - clean_to_disturbed_degradation
+    - recovery_gain_over_reactive
+    - paired_outcome_transitions
+  auxiliary:
+    - post_disturbance_recovery_steps
+    - object_rediscovery_steps
+    - recontact_steps
+    - regrasp_steps
+    - total_policy_steps
+    - total_env_steps
+    - invalid_action_count
+    - timeout_rate
+    - stop_rate
+    - recovery_attempt_count
+  require_confidence_intervals: true
+  no_subjective_success_labels: true
+
+statistics:
+  primary_comparisons:
+    - clean_vs_reactive_disturbed
+    - reactive_disturbed_vs_structured_relocalize_prompt
+    - reactive_disturbed_vs_stage_backtrack_subgoal
+  paired_binary_test: mcnemar_or_exact_paired_binary
+  interval_method: bootstrap_or_binomial_ci
+  hierarchical_extension: task_and_initial_state_grouped_bootstrap
+  multiple_comparison_policy: primary_fixed_secondary_exploratory
+
+failure_taxonomy:
+  enabled: true
+  taxonomy_file: FAILURE_TAXONOMY.md
+  require_raw_video: true
+  allow_multiple_labels: true
+  primary_label_required_for_summary_plot: true
+
+paper_claim_guards:
+  oracle_rollback_label: ideal_upper_bound_only
+  full_reset_replan_label: reset_baseline_not_local_replanning
+  verifier_stop_label: safety_stop_not_recovery
+  preset_boolean_fields_are_measurements: false
+  prompt_rewrite_proves_symbolic_architecture: false
+  minimum_runs_for_generalization_claim: more_than_pilot_with_ci

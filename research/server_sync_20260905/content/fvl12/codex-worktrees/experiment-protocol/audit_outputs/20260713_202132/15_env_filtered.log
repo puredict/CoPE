@@ -1,0 +1,9 @@
+COMMAND: cd /home/lijingsu/vla && if [ -d .venv ]; then source .venv/bin/activate; fi; env | sort | sed -E '/TOKEN|SECRET|PASSWORD|API_KEY|ACCESS_KEY/d' > /home/lijingsu/vla/audit_outputs/20260713_202132/env.txt; wc -l /home/lijingsu/vla/audit_outputs/20260713_202132/env.txt
+START: 2026-07-13T20:26:08+08:00
+END: 2026-07-13T20:26:08+08:00
+EXIT: 0
+
+STDOUT:
+34 /home/lijingsu/vla/audit_outputs/20260713_202132/env.txt
+
+STDERR:

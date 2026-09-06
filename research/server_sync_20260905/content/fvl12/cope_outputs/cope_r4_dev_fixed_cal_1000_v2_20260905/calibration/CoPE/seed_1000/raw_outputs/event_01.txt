@@ -1,0 +1,1 @@
+{"schema_version":"cope-lineage-patch-v1","event_id":"seed-1000/e01","base_revision":0,"ops":[{"op":"suspend","slot_id":"order-critical/root"}]}

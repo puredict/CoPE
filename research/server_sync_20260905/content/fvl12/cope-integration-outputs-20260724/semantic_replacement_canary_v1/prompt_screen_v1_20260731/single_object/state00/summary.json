@@ -1,0 +1,21 @@
+{
+  "modes": [
+    "oracle_full"
+  ],
+  "physical_gpu": "0",
+  "results": [
+    {
+      "current_goal_success": false,
+      "event_reached": true,
+      "event_step": 135,
+      "mode": "oracle_full",
+      "policy_steps_consumed": 268,
+      "prompt_variant": "single_object",
+      "runtime_seconds": 142.558786874637,
+      "termination_reason": "original_task_terminal_before_current_goal",
+      "valid_progress_retained": true
+    }
+  ],
+  "schema_version": "semantic-replacement-canary-worker-summary-v1",
+  "state_id": 0
+}

@@ -1,0 +1,16 @@
+{
+  "gpu_after_load": {
+    "allocated_bytes": 15129554944,
+    "cuda_available": true,
+    "device": "cuda:0",
+    "name": "NVIDIA GeForce RTX 3090",
+    "peak_allocated_bytes": 15129554944,
+    "peak_reserved_bytes": 15172894720,
+    "reserved_bytes": 15172894720,
+    "total_bytes": 25438126080
+  },
+  "model_load_seconds": 16.899105449207127,
+  "processor_dynamic_load_error": "OSError: We couldn't connect to 'https://huggingface.co' to load this file, couldn't find it in the cached files and it looks like openvla/openvla-7b is not the path to a directory containing a file named processing_prismatic.py.\nCheckout your internet connection or see how to run the library in offline mode at 'https://huggingface.co/docs/transformers/installation#offline-mode'.",
+  "processor_loader": "local_upstream_prismatic_processor_v1",
+  "resolved_unnorm_key": "libero_10"
+}

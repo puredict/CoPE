@@ -1,0 +1,11 @@
+source,delta_sd_severe,false_accept,collide
+guard_delay,0.367,0.393,0.054
+object_obs_noise,0.28,0.285,0.009
+target_pred_error,0.178,0.183,0.004
+regrasp_failure_p,0.135,0.139,0.013
+release_drift,0.044,0.046,0.009
+action_noise,0.041,0.042,0.004
+detector_delay,0.009,0.002,0.015
+obstacle_pred_error,0.006,0.006,0.009
+translation_gain,0.004,0.004,0.004
+rotation_gain,0.0,0.0,0.004

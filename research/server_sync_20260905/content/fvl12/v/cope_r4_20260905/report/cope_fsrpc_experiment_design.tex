@@ -1,0 +1,477 @@
+\documentclass[11pt]{article}
+
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,bm}
+\usepackage{booktabs,longtable,tabularx,array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{microtype}
+\usepackage{listings}
+\usepackage{caption}
+
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\setlength{\headheight}{14pt}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{CoPE vs.\ FSR-PC: Experiment Design}
+\rhead{Internal Handoff v2}
+\cfoot{\thepage}
+
+\definecolor{codegray}{rgb}{0.95,0.95,0.95}
+\definecolor{warnbg}{rgb}{1.0,0.96,0.90}
+\lstset{backgroundcolor=\color{codegray},basicstyle=\ttfamily\footnotesize,
+  breaklines=true,frame=single,columns=fullflexible}
+
+\newcommand{\cope}{\textsc{CoPE}}
+\newcommand{\fsrpc}{\textsc{FSR-PC}}
+\newcommand{\noadapt}{\textsc{no-adaptation}}
+
+\title{\bfseries Persistent Local Constraint-State Patching versus
+Full-State Regeneration\\[4pt]
+\large Experiment design, fairness protocol, and CPU pilot results}
+\author{Internal technical report --- CPU phase}
+\date{2026--08--03}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We compare two designs for adapting a robot's task state when a user interrupts
+a long-horizon task: \cope{} (Constraint-state Patch Editing), which edits a
+persistent constraint state with minimal typed patches, and \fsrpc{}, an
+\emph{internally defined} strong baseline that regenerates the complete state at
+every interruption. The comparison is run on a purpose-built multi-object
+basket-sorting benchmark whose nominal reliability is gated at
+$\geq 8/10$ before any method is compared on it, so that adaptation failure is
+not confounded with execution failure. This report documents the method, the
+baseline's provenance, the benchmark, the fairness controls, the metrics, and
+the CPU pilot. Both arms enter one shared downstream stack --- the frozen
+online-repair engine --- so that only their state-update semantics differ; every
+interruption is shown to drive continuation capture, runtime operator synthesis,
+sequential rollout verification, hard rejection, graph splicing, restore
+validation and stage resumption. On the CPU pilot the two arms are \emph{tied on
+every behavioural outcome}; the measurable differences are in state
+representation, edit locality, and which audit questions the decision record can
+answer. No robotics claim is made: the development machine is CPU-only and no
+GPU software was installed, imported, or executed.
+\end{abstract}
+
+\tableofcontents
+
+\section{Scope, and what is deliberately not claimed}
+
+\begin{enumerate}[leftmargin=*]
+\item The earlier ReKep online-repair work is retained as an \textbf{integration
+case study only}. Its base task has a low nominal success floor and confounds
+execution failure with recovery failure, which makes it unsuitable as the
+primary benchmark for a question about task-state adaptation.
+\item The existing online repair core is \textbf{reused, not rewritten}. The
+\cope{} layer sits above it and an adapter maps between the two
+representations; nothing in the frozen engine was replaced or duplicated.
+\item \fsrpc{} is \textbf{not an established published algorithm}
+(Section~\ref{sec:fsrpc}). It must never be cited as prior art.
+\item All numbers in this report come from the \textbf{frozen 2D synthetic
+environment} on CPU. Rollout verification is therefore meaningful --- the
+verifier simulates candidates under the same kinematics and control limits the
+executor uses --- but this is still \textbf{not a robotics result}.
+\item \cope{} is \textbf{not claimed} to beat \fsrpc{} on final task success. On
+the pilot the two arms tie at $20/20$.
+\end{enumerate}
+
+\section{The \cope{} semantic layer}
+
+Terminology follows the collaborator's memo (Jingsu Li, \emph{CoPE / RCSP
+Comprehensive Technical Memo}, v0.3, 2026--04--26): \cope{} is
+\emph{Constraint-state Patch Editing} and RCSP is \emph{Reactive
+Constraint-State Patching}. No expansion used here is invented.
+
+\subsection{Slot schema}
+A constraint is a software-engineering object, not only a mathematical function:
+\[
+c_i = (\mathrm{id},\; \omega,\; \mathrm{mode},\; \mathrm{priority},\;
+\mathrm{source},\; \mathrm{validity},\; \mathrm{restore},\; \mathrm{lineage},\;
+\mathrm{history}),
+\]
+where the grounding $\omega$ is one field among nine.
+
+\subsection{Lifecycle: existence separated from participation}
+\begin{center}
+\begin{tabular}{@{}llll@{}}
+\toprule
+mode & exists & participates in planning & restorable\\
+\midrule
+\texttt{active} & yes & yes & ---\\
+\texttt{suspended} & yes & no & yes\\
+\texttt{overridden} & yes & no & yes\\
+\texttt{expired} & yes (auditable) & no & \textbf{never}\\
+\bottomrule
+\end{tabular}
+\end{center}
+\texttt{expired} is a soft delete: the record survives so that ``which goal was
+cancelled, and why?'' stays answerable. Slots are never removed.
+
+\subsection{Typed patch operators}
+The first-paper subset is
+$\{\textsf{Insert},\textsf{Suspend},\textsf{Override},\textsf{Inherit},
+\textsf{Expire},\textsf{Revalidate},\textsf{Restore}\}$. Two rules are pinned
+down by tests because violating them would still produce a passing benchmark
+number:
+\begin{enumerate}[leftmargin=*]
+\item \textsf{Revalidate} is a \emph{pure check}: it returns
+\textsf{OK}/\textsf{DEGRADED}/\textsf{FAIL} and never changes a mode.
+\item \textsf{Restore} is a \emph{commitment}: it is refused unless revalidation
+returns \textsf{OK}, refused outright for expired slots, and a \textsf{Restore}
+not preceded by a \textsf{Revalidate} is a validation violation rejected before
+any mutation.
+\end{enumerate}
+
+\subsection{Invariants}
+Checked before and after every patch: identity stability, lifecycle legality
+(\texttt{expired} terminal), no deletion, symmetric and acyclic override edges,
+per-slot history monotonicity, and guarded restoration. A patch failing
+pre-validation is not applied at all; the state is left untouched.
+
+\subsection{Two layers}
+\begin{center}
+\begin{tabular}{@{}p{0.44\textwidth}p{0.48\textwidth}@{}}
+\toprule
+\cope{} semantic layer (this work) & repair execution layer (frozen, reused)\\
+\midrule
+persistent state $S_t$, relation graph $G_t$, history $H_t$, typed patch
+operators &
+continuation capture $\to$ operator synthesis $\to$ legality $\to$ sequential
+rollout verification $\to$ splice $\to$ restore $\to$ resume\\
+\bottomrule
+\end{tabular}
+\end{center}
+The adapter maps \texttt{ConstraintSlot(mode=SUSPENDED)} to a stage suspension,
+a \texttt{Patch} to a repair goal, and a slot's restore predicate plus lineage
+to a continuation. The repair engine remains the sole owner of execution,
+verification, and splicing.
+
+\section{\fsrpc{}: provenance and specification}
+\label{sec:fsrpc}
+
+\fcolorbox{black}{warnbg}{\parbox{0.97\textwidth}{%
+\textbf{\fsrpc{} is an internally defined baseline.} The acronym does not appear
+in the collaborator's memo or in any other supplied material; a repository-wide
+search returned zero matches before this work began. The expansion used
+throughout, \emph{Full-State Regeneration with Progress/Context}, comes only
+from the project brief that commissioned the baseline. Describe it as ``our
+internally defined strong baseline''. Do not attach a citation. Do not imply
+prior art.}}
+
+\medskip
+At each interruption,
+\[
+\text{\cope{}: } S_{t+1} = \mathrm{apply}(P_t, S_t),\quad P_t = [\mathrm{op}_1
+\ldots \mathrm{op}_k],\ k \text{ small};\qquad
+\text{\fsrpc{}: } S_{t+1} = \mathrm{regenerate}(\mathrm{context}_t).
+\]
+
+\paragraph{Why it is strong, not a straw man.}
+\fsrpc{} receives byte-identical input to \cope{} at every interruption --- a
+claim asserted by a test over all four conditions and three seeds, not by prose.
+The shared packet carries the full world and robot state, completed goals,
+pending and cancelled goals, the natural-language user request, all safety
+constraints, the complete task and event histories, perception, and the same
+compute budget and horizon. The implementation honours completed goals rather
+than re-planning them, carries prior lifecycle modes forward, collapses its own
+re-minted slots onto the canonical task vocabulary so repeated regenerations do
+not multiply records, and has access to the same naming helper \cope{} uses.
+It is explicitly \emph{not} made forgetful.
+
+\paragraph{The single intended difference.}
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+ & \cope{} & \fsrpc{}\\
+\midrule
+adaptation output & typed patch over existing slots & complete new state\\
+slot identity & carried & re-minted\\
+per-slot edit history & continued & not inherently continued\\
+lineage / override edges & explicit & not represented\\
+edit footprint & touched subset & whole state\\
+reason attached to a change & per operation & none\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Benchmark: multi-object basket sorting}
+
+Three objects (milk, yogurt, butter) and three baskets. Nominal assignment:
+milk$\to$A, yogurt$\to$A, butter$\to$B. \texttt{basket\_C} exists as a spare
+destination so that a \emph{repeated} redirection can end somewhere other than
+the nominal target; without it, condition I3 would be a no-op for final
+placement and the control arm would pass it for free. Two hard safety
+constraints are always present. Execution follows a fixed scripted order carried
+in the shared slot payload.
+
+\paragraph{Reliability gate (Stage A): a precondition, not a result.}
+Nominal task success must reach $\geq 8/10$ over ten seeds ($\geq 9/10$
+preferred), measured with the \noadapt{} arm on the uninterrupted task so that
+the number describes the task and the executor rather than any method.
+\textbf{If the gate fails, the task is changed or simplified; the methods are
+not tuned.} The CPU result is $10/10$, and the gate is verified non-vacuous: a
+degraded executor ($p=0.5$) fails it.
+
+\paragraph{Interruption conditions.}
+\begin{description}[leftmargin=1.4em,style=nextline]
+\item[I1 --- cancellation + redirection] after milk: cancel yogurt, redirect
+butter B$\to$A.
+\item[I2 --- temporary unavailability] before any goal: basket B disappears, so
+the butter goal must be set aside and later brought back.
+\item[I3 --- repeated interruption] the same goal is redirected twice
+(B$\to$A, then A$\to$C), plus a new safety constraint. Both updates land before
+butter is attempted, so the condition measures state survival rather than
+reaction latency.
+\item[I4 --- changed-world restoration] as I2, but basket B is \emph{moved}
+while unavailable, so restoring the suspended goal requires revalidating its
+grounding rather than restoring blindly.
+\end{description}
+
+\section{Integration with the frozen repair engine}
+
+An internal audit of the v1 package found that the CoPE semantic layer was
+implemented but the online-repair execution core was neither delivered nor
+exercised: v1 tested \emph{event $\to$ patch/regeneration $\to$ active-slot
+compilation $\to$ mock executor}. Every finding was verified and correct. This
+version integrates the engine.
+
+\paragraph{What runs now.}
+\[
+\begin{aligned}
+C_t &= (S_t, G_t, H_t), &
+P_t &= \epsilon(e_t, C_t, x_t), &
+C_t^{+} &= \mathrm{Apply}(C_t, P_t),\\
+\kappa_t &= \mathrm{Capture}(\mathrm{TP}, \text{stage}, x_t), &
+\Omega_t &= \mathrm{Generate}(C_t^{+}, x_t, \kappa_t), &
+\Delta_t^{*} &= \arg\min_{\Delta} J(\Delta),
+\end{aligned}
+\]
+subject to \textsc{Legal}, \textsc{RolloutFeasible} and \textsc{RestoreValid},
+followed by $\mathrm{TP}^{+} = \mathrm{Splice}(\mathrm{TP}, \Delta_t^{*},
+\kappa_t)$ and Execute $\to$ Revalidate $\to$ Restore $\to$ Resume.
+
+Everything from $\mathrm{Capture}$ onwards is the frozen engine, imported and
+called: \texttt{TaskProgram}, \texttt{Continuation}, \texttt{RepairPlanner},
+\texttt{SynthesisGenerator}, the legality and feasibility filters,
+\texttt{RolloutVerifier}, \texttt{Scorer}, the splice, the restore gate, the
+controllers and guards, and \texttt{Synthetic2DEnv}. The repair core is
+byte-identical to the pre-pivot commit.
+
+\paragraph{The bridge.}
+The genuinely new component is a \emph{constraint-state to repair-goal
+compiler}. It reads the state \emph{diff} --- never the policy --- and maps each
+lifecycle transition onto the engine's own goal vocabulary: a re-grounded slot
+demands \texttt{aligned\_to\_current\_target}; a suspended, cancelled or
+restored slot demands \texttt{restore\_valid}; an inserted hard safety slot
+demands \texttt{safe\_clearance}. Every requirement carries the slot and
+transition that induced it, so the trace answers \emph{why} the robot had to act,
+not only \emph{what} it did.
+
+\paragraph{Verification is no longer vacuous.}
+Against a symbolic mock, a rollout verifier has nothing to predict. Executing
+legs through the frozen environment gives it the same kinematics and control
+limits the executor uses, so a candidate that would collide, time out or fail to
+restore is genuinely rejected before execution. Two modelling errors were caught
+this way and corrected: a suspended goal was wrongly required to clear an
+obstruction, and an unavailable basket was wrongly modelled as a permanent
+obstacle. In both cases the verifier rejected every candidate --- correct
+behaviour applied to an incorrectly stated problem.
+
+\paragraph{Evidence.} Over the 60-episode pilot: 105 repair invocations, 165
+candidate programs synthesised at runtime, 165 sequentially rollout-verified,
+105 graph splices, 105 restore validations, 105 stage resumptions, 0
+safe-fallbacks, and 0 primary-arm episodes with an incomplete pipeline. A gate
+script prints the ten-marker sequence per interruption and exits non-zero if any
+is incomplete.
+
+\paragraph{Both arms share the stack.} A single
+\texttt{enter\_repair\_pipeline} entry point is called by both policies with the
+identical signature. Measured across conditions and seeds, the arms receive
+identical adaptation inputs \emph{and} compile to identical repair goals, and
+every paired bootstrap interval on downstream work (repairs, candidates,
+rollouts, splices, restores, resumes) is exactly $[0,0]$.
+
+\section{Fairness protocol}
+
+Every control is implemented in one place --- the shared episode runner --- so
+it cannot drift between arms, and each is asserted by a test.
+
+\begin{description}[leftmargin=1.4em,style=nextline]
+\item[F1 same task] the pairing key $(\text{task},\text{condition},\text{seed})$
+deliberately excludes the method; the initial state is built before any policy
+object exists.
+\item[F2 same information] each arm receives one adaptation input built from
+method-independent facts; the serialized packet is fingerprinted, and the
+fingerprints are byte-identical at every event for all conditions and seeds.
+\item[F3 same executor] both arms emit the same compiled request structure from
+the same state store; the executor object and its random stream are shared, and
+the stream is keyed on the \emph{physical action} so the arms get common random
+numbers. The compiled request contains no method marker.
+\item[F4 same budget, horizon, grader, metric code] the grader depends only on
+the condition and never inspects what a policy did.
+\item[F5 no cross-contamination] episodes are independent; store, trace, and
+executor are fresh per episode.
+\item[F6 one shared repair engine] a single \texttt{SharedRepairEngine} instance
+serves whichever policy is running, so the arms cannot diverge downstream even
+by accident.
+\end{description}
+
+\paragraph{One legitimate divergence, stated explicitly.}
+The \noadapt{} control can see a different \emph{second} packet under I2/I4,
+because it really did something different first: it burned an action on an
+unavailable target. Its \emph{first} packet is identical to the others, which is
+the information test. For the comparison the paper makes --- \cope{} vs
+\fsrpc{} --- packets are identical at every event.
+
+\paragraph{Statistics.}
+Exact McNemar on discordant pairs with Wilson 95\% intervals for binary
+outcomes; paired bootstrap (10\,000 resamples, seed 0) for continuous outcomes;
+Holm--Bonferroni across the binary family. The statistics module is reused
+unchanged from the frozen CPU work.
+
+\section{Metrics}
+
+Five families, all computed by one function from the shared store, trace, and
+executor log: final behaviour; progress and continuity; state representation;
+editing versus regeneration; and audit. \texttt{None} always means \emph{not
+applicable to this episode}, never \emph{failed}.
+
+\paragraph{Audit, and why it is not circular.}
+The record must answer: Q1 which goal was cancelled; Q2 which completed goal was
+preserved; Q3 why was a constraint suspended; Q4 what condition allowed
+restoration; Q5 which state replaced the old target. A trace made only of
+\cope{} operations would answer all five by construction and score \fsrpc{} at
+zero for circular reasons. Every query therefore has \emph{two} evidence paths:
+typed patch operations, \emph{and} diffing consecutive regenerated snapshots.
+Q1 and Q2 are recoverable from a state snapshot, and \fsrpc{} answers them.
+Q3--Q5 ask for a reason, a restoration condition, and a replacement identity ---
+none of which a complete snapshot carries. That asymmetry is the finding.
+Queries a condition does not pose score \texttt{None}, never \texttt{False}.
+
+\section{CPU pilot results}
+
+Stage A: $10/10 \to$ PASS. Stage B: 60 episodes (5 paired seeds $\times$ 4
+conditions $\times$ 3 arms).
+
+\begin{table}[h]
+\centering
+\caption{Binary outcomes, exact McNemar on 20 paired episodes per arm.}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+metric & \cope{} & \fsrpc{} & $p$\\
+\midrule
+revised task success & 20/20 & 20/20 & 1.000\\
+completed progress preserved & 20/20 & 20/20 & 1.000\\
+remaining goal correct & 20/20 & 20/20 & 1.000\\
+\textbf{identity preserved} & \textbf{20/20} & \textbf{0/20} & $1.9\times10^{-6}$\\
+lifecycle transitions legal & 20/20 & 20/20 & 1.000\\
+lineage correct & 20/20 & 20/20 & 1.000\\
+history monotonic & 20/20 & 20/20 & 1.000\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Continuous outcomes, paired bootstrap 95\% CI on
+$\text{\cope{}}-\text{\fsrpc{}}$.}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+metric & \cope{} & \fsrpc{} & 95\% CI & excludes 0\\
+\midrule
+normalized edit distance & 0.457 & 1.000 & $[-0.611,-0.472]$ & yes\\
+slots touched per event & 2.75 & 5.13 & $[-2.850,-1.875]$ & yes\\
+\textbf{audit coverage} & \textbf{1.000} & \textbf{0.458} & $[+0.483,+0.600]$ & yes\\
+completion steps & 44.5 & 44.5 & $[0,0]$ & no\\
+invalid actions & 0.000 & 0.000 & $[0,0]$ & no\\
+repairs / candidates / splices / resumes & \multicolumn{2}{c}{identical} & $[0,0]$ & no\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Per-condition final success on the physical stack. Every interruption
+condition now punishes not adapting.}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+condition & \cope{} & \fsrpc{} & \noadapt{}\\
+\midrule
+I1 & 5/5 & 5/5 & \textbf{0/5}\\
+I2 & 5/5 & 5/5 & \textbf{0/5}\\
+I3 & 5/5 & 5/5 & \textbf{0/5}\\
+I4 & 5/5 & 5/5 & \textbf{0/5}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Stage C ablation: mechanism, not rhetoric.}
+\begin{center}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+arm & success & identity preserved & mean edit distance & mean audit coverage\\
+\midrule
+\cope{} & 20/20 & 20/20 & 0.507 & 1.000\\
+\fsrpc{} & 20/20 & 0/20 & 1.000 & 0.458\\
+\fsrpc{}(preserve ids) & 20/20 & \textbf{20/20} & 1.000 & 0.458\\
+\bottomrule
+\end{tabular}
+\end{center}
+Re-using identifiers recovers the identity metric and changes nothing else. The
+locality and audit differences therefore come from local typed editing, not from
+identifier hygiene.
+
+\section{Honest interpretation}
+
+\paragraph{Supported.}
+The arms tie on every behavioural outcome. The measurable differences are
+structural: identity survival, edit locality, and which audit questions the
+record can answer. The audit gap is the substantive one, and the two-evidence-path
+scoring is what makes it non-circular.
+
+\paragraph{Not supported.}
+A normalized edit distance of $1.000$ for \fsrpc{} is true \emph{by definition}
+of full regeneration; it describes the two designs and must not be presented as
+an experimental finding. No physical, robotics, or wall-clock-cost claim
+follows from a CPU mock. Neither arm uses a language model, so no token or
+prompt-cost claim is made. With 20 paired episodes per arm, the behavioural ties
+mean \emph{no evidence of a difference}, not \emph{evidence of no difference}.
+
+\paragraph{What would change the conclusion.}
+The mock executor never punishes a slightly-wrong-but-recoverable state. On the
+GPU host, the arms may separate under longer horizons where regenerated state
+drifts across many interruptions; under more than two interruptions, where
+re-minted identity obscures what has already been attempted; or where the
+executor cannot cheaply retry, so a duplicated or stale goal becomes
+unrecoverable. If none of these separate the arms, the honest paper claim is
+about representation, auditability, and edit locality --- not task success ---
+and the results section should say exactly that.
+
+\section{Status and next steps}
+
+Local validation complete: 229 tests pass (94 pre-existing, unchanged; 135 new),
+Stage A/B/C pilots run, five side-by-side dry-run traces produced, this report
+compiles, and checksums are recorded. Nothing GPU-related has been executed;
+every GPU command in the runbook is marked \textsc{remote gpu server only} and
+is untested by construction.
+
+The single integration point for the GPU host is the executor class. Both
+policies already emit the same compiled request; no policy code changes.
+
+\section*{Authorship and attribution}
+
+The abstract idea of online constraint-program repair, and the CoPE/RCSP
+constraint-state formulation with its slot schema, lifecycle modes, and typed
+patch operators, originate with the collaborator (Jingsu Li, memo v0.3,
+2026--04--26). The work documented here is the experimental realisation: the
+adapter onto the existing repair engine, the internally defined \fsrpc{}
+baseline, the benchmark, the fairness protocol, the metrics, and the CPU pilot.
+Author order and final framing are not settled here and should not be inferred
+from this document.
+
+\end{document}

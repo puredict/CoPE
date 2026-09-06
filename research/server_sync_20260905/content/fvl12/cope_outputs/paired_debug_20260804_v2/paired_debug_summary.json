@@ -1,0 +1,155 @@
+{
+  "completed": true,
+  "episodes": [
+    {
+      "episode_id": "basket_sorting|I1|0|CoPE",
+      "condition": "I1",
+      "method": "CoPE",
+      "seed": 0,
+      "initial_state_hash": "d5c396120ad33e2cccfe3484ae8a9df5724ffa8575d481a2421d638d4e4ffa75",
+      "event_steps": [
+        348
+      ],
+      "success": true,
+      "valid": 1,
+      "pipelines_complete": 1,
+      "repairs_invoked": 1,
+      "candidate_isolation_valid": true,
+      "no_task_object_attached": true,
+      "stability_gate_passed": true,
+      "episode_dir": "/home/lijingsu/cope_outputs/paired_debug_20260804_v2/CoPE/I1/seed_00"
+    },
+    {
+      "episode_id": "basket_sorting|I1|0|FSR-PC",
+      "condition": "I1",
+      "method": "FSR-PC",
+      "seed": 0,
+      "initial_state_hash": "d5c396120ad33e2cccfe3484ae8a9df5724ffa8575d481a2421d638d4e4ffa75",
+      "event_steps": [
+        348
+      ],
+      "success": true,
+      "valid": 1,
+      "pipelines_complete": 1,
+      "repairs_invoked": 1,
+      "candidate_isolation_valid": true,
+      "no_task_object_attached": true,
+      "stability_gate_passed": true,
+      "episode_dir": "/home/lijingsu/cope_outputs/paired_debug_20260804_v2/FSR-PC/I1/seed_00"
+    },
+    {
+      "episode_id": "basket_sorting|I2|0|CoPE",
+      "condition": "I2",
+      "method": "CoPE",
+      "seed": 0,
+      "initial_state_hash": "d5c396120ad33e2cccfe3484ae8a9df5724ffa8575d481a2421d638d4e4ffa75",
+      "event_steps": [
+        118,
+        570
+      ],
+      "success": true,
+      "valid": 1,
+      "pipelines_complete": 2,
+      "repairs_invoked": 2,
+      "candidate_isolation_valid": true,
+      "no_task_object_attached": true,
+      "stability_gate_passed": true,
+      "episode_dir": "/home/lijingsu/cope_outputs/paired_debug_20260804_v2/CoPE/I2/seed_00"
+    },
+    {
+      "episode_id": "basket_sorting|I2|0|FSR-PC",
+      "condition": "I2",
+      "method": "FSR-PC",
+      "seed": 0,
+      "initial_state_hash": "d5c396120ad33e2cccfe3484ae8a9df5724ffa8575d481a2421d638d4e4ffa75",
+      "event_steps": [
+        118,
+        570
+      ],
+      "success": true,
+      "valid": 1,
+      "pipelines_complete": 2,
+      "repairs_invoked": 2,
+      "candidate_isolation_valid": true,
+      "no_task_object_attached": true,
+      "stability_gate_passed": true,
+      "episode_dir": "/home/lijingsu/cope_outputs/paired_debug_20260804_v2/FSR-PC/I2/seed_00"
+    },
+    {
+      "episode_id": "basket_sorting|I3|0|CoPE",
+      "condition": "I3",
+      "method": "CoPE",
+      "seed": 0,
+      "initial_state_hash": "d5c396120ad33e2cccfe3484ae8a9df5724ffa8575d481a2421d638d4e4ffa75",
+      "event_steps": [
+        348,
+        578
+      ],
+      "success": true,
+      "valid": 1,
+      "pipelines_complete": 2,
+      "repairs_invoked": 2,
+      "candidate_isolation_valid": true,
+      "no_task_object_attached": true,
+      "stability_gate_passed": true,
+      "episode_dir": "/home/lijingsu/cope_outputs/paired_debug_20260804_v2/CoPE/I3/seed_00"
+    },
+    {
+      "episode_id": "basket_sorting|I3|0|FSR-PC",
+      "condition": "I3",
+      "method": "FSR-PC",
+      "seed": 0,
+      "initial_state_hash": "d5c396120ad33e2cccfe3484ae8a9df5724ffa8575d481a2421d638d4e4ffa75",
+      "event_steps": [
+        348,
+        578
+      ],
+      "success": true,
+      "valid": 1,
+      "pipelines_complete": 2,
+      "repairs_invoked": 2,
+      "candidate_isolation_valid": true,
+      "no_task_object_attached": true,
+      "stability_gate_passed": true,
+      "episode_dir": "/home/lijingsu/cope_outputs/paired_debug_20260804_v2/FSR-PC/I3/seed_00"
+    },
+    {
+      "episode_id": "basket_sorting|I4|0|CoPE",
+      "condition": "I4",
+      "method": "CoPE",
+      "seed": 0,
+      "initial_state_hash": "d5c396120ad33e2cccfe3484ae8a9df5724ffa8575d481a2421d638d4e4ffa75",
+      "event_steps": [
+        118,
+        570
+      ],
+      "success": true,
+      "valid": 1,
+      "pipelines_complete": 2,
+      "repairs_invoked": 2,
+      "candidate_isolation_valid": true,
+      "no_task_object_attached": true,
+      "stability_gate_passed": true,
+      "episode_dir": "/home/lijingsu/cope_outputs/paired_debug_20260804_v2/CoPE/I4/seed_00"
+    },
+    {
+      "episode_id": "basket_sorting|I4|0|FSR-PC",
+      "condition": "I4",
+      "method": "FSR-PC",
+      "seed": 0,
+      "initial_state_hash": "d5c396120ad33e2cccfe3484ae8a9df5724ffa8575d481a2421d638d4e4ffa75",
+      "event_steps": [
+        118,
+        570
+      ],
+      "success": true,
+      "valid": 1,
+      "pipelines_complete": 2,
+      "repairs_invoked": 2,
+      "candidate_isolation_valid": true,
+      "no_task_object_attached": true,
+      "stability_gate_passed": true,
+      "episode_dir": "/home/lijingsu/cope_outputs/paired_debug_20260804_v2/FSR-PC/I4/seed_00"
+    }
+  ]
+}

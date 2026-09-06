@@ -1,0 +1,15 @@
+schema_version=structure-mutation-falsifier-status-v1
+clean_pass=12/12
+retained_mutations=2352
+candidate_changed=2352/2352
+exact_rejected=2352/2352
+decomposed_rejected=2338/2352
+order_only_divergence=14/2352
+dangerous_blind_spot=0/2352
+decomposed_crash=0/2352
+caller_state_mutation=0/2352
+decision=PASS
+evidence_class=offline_structure_agnostic_single_mutation
+learned_provider_calls=0
+gpu_llm_robot_simulator_used=false
+reserved_states_27_49_read=false

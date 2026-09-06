@@ -1,0 +1,1594 @@
+{
+  "atomic_claim_count": 15,
+  "calibration_excluded_from_evaluation": true,
+  "complete": true,
+  "cope_or_disturbance_started": false,
+  "episode_count": 15,
+  "errors": [],
+  "expected_episode_count": 15,
+  "formal_experiment_started": false,
+  "hard_stop": true,
+  "hard_stop_reason": "at_least_one_task_reached_3_of_5_wait_for_explicit_approval",
+  "infrastructure_attempt_count": 0,
+  "infrastructure_attempts": [],
+  "minimum_clean_success_rate": 0.6,
+  "next_experiment_authorized": false,
+  "parity_gates": {
+    "action_valid": true,
+    "adapter_state_is_8d": true,
+    "bddl_identity_exact": true,
+    "camera_is_agentview": true,
+    "camera_orientation_and_resize_exact": true,
+    "center_crop_exact": true,
+    "gripper_official_normalize_and_invert": true,
+    "initial_state_exact": true,
+    "model_proprio_not_consumed": true,
+    "no_shared_inference_port": true,
+    "official_adapter_frame_hash_exact": true,
+    "one_visible_gpu": true,
+    "processor_prompt_exact": true,
+    "processor_tensor_hashes_exact": true,
+    "real_inference_and_env_step": true,
+    "runtime_description_exact": true,
+    "task_name_exact": true,
+    "unnorm_key_exact": true
+  },
+  "parity_report": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_v2/parity_report.json",
+  "passed": true,
+  "pilot_authorized_by_calibration": true,
+  "protocol_label": "standard_libero10_clean_calibration_horizon_520",
+  "runtime_task_identity": {
+    "package_version": "0.1.0",
+    "source_commit": "570d78333ee977c8ae6de3d97120b23272c4c660",
+    "suite_class": "libero.libero.benchmark.LIBERO_10",
+    "suite_task_count": 10,
+    "task_identity": {
+      "1": {
+        "bddl_bytes": 3267,
+        "bddl_file": "LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket.bddl",
+        "bddl_path": "/home/lijingsu/vla/src/LIBERO/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket.bddl",
+        "bddl_sha256": "3f552805c7ab34c44debcf38a48b8131d6fee3011dd86c039650b84e0f77d058",
+        "description": "put both the cream cheese box and the butter in the basket",
+        "fixtures": {
+          "living_room_table": [
+            "living_room_table"
+          ]
+        },
+        "goal_state": [
+          [
+            "in",
+            "cream_cheese_1",
+            "basket_1_contain_region"
+          ],
+          [
+            "in",
+            "butter_1",
+            "basket_1_contain_region"
+          ]
+        ],
+        "init_states_file": "LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket.pruned_init",
+        "init_states_file_sha256": "f8ac06ea8f43bb328d40cba1e6a9767da2f8f5386fd7ff3f845c64a96bf6d2ce",
+        "init_states_path": "/home/lijingsu/vla/src/LIBERO/libero/libero/init_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket.pruned_init",
+        "initial_state_array_shape": [
+          50,
+          123
+        ],
+        "obj_of_interest": [
+          "cream_cheese_1",
+          "butter_1",
+          "basket_1"
+        ],
+        "objects": {
+          "alphabet_soup": [
+            "alphabet_soup_1"
+          ],
+          "basket": [
+            "basket_1"
+          ],
+          "butter": [
+            "butter_1"
+          ],
+          "cream_cheese": [
+            "cream_cheese_1"
+          ],
+          "ketchup": [
+            "ketchup_1"
+          ],
+          "milk": [
+            "milk_1"
+          ],
+          "orange_juice": [
+            "orange_juice_1"
+          ],
+          "tomato_sauce": [
+            "tomato_sauce_1"
+          ]
+        },
+        "problem": "Libero",
+        "problem_folder": "libero_10",
+        "state_sha256": {
+          "0": "5abdf8f466f490901dee9f931b32eb181b2928eaa17bb6379742f988581d564a",
+          "1": "cd3e7f86ef217ee7b7d26cc505b3f56ea8f49664ef10f6749270dfcd39dd17a6",
+          "2": "ab6bf2ca98e96f1692d8ec7a5b7ec25eee1ea61c57d45c2816ac3dcc938ea3ee",
+          "3": "3e0d23df2cf22ae6e897e15a1739d5bf25474b4e33196644890b8485f0e880f5",
+          "4": "d2cecde6c34039556fadf729cf7eb15d628b42094f6f0c092d9969c9cf659856"
+        },
+        "task_name": "LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket"
+      },
+      "5": {
+        "bddl_bytes": 2055,
+        "bddl_file": "STUDY_SCENE1_pick_up_the_book_and_place_it_in_the_back_compartment_of_the_caddy.bddl",
+        "bddl_path": "/home/lijingsu/vla/src/LIBERO/libero/libero/bddl_files/libero_10/STUDY_SCENE1_pick_up_the_book_and_place_it_in_the_back_compartment_of_the_caddy.bddl",
+        "bddl_sha256": "07ca32c940d70c065e870452ef9c63e6dfa1d8506e6a86cf9b3763f652ba2d9f",
+        "description": "pick up the book and place it in the back compartment of the caddy",
+        "fixtures": {
+          "desk_caddy": [
+            "desk_caddy_1"
+          ],
+          "study_table": [
+            "study_table"
+          ]
+        },
+        "goal_state": [
+          [
+            "in",
+            "black_book_1",
+            "desk_caddy_1_back_contain_region"
+          ]
+        ],
+        "init_states_file": "STUDY_SCENE1_pick_up_the_book_and_place_it_in_the_back_compartment_of_the_caddy.pruned_init",
+        "init_states_file_sha256": "6cd3937ba18d64e72223222af36888d26ea201840415adbc4dae590454d0a5a8",
+        "init_states_path": "/home/lijingsu/vla/src/LIBERO/libero/libero/init_files/libero_10/STUDY_SCENE1_pick_up_the_book_and_place_it_in_the_back_compartment_of_the_caddy.pruned_init",
+        "initial_state_array_shape": [
+          50,
+          45
+        ],
+        "obj_of_interest": [
+          "black_book_1",
+          "desk_caddy_1"
+        ],
+        "objects": {
+          "black_book": [
+            "black_book_1"
+          ],
+          "white_yellow_mug": [
+            "white_yellow_mug_1"
+          ]
+        },
+        "problem": "Libero",
+        "problem_folder": "libero_10",
+        "state_sha256": {
+          "0": "407c3d5eb11fd5b33bd2a6dea73a37415a99d7e72f0cc291074de29b1c63c37c",
+          "1": "fbf82707bd0a7721f0e118ac32aad30182e487e7a940bec7128ad6f18457e139",
+          "2": "83ff554be370e25fb3b049d5c3db3f2cf4f20524a0eab8beeda093c6a81bad66",
+          "3": "72e9938805b4da92baeb254ab7611081832edbb30e3f07c8136e1ea8a00fa235",
+          "4": "825a43323d564777617871b44f4c0f871a263f5aac13b1d04f204cc4957134e8"
+        },
+        "task_name": "STUDY_SCENE1_pick_up_the_book_and_place_it_in_the_back_compartment_of_the_caddy"
+      },
+      "7": {
+        "bddl_bytes": 2295,
+        "bddl_file": "LIVING_ROOM_SCENE1_put_both_the_alphabet_soup_and_the_cream_cheese_box_in_the_basket.bddl",
+        "bddl_path": "/home/lijingsu/vla/src/LIBERO/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE1_put_both_the_alphabet_soup_and_the_cream_cheese_box_in_the_basket.bddl",
+        "bddl_sha256": "e27ab37f512fe42e35771d6130f531e6a9656929e7b4c60b348b81360cf5675d",
+        "description": "put both the alphabet soup and the cream cheese box in the basket",
+        "fixtures": {
+          "living_room_table": [
+            "living_room_table"
+          ]
+        },
+        "goal_state": [
+          [
+            "in",
+            "alphabet_soup_1",
+            "basket_1_contain_region"
+          ],
+          [
+            "in",
+            "cream_cheese_1",
+            "basket_1_contain_region"
+          ]
+        ],
+        "init_states_file": "LIVING_ROOM_SCENE1_put_both_the_alphabet_soup_and_the_cream_cheese_box_in_the_basket.pruned_init",
+        "init_states_file_sha256": "2113ea5923fcbbe1b57b428383934496072f062729d0b72d3021573d55d25abc",
+        "init_states_path": "/home/lijingsu/vla/src/LIBERO/libero/libero/init_files/libero_10/LIVING_ROOM_SCENE1_put_both_the_alphabet_soup_and_the_cream_cheese_box_in_the_basket.pruned_init",
+        "initial_state_array_shape": [
+          50,
+          84
+        ],
+        "obj_of_interest": [
+          "alphabet_soup_1",
+          "cream_cheese_1",
+          "basket_1"
+        ],
+        "objects": {
+          "alphabet_soup": [
+            "alphabet_soup_1"
+          ],
+          "basket": [
+            "basket_1"
+          ],
+          "cream_cheese": [
+            "cream_cheese_1"
+          ],
+          "ketchup": [
+            "ketchup_1"
+          ],
+          "tomato_sauce": [
+            "tomato_sauce_1"
+          ]
+        },
+        "problem": "Libero",
+        "problem_folder": "libero_10",
+        "state_sha256": {
+          "0": "d02d4d5533fbcab414bfc49e4896182cd40e173dfa6316e39a2b418e902ae826",
+          "1": "44f0d75550c414e622b03a43e56497e8c9bd0fe4a494c1d2b9c0c9625ed80120",
+          "2": "9e8c129dc9a5047a34f8772063534c9948acdba167fee37ece92b48f33ea4b34",
+          "3": "2f4104e7e2996340ed513d08c011e119ca975165933374a1d1d67e78bea6abee",
+          "4": "8a0c2af93cde820ada3c3849d6b732233a61c05a82d655ef26fda87a7d85e708"
+        },
+        "task_name": "LIVING_ROOM_SCENE1_put_both_the_alphabet_soup_and_the_cream_cheese_box_in_the_basket"
+      }
+    }
+  },
+  "schema_version": "openvla-libero-calibration-v2-summary-v1",
+  "selected_task_ids": [
+    1,
+    5
+  ],
+  "tasks": {
+    "1": {
+      "failure_policy_steps": [],
+      "n": 5,
+      "success_policy_steps": [
+        250,
+        273,
+        323,
+        276,
+        242
+      ],
+      "success_rate": 1.0,
+      "successes": 5,
+      "termination_breakdown": {
+        "libero_done": 5
+      },
+      "wilson_95_ci": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    "5": {
+      "failure_policy_steps": [
+        520
+      ],
+      "n": 5,
+      "success_policy_steps": [
+        418,
+        482,
+        228,
+        166
+      ],
+      "success_rate": 0.8,
+      "successes": 4,
+      "termination_breakdown": {
+        "libero_done": 4,
+        "policy_step_budget_exhausted": 1
+      },
+      "wilson_95_ci": [
+        0.37553462976252533,
+        0.9637758913675698
+      ]
+    },
+    "7": {
+      "failure_policy_steps": [
+        520,
+        520,
+        520
+      ],
+      "n": 5,
+      "success_policy_steps": [
+        286,
+        287
+      ],
+      "success_rate": 0.4,
+      "successes": 2,
+      "termination_breakdown": {
+        "libero_done": 2,
+        "policy_step_budget_exhausted": 3
+      },
+      "wilson_95_ci": [
+        0.11762077423264783,
+        0.769275718723987
+      ]
+    }
+  },
+  "terminal_audit": {
+    "duplicate_episode_ids": [],
+    "errors": [],
+    "expected_count": 15,
+    "missing_episode_ids": [],
+    "passed": true,
+    "terminal_count": 15,
+    "unexpected_episode_ids": []
+  },
+  "terminal_paths": {
+    "calibration_v2__task01__state00__seed20270724": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_v2/workers/gpu0/episodes/calibration_v2__task01__state00__seed20270724/episode.json",
+    "calibration_v2__task01__state01__seed20270725": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_v2/workers/gpu1/episodes/calibration_v2__task01__state01__seed20270725/episode.json",
+    "calibration_v2__task01__state02__seed20270726": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_v2/workers/gpu2/episodes/calibration_v2__task01__state02__seed20270726/episode.json",
+    "calibration_v2__task01__state03__seed20270727": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_v2/workers/gpu3/episodes/calibration_v2__task01__state03__seed20270727/episode.json",
+    "calibration_v2__task01__state04__seed20270728": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_v2/workers/gpu4/episodes/calibration_v2__task01__state04__seed20270728/episode.json",
+    "calibration_v2__task05__state00__seed20270824": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_v2/workers/gpu5/episodes/calibration_v2__task05__state00__seed20270824/episode.json",
+    "calibration_v2__task05__state01__seed20270825": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_v2/workers/gpu6/episodes/calibration_v2__task05__state01__seed20270825/episode.json",
+    "calibration_v2__task05__state02__seed20270826": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_v2/workers/gpu7/episodes/calibration_v2__task05__state02__seed20270826/episode.json",
+    "calibration_v2__task05__state03__seed20270827": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_v2/workers/gpu0/episodes/calibration_v2__task05__state03__seed20270827/episode.json",
+    "calibration_v2__task05__state04__seed20270828": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_v2/workers/gpu1/episodes/calibration_v2__task05__state04__seed20270828/episode.json",
+    "calibration_v2__task07__state00__seed20270924": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_v2/workers/gpu2/episodes/calibration_v2__task07__state00__seed20270924/episode.json",
+    "calibration_v2__task07__state01__seed20270925": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_v2/workers/gpu3/episodes/calibration_v2__task07__state01__seed20270925/episode.json",
+    "calibration_v2__task07__state02__seed20270926": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_v2/workers/gpu4/episodes/calibration_v2__task07__state02__seed20270926/episode.json",
+    "calibration_v2__task07__state03__seed20270927": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_v2/workers/gpu5/episodes/calibration_v2__task07__state03__seed20270927/episode.json",
+    "calibration_v2__task07__state04__seed20270928": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_v2/workers/gpu6/episodes/calibration_v2__task07__state04__seed20270928/episode.json"
+  },
+  "v1_integrity_after": {
+    "parallel": {
+      "file_count": 90,
+      "files": [
+        {
+          "bytes": 7686,
+          "relative_path": "calibration_summary_parallel.json",
+          "sha256": "38704f174d7461d4994af13109da38c876ff0d22ac7c18d818839c1c0f0c62b0"
+        },
+        {
+          "bytes": 281,
+          "relative_path": "claims/calibration__task01__state01__seed20260825.json",
+          "sha256": "e00bed315cb3e80ce5ba3c0e043151837c50e7db795ea786953d57cffe60dd50"
+        },
+        {
+          "bytes": 281,
+          "relative_path": "claims/calibration__task01__state02__seed20260826.json",
+          "sha256": "64c04d017a391e0df643321d14a6cffb3aa928a9cc5e64c489e7566a3ac5e049"
+        },
+        {
+          "bytes": 281,
+          "relative_path": "claims/calibration__task01__state03__seed20260827.json",
+          "sha256": "1d39f655ea88ebd1bf9b70521a85d85417350f8abf1eccd53ea57dd83064f06d"
+        },
+        {
+          "bytes": 281,
+          "relative_path": "claims/calibration__task01__state04__seed20260828.json",
+          "sha256": "ef083399a20d82869faf43f240c1540041644b91189480bef7656d69e6e0703c"
+        },
+        {
+          "bytes": 281,
+          "relative_path": "claims/calibration__task04__state00__seed20260924.json",
+          "sha256": "499d265afab2a628109839ee4040f2ce3b7d444d8b203199b5389f9f9b45e3ef"
+        },
+        {
+          "bytes": 281,
+          "relative_path": "claims/calibration__task04__state01__seed20260925.json",
+          "sha256": "ec6d54eb21730908d1f06455e8dae13ab6a33aa7da7e253aa5451a9bb90b48aa"
+        },
+        {
+          "bytes": 281,
+          "relative_path": "claims/calibration__task04__state02__seed20260926.json",
+          "sha256": "51cf7dccaf37068a37e25167cf812a5ae24f84324763f9882ddb92b06d254129"
+        },
+        {
+          "bytes": 281,
+          "relative_path": "claims/calibration__task04__state03__seed20260927.json",
+          "sha256": "c76dbfbae36b5b1d56ff5834be54b1a2e1cd977d34947cdd4aea2e2957aec0c4"
+        },
+        {
+          "bytes": 281,
+          "relative_path": "claims/calibration__task04__state04__seed20260928.json",
+          "sha256": "5c4d987e25b6f591855b217ab8a0fbf8443108c1fd5f03e313447a0615652330"
+        },
+        {
+          "bytes": 281,
+          "relative_path": "claims/calibration__task08__state00__seed20261024.json",
+          "sha256": "c74f7677805793394b8275088e4c037929fa74c3e4cf69248160814c7e46b687"
+        },
+        {
+          "bytes": 281,
+          "relative_path": "claims/calibration__task08__state01__seed20261025.json",
+          "sha256": "5e2aca4d0d19ef4f9a2d30972623583aed9d066529f461ebc7de7ac2865decd7"
+        },
+        {
+          "bytes": 281,
+          "relative_path": "claims/calibration__task08__state02__seed20261026.json",
+          "sha256": "26a2933b11bbdf47738c7dc9a3044989f05d2d5bea10e4350f495c54a7f33395"
+        },
+        {
+          "bytes": 281,
+          "relative_path": "claims/calibration__task08__state03__seed20261027.json",
+          "sha256": "0f68a8d760e6b23280c0357711d02b24c5ed460b162e372ae6a0c7c16481dc31"
+        },
+        {
+          "bytes": 281,
+          "relative_path": "claims/calibration__task08__state04__seed20261028.json",
+          "sha256": "d222222e42ae0135bc2f6d3269d475c4f7317b56d55a83259ac14a685f4919ba"
+        },
+        {
+          "bytes": 965,
+          "relative_path": "completions/calibration__task01__state01__seed20260825.json",
+          "sha256": "481db0cf7806a914e09c7f87a94ee091e0e3a6a8f4662eee6391e983cbc92179"
+        },
+        {
+          "bytes": 965,
+          "relative_path": "completions/calibration__task01__state02__seed20260826.json",
+          "sha256": "7aa43cda90e714c6d6de5cc33989f371a5532675dd960162a6009575a50de1b4"
+        },
+        {
+          "bytes": 965,
+          "relative_path": "completions/calibration__task01__state03__seed20260827.json",
+          "sha256": "b868004c649a8da257086182695c5fd660585a20c841c97de68faf805f06067c"
+        },
+        {
+          "bytes": 965,
+          "relative_path": "completions/calibration__task01__state04__seed20260828.json",
+          "sha256": "a3c6be0083cd38561f444d8212fa908a664eea7017f78d376b088bcc11da0152"
+        },
+        {
+          "bytes": 965,
+          "relative_path": "completions/calibration__task04__state00__seed20260924.json",
+          "sha256": "bbdbf8891b3344fbe5fd493487f79531e9589d605d2a2aa3e6e9575be1e620a8"
+        },
+        {
+          "bytes": 965,
+          "relative_path": "completions/calibration__task04__state01__seed20260925.json",
+          "sha256": "2ed9e619f5d8933fee0d68444b641363115eaa66e29d91ba0b39fbc4d9220db4"
+        },
+        {
+          "bytes": 947,
+          "relative_path": "completions/calibration__task04__state02__seed20260926.json",
+          "sha256": "2fe51abf117cf852ffe2bb9b05c8009644927542fc48491e29f93ee7abea0b2a"
+        },
+        {
+          "bytes": 965,
+          "relative_path": "completions/calibration__task04__state03__seed20260927.json",
+          "sha256": "565477d0e11fe0a43b0504fe8bb744ebf246289009475e6d583937843b089192"
+        },
+        {
+          "bytes": 966,
+          "relative_path": "completions/calibration__task04__state04__seed20260928.json",
+          "sha256": "9412f1afc586548d2c6f263162bdb83d1f7d5968b583409cbca87ead021ef133"
+        },
+        {
+          "bytes": 966,
+          "relative_path": "completions/calibration__task08__state00__seed20261024.json",
+          "sha256": "b5e8aba1b06ccc577845399ea46a03efdb0935205c585d92ccaecfd6358eba02"
+        },
+        {
+          "bytes": 966,
+          "relative_path": "completions/calibration__task08__state01__seed20261025.json",
+          "sha256": "2ae94fed35c1531ba830294b6b8a7b438a3b8118d581ba7055db942f103b1399"
+        },
+        {
+          "bytes": 966,
+          "relative_path": "completions/calibration__task08__state02__seed20261026.json",
+          "sha256": "754ad7c70ae480d8d5afc07cbba91403eab7759c877781583e3595049ced54a8"
+        },
+        {
+          "bytes": 966,
+          "relative_path": "completions/calibration__task08__state03__seed20261027.json",
+          "sha256": "5b06e9a85eed1de27417032afee43fce1be8842d89082b71170165e5abd87d5f"
+        },
+        {
+          "bytes": 966,
+          "relative_path": "completions/calibration__task08__state04__seed20261028.json",
+          "sha256": "fc205e4edd5e709243a9357558441b51b3e5f46b3e2e950c5e15118fc9dec93c"
+        },
+        {
+          "bytes": 2163,
+          "relative_path": "logs/gpu0.log",
+          "sha256": "bf3192f03e3c323bf4a92dc969fb82bb52574c15cef9ba4ab35202ab47c6e194"
+        },
+        {
+          "bytes": 5687,
+          "relative_path": "logs/gpu0.resume1.log",
+          "sha256": "0c96e8f66c8ce9846ba082de0327d3045fd7f0ad72412586118137736567f746"
+        },
+        {
+          "bytes": 5386,
+          "relative_path": "logs/gpu0.resume2.log",
+          "sha256": "b00fb056182be5e16eb9974e941a74d042117280a0fd7e8fad052c5efad84b06"
+        },
+        {
+          "bytes": 2163,
+          "relative_path": "logs/gpu1.log",
+          "sha256": "3ef9d463ce0bcca4f08f945e6c5b714e4eb2b2ced343d4b3221b0ef0baa4d0c5"
+        },
+        {
+          "bytes": 5687,
+          "relative_path": "logs/gpu1.resume1.log",
+          "sha256": "84fb726fe367c7ddd241cfb1ac42f1fc8443889e785d41112bbecf6691ee0217"
+        },
+        {
+          "bytes": 5385,
+          "relative_path": "logs/gpu1.resume2.log",
+          "sha256": "62582d7122a9af10d088fc4be49cb72ed842327e4059c7163603524f84be1129"
+        },
+        {
+          "bytes": 2163,
+          "relative_path": "logs/gpu2.log",
+          "sha256": "bc2c9e7daa111722ce235df98a843103e8b1acb34b758de6aa584b74c966baac"
+        },
+        {
+          "bytes": 5687,
+          "relative_path": "logs/gpu2.resume1.log",
+          "sha256": "d7ec1c22794292d7359b5016317e49efd8ccd998336fb28318f66c2afc1d0a88"
+        },
+        {
+          "bytes": 5387,
+          "relative_path": "logs/gpu2.resume2.log",
+          "sha256": "494761d6237d410d3d18a017025da9c135c53452e653ec4ebd824990836ff9a9"
+        },
+        {
+          "bytes": 2163,
+          "relative_path": "logs/gpu3.log",
+          "sha256": "987708eaf4a61842935a588611ccef969fa6b51f1dae7af4cb2e56c0dd44ff40"
+        },
+        {
+          "bytes": 5687,
+          "relative_path": "logs/gpu3.resume1.log",
+          "sha256": "b3e8f8c1edbbb4eb1a5bb8b03f3f65e621154ab47c6a2620755e574abe5c0857"
+        },
+        {
+          "bytes": 5387,
+          "relative_path": "logs/gpu3.resume2.log",
+          "sha256": "23a20610c2ff96249c2476b3f028da6383d7b672b72be4e854473d6666c71e5d"
+        },
+        {
+          "bytes": 2163,
+          "relative_path": "logs/gpu4.log",
+          "sha256": "099344ea85572b88a93303165efae50045341d6a04c65217cefb73bbbb7915d4"
+        },
+        {
+          "bytes": 5687,
+          "relative_path": "logs/gpu4.resume1.log",
+          "sha256": "41f649ee41467e605562fb65ae8496b81d347754a2300ddf48334fed4f8bf72d"
+        },
+        {
+          "bytes": 5091,
+          "relative_path": "logs/gpu4.resume2.log",
+          "sha256": "9dfe260e2900966db86a34e7d9ceb4ed04c643ba1fabe9bae2b78362a766c2f8"
+        },
+        {
+          "bytes": 2163,
+          "relative_path": "logs/gpu5.log",
+          "sha256": "bc5468da1c7b50a2ca19b7e2f85883a399ce61d0f00c83886a035b1e4469af49"
+        },
+        {
+          "bytes": 5687,
+          "relative_path": "logs/gpu5.resume1.log",
+          "sha256": "46c1203abd3818c662a5a04fd9577b1f2f4a114222111b34ae7e2ad847637378"
+        },
+        {
+          "bytes": 5110,
+          "relative_path": "logs/gpu5.resume2.log",
+          "sha256": "3161b288e590c3d9f4cae3276f7bd85fcd50001aa6e5e8c483b74b94bb592387"
+        },
+        {
+          "bytes": 2163,
+          "relative_path": "logs/gpu6.log",
+          "sha256": "eadd07305cc1c3e29a52528de75c0704dec3e5fc7eb7d0a7276346a06805d6ad"
+        },
+        {
+          "bytes": 5687,
+          "relative_path": "logs/gpu6.resume1.log",
+          "sha256": "4aa02929945820277b3072b7c9f1c6fe27e40dfec1c1d5bc08d74dd15618cb02"
+        },
+        {
+          "bytes": 5386,
+          "relative_path": "logs/gpu6.resume2.log",
+          "sha256": "7fb99f9bc6a8ce10d69fd9c5f1a285f8ccb75c5aa5d35085c53c312194bcdd4d"
+        },
+        {
+          "bytes": 2163,
+          "relative_path": "logs/gpu7.log",
+          "sha256": "86a8d029b693dbc75d90d9e81e314a3e7c3d8ee8464122a4f1b9a4ca390f1bfe"
+        },
+        {
+          "bytes": 5687,
+          "relative_path": "logs/gpu7.resume1.log",
+          "sha256": "67d169f90668df1fd761f019bb083f98c4763a363ab56317591c597443d5696d"
+        },
+        {
+          "bytes": 5387,
+          "relative_path": "logs/gpu7.resume2.log",
+          "sha256": "e5173eafd016f05562a653617be92c0ba02cc08a51e56b27792fc4a2dd6279b9"
+        },
+        {
+          "bytes": 8301,
+          "relative_path": "parallel_manifest.json",
+          "sha256": "a8dbed2137f4965ddc37c7d6f9cecec60eb5e1ca665868fda098260eb42d6f4b"
+        },
+        {
+          "bytes": 280452,
+          "relative_path": "workers/gpu0/episodes/calibration__task01__state03__seed20260827/attempt-001.jsonl",
+          "sha256": "cc071ac3c198fec1ca2a47136c1784aa35eb88530e55895af68802b9e861842d"
+        },
+        {
+          "bytes": 3924,
+          "relative_path": "workers/gpu0/episodes/calibration__task01__state03__seed20260827/episode.json",
+          "sha256": "e74fb4419b5f6d8a9a586410133cce154e6200e400ce99c4bde5cd84484e20d7"
+        },
+        {
+          "bytes": 280869,
+          "relative_path": "workers/gpu0/episodes/calibration__task08__state01__seed20261025/attempt-001.jsonl",
+          "sha256": "a1016322adb9a614c87fd96465aee1ed4f3ff82bb2f80c8f7fced1c071a9b630"
+        },
+        {
+          "bytes": 3107,
+          "relative_path": "workers/gpu0/episodes/calibration__task08__state01__seed20261025/episode.json",
+          "sha256": "51f8819ec8f2d44351f308d37a5797635d59cb01f6d9993e44491eb139164171"
+        },
+        {
+          "bytes": 328,
+          "relative_path": "workers/gpu0/worker_summary.json",
+          "sha256": "cf1d500e3db9b946493d2e24476a4e1e3e7500e1c882c3be1c371452a7771bbb"
+        },
+        {
+          "bytes": 279571,
+          "relative_path": "workers/gpu1/episodes/calibration__task01__state04__seed20260828/attempt-001.jsonl",
+          "sha256": "f549cd4a3a82e2919b04658a23a7d0371bfcd6e38bc5fb859198804e7ce62023"
+        },
+        {
+          "bytes": 3925,
+          "relative_path": "workers/gpu1/episodes/calibration__task01__state04__seed20260828/episode.json",
+          "sha256": "7e7604de5cb0dfe796e1c2ea630218f2695b803051a9817da6776edd0fbc568a"
+        },
+        {
+          "bytes": 280470,
+          "relative_path": "workers/gpu1/episodes/calibration__task08__state02__seed20261026/attempt-001.jsonl",
+          "sha256": "8fd08a360438ea91dab32cdcb8e0b931d371574d36dc6fd79848d028df709a20"
+        },
+        {
+          "bytes": 3109,
+          "relative_path": "workers/gpu1/episodes/calibration__task08__state02__seed20261026/episode.json",
+          "sha256": "a9207736acc0cc839a23ce3870948c8f1dbffd83d9529d50e86d8267f7a67a4f"
+        },
+        {
+          "bytes": 327,
+          "relative_path": "workers/gpu1/worker_summary.json",
+          "sha256": "075dc536ae31ead2534fa03f1c15076a03db4eaebc5d9bb1d4fe1dc993fc5720"
+        },
+        {
+          "bytes": 279909,
+          "relative_path": "workers/gpu2/episodes/calibration__task04__state00__seed20260924/attempt-001.jsonl",
+          "sha256": "e6ff460747046933532f2f05036bf578642053aa64b7b7e45dbb7df9737c0e6f"
+        },
+        {
+          "bytes": 3596,
+          "relative_path": "workers/gpu2/episodes/calibration__task04__state00__seed20260924/episode.json",
+          "sha256": "725815a5b0e660dd02cfb9fcf2512618f4f801354c0b823b0053e2684ad880ef"
+        },
+        {
+          "bytes": 280075,
+          "relative_path": "workers/gpu2/episodes/calibration__task08__state03__seed20261027/attempt-001.jsonl",
+          "sha256": "5b2602826e151a088002134a6b8aad83d029433827d9266116b35f381ecf49c6"
+        },
+        {
+          "bytes": 3110,
+          "relative_path": "workers/gpu2/episodes/calibration__task08__state03__seed20261027/episode.json",
+          "sha256": "e6ea752233326cb8bcc9bea86087d07f6f97eb11336bd3376fc99501a798b73f"
+        },
+        {
+          "bytes": 329,
+          "relative_path": "workers/gpu2/worker_summary.json",
+          "sha256": "1abff79732fa320a14a6b7d8fd4efad7330bee46df4df38ffc56149f7746efc3"
+        },
+        {
+          "bytes": 280141,
+          "relative_path": "workers/gpu3/episodes/calibration__task04__state01__seed20260925/attempt-001.jsonl",
+          "sha256": "b921023b2e22d6d5b0869727f8de524249d34b9e7000a001154fa33a0d677e1c"
+        },
+        {
+          "bytes": 3595,
+          "relative_path": "workers/gpu3/episodes/calibration__task04__state01__seed20260925/episode.json",
+          "sha256": "09eb679643dec46de81a47e7434822e20be7de51f2fc3d5d749f4d24a7152335"
+        },
+        {
+          "bytes": 281463,
+          "relative_path": "workers/gpu3/episodes/calibration__task08__state04__seed20261028/attempt-001.jsonl",
+          "sha256": "cd2f8319cc4028610a7361bddf0a492b36bf258d4badc72adae4a19daf017c46"
+        },
+        {
+          "bytes": 3109,
+          "relative_path": "workers/gpu3/episodes/calibration__task08__state04__seed20261028/episode.json",
+          "sha256": "c8134a51d5cb8b45a12480aa8d4ff4036f1ee20d1165a57d1937fc34d7474982"
+        },
+        {
+          "bytes": 329,
+          "relative_path": "workers/gpu3/worker_summary.json",
+          "sha256": "c4406ab8c931da075ec700cb2baba5cdf45a33849c602bd94374e08f701de40c"
+        },
+        {
+          "bytes": 264783,
+          "relative_path": "workers/gpu4/episodes/calibration__task04__state02__seed20260926/attempt-001.jsonl",
+          "sha256": "9a0a1a0375dd075ecb0b5799a7f30b36b9e34da7ea8bc006ad3d1e8cb561cf97"
+        },
+        {
+          "bytes": 3576,
+          "relative_path": "workers/gpu4/episodes/calibration__task04__state02__seed20260926/episode.json",
+          "sha256": "bb00c64b5ac9443904594beb0906b593e664f73c18ee452092553e19d1241702"
+        },
+        {
+          "bytes": 277,
+          "relative_path": "workers/gpu4/worker_summary.json",
+          "sha256": "f92fe11bb88aee457e7b5f51f1645d37857d6e33d199062d958e0c6c79246acd"
+        },
+        {
+          "bytes": 282957,
+          "relative_path": "workers/gpu5/episodes/calibration__task04__state03__seed20260927/attempt-001.jsonl",
+          "sha256": "4f29fd3d66f02e56540322a0804234dcf82c5ab3381a84ed6903c1020dfee0ae"
+        },
+        {
+          "bytes": 3596,
+          "relative_path": "workers/gpu5/episodes/calibration__task04__state03__seed20260927/episode.json",
+          "sha256": "c5eacde586dec30e5e2136fa957febf1ea36b7ea80dd400e43cc7c4489d4456a"
+        },
+        {
+          "bytes": 278,
+          "relative_path": "workers/gpu5/worker_summary.json",
+          "sha256": "c112d8f231152160c00b97b060d5bea20e98ae26514d4e6e4a6c3d22e83f12a6"
+        },
+        {
+          "bytes": 284156,
+          "relative_path": "workers/gpu6/episodes/calibration__task01__state01__seed20260825/attempt-001.jsonl",
+          "sha256": "44e05814d63de89061d989280682f3ff3d77a379d799f3731541addc0f44cc1a"
+        },
+        {
+          "bytes": 4412,
+          "relative_path": "workers/gpu6/episodes/calibration__task01__state01__seed20260825/episode.json",
+          "sha256": "c2e004cdb4df310c7352324e4732f1a7dbb61256ede618e0c3e97b2ea3fa8f93"
+        },
+        {
+          "bytes": 281187,
+          "relative_path": "workers/gpu6/episodes/calibration__task04__state04__seed20260928/attempt-001.jsonl",
+          "sha256": "79b1f3cfcb5c654c0caa03fd498aa4b017aaa9788900a6f62f0564318d466642"
+        },
+        {
+          "bytes": 3596,
+          "relative_path": "workers/gpu6/episodes/calibration__task04__state04__seed20260928/episode.json",
+          "sha256": "2d1feb0b1757e7c9b05ee642245147e66e2f04629edcc1656fbd8d6849c432d9"
+        },
+        {
+          "bytes": 328,
+          "relative_path": "workers/gpu6/worker_summary.json",
+          "sha256": "868bcce2aba07e280dc02f987eaa9af7e399944d93427612b1a136e75442b7af"
+        },
+        {
+          "bytes": 279976,
+          "relative_path": "workers/gpu7/episodes/calibration__task01__state02__seed20260826/attempt-001.jsonl",
+          "sha256": "b6b619e2569e267b66629842a631ea93a04cfeff52760fa491318bcdd476a237"
+        },
+        {
+          "bytes": 3923,
+          "relative_path": "workers/gpu7/episodes/calibration__task01__state02__seed20260826/episode.json",
+          "sha256": "435227b0e69c139869b5421cf200b69f54be70581777d49b60da9c1e21505246"
+        },
+        {
+          "bytes": 280958,
+          "relative_path": "workers/gpu7/episodes/calibration__task08__state00__seed20261024/attempt-001.jsonl",
+          "sha256": "e3a18dc0a676df1c4f956c36dc9156e52e0bbc5069d6634ea1613fe19e098d8f"
+        },
+        {
+          "bytes": 3107,
+          "relative_path": "workers/gpu7/episodes/calibration__task08__state00__seed20261024/episode.json",
+          "sha256": "c0bdf6ed49573de9f3e3c728f4987090d37c18732faa32dedd64b7ebd6e7d600"
+        },
+        {
+          "bytes": 329,
+          "relative_path": "workers/gpu7/worker_summary.json",
+          "sha256": "bbceb38557f932e44ff2fdbebacf5578b4d082777f3704f1d2b2483439f10b2b"
+        }
+      ],
+      "inventory_sha256": "fa3ba7ccd9a13745d07afe3a3e1c9b6030abc0c1f913ccdfa9ac22cad70c933e",
+      "root": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_parallel_v1",
+      "total_bytes": 4107915
+    },
+    "sequential": {
+      "file_count": 16,
+      "files": [
+        {
+          "bytes": 4724,
+          "relative_path": "calibration_summary.partial.json",
+          "sha256": "ff0d39fdacf2dac86250a8260f1823a547df861c3dc7dcaeab4157dd46e96acd"
+        },
+        {
+          "bytes": 281018,
+          "relative_path": "episodes/calibration__task00__state00__seed20260724/attempt-001.jsonl",
+          "sha256": "e5530d82248bbad8f582246369a140b87bc1ee45575477897f539328f2dc025e"
+        },
+        {
+          "bytes": 3699,
+          "relative_path": "episodes/calibration__task00__state00__seed20260724/episode.json",
+          "sha256": "176e4954ef912de1707ed0c0ecaf2ae681a40c6c13d793ddfe09d83717acf9a3"
+        },
+        {
+          "bytes": 281178,
+          "relative_path": "episodes/calibration__task00__state01__seed20260725/attempt-001.jsonl",
+          "sha256": "212ab183b942d14e92874c29925c8ff0a8290411cbb5c43c9eed0fbed5d605e4"
+        },
+        {
+          "bytes": 3698,
+          "relative_path": "episodes/calibration__task00__state01__seed20260725/episode.json",
+          "sha256": "95cd7f32893026a84f5e5b97ab06f413f4b0e17cd314171fddec1b314b6a8890"
+        },
+        {
+          "bytes": 280813,
+          "relative_path": "episodes/calibration__task00__state02__seed20260726/attempt-001.jsonl",
+          "sha256": "5440c04328bbf78dd9ab21ee63351dfdd9e0f8ffd7f05aea0fdea494fa076af4"
+        },
+        {
+          "bytes": 3699,
+          "relative_path": "episodes/calibration__task00__state02__seed20260726/episode.json",
+          "sha256": "4952df3b0c17187ab88b9eae9f3169e5f1b099ad7a00290888cd4bda71c13dcd"
+        },
+        {
+          "bytes": 279870,
+          "relative_path": "episodes/calibration__task00__state03__seed20260727/attempt-001.jsonl",
+          "sha256": "fc153ac72e92807ce5cd5126dc7b1eed0d24df7553af6d8a3f6f4f161c5806d3"
+        },
+        {
+          "bytes": 3699,
+          "relative_path": "episodes/calibration__task00__state03__seed20260727/episode.json",
+          "sha256": "61c890df8dead5ffd97ff42457189b8008c1d81515ae67488d897822e8d0481f"
+        },
+        {
+          "bytes": 291862,
+          "relative_path": "episodes/calibration__task00__state04__seed20260728/attempt-001.jsonl",
+          "sha256": "2588fd78d8437a1434eb6f114202c5a9785a4f16611e96cbcd5632c4b10498ba"
+        },
+        {
+          "bytes": 3699,
+          "relative_path": "episodes/calibration__task00__state04__seed20260728/episode.json",
+          "sha256": "5019bba63e16b727f2dbf9a725a757f89dff38b6a65315f7b10596f8857f543a"
+        },
+        {
+          "bytes": 279888,
+          "relative_path": "episodes/calibration__task01__state00__seed20260824/attempt-001.jsonl",
+          "sha256": "24b934fba4b757d99bd06daa1bddc8cf24a218af801a8e373c2b249b9dfdf907"
+        },
+        {
+          "bytes": 3698,
+          "relative_path": "episodes/calibration__task01__state00__seed20260824/episode.json",
+          "sha256": "907a2b54d92a86c5fb27bbde310286109d29913ca9dfd0002884bc2533c40824"
+        },
+        {
+          "bytes": 72949,
+          "relative_path": "episodes/calibration__task01__state01__seed20260825/attempt-001.jsonl",
+          "sha256": "63917b7b144ae1b27cd76ab2102f5f117994f497fbf307c952be84effa1b43a4"
+        },
+        {
+          "bytes": 870,
+          "relative_path": "model_load.json",
+          "sha256": "fd0d5a1950d55368582cdcd2e2f23a26ef282136601627b67ffdfd82b15c8a2e"
+        },
+        {
+          "bytes": 6114,
+          "relative_path": "run_manifest.json",
+          "sha256": "faad94289ca8865a9e38668af4be951b92431cb789b1690f48ff5a925f162f76"
+        }
+      ],
+      "inventory_sha256": "0a690dea5f611c06605897eb9b5647846b671a62e0f7a706313f062a8e38d48d",
+      "root": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_v1",
+      "total_bytes": 1801478
+    }
+  },
+  "v1_integrity_before": {
+    "parallel": {
+      "file_count": 90,
+      "files": [
+        {
+          "bytes": 7686,
+          "relative_path": "calibration_summary_parallel.json",
+          "sha256": "38704f174d7461d4994af13109da38c876ff0d22ac7c18d818839c1c0f0c62b0"
+        },
+        {
+          "bytes": 281,
+          "relative_path": "claims/calibration__task01__state01__seed20260825.json",
+          "sha256": "e00bed315cb3e80ce5ba3c0e043151837c50e7db795ea786953d57cffe60dd50"
+        },
+        {
+          "bytes": 281,
+          "relative_path": "claims/calibration__task01__state02__seed20260826.json",
+          "sha256": "64c04d017a391e0df643321d14a6cffb3aa928a9cc5e64c489e7566a3ac5e049"
+        },
+        {
+          "bytes": 281,
+          "relative_path": "claims/calibration__task01__state03__seed20260827.json",
+          "sha256": "1d39f655ea88ebd1bf9b70521a85d85417350f8abf1eccd53ea57dd83064f06d"
+        },
+        {
+          "bytes": 281,
+          "relative_path": "claims/calibration__task01__state04__seed20260828.json",
+          "sha256": "ef083399a20d82869faf43f240c1540041644b91189480bef7656d69e6e0703c"
+        },
+        {
+          "bytes": 281,
+          "relative_path": "claims/calibration__task04__state00__seed20260924.json",
+          "sha256": "499d265afab2a628109839ee4040f2ce3b7d444d8b203199b5389f9f9b45e3ef"
+        },
+        {
+          "bytes": 281,
+          "relative_path": "claims/calibration__task04__state01__seed20260925.json",
+          "sha256": "ec6d54eb21730908d1f06455e8dae13ab6a33aa7da7e253aa5451a9bb90b48aa"
+        },
+        {
+          "bytes": 281,
+          "relative_path": "claims/calibration__task04__state02__seed20260926.json",
+          "sha256": "51cf7dccaf37068a37e25167cf812a5ae24f84324763f9882ddb92b06d254129"
+        },
+        {
+          "bytes": 281,
+          "relative_path": "claims/calibration__task04__state03__seed20260927.json",
+          "sha256": "c76dbfbae36b5b1d56ff5834be54b1a2e1cd977d34947cdd4aea2e2957aec0c4"
+        },
+        {
+          "bytes": 281,
+          "relative_path": "claims/calibration__task04__state04__seed20260928.json",
+          "sha256": "5c4d987e25b6f591855b217ab8a0fbf8443108c1fd5f03e313447a0615652330"
+        },
+        {
+          "bytes": 281,
+          "relative_path": "claims/calibration__task08__state00__seed20261024.json",
+          "sha256": "c74f7677805793394b8275088e4c037929fa74c3e4cf69248160814c7e46b687"
+        },
+        {
+          "bytes": 281,
+          "relative_path": "claims/calibration__task08__state01__seed20261025.json",
+          "sha256": "5e2aca4d0d19ef4f9a2d30972623583aed9d066529f461ebc7de7ac2865decd7"
+        },
+        {
+          "bytes": 281,
+          "relative_path": "claims/calibration__task08__state02__seed20261026.json",
+          "sha256": "26a2933b11bbdf47738c7dc9a3044989f05d2d5bea10e4350f495c54a7f33395"
+        },
+        {
+          "bytes": 281,
+          "relative_path": "claims/calibration__task08__state03__seed20261027.json",
+          "sha256": "0f68a8d760e6b23280c0357711d02b24c5ed460b162e372ae6a0c7c16481dc31"
+        },
+        {
+          "bytes": 281,
+          "relative_path": "claims/calibration__task08__state04__seed20261028.json",
+          "sha256": "d222222e42ae0135bc2f6d3269d475c4f7317b56d55a83259ac14a685f4919ba"
+        },
+        {
+          "bytes": 965,
+          "relative_path": "completions/calibration__task01__state01__seed20260825.json",
+          "sha256": "481db0cf7806a914e09c7f87a94ee091e0e3a6a8f4662eee6391e983cbc92179"
+        },
+        {
+          "bytes": 965,
+          "relative_path": "completions/calibration__task01__state02__seed20260826.json",
+          "sha256": "7aa43cda90e714c6d6de5cc33989f371a5532675dd960162a6009575a50de1b4"
+        },
+        {
+          "bytes": 965,
+          "relative_path": "completions/calibration__task01__state03__seed20260827.json",
+          "sha256": "b868004c649a8da257086182695c5fd660585a20c841c97de68faf805f06067c"
+        },
+        {
+          "bytes": 965,
+          "relative_path": "completions/calibration__task01__state04__seed20260828.json",
+          "sha256": "a3c6be0083cd38561f444d8212fa908a664eea7017f78d376b088bcc11da0152"
+        },
+        {
+          "bytes": 965,
+          "relative_path": "completions/calibration__task04__state00__seed20260924.json",
+          "sha256": "bbdbf8891b3344fbe5fd493487f79531e9589d605d2a2aa3e6e9575be1e620a8"
+        },
+        {
+          "bytes": 965,
+          "relative_path": "completions/calibration__task04__state01__seed20260925.json",
+          "sha256": "2ed9e619f5d8933fee0d68444b641363115eaa66e29d91ba0b39fbc4d9220db4"
+        },
+        {
+          "bytes": 947,
+          "relative_path": "completions/calibration__task04__state02__seed20260926.json",
+          "sha256": "2fe51abf117cf852ffe2bb9b05c8009644927542fc48491e29f93ee7abea0b2a"
+        },
+        {
+          "bytes": 965,
+          "relative_path": "completions/calibration__task04__state03__seed20260927.json",
+          "sha256": "565477d0e11fe0a43b0504fe8bb744ebf246289009475e6d583937843b089192"
+        },
+        {
+          "bytes": 966,
+          "relative_path": "completions/calibration__task04__state04__seed20260928.json",
+          "sha256": "9412f1afc586548d2c6f263162bdb83d1f7d5968b583409cbca87ead021ef133"
+        },
+        {
+          "bytes": 966,
+          "relative_path": "completions/calibration__task08__state00__seed20261024.json",
+          "sha256": "b5e8aba1b06ccc577845399ea46a03efdb0935205c585d92ccaecfd6358eba02"
+        },
+        {
+          "bytes": 966,
+          "relative_path": "completions/calibration__task08__state01__seed20261025.json",
+          "sha256": "2ae94fed35c1531ba830294b6b8a7b438a3b8118d581ba7055db942f103b1399"
+        },
+        {
+          "bytes": 966,
+          "relative_path": "completions/calibration__task08__state02__seed20261026.json",
+          "sha256": "754ad7c70ae480d8d5afc07cbba91403eab7759c877781583e3595049ced54a8"
+        },
+        {
+          "bytes": 966,
+          "relative_path": "completions/calibration__task08__state03__seed20261027.json",
+          "sha256": "5b06e9a85eed1de27417032afee43fce1be8842d89082b71170165e5abd87d5f"
+        },
+        {
+          "bytes": 966,
+          "relative_path": "completions/calibration__task08__state04__seed20261028.json",
+          "sha256": "fc205e4edd5e709243a9357558441b51b3e5f46b3e2e950c5e15118fc9dec93c"
+        },
+        {
+          "bytes": 2163,
+          "relative_path": "logs/gpu0.log",
+          "sha256": "bf3192f03e3c323bf4a92dc969fb82bb52574c15cef9ba4ab35202ab47c6e194"
+        },
+        {
+          "bytes": 5687,
+          "relative_path": "logs/gpu0.resume1.log",
+          "sha256": "0c96e8f66c8ce9846ba082de0327d3045fd7f0ad72412586118137736567f746"
+        },
+        {
+          "bytes": 5386,
+          "relative_path": "logs/gpu0.resume2.log",
+          "sha256": "b00fb056182be5e16eb9974e941a74d042117280a0fd7e8fad052c5efad84b06"
+        },
+        {
+          "bytes": 2163,
+          "relative_path": "logs/gpu1.log",
+          "sha256": "3ef9d463ce0bcca4f08f945e6c5b714e4eb2b2ced343d4b3221b0ef0baa4d0c5"
+        },
+        {
+          "bytes": 5687,
+          "relative_path": "logs/gpu1.resume1.log",
+          "sha256": "84fb726fe367c7ddd241cfb1ac42f1fc8443889e785d41112bbecf6691ee0217"
+        },
+        {
+          "bytes": 5385,
+          "relative_path": "logs/gpu1.resume2.log",
+          "sha256": "62582d7122a9af10d088fc4be49cb72ed842327e4059c7163603524f84be1129"
+        },
+        {
+          "bytes": 2163,
+          "relative_path": "logs/gpu2.log",
+          "sha256": "bc2c9e7daa111722ce235df98a843103e8b1acb34b758de6aa584b74c966baac"
+        },
+        {
+          "bytes": 5687,
+          "relative_path": "logs/gpu2.resume1.log",
+          "sha256": "d7ec1c22794292d7359b5016317e49efd8ccd998336fb28318f66c2afc1d0a88"
+        },
+        {
+          "bytes": 5387,
+          "relative_path": "logs/gpu2.resume2.log",
+          "sha256": "494761d6237d410d3d18a017025da9c135c53452e653ec4ebd824990836ff9a9"
+        },
+        {
+          "bytes": 2163,
+          "relative_path": "logs/gpu3.log",
+          "sha256": "987708eaf4a61842935a588611ccef969fa6b51f1dae7af4cb2e56c0dd44ff40"
+        },
+        {
+          "bytes": 5687,
+          "relative_path": "logs/gpu3.resume1.log",
+          "sha256": "b3e8f8c1edbbb4eb1a5bb8b03f3f65e621154ab47c6a2620755e574abe5c0857"
+        },
+        {
+          "bytes": 5387,
+          "relative_path": "logs/gpu3.resume2.log",
+          "sha256": "23a20610c2ff96249c2476b3f028da6383d7b672b72be4e854473d6666c71e5d"
+        },
+        {
+          "bytes": 2163,
+          "relative_path": "logs/gpu4.log",
+          "sha256": "099344ea85572b88a93303165efae50045341d6a04c65217cefb73bbbb7915d4"
+        },
+        {
+          "bytes": 5687,
+          "relative_path": "logs/gpu4.resume1.log",
+          "sha256": "41f649ee41467e605562fb65ae8496b81d347754a2300ddf48334fed4f8bf72d"
+        },
+        {
+          "bytes": 5091,
+          "relative_path": "logs/gpu4.resume2.log",
+          "sha256": "9dfe260e2900966db86a34e7d9ceb4ed04c643ba1fabe9bae2b78362a766c2f8"
+        },
+        {
+          "bytes": 2163,
+          "relative_path": "logs/gpu5.log",
+          "sha256": "bc5468da1c7b50a2ca19b7e2f85883a399ce61d0f00c83886a035b1e4469af49"
+        },
+        {
+          "bytes": 5687,
+          "relative_path": "logs/gpu5.resume1.log",
+          "sha256": "46c1203abd3818c662a5a04fd9577b1f2f4a114222111b34ae7e2ad847637378"
+        },
+        {
+          "bytes": 5110,
+          "relative_path": "logs/gpu5.resume2.log",
+          "sha256": "3161b288e590c3d9f4cae3276f7bd85fcd50001aa6e5e8c483b74b94bb592387"
+        },
+        {
+          "bytes": 2163,
+          "relative_path": "logs/gpu6.log",
+          "sha256": "eadd07305cc1c3e29a52528de75c0704dec3e5fc7eb7d0a7276346a06805d6ad"
+        },
+        {
+          "bytes": 5687,
+          "relative_path": "logs/gpu6.resume1.log",
+          "sha256": "4aa02929945820277b3072b7c9f1c6fe27e40dfec1c1d5bc08d74dd15618cb02"
+        },
+        {
+          "bytes": 5386,
+          "relative_path": "logs/gpu6.resume2.log",
+          "sha256": "7fb99f9bc6a8ce10d69fd9c5f1a285f8ccb75c5aa5d35085c53c312194bcdd4d"
+        },
+        {
+          "bytes": 2163,
+          "relative_path": "logs/gpu7.log",
+          "sha256": "86a8d029b693dbc75d90d9e81e314a3e7c3d8ee8464122a4f1b9a4ca390f1bfe"
+        },
+        {
+          "bytes": 5687,
+          "relative_path": "logs/gpu7.resume1.log",
+          "sha256": "67d169f90668df1fd761f019bb083f98c4763a363ab56317591c597443d5696d"
+        },
+        {
+          "bytes": 5387,
+          "relative_path": "logs/gpu7.resume2.log",
+          "sha256": "e5173eafd016f05562a653617be92c0ba02cc08a51e56b27792fc4a2dd6279b9"
+        },
+        {
+          "bytes": 8301,
+          "relative_path": "parallel_manifest.json",
+          "sha256": "a8dbed2137f4965ddc37c7d6f9cecec60eb5e1ca665868fda098260eb42d6f4b"
+        },
+        {
+          "bytes": 280452,
+          "relative_path": "workers/gpu0/episodes/calibration__task01__state03__seed20260827/attempt-001.jsonl",
+          "sha256": "cc071ac3c198fec1ca2a47136c1784aa35eb88530e55895af68802b9e861842d"
+        },
+        {
+          "bytes": 3924,
+          "relative_path": "workers/gpu0/episodes/calibration__task01__state03__seed20260827/episode.json",
+          "sha256": "e74fb4419b5f6d8a9a586410133cce154e6200e400ce99c4bde5cd84484e20d7"
+        },
+        {
+          "bytes": 280869,
+          "relative_path": "workers/gpu0/episodes/calibration__task08__state01__seed20261025/attempt-001.jsonl",
+          "sha256": "a1016322adb9a614c87fd96465aee1ed4f3ff82bb2f80c8f7fced1c071a9b630"
+        },
+        {
+          "bytes": 3107,
+          "relative_path": "workers/gpu0/episodes/calibration__task08__state01__seed20261025/episode.json",
+          "sha256": "51f8819ec8f2d44351f308d37a5797635d59cb01f6d9993e44491eb139164171"
+        },
+        {
+          "bytes": 328,
+          "relative_path": "workers/gpu0/worker_summary.json",
+          "sha256": "cf1d500e3db9b946493d2e24476a4e1e3e7500e1c882c3be1c371452a7771bbb"
+        },
+        {
+          "bytes": 279571,
+          "relative_path": "workers/gpu1/episodes/calibration__task01__state04__seed20260828/attempt-001.jsonl",
+          "sha256": "f549cd4a3a82e2919b04658a23a7d0371bfcd6e38bc5fb859198804e7ce62023"
+        },
+        {
+          "bytes": 3925,
+          "relative_path": "workers/gpu1/episodes/calibration__task01__state04__seed20260828/episode.json",
+          "sha256": "7e7604de5cb0dfe796e1c2ea630218f2695b803051a9817da6776edd0fbc568a"
+        },
+        {
+          "bytes": 280470,
+          "relative_path": "workers/gpu1/episodes/calibration__task08__state02__seed20261026/attempt-001.jsonl",
+          "sha256": "8fd08a360438ea91dab32cdcb8e0b931d371574d36dc6fd79848d028df709a20"
+        },
+        {
+          "bytes": 3109,
+          "relative_path": "workers/gpu1/episodes/calibration__task08__state02__seed20261026/episode.json",
+          "sha256": "a9207736acc0cc839a23ce3870948c8f1dbffd83d9529d50e86d8267f7a67a4f"
+        },
+        {
+          "bytes": 327,
+          "relative_path": "workers/gpu1/worker_summary.json",
+          "sha256": "075dc536ae31ead2534fa03f1c15076a03db4eaebc5d9bb1d4fe1dc993fc5720"
+        },
+        {
+          "bytes": 279909,
+          "relative_path": "workers/gpu2/episodes/calibration__task04__state00__seed20260924/attempt-001.jsonl",
+          "sha256": "e6ff460747046933532f2f05036bf578642053aa64b7b7e45dbb7df9737c0e6f"
+        },
+        {
+          "bytes": 3596,
+          "relative_path": "workers/gpu2/episodes/calibration__task04__state00__seed20260924/episode.json",
+          "sha256": "725815a5b0e660dd02cfb9fcf2512618f4f801354c0b823b0053e2684ad880ef"
+        },
+        {
+          "bytes": 280075,
+          "relative_path": "workers/gpu2/episodes/calibration__task08__state03__seed20261027/attempt-001.jsonl",
+          "sha256": "5b2602826e151a088002134a6b8aad83d029433827d9266116b35f381ecf49c6"
+        },
+        {
+          "bytes": 3110,
+          "relative_path": "workers/gpu2/episodes/calibration__task08__state03__seed20261027/episode.json",
+          "sha256": "e6ea752233326cb8bcc9bea86087d07f6f97eb11336bd3376fc99501a798b73f"
+        },
+        {
+          "bytes": 329,
+          "relative_path": "workers/gpu2/worker_summary.json",
+          "sha256": "1abff79732fa320a14a6b7d8fd4efad7330bee46df4df38ffc56149f7746efc3"
+        },
+        {
+          "bytes": 280141,
+          "relative_path": "workers/gpu3/episodes/calibration__task04__state01__seed20260925/attempt-001.jsonl",
+          "sha256": "b921023b2e22d6d5b0869727f8de524249d34b9e7000a001154fa33a0d677e1c"
+        },
+        {
+          "bytes": 3595,
+          "relative_path": "workers/gpu3/episodes/calibration__task04__state01__seed20260925/episode.json",
+          "sha256": "09eb679643dec46de81a47e7434822e20be7de51f2fc3d5d749f4d24a7152335"
+        },
+        {
+          "bytes": 281463,
+          "relative_path": "workers/gpu3/episodes/calibration__task08__state04__seed20261028/attempt-001.jsonl",
+          "sha256": "cd2f8319cc4028610a7361bddf0a492b36bf258d4badc72adae4a19daf017c46"
+        },
+        {
+          "bytes": 3109,
+          "relative_path": "workers/gpu3/episodes/calibration__task08__state04__seed20261028/episode.json",
+          "sha256": "c8134a51d5cb8b45a12480aa8d4ff4036f1ee20d1165a57d1937fc34d7474982"
+        },
+        {
+          "bytes": 329,
+          "relative_path": "workers/gpu3/worker_summary.json",
+          "sha256": "c4406ab8c931da075ec700cb2baba5cdf45a33849c602bd94374e08f701de40c"
+        },
+        {
+          "bytes": 264783,
+          "relative_path": "workers/gpu4/episodes/calibration__task04__state02__seed20260926/attempt-001.jsonl",
+          "sha256": "9a0a1a0375dd075ecb0b5799a7f30b36b9e34da7ea8bc006ad3d1e8cb561cf97"
+        },
+        {
+          "bytes": 3576,
+          "relative_path": "workers/gpu4/episodes/calibration__task04__state02__seed20260926/episode.json",
+          "sha256": "bb00c64b5ac9443904594beb0906b593e664f73c18ee452092553e19d1241702"
+        },
+        {
+          "bytes": 277,
+          "relative_path": "workers/gpu4/worker_summary.json",
+          "sha256": "f92fe11bb88aee457e7b5f51f1645d37857d6e33d199062d958e0c6c79246acd"
+        },
+        {
+          "bytes": 282957,
+          "relative_path": "workers/gpu5/episodes/calibration__task04__state03__seed20260927/attempt-001.jsonl",
+          "sha256": "4f29fd3d66f02e56540322a0804234dcf82c5ab3381a84ed6903c1020dfee0ae"
+        },
+        {
+          "bytes": 3596,
+          "relative_path": "workers/gpu5/episodes/calibration__task04__state03__seed20260927/episode.json",
+          "sha256": "c5eacde586dec30e5e2136fa957febf1ea36b7ea80dd400e43cc7c4489d4456a"
+        },
+        {
+          "bytes": 278,
+          "relative_path": "workers/gpu5/worker_summary.json",
+          "sha256": "c112d8f231152160c00b97b060d5bea20e98ae26514d4e6e4a6c3d22e83f12a6"
+        },
+        {
+          "bytes": 284156,
+          "relative_path": "workers/gpu6/episodes/calibration__task01__state01__seed20260825/attempt-001.jsonl",
+          "sha256": "44e05814d63de89061d989280682f3ff3d77a379d799f3731541addc0f44cc1a"
+        },
+        {
+          "bytes": 4412,
+          "relative_path": "workers/gpu6/episodes/calibration__task01__state01__seed20260825/episode.json",
+          "sha256": "c2e004cdb4df310c7352324e4732f1a7dbb61256ede618e0c3e97b2ea3fa8f93"
+        },
+        {
+          "bytes": 281187,
+          "relative_path": "workers/gpu6/episodes/calibration__task04__state04__seed20260928/attempt-001.jsonl",
+          "sha256": "79b1f3cfcb5c654c0caa03fd498aa4b017aaa9788900a6f62f0564318d466642"
+        },
+        {
+          "bytes": 3596,
+          "relative_path": "workers/gpu6/episodes/calibration__task04__state04__seed20260928/episode.json",
+          "sha256": "2d1feb0b1757e7c9b05ee642245147e66e2f04629edcc1656fbd8d6849c432d9"
+        },
+        {
+          "bytes": 328,
+          "relative_path": "workers/gpu6/worker_summary.json",
+          "sha256": "868bcce2aba07e280dc02f987eaa9af7e399944d93427612b1a136e75442b7af"
+        },
+        {
+          "bytes": 279976,
+          "relative_path": "workers/gpu7/episodes/calibration__task01__state02__seed20260826/attempt-001.jsonl",
+          "sha256": "b6b619e2569e267b66629842a631ea93a04cfeff52760fa491318bcdd476a237"
+        },
+        {
+          "bytes": 3923,
+          "relative_path": "workers/gpu7/episodes/calibration__task01__state02__seed20260826/episode.json",
+          "sha256": "435227b0e69c139869b5421cf200b69f54be70581777d49b60da9c1e21505246"
+        },
+        {
+          "bytes": 280958,
+          "relative_path": "workers/gpu7/episodes/calibration__task08__state00__seed20261024/attempt-001.jsonl",
+          "sha256": "e3a18dc0a676df1c4f956c36dc9156e52e0bbc5069d6634ea1613fe19e098d8f"
+        },
+        {
+          "bytes": 3107,
+          "relative_path": "workers/gpu7/episodes/calibration__task08__state00__seed20261024/episode.json",
+          "sha256": "c0bdf6ed49573de9f3e3c728f4987090d37c18732faa32dedd64b7ebd6e7d600"
+        },
+        {
+          "bytes": 329,
+          "relative_path": "workers/gpu7/worker_summary.json",
+          "sha256": "bbceb38557f932e44ff2fdbebacf5578b4d082777f3704f1d2b2483439f10b2b"
+        }
+      ],
+      "inventory_sha256": "fa3ba7ccd9a13745d07afe3a3e1c9b6030abc0c1f913ccdfa9ac22cad70c933e",
+      "root": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_parallel_v1",
+      "total_bytes": 4107915
+    },
+    "sequential": {
+      "file_count": 16,
+      "files": [
+        {
+          "bytes": 4724,
+          "relative_path": "calibration_summary.partial.json",
+          "sha256": "ff0d39fdacf2dac86250a8260f1823a547df861c3dc7dcaeab4157dd46e96acd"
+        },
+        {
+          "bytes": 281018,
+          "relative_path": "episodes/calibration__task00__state00__seed20260724/attempt-001.jsonl",
+          "sha256": "e5530d82248bbad8f582246369a140b87bc1ee45575477897f539328f2dc025e"
+        },
+        {
+          "bytes": 3699,
+          "relative_path": "episodes/calibration__task00__state00__seed20260724/episode.json",
+          "sha256": "176e4954ef912de1707ed0c0ecaf2ae681a40c6c13d793ddfe09d83717acf9a3"
+        },
+        {
+          "bytes": 281178,
+          "relative_path": "episodes/calibration__task00__state01__seed20260725/attempt-001.jsonl",
+          "sha256": "212ab183b942d14e92874c29925c8ff0a8290411cbb5c43c9eed0fbed5d605e4"
+        },
+        {
+          "bytes": 3698,
+          "relative_path": "episodes/calibration__task00__state01__seed20260725/episode.json",
+          "sha256": "95cd7f32893026a84f5e5b97ab06f413f4b0e17cd314171fddec1b314b6a8890"
+        },
+        {
+          "bytes": 280813,
+          "relative_path": "episodes/calibration__task00__state02__seed20260726/attempt-001.jsonl",
+          "sha256": "5440c04328bbf78dd9ab21ee63351dfdd9e0f8ffd7f05aea0fdea494fa076af4"
+        },
+        {
+          "bytes": 3699,
+          "relative_path": "episodes/calibration__task00__state02__seed20260726/episode.json",
+          "sha256": "4952df3b0c17187ab88b9eae9f3169e5f1b099ad7a00290888cd4bda71c13dcd"
+        },
+        {
+          "bytes": 279870,
+          "relative_path": "episodes/calibration__task00__state03__seed20260727/attempt-001.jsonl",
+          "sha256": "fc153ac72e92807ce5cd5126dc7b1eed0d24df7553af6d8a3f6f4f161c5806d3"
+        },
+        {
+          "bytes": 3699,
+          "relative_path": "episodes/calibration__task00__state03__seed20260727/episode.json",
+          "sha256": "61c890df8dead5ffd97ff42457189b8008c1d81515ae67488d897822e8d0481f"
+        },
+        {
+          "bytes": 291862,
+          "relative_path": "episodes/calibration__task00__state04__seed20260728/attempt-001.jsonl",
+          "sha256": "2588fd78d8437a1434eb6f114202c5a9785a4f16611e96cbcd5632c4b10498ba"
+        },
+        {
+          "bytes": 3699,
+          "relative_path": "episodes/calibration__task00__state04__seed20260728/episode.json",
+          "sha256": "5019bba63e16b727f2dbf9a725a757f89dff38b6a65315f7b10596f8857f543a"
+        },
+        {
+          "bytes": 279888,
+          "relative_path": "episodes/calibration__task01__state00__seed20260824/attempt-001.jsonl",
+          "sha256": "24b934fba4b757d99bd06daa1bddc8cf24a218af801a8e373c2b249b9dfdf907"
+        },
+        {
+          "bytes": 3698,
+          "relative_path": "episodes/calibration__task01__state00__seed20260824/episode.json",
+          "sha256": "907a2b54d92a86c5fb27bbde310286109d29913ca9dfd0002884bc2533c40824"
+        },
+        {
+          "bytes": 72949,
+          "relative_path": "episodes/calibration__task01__state01__seed20260825/attempt-001.jsonl",
+          "sha256": "63917b7b144ae1b27cd76ab2102f5f117994f497fbf307c952be84effa1b43a4"
+        },
+        {
+          "bytes": 870,
+          "relative_path": "model_load.json",
+          "sha256": "fd0d5a1950d55368582cdcd2e2f23a26ef282136601627b67ffdfd82b15c8a2e"
+        },
+        {
+          "bytes": 6114,
+          "relative_path": "run_manifest.json",
+          "sha256": "faad94289ca8865a9e38668af4be951b92431cb789b1690f48ff5a925f162f76"
+        }
+      ],
+      "inventory_sha256": "0a690dea5f611c06605897eb9b5647846b671a62e0f7a706313f062a8e38d48d",
+      "root": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_v1",
+      "total_bytes": 1801478
+    }
+  },
+  "v1_overlap_comparison": {
+    "must_not_be_pooled_with_v2": true,
+    "n": 5,
+    "policy_step_budget": 220,
+    "protocol_label": "nonstandard_truncated_calibration_horizon_220",
+    "results": [
+      {
+        "initial_state_id": 0,
+        "policy_steps_consumed": 220,
+        "seed": 20260824,
+        "success": false,
+        "termination_reason": "policy_step_budget_exhausted"
+      },
+      {
+        "initial_state_id": 1,
+        "policy_steps_consumed": 220,
+        "seed": 20260825,
+        "success": false,
+        "termination_reason": "policy_step_budget_exhausted"
+      },
+      {
+        "initial_state_id": 2,
+        "policy_steps_consumed": 220,
+        "seed": 20260826,
+        "success": false,
+        "termination_reason": "policy_step_budget_exhausted"
+      },
+      {
+        "initial_state_id": 3,
+        "policy_steps_consumed": 220,
+        "seed": 20260827,
+        "success": false,
+        "termination_reason": "policy_step_budget_exhausted"
+      },
+      {
+        "initial_state_id": 4,
+        "policy_steps_consumed": 220,
+        "seed": 20260828,
+        "success": false,
+        "termination_reason": "policy_step_budget_exhausted"
+      }
+    ],
+    "successes": 0,
+    "task_id": 1
+  },
+  "worker_count": 8,
+  "worker_summaries": [
+    {
+      "complete": true,
+      "model_load_count": 1,
+      "model_load_seconds": 33.48600963503122,
+      "physical_gpu": "0",
+      "processed_episode_ids": [
+        "calibration_v2__task01__state00__seed20270724",
+        "calibration_v2__task05__state03__seed20270827"
+      ],
+      "processor_loader": "local_upstream_prismatic_processor_v1",
+      "schema_version": "openvla-libero-calibration-v2-worker-summary-v1",
+      "shared_inference_port": null,
+      "shared_inference_server": false,
+      "worker_id": 0
+    },
+    {
+      "complete": true,
+      "model_load_count": 1,
+      "model_load_seconds": 32.459208346903324,
+      "physical_gpu": "1",
+      "processed_episode_ids": [
+        "calibration_v2__task01__state01__seed20270725",
+        "calibration_v2__task05__state04__seed20270828"
+      ],
+      "processor_loader": "local_upstream_prismatic_processor_v1",
+      "schema_version": "openvla-libero-calibration-v2-worker-summary-v1",
+      "shared_inference_port": null,
+      "shared_inference_server": false,
+      "worker_id": 1
+    },
+    {
+      "complete": true,
+      "model_load_count": 1,
+      "model_load_seconds": 29.470163662917912,
+      "physical_gpu": "2",
+      "processed_episode_ids": [
+        "calibration_v2__task01__state02__seed20270726",
+        "calibration_v2__task07__state00__seed20270924"
+      ],
+      "processor_loader": "local_upstream_prismatic_processor_v1",
+      "schema_version": "openvla-libero-calibration-v2-worker-summary-v1",
+      "shared_inference_port": null,
+      "shared_inference_server": false,
+      "worker_id": 2
+    },
+    {
+      "complete": true,
+      "model_load_count": 1,
+      "model_load_seconds": 32.44392064400017,
+      "physical_gpu": "3",
+      "processed_episode_ids": [
+        "calibration_v2__task01__state03__seed20270727",
+        "calibration_v2__task07__state01__seed20270925"
+      ],
+      "processor_loader": "local_upstream_prismatic_processor_v1",
+      "schema_version": "openvla-libero-calibration-v2-worker-summary-v1",
+      "shared_inference_port": null,
+      "shared_inference_server": false,
+      "worker_id": 3
+    },
+    {
+      "complete": true,
+      "model_load_count": 1,
+      "model_load_seconds": 25.633191500790417,
+      "physical_gpu": "4",
+      "processed_episode_ids": [
+        "calibration_v2__task01__state04__seed20270728",
+        "calibration_v2__task07__state02__seed20270926"
+      ],
+      "processor_loader": "local_upstream_prismatic_processor_v1",
+      "schema_version": "openvla-libero-calibration-v2-worker-summary-v1",
+      "shared_inference_port": null,
+      "shared_inference_server": false,
+      "worker_id": 4
+    },
+    {
+      "complete": true,
+      "model_load_count": 1,
+      "model_load_seconds": 28.67838237155229,
+      "physical_gpu": "5",
+      "processed_episode_ids": [
+        "calibration_v2__task05__state00__seed20270824",
+        "calibration_v2__task07__state03__seed20270927"
+      ],
+      "processor_loader": "local_upstream_prismatic_processor_v1",
+      "schema_version": "openvla-libero-calibration-v2-worker-summary-v1",
+      "shared_inference_port": null,
+      "shared_inference_server": false,
+      "worker_id": 5
+    },
+    {
+      "complete": true,
+      "model_load_count": 1,
+      "model_load_seconds": 31.34749336913228,
+      "physical_gpu": "6",
+      "processed_episode_ids": [
+        "calibration_v2__task05__state01__seed20270825",
+        "calibration_v2__task07__state04__seed20270928"
+      ],
+      "processor_loader": "local_upstream_prismatic_processor_v1",
+      "schema_version": "openvla-libero-calibration-v2-worker-summary-v1",
+      "shared_inference_port": null,
+      "shared_inference_server": false,
+      "worker_id": 6
+    },
+    {
+      "complete": true,
+      "model_load_count": 1,
+      "model_load_seconds": 33.66872372291982,
+      "physical_gpu": "7",
+      "processed_episode_ids": [
+        "calibration_v2__task05__state02__seed20270826"
+      ],
+      "processor_loader": "local_upstream_prismatic_processor_v1",
+      "schema_version": "openvla-libero-calibration-v2-worker-summary-v1",
+      "shared_inference_port": null,
+      "shared_inference_server": false,
+      "worker_id": 7
+    }
+  ]
+}

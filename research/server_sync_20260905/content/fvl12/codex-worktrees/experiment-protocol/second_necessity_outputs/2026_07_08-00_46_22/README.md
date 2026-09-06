@@ -1,0 +1,29 @@
+# Verifier Is Not Recovery Test
+
+Source: `/home/lijingsu/vla/disturbance_outputs/full_spatial/2026_07_07-23_57_40/summary.json`
+
+## Metrics
+
+```json
+{
+  "source_summary": "/home/lijingsu/vla/disturbance_outputs/full_spatial/2026_07_07-23_57_40/summary.json",
+  "num_disturbed_episodes": 10,
+  "clean_success_rate_reference": 0.9,
+  "disturbed_success_rate_reactive_vla": 0.0,
+  "oracle_verifier_only": {
+    "invalid_continuation_detection_rate": 1.0,
+    "affected_object_identification_rate": 0.0,
+    "invalid_state_identification_rate": 0.0,
+    "completed_subgoal_preservation_rate": 0.0,
+    "selective_recovery_rate": 0.0
+  },
+  "minimal_structured_recovery_state": {
+    "invalid_continuation_detection_rate": 1.0,
+    "affected_object_identification_rate": 1.0,
+    "invalid_state_identification_rate": 1.0,
+    "completed_subgoal_preservation_rate": 1.0,
+    "selective_recovery_rate": 1.0
+  },
+  "interpretation": "Oracle verifier detects that continuation is invalid, but without structured recovery state it has no object/subgoal validity representation and collapses to stop_or_full_replan. Minimal structured state exposes affected object, invalid validity predicates, and selective recovery action."
+}
+```

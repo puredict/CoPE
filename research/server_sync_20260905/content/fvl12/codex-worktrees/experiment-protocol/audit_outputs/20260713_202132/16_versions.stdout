@@ -1,0 +1,10 @@
+{
+  "libero": "ERROR ModuleNotFoundError: No module named 'libero'",
+  "mujoco": "2.3.7",
+  "platform": "Linux-5.19.0-50-generic-x86_64-with-glibc2.35",
+  "python": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
+  "robosuite": "1.4.1",
+  "torch": "ERROR ImportError: /share/apps/cuda/12.2/lib64/libnvJitLink.so.12: cannot read file data: Input/output error",
+  "torch_cuda_probe_error": "ImportError('/share/apps/cuda/12.2/lib64/libnvJitLink.so.12: cannot read file data: Input/output error')",
+  "transformers": "ERROR ImportError: /share/apps/cuda/12.2/lib64/libnvJitLink.so.12: cannot read file data: Input/output error"
+}

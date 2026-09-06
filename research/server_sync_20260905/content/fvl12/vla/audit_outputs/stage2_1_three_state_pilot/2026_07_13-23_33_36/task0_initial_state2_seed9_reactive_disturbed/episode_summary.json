@@ -1,0 +1,272 @@
+{
+  "condition": "disturbed",
+  "mode": "reactive_disturbed",
+  "pair_key": {
+    "checkpoint": "/home/lijingsu/vla/models/openvla-7b-finetuned-libero-spatial",
+    "suite": "libero_spatial",
+    "task_id": 0,
+    "initial_state_id": 2,
+    "seed": 9,
+    "target_joint": "akita_black_bowl_1_joint0",
+    "disturbance_step": 70,
+    "disturbance_delta_xyz": [
+      0.1,
+      0.05,
+      0.0
+    ],
+    "max_policy_steps": 220,
+    "warmup_env_steps": 10
+  },
+  "manual_intervention": false,
+  "checkpoint": "/home/lijingsu/vla/models/openvla-7b-finetuned-libero-spatial",
+  "seed": 9,
+  "seed_rule": "base_plus_initial_state",
+  "task_suite": "libero_spatial",
+  "unnorm_key": "libero_spatial",
+  "task_id": 0,
+  "trial_id": 2,
+  "initial_state_id": 2,
+  "task_description": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+  "target_joint": "akita_black_bowl_1_joint0",
+  "target_selection": {
+    "selected_joint": "akita_black_bowl_1_joint0",
+    "candidates": [
+      {
+        "name": "akita_black_bowl_1_joint0",
+        "joint_id": 9,
+        "qpos_addr": 9,
+        "object_name": "akita_black_bowl_1",
+        "score": 2,
+        "candidate_tokens": [
+          "akita",
+          "black",
+          "bowl"
+        ],
+        "matched_task_tokens": [
+          "black",
+          "bowl"
+        ],
+        "score_reason": "2 overlapping task/object tokens"
+      },
+      {
+        "name": "akita_black_bowl_2_joint0",
+        "joint_id": 10,
+        "qpos_addr": 16,
+        "object_name": "akita_black_bowl_2",
+        "score": 2,
+        "candidate_tokens": [
+          "akita",
+          "black",
+          "bowl"
+        ],
+        "matched_task_tokens": [
+          "black",
+          "bowl"
+        ],
+        "score_reason": "2 overlapping task/object tokens"
+      },
+      {
+        "name": "glazed_rim_porcelain_ramekin_1_joint0",
+        "joint_id": 12,
+        "qpos_addr": 30,
+        "object_name": "glazed_rim_porcelain_ramekin_1",
+        "score": 1,
+        "candidate_tokens": [
+          "glazed",
+          "porcelain",
+          "ramekin",
+          "rim"
+        ],
+        "matched_task_tokens": [
+          "ramekin"
+        ],
+        "score_reason": "1 overlapping task/object tokens"
+      },
+      {
+        "name": "plate_1_joint0",
+        "joint_id": 13,
+        "qpos_addr": 37,
+        "object_name": "plate_1",
+        "score": 1,
+        "candidate_tokens": [
+          "plate"
+        ],
+        "matched_task_tokens": [
+          "plate"
+        ],
+        "score_reason": "1 overlapping task/object tokens"
+      },
+      {
+        "name": "cookies_1_joint0",
+        "joint_id": 11,
+        "qpos_addr": 23,
+        "object_name": "cookies_1",
+        "score": 0,
+        "candidate_tokens": [
+          "cookies"
+        ],
+        "matched_task_tokens": [],
+        "score_reason": "0 overlapping task/object tokens"
+      }
+    ],
+    "reason": "explicit_target_joint",
+    "requested_joint": "akita_black_bowl_1_joint0",
+    "ambiguous": false
+  },
+  "initial_robot_state": {
+    "eef_pos": [
+      -0.1952425934658358,
+      -0.00446694026865012,
+      1.194108135378771
+    ],
+    "eef_quat": [
+      0.9990364142867776,
+      -0.038796438493403536,
+      -0.005679372250715707,
+      -0.019718621150673327
+    ],
+    "gripper_qpos": [
+      0.020833,
+      -0.020833
+    ]
+  },
+  "initial_target_qpos": [
+    -0.0472248540439449,
+    0.19943806433943206,
+    0.97,
+    0.7071067811865475,
+    0.0,
+    0.0,
+    0.7071067811865476
+  ],
+  "initial_target_body_pose": null,
+  "policy_start_robot_state": {
+    "eef_pos": [
+      -0.2005013414552943,
+      -0.0032684940542503284,
+      1.187241832249189
+    ],
+    "eef_quat": [
+      0.9996222395588725,
+      -0.001417677256656369,
+      -0.027441783912465528,
+      -0.0005629086975220514
+    ],
+    "gripper_qpos": [
+      0.03872606780519049,
+      -0.03871957080565241
+    ]
+  },
+  "policy_start_target_qpos": [
+    -0.09867560318366513,
+    0.19747202603741107,
+    0.8990058448550461,
+    0.7039780405350278,
+    0.009262169330153105,
+    0.009944592165149554,
+    0.7100917093942382
+  ],
+  "policy_start_target_body_pose": null,
+  "status": "timeout",
+  "episode_status": {
+    "status": "timeout",
+    "success": false,
+    "failure": false,
+    "timeout": true,
+    "stopped": false,
+    "simulator_error": false,
+    "reward": 0.0,
+    "done": false,
+    "policy_step": 220,
+    "max_steps": 220,
+    "source": "policy_step_budget_exhausted",
+    "detail": {
+      "info_keys": []
+    }
+  },
+  "success": false,
+  "timeout": true,
+  "stopped": false,
+  "simulator_error": false,
+  "success_source": null,
+  "final_reward": 0.0,
+  "num_policy_steps": 220,
+  "policy_step_budget": 220,
+  "warmup_simulator_steps": 10,
+  "policy_inference_steps": 220,
+  "environment_control_steps": 230,
+  "pre_disturbance_policy_steps": 70,
+  "recovery_policy_steps": 150,
+  "success_within_original_budget": false,
+  "total_policy_steps_consumed": 220,
+  "reset_count": 0,
+  "rollback_count": 0,
+  "budget": {
+    "policy_step_budget": 220,
+    "warmup_simulator_steps": 10,
+    "policy_inference_steps": 220,
+    "environment_control_steps": 230,
+    "pre_disturbance_policy_steps": 70,
+    "recovery_policy_steps": 150,
+    "total_policy_steps_consumed": 220,
+    "reset_count": 0,
+    "rollback_count": 0,
+    "success_within_original_budget": false
+  },
+  "disturbance": {
+    "joint": "akita_black_bowl_1_joint0",
+    "joint_id": 9,
+    "qpos_addr": 9,
+    "before_qpos": [
+      0.038353983081806195,
+      0.21616962903905554,
+      0.9782198008992791,
+      0.8134134609781845,
+      -0.03487130648686507,
+      0.0282767309861833,
+      0.579950825474131
+    ],
+    "after_qpos": [
+      0.1383539830818062,
+      0.26616962903905556,
+      0.9782198008992791,
+      0.8134134609781845,
+      -0.03487130648686507,
+      0.0282767309861833,
+      0.579950825474131
+    ],
+    "delta_xy": [
+      0.1,
+      0.05
+    ],
+    "applied_at": "2026-07-13T15:42:49.030769+00:00",
+    "target_body_pose_before": null,
+    "target_body_pose_after": null,
+    "delta_xyz_actual": [
+      0.09999999999999999,
+      0.05000000000000002,
+      0.0
+    ],
+    "refresh": {
+      "method": "env.env._get_observations(force_update=True)",
+      "operations": [
+        "sim.forward",
+        "env.check_success",
+        "env._post_process",
+        "env._update_observables",
+        "env.env._post_process",
+        "env.env._update_observables"
+      ],
+      "consumed_noop_env_step": false
+    }
+  },
+  "video_path": "/home/lijingsu/vla/audit_outputs/stage2_1_three_state_pilot/2026_07_13-23_33_36/task0_initial_state2_seed9_reactive_disturbed/raw.mp4",
+  "artifact_paths": {
+    "episode_dir": "/home/lijingsu/vla/audit_outputs/stage2_1_three_state_pilot/2026_07_13-23_33_36/task0_initial_state2_seed9_reactive_disturbed",
+    "run_config": "/home/lijingsu/vla/audit_outputs/stage2_1_three_state_pilot/2026_07_13-23_33_36/task0_initial_state2_seed9_reactive_disturbed/run_config.json",
+    "events": "/home/lijingsu/vla/audit_outputs/stage2_1_three_state_pilot/2026_07_13-23_33_36/task0_initial_state2_seed9_reactive_disturbed/events.jsonl",
+    "episode_summary": "/home/lijingsu/vla/audit_outputs/stage2_1_three_state_pilot/2026_07_13-23_33_36/task0_initial_state2_seed9_reactive_disturbed/episode_summary.json",
+    "actions": "/home/lijingsu/vla/audit_outputs/stage2_1_three_state_pilot/2026_07_13-23_33_36/task0_initial_state2_seed9_reactive_disturbed/actions.jsonl",
+    "raw_video": "/home/lijingsu/vla/audit_outputs/stage2_1_three_state_pilot/2026_07_13-23_33_36/task0_initial_state2_seed9_reactive_disturbed/raw.mp4"
+  }
+}

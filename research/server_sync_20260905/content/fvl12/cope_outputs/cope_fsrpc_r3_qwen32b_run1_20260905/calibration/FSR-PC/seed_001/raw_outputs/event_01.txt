@@ -1,0 +1,326 @@
+{
+  "schema_version": "cope-lineage-state-v1",
+  "revision": 1,
+  "slots": [
+    {
+      "grounding": "place_milk_in_basket_B",
+      "history": [
+        {
+          "detail": "registered persistent slot archive/order-0000",
+          "event_id": "task-initialization",
+          "mode_after": "active",
+          "mode_before": null,
+          "operation": "Create",
+          "seq": 1
+        },
+        {
+          "detail": "order physically completed; record remains referenceable",
+          "event_id": "historical-completion-0000",
+          "mode_after": "completed",
+          "mode_before": "active",
+          "operation": "Complete",
+          "seq": 2
+        }
+      ],
+      "kind": "order_archive",
+      "lineage": {
+        "child_ids": [],
+        "depth": 0,
+        "parent_id": null,
+        "root_id": "archive/order-0000"
+      },
+      "logical_id": "historical-order-0000",
+      "mode": "completed",
+      "payload": {
+        "audit_nonce": "49ffee8ac9086f7424fa",
+        "completion_checkpoint": {
+          "batch": "batch-000",
+          "station": "station-0",
+          "verified": true
+        },
+        "customer_tier": "standard",
+        "object": "milk",
+        "order_number": 0,
+        "receipt_code": "R-08470054",
+        "target": "basket_B"
+      },
+      "priority": "soft",
+      "slot_id": "archive/order-0000"
+    },
+    {
+      "grounding": "place_yogurt_in_basket_A",
+      "history": [
+        {
+          "detail": "registered persistent slot archive/order-0001",
+          "event_id": "task-initialization",
+          "mode_after": "active",
+          "mode_before": null,
+          "operation": "Create",
+          "seq": 1
+        },
+        {
+          "detail": "order physically completed; record remains referenceable",
+          "event_id": "historical-completion-0001",
+          "mode_after": "completed",
+          "mode_before": "active",
+          "operation": "Complete",
+          "seq": 2
+        }
+      ],
+      "kind": "order_archive",
+      "lineage": {
+        "child_ids": [],
+        "depth": 0,
+        "parent_id": null,
+        "root_id": "archive/order-0001"
+      },
+      "logical_id": "historical-order-0001",
+      "mode": "completed",
+      "payload": {
+        "audit_nonce": "2cd67a15cec89018f14a",
+        "completion_checkpoint": {
+          "batch": "batch-000",
+          "station": "station-1",
+          "verified": true
+        },
+        "customer_tier": "cold-chain",
+        "object": "yogurt",
+        "order_number": 1,
+        "receipt_code": "R-66496171",
+        "target": "basket_A"
+      },
+      "priority": "soft",
+      "slot_id": "archive/order-0001"
+    },
+    {
+      "grounding": "place_butter_in_basket_C",
+      "history": [
+        {
+          "detail": "registered persistent slot archive/order-0002",
+          "event_id": "task-initialization",
+          "mode_after": "active",
+          "mode_before": null,
+          "operation": "Create",
+          "seq": 1
+        },
+        {
+          "detail": "order physically completed; record remains referenceable",
+          "event_id": "historical-completion-0002",
+          "mode_after": "completed",
+          "mode_before": "active",
+          "operation": "Complete",
+          "seq": 2
+        }
+      ],
+      "kind": "order_archive",
+      "lineage": {
+        "child_ids": [],
+        "depth": 0,
+        "parent_id": null,
+        "root_id": "archive/order-0002"
+      },
+      "logical_id": "historical-order-0002",
+      "mode": "completed",
+      "payload": {
+        "audit_nonce": "cce5b28702e0d8b9f390",
+        "completion_checkpoint": {
+          "batch": "batch-000",
+          "station": "station-2",
+          "verified": true
+        },
+        "customer_tier": "fragile",
+        "object": "butter",
+        "order_number": 2,
+        "receipt_code": "R-63383683",
+        "target": "basket_C"
+      },
+      "priority": "soft",
+      "slot_id": "archive/order-0002"
+    },
+    {
+      "grounding": "place_milk_in_basket_B",
+      "history": [
+        {
+          "detail": "registered persistent slot archive/order-0003",
+          "event_id": "task-initialization",
+          "mode_after": "active",
+          "mode_before": null,
+          "operation": "Create",
+          "seq": 1
+        },
+        {
+          "detail": "order physically completed; record remains referenceable",
+          "event_id": "historical-completion-0003",
+          "mode_after": "completed",
+          "mode_before": "active",
+          "operation": "Complete",
+          "seq": 2
+        }
+      ],
+      "kind": "order_archive",
+      "lineage": {
+        "child_ids": [],
+        "depth": 0,
+        "parent_id": null,
+        "root_id": "archive/order-0003"
+      },
+      "logical_id": "historical-order-0003",
+      "mode": "completed",
+      "payload": {
+        "audit_nonce": "87ed33d41649abae2ef0",
+        "completion_checkpoint": {
+          "batch": "batch-000",
+          "station": "station-3",
+          "verified": true
+        },
+        "customer_tier": "standard",
+        "object": "milk",
+        "order_number": 3,
+        "receipt_code": "R-28179657",
+        "target": "basket_B"
+      },
+      "priority": "soft",
+      "slot_id": "archive/order-0003"
+    },
+    {
+      "grounding": "place_butter_in_basket_B_then_execute_root_receipt",
+      "history": [
+        {
+          "detail": "registered persistent slot order-critical/root",
+          "event_id": "task-initialization",
+          "mode_after": "active",
+          "mode_before": null,
+          "operation": "Create",
+          "seq": 1
+        },
+        {
+          "detail": "temporary station outage",
+          "event_id": "seed-0001/e01",
+          "mode_after": "suspended",
+          "mode_before": "active",
+          "operation": "Suspend",
+          "seq": 2
+        }
+      ],
+      "kind": "workflow",
+      "lineage": {
+        "child_ids": [],
+        "depth": 0,
+        "parent_id": null,
+        "root_id": "order-critical/root"
+      },
+      "logical_id": "order-critical",
+      "mode": "suspended",
+      "payload": {
+        "audit_nonce": "9d8825f62e34b66c939a",
+        "continuation_key": "receipt-v0",
+        "object": "butter",
+        "order_id": "critical-0001",
+        "plan": [
+          {
+            "object": "butter",
+            "role": "primary_order",
+            "target": "basket_B"
+          },
+          {
+            "object": "milk",
+            "role": "receipt_token",
+            "target": "basket_A"
+          },
+          {
+            "object": "yogurt",
+            "role": "closure_token",
+            "target": "basket_A"
+          }
+        ],
+        "target": "basket_B"
+      },
+      "priority": "soft",
+      "slot_id": "order-critical/root"
+    },
+    {
+      "grounding": "keep_contact_force_below_limit",
+      "history": [
+        {
+          "detail": "registered persistent slot safety/gentle",
+          "event_id": "task-initialization",
+          "mode_after": "active",
+          "mode_before": null,
+          "operation": "Create",
+          "seq": 1
+        }
+      ],
+      "kind": "safety",
+      "lineage": {
+        "child_ids": [],
+        "depth": 0,
+        "parent_id": null,
+        "root_id": "safety/gentle"
+      },
+      "logical_id": "safety/gentle",
+      "mode": "active",
+      "payload": {
+        "must_preserve": true,
+        "scope": "entire_shift"
+      },
+      "priority": "hard",
+      "slot_id": "safety/gentle"
+    },
+    {
+      "grounding": "avoid_robot_object_collision",
+      "history": [
+        {
+          "detail": "registered persistent slot safety/no-collision",
+          "event_id": "task-initialization",
+          "mode_after": "active",
+          "mode_before": null,
+          "operation": "Create",
+          "seq": 1
+        }
+      ],
+      "kind": "safety",
+      "lineage": {
+        "child_ids": [],
+        "depth": 0,
+        "parent_id": null,
+        "root_id": "safety/no-collision"
+      },
+      "logical_id": "safety/no-collision",
+      "mode": "active",
+      "payload": {
+        "must_preserve": true,
+        "scope": "entire_shift"
+      },
+      "priority": "hard",
+      "slot_id": "safety/no-collision"
+    },
+    {
+      "grounding": "never_repeat_a_completed_action",
+      "history": [
+        {
+          "detail": "registered persistent slot safety/no-repeat",
+          "event_id": "task-initialization",
+          "mode_after": "active",
+          "mode_before": null,
+          "operation": "Create",
+          "seq": 1
+        }
+      ],
+      "kind": "safety",
+      "lineage": {
+        "child_ids": [],
+        "depth": 0,
+        "parent_id": null,
+        "root_id": "safety/no-repeat"
+      },
+      "logical_id": "safety/no-repeat",
+      "mode": "active",
+      "payload": {
+        "must_preserve": true,
+        "scope": "entire_shift"
+      },
+      "priority": "hard",
+      "slot_id": "safety/no-repeat"
+    }
+  ]
+}

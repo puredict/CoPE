@@ -1,0 +1,9 @@
+task=pen_insertion  mode=repair  [DRY-RUN (scripted fake; proves wiring only)]
+note: official ReKep demo; alignment/insertion proxy
+
+wrote /home/lijingsu/rekep_v2_execution_20260810/pen_insertion_repair_s0/trace.json  (400 steps)
+repair decisions:
+   event=E0001@t1  goal=restore+obstacle
+   SELECTED  Suspend+Retreat+Stabilize+WaitUntilClear+Realign+Resume (score=6.140)
+
+Status: DRY-RUN only. GPU behaviour is NOT EXECUTED and requires remote GPU verification.

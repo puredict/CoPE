@@ -1,0 +1,81 @@
+diff --git a/configs/openvla_libero_10_calibration_v2.yaml b/configs/openvla_libero_10_calibration_v2.yaml
+index 317f5ad..d980db4 100644
+--- a/configs/openvla_libero_10_calibration_v2.yaml
++++ b/configs/openvla_libero_10_calibration_v2.yaml
+@@ -64,8 +64,8 @@ checkpoint:
+   expected_adapter_state_dim: 8
+   checkpoint_proprio_statistics_dim: 7
+   model_consumes_proprio: false
+   expected_weight_files: 4
+-  files_manifest_sha256: 58773a8ef85515f695c99402f692dc5afe0fb71efd7f3984ff44c1f117c4f034
++  files_manifest_sha256: 2990c991ffa194ff3e720115454b815e4d83897250c6a88d2f7d70d817543af7
+   processor_loader: local_upstream_prismatic_processor_v1
+   tokenizer_files:
+     tokenizer.json: 8f5e2869e1807b8bb3c7717a294539c37e9de5d728ad60e31ef57e83cc5ea527
+@@ -89,18 +89,18 @@ checkpoint:
+ official_protocol:
+   repository: openvla/openvla
+-  checked_out_commit: c8f03f48af692657d3060c19588038c7220e9af9
+-  runner_path: /home/lijingsu/vla/src/openvla/experiments/robot/libero/run_libero_eval.py
++  checked_out_commit: 9bf418e79d019d416860990d60379d66f0c06220
++  runner_path: /home/lijingsu/codex-worktrees/openvla-cope-cleanroom/experiments/robot/libero/run_libero_eval.py
+   runner_tracked_blob: 5c3f58178d7c827df829379354f7aefddc0458bc
+-  runner_worktree_sha256: f4c1d741489980aa51a409d7a03ec4a08a4dc5710d32d559427b92e339c6a6f3
++  runner_worktree_sha256: 369d9fc3d59067998ebfadafbd516872c7ff6f9f06a0a48cda8b6ca48051de77
+   openvla_utils_sha256: 539687fa13e8fc69b79289cbb2be1b7e1076dcaae4dc0cbfb5e76c6739a38e61
+   robot_utils_sha256: d513c071fb8eaade42a5bc591a48022c11b63bfd58380d0cf319dcc3bdabb976
+   libero_utils_sha256: 6c162ce0954c8659018ee8ff1604a33904b50ac0631a8ca0f8bf1f7a4d25181d
+   attention_implementation: sdpa
+ 
+ libero_runtime:
+   package_version: 0.1.0
+-  source_path: /home/lijingsu/vla/src/LIBERO
+-  source_commit: 570d78333ee977c8ae6de3d97120b23272c4c660
++  source_path: /home/lijingsu/codex-worktrees/libero-cope-cleanroom
++  source_commit: 8f1084e3132a39270c3a13ebe37270a43ece2a01
+   task_identity:
+     "1":
+       description: put both the cream cheese box and the butter in the basket
+diff --git a/manifests/semantic_task1_config_v1.csv b/manifests/semantic_task1_config_v1.csv
+index 16f2828..5665d1c 100644
+--- a/manifests/semantic_task1_config_v1.csv
++++ b/manifests/semantic_task1_config_v1.csv
+@@ -1,2 +1,2 @@
+ schema_version,study_id,task_suite,task_id,checkpoint_id,checkpoint_repository,checkpoint_revision,checkpoint_path,checkpoint_files_manifest_sha256,checkpoint_unnorm_key,expected_weight_files,bddl_path,bddl_sha256,init_states_path,init_states_sha256,libero_commit,openvla_commit,predicate_factory,predicate_producer_commit,predicate_snapshot_schema,event_types,observation_fields,pilot_manifest_path,reserved_state_ids,rollout_authorized
+-cope-semantic-task1-pilot-config-v1,cope_task1_semantic_replacement_cancellation_pilot_v1,libero_10,1,openvla-7b-finetuned-libero-10,openvla/openvla-7b-finetuned-libero-10,80970322773f81baa2e22fe495d0487b93a05cfa,/home/lijingsu/vla/models/openvla-7b-finetuned-libero-10,58773a8ef85515f695c99402f692dc5afe0fb71efd7f3984ff44c1f117c4f034,libero_10,4,/home/lijingsu/vla/src/LIBERO/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket.bddl,3f552805c7ab34c44debcf38a48b8131d6fee3011dd86c039650b84e0f77d058,/home/lijingsu/vla/src/LIBERO/libero/libero/init_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket.pruned_init,f8ac06ea8f43bb328d40cba1e6a9767da2f8f5386fd7ff3f845c64a96bf6d2ce,570d78333ee977c8ae6de3d97120b23272c4c660,c8f03f48af692657d3060c19588038c7220e9af9,cope.libero_predicate_validator:create_libero_predicate_validator,298dac707bb0d57aad050978d6e81d7aab93090d,cope-libero-predicate-snapshot-v1,replace_pending_goal;cancel_pending_goal,encoding;rgb;sha256;width;height;fresh;predicate_snapshot,manifests/semantic_oracle_pilot_v1.csv,25;26,false
++cope-semantic-task1-pilot-config-v1,cope_task1_semantic_replacement_cancellation_pilot_v1,libero_10,1,openvla-7b-finetuned-libero-10,openvla/openvla-7b-finetuned-libero-10,80970322773f81baa2e22fe495d0487b93a05cfa,/home/lijingsu/vla/models/openvla-7b-finetuned-libero-10,2990c991ffa194ff3e720115454b815e4d83897250c6a88d2f7d70d817543af7,libero_10,4,/home/lijingsu/codex-worktrees/libero-cope-cleanroom/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket.bddl,3f552805c7ab34c44debcf38a48b8131d6fee3011dd86c039650b84e0f77d058,/home/lijingsu/codex-worktrees/libero-cope-cleanroom/libero/libero/init_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket.pruned_init,f8ac06ea8f43bb328d40cba1e6a9767da2f8f5386fd7ff3f845c64a96bf6d2ce,8f1084e3132a39270c3a13ebe37270a43ece2a01,9bf418e79d019d416860990d60379d66f0c06220,cope.libero_predicate_validator:create_libero_predicate_validator,298dac707bb0d57aad050978d6e81d7aab93090d,cope-libero-predicate-snapshot-v1,replace_pending_goal;cancel_pending_goal,encoding;rgb;sha256;width;height;fresh;predicate_snapshot,manifests/semantic_oracle_pilot_v1.csv,25;26,false
+diff --git a/scripts/run_project_env.sh b/scripts/run_project_env.sh
+index a60731d..902b0dc 100755
+--- a/scripts/run_project_env.sh
++++ b/scripts/run_project_env.sh
+@@ -4,11 +4,14 @@ set -euo pipefail
+ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+ 
+-SOURCE_PROJECT_ROOT="${PROJECT_ROOT}"
+-if [[ ! -d "${SOURCE_PROJECT_ROOT}/src/openvla" || ! -d "${SOURCE_PROJECT_ROOT}/src/LIBERO" ]]; then
+-  if [[ -d "/home/lijingsu/vla/src/openvla" && -d "/home/lijingsu/vla/src/LIBERO" ]]; then
+-    SOURCE_PROJECT_ROOT="/home/lijingsu/vla"
+-  fi
+-fi
++OPENVLA_ROOT="${COPE_OPENVLA_ROOT:-/home/lijingsu/codex-worktrees/openvla-cope-cleanroom}"
++LIBERO_ROOT="${COPE_LIBERO_ROOT:-/home/lijingsu/codex-worktrees/libero-cope-cleanroom}"
++LIBERO_CONFIG_ROOT="${LIBERO_CONFIG_PATH:-/home/lijingsu/codex-worktrees/cope-runtime-config-20260803}"
++for required in "${OPENVLA_ROOT}" "${LIBERO_ROOT}" "${LIBERO_CONFIG_ROOT}/config.yaml"; do
++  if [[ ! -e "${required}" ]]; then
++    echo "[run_project_env] Missing true-clean runtime dependency: ${required}" >&2
++    exit 2
++  fi
++done
+ 
+ cd "${PROJECT_ROOT}"
+@@ -23,7 +26,8 @@ if [[ -x "${PROJECT_ROOT}/.venv/bin/python" ]]; then
+   export PATH="${VIRTUAL_ENV}/bin:${PATH}"
+ fi
+ 
+-export PYTHONPATH="${SOURCE_PROJECT_ROOT}/src/openvla:${SOURCE_PROJECT_ROOT}/src/LIBERO:${PYTHONPATH:-}"
++export PYTHONPATH="${OPENVLA_ROOT}:${LIBERO_ROOT}:${PYTHONPATH:-}"
++export LIBERO_CONFIG_PATH="${LIBERO_CONFIG_ROOT}"
+ export MUJOCO_GL="${MUJOCO_GL:-osmesa}"
+ export PYOPENGL_PLATFORM="${PYOPENGL_PLATFORM:-osmesa}"
+ export HF_HOME="${HF_HOME:-${PROJECT_ROOT}/cache/huggingface}"

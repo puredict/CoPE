@@ -1,0 +1,102 @@
+{
+  "readiness_report": "/home/lijingsu/cope-integration-outputs-20260724/preflight/main_pilot_fixture_diagnostic_readiness.json",
+  "schema_version": "cope-main-readiness-v1",
+  "ready": false,
+  "phase": "pilot",
+  "event_source": "oracle",
+  "git_commit": "347d1581cbf0f52c6df11f4184728ab5ae497208",
+  "config_hash": "9c3f78d1edfa8e5342e31b614942e2adb7952d1363d3505d4e0cbb2df3bba7dc",
+  "manifest": {
+    "path": "/home/lijingsu/cope-integration-20260724/tests/fixtures/disturbance_atlas_v1.fixture.jsonl",
+    "digest": "f6472bc4f781a5d2690ce06ff8c78f69923590cbcef6df90ef0511f660f3600e",
+    "atlas_commit": "fixture-atlas",
+    "fixture": true
+  },
+  "selected_pair_count": 4,
+  "scheduled_episode_count": 24,
+  "engine_commit": "fd0e2c501342ed7226360ae63c14615a1fc44c65",
+  "test_only": true,
+  "rollout_authorized": false,
+  "formal_evidence_eligible": false,
+  "checks": [
+    {
+      "name": "git_commit_recorded",
+      "passed": true,
+      "detail": "347d1581cbf0f52c6df11f4184728ab5ae497208"
+    },
+    {
+      "name": "git_worktree_clean",
+      "passed": true,
+      "detail": "clean"
+    },
+    {
+      "name": "six_condition_order",
+      "passed": true,
+      "detail": "('clean', 'reactive_disturbed', 'structured_relocalize_prompt', 'stage_backtrack_subgoal', 'history_augmented_full_regeneration', 'cope_patch')"
+    },
+    {
+      "name": "ranked_privileges_forbidden",
+      "passed": true,
+      "detail": "manual=false reset=false rollback=false"
+    },
+    {
+      "name": "primary_oracle_event",
+      "passed": true,
+      "detail": "oracle"
+    },
+    {
+      "name": "complete_preregistered_pairs",
+      "passed": true,
+      "detail": "4"
+    },
+    {
+      "name": "episode_count",
+      "passed": true,
+      "detail": "24"
+    },
+    {
+      "name": "disturbance_atlas",
+      "passed": true,
+      "detail": "f6472bc4f781a5d2690ce06ff8c78f69923590cbcef6df90ef0511f660f3600e"
+    },
+    {
+      "name": "high_level_provider",
+      "passed": false,
+      "detail": "high-level provider is not configured"
+    },
+    {
+      "name": "cope_engine",
+      "passed": true,
+      "detail": "fd0e2c501342ed7226360ae63c14615a1fc44c65"
+    },
+    {
+      "name": "rollout_backend",
+      "passed": false,
+      "detail": "rollout backend is not configured"
+    },
+    {
+      "name": "checkpoint",
+      "passed": true,
+      "detail": "/home/lijingsu/vla/models/openvla-7b-finetuned-libero-spatial"
+    },
+    {
+      "name": "checkpoint_digest",
+      "passed": true,
+      "detail": "missing checkpoint.sha256"
+    },
+    {
+      "name": "external_dependency_commits",
+      "passed": true,
+      "detail": "atlas=fixture-atlas engine=fd0e2c501342ed7226360ae63c14615a1fc44c65"
+    },
+    {
+      "name": "analysis_stack",
+      "passed": true,
+      "detail": "missing ['statsmodels']"
+    }
+  ],
+  "blockers": [
+    "high-level provider is not configured",
+    "rollout backend is not configured"
+  ]
+}

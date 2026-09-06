@@ -1,0 +1,14 @@
+{
+  "attempt_status": "valid_experimental_terminal",
+  "config_hash": "6cbc6c22065aa155a7d632fefe97788ec624dfd1aa07612e68ee4e56c11de49d",
+  "episode_id": "calibration_v2__task01__state01__seed20270725",
+  "physical_gpu": "1",
+  "schema_version": "calibration-v2-valid-attempt-v1",
+  "seed": 20270725,
+  "success": true,
+  "terminal": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_v2/workers/gpu1/episodes/calibration_v2__task01__state01__seed20270725/episode.json",
+  "termination_reason": "libero_done",
+  "trace": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_v2/workers/gpu1/episodes/calibration_v2__task01__state01__seed20270725/attempt-001.jsonl",
+  "valid_experimental_terminal": true,
+  "worker_id": 1
+}

@@ -1,0 +1,210 @@
+index	exit	command	log_path
+00	128	cd /home/lijingsu/vla && pwd && git status --short && nvidia-smi	/home/lijingsu/vla/audit_outputs/20260713_202132/00_first_command.log
+01_pwd	0	cd /home/lijingsu/vla && pwd	/home/lijingsu/vla/audit_outputs/20260713_202132/01_pwd.log
+02_git_status	0	cd /home/lijingsu/vla && git status --short || true	/home/lijingsu/vla/audit_outputs/20260713_202132/02_git_status.log
+03_git_toplevel	0	cd /home/lijingsu/vla && git rev-parse --show-toplevel || true	/home/lijingsu/vla/audit_outputs/20260713_202132/03_git_toplevel.log
+04_git_head	0	cd /home/lijingsu/vla && git rev-parse HEAD || true	/home/lijingsu/vla/audit_outputs/20260713_202132/04_git_head.log
+05_file_tree	0	cd /home/lijingsu/vla && find . -maxdepth 2 -type f | sort | sed -n '1,240p'	/home/lijingsu/vla/audit_outputs/20260713_202132/05_file_tree.log
+06_ls_key_paths	0	cd /home/lijingsu/vla && ls -ld .venv src/openvla src/LIBERO models cache 2>&1 || true	/home/lijingsu/vla/audit_outputs/20260713_202132/06_ls_key_paths.log
+07_model_files	0	cd /home/lijingsu/vla && find models -maxdepth 2 \( -type f -o -type l \) 2>/dev/null | head -100	/home/lijingsu/vla/audit_outputs/20260713_202132/07_model_files.log
+08_nvidia_smi	0	nvidia-smi	/home/lijingsu/vla/audit_outputs/20260713_202132/08_nvidia_smi.log
+09_nvidia_query	0	nvidia-smi --query-gpu=index,name,memory.total,memory.used,utilization.gpu --format=csv	/home/lijingsu/vla/audit_outputs/20260713_202132/09_nvidia_query.log
+10_disk	0	df -h /home /tmp	/home/lijingsu/vla/audit_outputs/20260713_202132/10_disk.log
+11_memory	0	free -h	/home/lijingsu/vla/audit_outputs/20260713_202132/11_memory.log
+12_venv_python	0	cd /home/lijingsu/vla && if [ -d .venv ]; then source .venv/bin/activate && python -V && which python && python -m pip --version; else echo ".venv missing"; fi	/home/lijingsu/vla/audit_outputs/20260713_202132/12_venv_python.log
+13_pip_freeze_audit	0	cd /home/lijingsu/vla && if [ -d .venv ]; then source .venv/bin/activate && python -m pip freeze > /home/lijingsu/vla/audit_outputs/20260713_202132/pip_freeze.txt && wc -l /home/lijingsu/vla/audit_outputs/20260713_202132/pip_freeze.txt; else echo ".venv missing"; fi	/home/lijingsu/vla/audit_outputs/20260713_202132/13_pip_freeze_audit.log
+14_system_txt	0	cd /home/lijingsu/vla && if [ -d .venv ]; then source .venv/bin/activate; fi; { echo "PWD=$(pwd)"; echo "DATE=$(date -Is)"; git rev-parse HEAD 2>/dev/null || true; python -V 2>&1; nvidia-smi; } > /home/lijingsu/vla/audit_outputs/20260713_202132/system.txt 2>&1; wc -c /home/lijingsu/vla/audit_outputs/20260713_202132/system.txt	/home/lijingsu/vla/audit_outputs/20260713_202132/14_system_txt.log
+15_env_filtered	0	cd /home/lijingsu/vla && if [ -d .venv ]; then source .venv/bin/activate; fi; env | sort | sed -E '/TOKEN|SECRET|PASSWORD|API_KEY|ACCESS_KEY/d' > /home/lijingsu/vla/audit_outputs/20260713_202132/env.txt; wc -l /home/lijingsu/vla/audit_outputs/20260713_202132/env.txt	/home/lijingsu/vla/audit_outputs/20260713_202132/15_env_filtered.log
+16_versions	0	cd /home/lijingsu/vla && if [ -d .venv ]; then source .venv/bin/activate; fi; python - <<'PY'
+import importlib, json, platform, sys
+mods = ["torch", "transformers", "mujoco", "robosuite", "libero"]
+info = {"python": sys.version, "platform": platform.platform()}
+for name in mods:
+    try:
+        mod = importlib.import_module(name)
+        info[name] = getattr(mod, "__version__", "<no __version__>")
+    except Exception as e:
+        info[name] = f"ERROR {type(e).__name__}: {e}"
+try:
+    import torch
+    info["torch_cuda_available"] = torch.cuda.is_available()
+    info["torch_cuda_version"] = torch.version.cuda
+    info["torch_device_count"] = torch.cuda.device_count()
+except Exception as e:
+    info["torch_cuda_probe_error"] = repr(e)
+print(json.dumps(info, indent=2, sort_keys=True))
+PY	/home/lijingsu/vla/audit_outputs/20260713_202132/16_versions.log
+17_running_processes	0	ps -u lijingsu -o pid,ppid,stat,etime,cmd | grep -E 'python|libero|openvla|disturbance|vla' | grep -v grep || true	/home/lijingsu/vla/audit_outputs/20260713_202132/17_running_processes.log
+18_audit_files	0	find /home/lijingsu/vla/audit_outputs/20260713_202132 -maxdepth 1 -type f | sort	/home/lijingsu/vla/audit_outputs/20260713_202132/18_audit_files.log
+19_remote_source_hashes	0	cd /home/lijingsu/vla && while read -r hash file; do if [ -f "$file" ]; then sha256sum "$file"; else printf "MISSING  %s\\n" "$file"; fi; done < /home/lijingsu/vla/audit_outputs/20260713_202132/original_snapshot_sha256.txt > /home/lijingsu/vla/audit_outputs/20260713_202132/remote_source_sha256.txt; cat /home/lijingsu/vla/audit_outputs/20260713_202132/remote_source_sha256.txt	/home/lijingsu/vla/audit_outputs/20260713_202132/19_remote_source_hashes.log
+20_compare_snapshot_hashes	127	python - <<'PY'
+from pathlib import Path
+root = Path("/home/lijingsu/vla/audit_outputs/20260713_202132")
+orig = {}
+for line in (root / "original_snapshot_sha256.txt").read_text().splitlines():
+    parts = line.split(None, 1)
+    if len(parts) == 2:
+        orig[parts[1]] = parts[0]
+remote = {}
+missing = []
+for line in (root / "remote_source_sha256.txt").read_text().splitlines():
+    if line.startswith("MISSING"):
+        missing.append(line.split(None, 1)[1])
+        continue
+    parts = line.split(None, 1)
+    if len(parts) == 2:
+        remote[parts[1]] = parts[0]
+rows = []
+for file, h in sorted(orig.items()):
+    rh = remote.get(file)
+    status = "MISSING" if file in missing else ("MATCH" if rh == h else "DIFF")
+    rows.append(f"{status}\t{file}\torig={h}\tremote={rh}")
+(root / "snapshot_compare.tsv").write_text("\n".join(rows) + "\n")
+print("\n".join(rows))
+PY	/home/lijingsu/vla/audit_outputs/20260713_202132/20_compare_snapshot_hashes.log
+20b_compare_snapshot_hashes	0	/home/lijingsu/vla/.venv/bin/python - <<'PY'
+from pathlib import Path
+root = Path("/home/lijingsu/vla/audit_outputs/20260713_202132")
+orig = {}
+for line in (root / "original_snapshot_sha256.txt").read_text().splitlines():
+    parts = line.split(None, 1)
+    if len(parts) == 2:
+        orig[parts[1]] = parts[0]
+remote = {}
+missing = []
+for line in (root / "remote_source_sha256.txt").read_text().splitlines():
+    if line.startswith("MISSING"):
+        missing.append(line.split(None, 1)[1])
+        continue
+    parts = line.split(None, 1)
+    if len(parts) == 2:
+        remote[parts[1]] = parts[0]
+rows = []
+for file, h in sorted(orig.items()):
+    rh = remote.get(file)
+    status = "MISSING" if file in missing else ("MATCH" if rh == h else "DIFF")
+    rows.append(f"{status}\t{file}\torig={h}\tremote={rh}")
+(root / "snapshot_compare.tsv").write_text("\n".join(rows) + "\n")
+print("\n".join(rows))
+PY	/home/lijingsu/vla/audit_outputs/20260713_202132/20b_compare_snapshot_hashes.log
+21	1	cd /home/lijingsu/vla && source .venv/bin/activate && export PYTHONPATH=$HOME/vla/src/openvla:$HOME/vla/src/LIBERO:${PYTHONPATH:-} && export MUJOCO_GL=osmesa && export PYOPENGL_PLATFORM=osmesa && export HF_HOME=$HOME/vla/cache/huggingface && export TRANSFORMERS_CACHE=$HOME/vla/cache/transformers && export TOKENIZERS_PARALLELISM=false && python check_vla_env.py	/home/lijingsu/vla/audit_outputs/20260713_202132/01_check_vla_env.log
+22	1	cd /home/lijingsu/vla && source .venv/bin/activate && export PYTHONPATH=$HOME/vla/src/openvla:$HOME/vla/src/LIBERO:${PYTHONPATH:-} && export MUJOCO_GL=osmesa && export PYOPENGL_PLATFORM=osmesa && export HF_HOME=$HOME/vla/cache/huggingface && export TRANSFORMERS_CACHE=$HOME/vla/cache/transformers && export TOKENIZERS_PARALLELISM=false && python openvla_smoke.py	/home/lijingsu/vla/audit_outputs/20260713_202132/02_openvla_smoke.log
+23	1	cd /home/lijingsu/vla && source .venv/bin/activate && export PYTHONPATH=$HOME/vla/src/openvla:$HOME/vla/src/LIBERO:${PYTHONPATH:-} && export MUJOCO_GL=osmesa && export PYOPENGL_PLATFORM=osmesa && export HF_HOME=$HOME/vla/cache/huggingface && export TRANSFORMERS_CACHE=$HOME/vla/cache/transformers && export TOKENIZERS_PARALLELISM=false && python libero_base_closed_loop_smoke.py	/home/lijingsu/vla/audit_outputs/20260713_202132/03_libero_base_closed_loop_smoke.log
+24	1	cd /home/lijingsu/vla && source .venv/bin/activate && export PYTHONPATH=$HOME/vla/src/openvla:$HOME/vla/src/LIBERO:${PYTHONPATH:-} && export MUJOCO_GL=osmesa && export PYOPENGL_PLATFORM=osmesa && export HF_HOME=$HOME/vla/cache/huggingface && export TRANSFORMERS_CACHE=$HOME/vla/cache/transformers && export TOKENIZERS_PARALLELISM=false && python libero_disturbance_smoke.py	/home/lijingsu/vla/audit_outputs/20260713_202132/04_libero_disturbance_smoke.log
+25_ld_library_path	0	cd /home/lijingsu/vla && source .venv/bin/activate && printf "LD_LIBRARY_PATH=%s\\n" "${LD_LIBRARY_PATH:-}" && printf "PATH=%s\\n" "$PATH"	/home/lijingsu/vla/audit_outputs/20260713_202132/25_ld_library_path.log
+26_nvjitlink_file	1	ls -l /share/apps/cuda/12.2/lib64/libnvJitLink.so.12 /share/apps/cuda/12.2/lib64/libnvJitLink.so 2>&1; stat /share/apps/cuda/12.2/lib64/libnvJitLink.so.12 2>&1; head -c 64 /share/apps/cuda/12.2/lib64/libnvJitLink.so.12 >/dev/null	/home/lijingsu/vla/audit_outputs/20260713_202132/26_nvjitlink_file.log
+27_find_nvjitlink	0	find /home/lijingsu/vla/.venv -name "libnvJitLink.so*" -o -name "libnvjitlink.so*" 2>/dev/null | sort; find /usr /lib /lib64 -name "libnvJitLink.so*" 2>/dev/null | head -50	/home/lijingsu/vla/audit_outputs/20260713_202132/27_find_nvjitlink.log
+28_torch_ldd_nvjitlink	0	ldd /home/lijingsu/vla/.venv/lib/python3.10/site-packages/torch/lib/libtorch_cuda.so | grep -i "jit\|cuda\|nv" | sed -n "1,120p"	/home/lijingsu/vla/audit_outputs/20260713_202132/28_torch_ldd_nvjitlink.log
+29_import_torch_unset_ld	0	cd /home/lijingsu/vla && source .venv/bin/activate && unset LD_LIBRARY_PATH && python - <<'PY'
+import torch
+print("torch", torch.__version__)
+print("cuda_available", torch.cuda.is_available())
+print("torch_cuda", torch.version.cuda)
+print("device_count", torch.cuda.device_count())
+PY	/home/lijingsu/vla/audit_outputs/20260713_202132/29_import_torch_unset_ld.log
+30_import_torch_prepend_venv_libs	0	cd /home/lijingsu/vla && source .venv/bin/activate && VENV_NVJIT=$(find /home/lijingsu/vla/.venv -path "*nvjitlink*/lib/libnvJitLink.so.12" -print -quit) && if [ -n "$VENV_NVJIT" ]; then export LD_LIBRARY_PATH="$(dirname "$VENV_NVJIT"):${LD_LIBRARY_PATH:-}"; fi && echo "VENV_NVJIT=$VENV_NVJIT" && python - <<'PY'
+import torch
+print("torch", torch.__version__)
+print("cuda_available", torch.cuda.is_available())
+print("torch_cuda", torch.version.cuda)
+print("device_count", torch.cuda.device_count())
+PY	/home/lijingsu/vla/audit_outputs/20260713_202132/30_import_torch_prepend_venv_libs.log
+31_bwrap_smoke_output_redirect_test	0	mkdir -p /home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_test && bwrap --bind / / --bind /home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_test /home/lijingsu/vla/smoke_outputs bash -lc 'printf isolated > /home/lijingsu/vla/smoke_outputs/bwrap_test.txt && cat /home/lijingsu/vla/smoke_outputs/bwrap_test.txt' && test ! -e /home/lijingsu/vla/smoke_outputs/bwrap_test.txt && test -e /home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_test/bwrap_test.txt	/home/lijingsu/vla/audit_outputs/20260713_202132/31_bwrap_smoke_output_redirect_test.log
+32	1	bwrap --bind / / --bind /home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs /home/lijingsu/vla/smoke_outputs bash -lc 'cd /home/lijingsu/vla && source .venv/bin/activate && unset LD_LIBRARY_PATH && export PYTHONPATH=$HOME/vla/src/openvla:$HOME/vla/src/LIBERO:${PYTHONPATH:-} && export MUJOCO_GL=osmesa && export PYOPENGL_PLATFORM=osmesa && export HF_HOME=$HOME/vla/cache/huggingface && export TRANSFORMERS_CACHE=$HOME/vla/cache/transformers && export TOKENIZERS_PARALLELISM=false && python check_vla_env.py'	/home/lijingsu/vla/audit_outputs/20260713_202132/01b_check_vla_env_fixed_env.log
+33	1	bwrap --bind / / --bind /home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs /home/lijingsu/vla/smoke_outputs bash -lc 'cd /home/lijingsu/vla && source .venv/bin/activate && unset LD_LIBRARY_PATH && export PYTHONPATH=$HOME/vla/src/openvla:$HOME/vla/src/LIBERO:${PYTHONPATH:-} && export MUJOCO_GL=osmesa && export PYOPENGL_PLATFORM=osmesa && export HF_HOME=$HOME/vla/cache/huggingface && export TRANSFORMERS_CACHE=$HOME/vla/cache/transformers && export TOKENIZERS_PARALLELISM=false && python openvla_smoke.py'	/home/lijingsu/vla/audit_outputs/20260713_202132/02b_openvla_smoke_fixed_env.log
+34	1	bwrap --bind / / --bind /home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs /home/lijingsu/vla/smoke_outputs bash -lc 'cd /home/lijingsu/vla && source .venv/bin/activate && unset LD_LIBRARY_PATH && export PYTHONPATH=$HOME/vla/src/openvla:$HOME/vla/src/LIBERO:${PYTHONPATH:-} && export MUJOCO_GL=osmesa && export PYOPENGL_PLATFORM=osmesa && export HF_HOME=$HOME/vla/cache/huggingface && export TRANSFORMERS_CACHE=$HOME/vla/cache/transformers && export TOKENIZERS_PARALLELISM=false && python libero_base_closed_loop_smoke.py'	/home/lijingsu/vla/audit_outputs/20260713_202132/03b_libero_base_closed_loop_smoke_fixed_env.log
+35	1	bwrap --bind / / --bind /home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs /home/lijingsu/vla/smoke_outputs bash -lc 'cd /home/lijingsu/vla && source .venv/bin/activate && unset LD_LIBRARY_PATH && export PYTHONPATH=$HOME/vla/src/openvla:$HOME/vla/src/LIBERO:${PYTHONPATH:-} && export MUJOCO_GL=osmesa && export PYOPENGL_PLATFORM=osmesa && export HF_HOME=$HOME/vla/cache/huggingface && export TRANSFORMERS_CACHE=$HOME/vla/cache/transformers && export TOKENIZERS_PARALLELISM=false && python libero_disturbance_smoke.py'	/home/lijingsu/vla/audit_outputs/20260713_202132/04b_libero_disturbance_smoke_fixed_env.log
+36	0	bwrap --bind / / --dev-bind /dev /dev --proc /proc --bind /home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind /home/lijingsu/vla/smoke_outputs bash -lc 'cd /home/lijingsu/vla && source .venv/bin/activate && unset LD_LIBRARY_PATH && export PYTHONPATH=$HOME/vla/src/openvla:$HOME/vla/src/LIBERO:${PYTHONPATH:-} && export MUJOCO_GL=osmesa && export PYOPENGL_PLATFORM=osmesa && export HF_HOME=$HOME/vla/cache/huggingface && export TRANSFORMERS_CACHE=$HOME/vla/cache/transformers && export TOKENIZERS_PARALLELISM=false && python check_vla_env.py'	/home/lijingsu/vla/audit_outputs/20260713_202132/01c_check_vla_env_fixed_env_bwrap.log
+37	1	bwrap --bind / / --dev-bind /dev /dev --proc /proc --bind /home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind /home/lijingsu/vla/smoke_outputs bash -lc 'cd /home/lijingsu/vla && source .venv/bin/activate && unset LD_LIBRARY_PATH && export PYTHONPATH=$HOME/vla/src/openvla:$HOME/vla/src/LIBERO:${PYTHONPATH:-} && export MUJOCO_GL=osmesa && export PYOPENGL_PLATFORM=osmesa && export HF_HOME=$HOME/vla/cache/huggingface && export TRANSFORMERS_CACHE=$HOME/vla/cache/transformers && export TOKENIZERS_PARALLELISM=false && python openvla_smoke.py'	/home/lijingsu/vla/audit_outputs/20260713_202132/02c_openvla_smoke_fixed_env_bwrap.log
+38	0	bwrap --bind / / --dev-bind /dev /dev --proc /proc --bind /home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind /home/lijingsu/vla/smoke_outputs bash -lc 'cd /home/lijingsu/vla && source .venv/bin/activate && unset LD_LIBRARY_PATH && export PYTHONPATH=$HOME/vla/src/openvla:$HOME/vla/src/LIBERO:${PYTHONPATH:-} && export MUJOCO_GL=osmesa && export PYOPENGL_PLATFORM=osmesa && export HF_HOME=$HOME/vla/cache/huggingface && export TRANSFORMERS_CACHE=$HOME/vla/cache/transformers && export TOKENIZERS_PARALLELISM=false && python libero_base_closed_loop_smoke.py'	/home/lijingsu/vla/audit_outputs/20260713_202132/03c_libero_base_closed_loop_smoke_fixed_env_bwrap.log
+39	0	bwrap --bind / / --dev-bind /dev /dev --proc /proc --bind /home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind /home/lijingsu/vla/smoke_outputs bash -lc 'cd /home/lijingsu/vla && source .venv/bin/activate && unset LD_LIBRARY_PATH && export PYTHONPATH=$HOME/vla/src/openvla:$HOME/vla/src/LIBERO:${PYTHONPATH:-} && export MUJOCO_GL=osmesa && export PYOPENGL_PLATFORM=osmesa && export HF_HOME=$HOME/vla/cache/huggingface && export TRANSFORMERS_CACHE=$HOME/vla/cache/transformers && export TOKENIZERS_PARALLELISM=false && python libero_disturbance_smoke.py'	/home/lijingsu/vla/audit_outputs/20260713_202132/04c_libero_disturbance_smoke_fixed_env_bwrap.log
+40_openvla_smoke_local_model_diagnostic	0	cd /home/lijingsu/vla && source .venv/bin/activate && unset LD_LIBRARY_PATH && export PYTHONPATH=$HOME/vla/src/openvla:$HOME/vla/src/LIBERO:${PYTHONPATH:-} && export MUJOCO_GL=osmesa && export PYOPENGL_PLATFORM=osmesa && export HF_HOME=$HOME/vla/cache/huggingface && export TRANSFORMERS_CACHE=$HOME/vla/cache/transformers && export TOKENIZERS_PARALLELISM=false && python openvla_smoke.py --model /home/lijingsu/vla/models/openvla-7b --device cuda:0 --unnorm-key bridge_orig	/home/lijingsu/vla/audit_outputs/20260713_202132/40_openvla_smoke_local_model_diagnostic.log
+41_phase1_action_image_audit	0	cd /home/lijingsu/vla && source .venv/bin/activate && unset LD_LIBRARY_PATH && python - <<'PY'
+import ast, json, math, re
+from pathlib import Path
+from PIL import Image, ImageDraw
+import numpy as np
+root = Path("/home/lijingsu/vla/audit_outputs/20260713_202132")
+outroot = root / "isolated_smoke_outputs_devbind"
+report = {"outroot": str(outroot), "json_files": {}, "png_files": {}, "openvla_local_diagnostic": {}, "disturbance_position_delta": None, "overall": {}}
+all_actions = []
+all_rewards_done_serializable = True
+for path in sorted(outroot.rglob("*.json")):
+    data = json.loads(path.read_text())
+    rows = data.get("rows", [])
+    lengths = []
+    finite = True
+    gripper_values = []
+    for row in rows:
+        action = row.get("action")
+        if action is not None:
+            lengths.append(len(action))
+            all_actions.append((str(path), row.get("t"), action))
+            finite = finite and all(isinstance(x, (int, float)) and math.isfinite(float(x)) for x in action)
+            if len(action) >= 7:
+                gripper_values.append(float(action[6]))
+        try:
+            json.dumps({"reward": row.get("reward"), "done": row.get("done")})
+        except Exception:
+            all_rewards_done_serializable = False
+    report["json_files"][str(path)] = {
+        "rows": len(rows),
+        "action_lengths": sorted(set(lengths)),
+        "all_actions_finite": finite,
+        "gripper_min": min(gripper_values) if gripper_values else None,
+        "gripper_max": max(gripper_values) if gripper_values else None,
+        "reward_done_json_serializable": all_rewards_done_serializable,
+    }
+    if path.name == "disturbance_smoke.json":
+        by_t = {row.get("t"): row for row in rows}
+        if 5 in by_t and 6 in by_t:
+            before = by_t[5].get("target_pos_before_action")
+            after = by_t[6].get("target_pos_before_action")
+            if before and after:
+                delta = [round(float(after[i]) - float(before[i]), 6) for i in range(min(3, len(before), len(after)))]
+                report["disturbance_position_delta"] = {"from_t": 5, "to_t": 6, "before": before, "after": after, "delta": delta, "event": by_t[6].get("event")}
+for path in sorted(outroot.rglob("*.png")):
+    im = Image.open(path)
+    arr = np.asarray(im)
+    report["png_files"][str(path)] = {"size": list(im.size), "mode": im.mode, "dtype": str(arr.dtype), "shape": list(arr.shape), "min": int(arr.min()), "max": int(arr.max())}
+# parse local openvla diagnostic action
+log = root / "40_openvla_smoke_local_model_diagnostic.log"
+text = log.read_text(errors="replace") if log.exists() else ""
+m = re.search(r"action:\s*\[(.*?)\]", text, re.S)
+if m:
+    vals = [float(x) for x in m.group(1).split()]
+    report["openvla_local_diagnostic"] = {"action": vals, "action_length": len(vals), "all_finite": all(math.isfinite(x) for x in vals), "gripper_value": vals[6] if len(vals) >= 7 else None, "log": str(log)}
+# contact sheets
+def sheet(paths, dest):
+    imgs = [Image.open(p).convert("RGB") for p in paths]
+    if not imgs:
+        return None
+    thumbs = []
+    for p, im in zip(paths, imgs):
+        im.thumbnail((220, 220))
+        canvas = Image.new("RGB", (220, 250), "white")
+        canvas.paste(im, ((220 - im.width)//2, 0))
+        d = ImageDraw.Draw(canvas)
+        d.text((4, 228), p.name[:28], fill=(0,0,0))
+        thumbs.append(canvas)
+    w = 220 * len(thumbs)
+    sheet_im = Image.new("RGB", (w, 250), "white")
+    for i, im in enumerate(thumbs):
+        sheet_im.paste(im, (i*220, 0))
+    sheet_im.save(dest)
+    return str(dest)
+base_paths = sorted(outroot.glob("frame_t*.png"))
+dist_paths = sorted((outroot / "disturbance").glob("frame_t*.png"))
+report["contact_sheets"] = {
+    "base": sheet(base_paths, root / "base_smoke_contact_sheet.png"),
+    "disturbance": sheet(dist_paths, root / "disturbance_smoke_contact_sheet.png"),
+}
+lengths = sorted(set(len(a) for _, _, a in all_actions))
+finite = all(all(math.isfinite(float(x)) for x in a) for _, _, a in all_actions)
+report["overall"] = {"action_lengths": lengths, "all_actions_finite": finite, "num_actions": len(all_actions), "reward_done_json_serializable": all_rewards_done_serializable}
+(root / "phase1_action_image_audit.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+print(json.dumps(report, indent=2))
+PY	/home/lijingsu/vla/audit_outputs/20260713_202132/41_phase1_action_image_audit.log
+42_generated_files	0	find /home/lijingsu/vla/audit_outputs/20260713_202132 -type f \( -name "*.png" -o -name "*.mp4" -o -name "*.json" \) -printf "%TY-%Tm-%Td %TH:%TM:%TS %s %p\\n" | sort -r | tee /home/lijingsu/vla/audit_outputs/20260713_202132/generated_files.txt	/home/lijingsu/vla/audit_outputs/20260713_202132/42_generated_files.log
+43_original_smoke_outputs_postcheck	0	find /home/lijingsu/vla/smoke_outputs -maxdepth 3 -type f -printf "%TY-%Tm-%Td %TH:%TM:%TS %s %p\\n" | sort	/home/lijingsu/vla/audit_outputs/20260713_202132/43_original_smoke_outputs_postcheck.log
+44_final_process_gpu_check	0	ps -u lijingsu -o pid,ppid,stat,etime,cmd | grep -E 'python|libero|openvla|disturbance|vla|bwrap' | grep -v grep || true; nvidia-smi --query-gpu=index,memory.used,utilization.gpu --format=csv; nvidia-smi --query-compute-apps=gpu_uuid,pid,process_name,used_memory --format=csv,noheader,nounits	/home/lijingsu/vla/audit_outputs/20260713_202132/44_final_process_gpu_check.log

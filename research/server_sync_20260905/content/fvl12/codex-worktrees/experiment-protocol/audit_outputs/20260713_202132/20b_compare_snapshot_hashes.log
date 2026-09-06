@@ -1,0 +1,55 @@
+COMMAND: /home/lijingsu/vla/.venv/bin/python - <<'PY'
+from pathlib import Path
+root = Path("/home/lijingsu/vla/audit_outputs/20260713_202132")
+orig = {}
+for line in (root / "original_snapshot_sha256.txt").read_text().splitlines():
+    parts = line.split(None, 1)
+    if len(parts) == 2:
+        orig[parts[1]] = parts[0]
+remote = {}
+missing = []
+for line in (root / "remote_source_sha256.txt").read_text().splitlines():
+    if line.startswith("MISSING"):
+        missing.append(line.split(None, 1)[1])
+        continue
+    parts = line.split(None, 1)
+    if len(parts) == 2:
+        remote[parts[1]] = parts[0]
+rows = []
+for file, h in sorted(orig.items()):
+    rh = remote.get(file)
+    status = "MISSING" if file in missing else ("MATCH" if rh == h else "DIFF")
+    rows.append(f"{status}\t{file}\torig={h}\tremote={rh}")
+(root / "snapshot_compare.tsv").write_text("\n".join(rows) + "\n")
+print("\n".join(rows))
+PY
+START: 2026-07-13T20:30:23+08:00
+END: 2026-07-13T20:30:23+08:00
+EXIT: 0
+
+STDOUT:
+MATCH	baseline_reset_rollback_eval.py	orig=e79e4d8262758b7de5c8f8d60531e4e93f8133d39a74e94b5b25dd75674c6fed	remote=e79e4d8262758b7de5c8f8d60531e4e93f8133d39a74e94b5b25dd75674c6fed
+MATCH	baseline_stage_backtrack_eval.py	orig=1e82072119b17fb992538d56dce7c1959495b8e27dc2997711b4ee342f4960db	remote=1e82072119b17fb992538d56dce7c1959495b8e27dc2997711b4ee342f4960db
+MATCH	check_vla_env.py	orig=4547ab25b59c1eab8b99cdda9cf4ddba062819f55183b3b75f5a6e68ef5fe478	remote=4547ab25b59c1eab8b99cdda9cf4ddba062819f55183b3b75f5a6e68ef5fe478
+MATCH	disturbance_probe.py	orig=6ea0490c9e9f4797d29388ae09680bc05ca0cf21ccaa47fc244a88f7a81d92fb	remote=6ea0490c9e9f4797d29388ae09680bc05ca0cf21ccaa47fc244a88f7a81d92fb
+MATCH	download_openvla.py	orig=b3ba51275ea1eca267c6cc453a173c243816e419b5a153ef5bd215fc4aa9af93	remote=b3ba51275ea1eca267c6cc453a173c243816e419b5a153ef5bd215fc4aa9af93
+MATCH	download_openvla_libero_spatial.py	orig=d04e6f2cee344d08e8d816fe4ed3610d2a2e219f5a0177e8662738f3e3c08310	remote=d04e6f2cee344d08e8d816fe4ed3610d2a2e219f5a0177e8662738f3e3c08310
+MATCH	libero_base_closed_loop_smoke.py	orig=6fb9fb0ea4acf557dae98f9dba0c7a32bab11dab5e1eabd12358fd7cb1559c1f	remote=6fb9fb0ea4acf557dae98f9dba0c7a32bab11dab5e1eabd12358fd7cb1559c1f
+MATCH	libero_disturbance_eval.py	orig=6cabed031d541639ddf01661ec4e4642b5e1e3fdfe7dc15f63e61daacd8d0744	remote=6cabed031d541639ddf01661ec4e4642b5e1e3fdfe7dc15f63e61daacd8d0744
+MATCH	libero_disturbance_smoke.py	orig=0edf9f424a9d5eb5f17cc78ea22da970d5f4322fa4323381de21d95ebb2ccbc9	remote=0edf9f424a9d5eb5f17cc78ea22da970d5f4322fa4323381de21d95ebb2ccbc9
+MATCH	openvla_smoke.py	orig=b1c397c00f839735348413351b0df107fc2b15e20495ffea54fd17091c5c25d1	remote=b1c397c00f839735348413351b0df107fc2b15e20495ffea54fd17091c5c25d1
+MATCH	run_baseline_base_openvla.sh	orig=a0c8d71e09f94b64c9b1756342b05003b64ff83199a1b53a9f17ec4971a79a4a	remote=a0c8d71e09f94b64c9b1756342b05003b64ff83199a1b53a9f17ec4971a79a4a
+MATCH	run_expanded_spatial_3trials.sh	orig=4013d738df45dbfd917b4a805327299e31e21d23032fe55ee6226e82bd0b3a76	remote=4013d738df45dbfd917b4a805327299e31e21d23032fe55ee6226e82bd0b3a76
+MATCH	run_full_spatial_disturbance.sh	orig=767051a971bd7ed6ca25de1cdace65586edf9a2f1bd991c159ce04fb9c5b469e	remote=767051a971bd7ed6ca25de1cdace65586edf9a2f1bd991c159ce04fb9c5b469e
+MATCH	run_magnitude_large.sh	orig=7ba450258f1290858cb92ac1f87bdf67e70dc724cdce94fc3b4710dfe66a2041	remote=7ba450258f1290858cb92ac1f87bdf67e70dc724cdce94fc3b4710dfe66a2041
+MATCH	run_magnitude_small.sh	orig=2fd49bbf072da4167cdf21ba5c00725de1a5b4c894923c9c796131af1f210850	remote=2fd49bbf072da4167cdf21ba5c00725de1a5b4c894923c9c796131af1f210850
+MATCH	run_one_probe.py	orig=4822ced5c0cd76f3c6f2d5b977b23bad8f7261db337ee4f2fb9913720c5c039d	remote=4822ced5c0cd76f3c6f2d5b977b23bad8f7261db337ee4f2fb9913720c5c039d
+MATCH	run_timing_step120.sh	orig=b960c3d4a5e8b4d3a88554e2bb775cb3d72f4db53a81ba6291030234386d24e1	remote=b960c3d4a5e8b4d3a88554e2bb775cb3d72f4db53a81ba6291030234386d24e1
+MATCH	run_timing_step30.sh	orig=298dd657b72d9949abe65e7693ffb68fd2205ee3dbb42d55842da6b649b26d68	remote=298dd657b72d9949abe65e7693ffb68fd2205ee3dbb42d55842da6b649b26d68
+MATCH	run_timing_step60.sh	orig=60578243adb32f4f2f02f8d12a0be4eb0886be7f94fdd4368936b60a5159f9e1	remote=60578243adb32f4f2f02f8d12a0be4eb0886be7f94fdd4368936b60a5159f9e1
+MATCH	second_necessity_intervention.py	orig=8c81d26cb8d5fd1d7a83ae6a071e0918db211d0d8b505a4b7a3f76aa353b1765	remote=8c81d26cb8d5fd1d7a83ae6a071e0918db211d0d8b505a4b7a3f76aa353b1765
+MATCH	summarize_disturbance_results.py	orig=4672453de74849a6f9619053c637da258c5c7cbe7b38ef42942d5844d9026fd7	remote=4672453de74849a6f9619053c637da258c5c7cbe7b38ef42942d5844d9026fd7
+MATCH	verifier_vs_recovery_state_eval.py	orig=a82fe9e0639bbbe973390cfb83a28f75541a0e1919611c4daedc7f35be3af18e	remote=a82fe9e0639bbbe973390cfb83a28f75541a0e1919611c4daedc7f35be3af18e
+MATCH	wait_and_collect_disturbance_results.sh	orig=463add75f5a67c410ade5ca4985828dae60c6e4f4e851c8477c15bd0c79281a6	remote=463add75f5a67c410ade5ca4985828dae60c6e4f4e851c8477c15bd0c79281a6
+
+STDERR:

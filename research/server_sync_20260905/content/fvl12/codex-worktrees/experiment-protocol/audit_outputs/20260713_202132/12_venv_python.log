@@ -1,0 +1,11 @@
+COMMAND: cd /home/lijingsu/vla && if [ -d .venv ]; then source .venv/bin/activate && python -V && which python && python -m pip --version; else echo ".venv missing"; fi
+START: 2026-07-13T20:26:08+08:00
+END: 2026-07-13T20:26:08+08:00
+EXIT: 0
+
+STDOUT:
+Python 3.10.12
+/home/lijingsu/vla/.venv/bin/python
+pip 26.1.2 from /home/lijingsu/vla/.venv/lib/python3.10/site-packages/pip (python 3.10)
+
+STDERR:

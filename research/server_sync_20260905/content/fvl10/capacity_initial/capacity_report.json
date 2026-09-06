@@ -1,0 +1,59 @@
+{
+  "add_generation_prompt": true,
+  "adequate_budget_proposal": {
+    "calls_per_event": 1,
+    "max_output_tokens": 23552,
+    "status": "pending_measured_throughput",
+    "timeout_s": null
+  },
+  "chat_template_sha256": "a55ee1b1660128b7098723e0abcd92caa0788061051c62d51cbe87d9cf1974d8",
+  "config_sha256": "a7e41e93dc70400f3038a318c103045b823e276e68f0826ad22708e189d8471a",
+  "config_source": "/mnt/data_new/lijingsu_cope_r4_20260905/cope_fsrpc_r4/configs_r4/experiment.json",
+  "development_seeds": [
+    1000,
+    1001
+  ],
+  "enable_thinking": false,
+  "freeze_blockers": [
+    "adequate timeout is pending actual warmed serial throughput measurements"
+  ],
+  "frozen_config": null,
+  "maximum_prompt_tokens": 15565,
+  "maximum_reference_output_tokens": 20021,
+  "maximum_required_context_compact": 28555,
+  "maximum_required_context_pretty": 35353,
+  "measurement_scope": "Reference trajectory with correct independent preceding states; offline capacity diagnostic, not model correctness or performance.",
+  "profiles": {
+    "calibration": {
+      "initial_slots": 8,
+      "lineage_depth": 2
+    },
+    "lineage_valid": {
+      "initial_slots": 10,
+      "lineage_depth": 6
+    },
+    "long_lineage": {
+      "initial_slots": 48,
+      "lineage_depth": 6
+    }
+  },
+  "prompt_caveat": "Includes each method's full system prompt, user packet, actual tokenizer chat template and assistant prefix. Guided JSON schema is an external decoding constraint, not serialized prompt text.",
+  "proposed_context_caveat": "Planning estimate using the fixed-budget prompt; frozen adequate prompts are re-tokenized after the measured timeout is known.",
+  "proposed_uniform_output_plus_max_fixed_prompt_tokens": 39117,
+  "reference_length_caveat": "These are token counts of specific legal pretty/compact serializations, not a mathematical lower bound over all legal answers. JSON completion counts exclude any generated stop token; the global budget includes an explicit margin.",
+  "row_count": 116,
+  "row_file": "capacity_rows.csv",
+  "schema_version": "cope-fsrpc-r4-capacity-v1",
+  "server_max_context_tokens": 65536,
+  "throughput_calibration": null,
+  "tokenizer_file_sha256": {
+    "config.json": "97e295b63283935788fac5e4f8860862a56d4089538cafc93f0431f2ebe483bb",
+    "merges.txt": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+    "tokenizer.json": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+    "tokenizer_config.json": "d5d09f07b48c3086c508b30d1c9114bd1189145b74e982a265350c923acd8101",
+    "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+  },
+  "tokenizer_path": "/mnt/data_new/lijingsu_cope_r3_20260905_v2/hf_cache/hub/models--Qwen--Qwen3-32B/snapshots/9216db5781bf21249d130ec9da846c4624c16137",
+  "transformers_version": "4.51.3",
+  "utc": "2026-09-05T02:12:51.498646+00:00"
+}

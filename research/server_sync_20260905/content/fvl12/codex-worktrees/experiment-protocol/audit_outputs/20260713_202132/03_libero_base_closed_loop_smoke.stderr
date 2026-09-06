@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/home/lijingsu/vla/libero_base_closed_loop_smoke.py", line 12, in <module>
+    from libero.libero import benchmark
+  File "/home/lijingsu/vla/src/LIBERO/libero/libero/benchmark/__init__.py", line 5, in <module>
+    import torch
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/torch/__init__.py", line 367, in <module>
+    from torch._C import *  # noqa: F403
+ImportError: /share/apps/cuda/12.2/lib64/libnvJitLink.so.12: cannot read file data: Input/output error

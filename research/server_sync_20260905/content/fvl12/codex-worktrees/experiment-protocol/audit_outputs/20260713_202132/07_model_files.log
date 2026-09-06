@@ -1,0 +1,46 @@
+COMMAND: cd /home/lijingsu/vla && find models -maxdepth 2 \( -type f -o -type l \) 2>/dev/null | head -100
+START: 2026-07-13T20:26:07+08:00
+END: 2026-07-13T20:26:07+08:00
+EXIT: 0
+
+STDOUT:
+models/openvla-7b/tokenizer.model
+models/openvla-7b/special_tokens_map.json
+models/openvla-7b/tokenizer.json
+models/openvla-7b/README.md
+models/openvla-7b/tokenizer_config.json
+models/openvla-7b/added_tokens.json
+models/openvla-7b/configuration_prismatic.py
+models/openvla-7b/model.safetensors.index.json
+models/openvla-7b/model-00002-of-00003.safetensors
+models/openvla-7b/processing_prismatic.py
+models/openvla-7b/generation_config.json
+models/openvla-7b/.gitattributes
+models/openvla-7b/preprocessor_config.json
+models/openvla-7b/model-00001-of-00003.safetensors
+models/openvla-7b/processor_config.json
+models/openvla-7b/config.json
+models/openvla-7b/model-00003-of-00003.safetensors
+models/openvla-7b/modeling_prismatic.py
+models/openvla-7b-finetuned-libero-spatial/tokenizer.model
+models/openvla-7b-finetuned-libero-spatial/special_tokens_map.json
+models/openvla-7b-finetuned-libero-spatial/model-00002-of-00004.safetensors
+models/openvla-7b-finetuned-libero-spatial/tokenizer.json
+models/openvla-7b-finetuned-libero-spatial/README.md
+models/openvla-7b-finetuned-libero-spatial/tokenizer_config.json
+models/openvla-7b-finetuned-libero-spatial/added_tokens.json
+models/openvla-7b-finetuned-libero-spatial/configuration_prismatic.py
+models/openvla-7b-finetuned-libero-spatial/model-00001-of-00004.safetensors
+models/openvla-7b-finetuned-libero-spatial/model.safetensors.index.json
+models/openvla-7b-finetuned-libero-spatial/model-00003-of-00004.safetensors
+models/openvla-7b-finetuned-libero-spatial/model-00004-of-00004.safetensors
+models/openvla-7b-finetuned-libero-spatial/processing_prismatic.py
+models/openvla-7b-finetuned-libero-spatial/generation_config.json
+models/openvla-7b-finetuned-libero-spatial/.gitattributes
+models/openvla-7b-finetuned-libero-spatial/dataset_statistics.json
+models/openvla-7b-finetuned-libero-spatial/preprocessor_config.json
+models/openvla-7b-finetuned-libero-spatial/processor_config.json
+models/openvla-7b-finetuned-libero-spatial/config.json
+models/openvla-7b-finetuned-libero-spatial/modeling_prismatic.py
+
+STDERR:

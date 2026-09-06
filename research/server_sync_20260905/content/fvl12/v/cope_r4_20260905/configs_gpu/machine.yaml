@@ -1,0 +1,39 @@
+# Audited server configuration (2026-08-04, host fvl12).
+paths:
+  simulator_root:    "/home/lijingsu/vla/src/LIBERO"
+  assets:            "/home/lijingsu/vla/src/LIBERO/libero/libero/assets"
+  bddl_files:        "/home/lijingsu/vla/src/LIBERO/libero/libero/bddl_files"
+  source_project:    "/home/lijingsu/vla"
+  package:           "/home/lijingsu/cope_fsrpc_交接_v2"
+  output_root:       "/home/lijingsu/cope_outputs"
+  python:            "/home/lijingsu/vla/.venv/bin/python"
+  environment_wrapper: "/home/lijingsu/vla/scripts/run_project_env.sh"
+
+hardware:
+  num_gpus:          8
+  gpu_model:         "NVIDIA GeForce RTX 3090 24 GiB"
+  driver:            "535.54.03"
+  cuda_compat:       "12.2"
+  simulator_render:  "OSMesa CPU offscreen"
+  render_gpu_device: -1
+  learned_policy_gpu_used: false
+  episodes_per_gpu:  0
+
+software:
+  os:                "Ubuntu 22.04.5 LTS"
+  python:            "3.10.12"
+  mujoco:            "2.3.7"
+  robosuite:         "1.4.1"
+  simulator:         "LIBERO source at vla commit 570d78333ee977c8ae6de3d97120b23272c4c660"
+  robot:             "OnTheGroundPanda"
+  controller:        "OSC_POSE + privileged simulator-geometry oracle skills"
+
+reproducibility:
+  record_git_rev:    true
+  record_sha256:     true
+  record_seed:       true
+  # The paired design requires that a given (condition, seed) hits the same
+  # physical initial layout for every arm. Verify this on the GPU host before
+  # trusting any paired statistic.
+  verify_paired_layout: true
+  checkpoint_hash_quantization_decimals: 12

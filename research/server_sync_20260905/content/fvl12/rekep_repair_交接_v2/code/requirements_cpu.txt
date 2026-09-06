@@ -1,0 +1,12 @@
+# CPU-only core (runs on your MacBook)
+numpy>=1.26
+scipy>=1.11
+matplotlib>=3.7
+
+# --- statistics / experiments (CPU, added in later weeks) ---
+# pandas>=2.0
+# statsmodels>=0.14        # McNemar, Wilson CI, Holm correction
+
+# --- GPU-only (install on the 8x 3090 box, NOT on Mac) ---
+# OmniGibson + Isaac Sim are installed via their own scripts, not pip here.
+# See docs/GPU_SETUP.md.  Do not attempt on macOS.

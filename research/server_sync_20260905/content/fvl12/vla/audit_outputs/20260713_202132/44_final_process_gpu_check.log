@@ -1,0 +1,17 @@
+COMMAND: ps -u lijingsu -o pid,ppid,stat,etime,cmd | grep -E 'python|libero|openvla|disturbance|vla|bwrap' | grep -v grep || true; nvidia-smi --query-gpu=index,memory.used,utilization.gpu --format=csv; nvidia-smi --query-compute-apps=gpu_uuid,pid,process_name,used_memory --format=csv,noheader,nounits
+START: 2026-07-13T21:08:41+08:00
+END: 2026-07-13T21:08:41+08:00
+EXIT: 0
+
+STDOUT:
+index, memory.used [MiB], utilization.gpu [%]
+0, 12 MiB, 0 %
+1, 12 MiB, 0 %
+2, 12 MiB, 0 %
+3, 12 MiB, 0 %
+4, 12 MiB, 0 %
+5, 12 MiB, 0 %
+6, 12 MiB, 0 %
+7, 12 MiB, 0 %
+
+STDERR:

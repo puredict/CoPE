@@ -1,0 +1,64 @@
+Test log for mock-dashboard
+Date: 2026-07-13
+
+Environment:
+  Remote host: 10.176.53.120
+  Worktree/repo: /home/lijingsu/codex-worktrees/mock-dashboard
+  Python: /home/lijingsu/vla/.venv/bin/python
+
+1. Local syntax check before remote sync
+   Command:
+     python3 -m py_compile work/mock-dashboard-src/libero_dashboard_controller.py work/mock-dashboard-src/libero_mock_backend.py work/mock-dashboard-src/libero_dashboard.py work/mock-dashboard-src/tests/test_dashboard_controller.py work/mock-dashboard-src/tests/test_mock_backend.py work/mock-dashboard-src/tests/test_mock_dashboard.py work/mock-dashboard-src/tests/test_mock_dashboard_import.py
+   Exit code: 0
+
+2. Remote py_compile
+   Command:
+     /home/lijingsu/vla/.venv/bin/python -m py_compile libero_dashboard_controller.py libero_mock_backend.py libero_dashboard.py
+   Exit code: 0
+
+3. Remote pytest
+   Command:
+     /home/lijingsu/vla/.venv/bin/python -m pytest -q tests/test_dashboard_controller.py tests/test_mock_backend.py tests/test_mock_dashboard.py tests/test_mock_dashboard_import.py
+   Exit code: 0
+   Output:
+     ................                                                         [100%]
+     16 passed in 3.28s
+
+4. Remote mock smoke
+   Command:
+     /home/lijingsu/vla/.venv/bin/python libero_dashboard.py --mock-smoke --output-dir /tmp/libero_mock_smoke_final
+   Exit code: 0
+   Output summary:
+     ok: true
+     output_dir: /tmp/libero_mock_smoke_final
+     last_run_dir: /tmp/libero_mock_smoke_final/20260713T133048Z_task0_trial0_reactive_disturbed_92328590
+     manual_events: ["manual_stop"]
+     generated files:
+       run_config.json
+       events.jsonl
+       episode_summary.json
+       raw.mp4
+       annotated.mp4
+
+5. Remote Gradio service smoke
+   Command:
+     /home/lijingsu/vla/.venv/bin/python libero_dashboard.py --mock --host 127.0.0.1 --port 7861
+     curl -fsS http://127.0.0.1:7861/ > /tmp/libero_mock_gradio_smoke.html
+   Exit code: 0
+   Output:
+     curl_exit=0
+     /tmp/libero_mock_gradio_smoke.html size: 36074 bytes
+
+6. git diff check
+   Command:
+     git diff --check
+   Exit code: 0
+
+Coverage notes:
+  Covered illegal transitions, duplicate start, pause/resume, strict one-step,
+  auto disturbance once, manual disturbance, safe stop/save, worker exception,
+  snapshot copying, JSON/JSONL parsing, video file generation, manual
+  intervention flags, and import boundary from real robotics stack.
+
+Not tested:
+  Real OpenVLA, real LIBERO, MuJoCo, robosuite, GPU, or human browser clicks.

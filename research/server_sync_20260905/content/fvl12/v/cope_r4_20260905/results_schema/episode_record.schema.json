@@ -1,0 +1,356 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CoPE/FSR-PC episode record",
+  "description": "One row per episode. `pairing_key` excludes the method and is the join key for every paired statistic.",
+  "type": "object",
+  "required": [
+    "episode_id",
+    "pairing_key",
+    "condition",
+    "seed",
+    "method",
+    "metrics"
+  ],
+  "properties": {
+    "episode_id": {
+      "type": "string",
+      "description": "pairing_key|method"
+    },
+    "pairing_key": {
+      "type": "string",
+      "description": "task|condition|seed -- METHOD EXCLUDED"
+    },
+    "condition": {
+      "enum": [
+        "nominal",
+        "I1",
+        "I2",
+        "I3",
+        "I4"
+      ]
+    },
+    "seed": {
+      "type": "integer"
+    },
+    "method": {
+      "type": "string",
+      "description": "CoPE | FSR-PC | no_adaptation | ablation arm"
+    },
+    "expected_final": {
+      "type": "object",
+      "description": "grader ground truth, derived from the condition alone"
+    },
+    "cancelled_expected": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "adaptation_input_fingerprints": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "one per interruption; MUST be identical across CoPE and FSR-PC for the same pairing_key"
+    },
+    "executor_request_fingerprints": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "properties": {
+        "method": {
+          "type": [
+            "number",
+            "boolean",
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "condition": {
+          "type": [
+            "number",
+            "boolean",
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "seed": {
+          "type": [
+            "number",
+            "boolean",
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "revised_task_success": {
+          "type": [
+            "number",
+            "boolean",
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "collision": {
+          "type": [
+            "number",
+            "boolean",
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "safe_fallback": {
+          "type": [
+            "number",
+            "boolean",
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "invalid_action_count": {
+          "type": [
+            "number",
+            "boolean",
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "completion_steps": {
+          "type": [
+            "number",
+            "boolean",
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "completed_progress_preserved": {
+          "type": [
+            "number",
+            "boolean",
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "completed_goals_repeated": {
+          "type": [
+            "number",
+            "boolean",
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "cancelled_goal_violations": {
+          "type": [
+            "number",
+            "boolean",
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "stale_goal_executions": {
+          "type": [
+            "number",
+            "boolean",
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "remaining_goal_correct": {
+          "type": [
+            "number",
+            "boolean",
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "recovery_after_repeat": {
+          "type": [
+            "number",
+            "boolean",
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "identity_preserved": {
+          "type": [
+            "number",
+            "boolean",
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "lifecycle_transitions_legal": {
+          "type": [
+            "number",
+            "boolean",
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "restore_preceded_by_revalidation": {
+          "type": [
+            "number",
+            "boolean",
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "invalid_restore_count": {
+          "type": [
+            "number",
+            "boolean",
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "lineage_correct": {
+          "type": [
+            "number",
+            "boolean",
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "history_monotonic": {
+          "type": [
+            "number",
+            "boolean",
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "slots_edited": {
+          "type": [
+            "number",
+            "boolean",
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "slots_regenerated": {
+          "type": [
+            "number",
+            "boolean",
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "slots_touched_per_event": {
+          "type": [
+            "number",
+            "boolean",
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "ops_per_event": {
+          "type": [
+            "number",
+            "boolean",
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "normalized_edit_distance": {
+          "type": [
+            "number",
+            "boolean",
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "state_churn": {
+          "type": [
+            "number",
+            "boolean",
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "planner_calls": {
+          "type": [
+            "number",
+            "boolean",
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "adaptation_latency_s": {
+          "type": [
+            "number",
+            "boolean",
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "token_usage": {
+          "type": [
+            "number",
+            "boolean",
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "audit_coverage": {
+          "type": [
+            "number",
+            "boolean",
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "audit_answerable": {
+          "type": [
+            "number",
+            "boolean",
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "notes": {
+          "type": [
+            "number",
+            "boolean",
+            "string",
+            "object",
+            "null"
+          ]
+        }
+      }
+    }
+  }
+}

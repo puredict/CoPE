@@ -1,0 +1,56 @@
+[run_project_env] Using project-isolated LIBERO/OpenVLA environment for this subprocess only.
+[run_project_env] LD_LIBRARY_PATH is unset here to avoid the broken system CUDA nvJitLink path.
+nvidia_smi	PASS	0, NVIDIA GeForce RTX 3090, 535.54.03, 12 MiB, 0 % | 1, NVIDIA GeForce RTX 3090, 535.54.03, 12 MiB, 0 % | 2, NVIDIA GeForce RTX 3090, 535.54.03, 12 MiB, 0 % | 3, NVIDIA GeForce RTX 3090, 535.54.03, 12 MiB, 0 % | 4, NVIDIA GeForce RTX 3090, 535.54.03, 12 MiB, 0 % | 5, NVIDIA GeForce RTX 3090, 535.54.03, 12 MiB, 0 % | 6, NVIDIA GeForce RTX 3090, 535.54.03, 12 MiB, 0 % | 7, NVIDIA GeForce RTX 3090, 535.54.03, 12 MiB, 0 %
+output_dir_absent	PASS	/home/lijingsu/codex-deliveries/cope_formal_COLD_RECHECK_20260803
+cope_commit	PASS	21b90aed9e2e64152a7bfe0c85553f2ffbc5e730
+cope_clean	PASS	empty
+cope_tracked_diff	PASS	worktree+index
+openvla_commit	PASS	9bf418e79d019d416860990d60379d66f0c06220
+openvla_clean	PASS	empty
+openvla_tracked_diff	PASS	worktree+index
+libero_commit	PASS	8f1084e3132a39270c3a13ebe37270a43ece2a01
+libero_git_tree	PASS	99f4ada3f1d62e026fc9ff2390eb4ff8a1760e60
+libero_clean	PASS	empty
+libero_object_integrity	PASS	dangling commit c9b053cfac105c02f435e9ed7001cc019a54d71d
+libero_content_address	PASS	files=1116;bytes=443644276;sha256=9d34b952bdd5577ddef9861272767c3eb5bce5aa2c9e885f4b705d9e3454c213
+libero_config_hash	PASS	/home/lijingsu/codex-worktrees/cope-runtime-config-20260803/config.yaml
+reserved_manifest_hash	PASS	/home/lijingsu/codex-worktrees/cope-runtime-config-20260803/reserved_state_lock.csv
+reserved_state_inventory	PASS	[27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49]
+checkpoint_file_set	PASS	['README.md', 'added_tokens.json', 'config.json', 'dataset_statistics.json', 'generation_config.json', 'model-00001-of-00004.safetensors', 'model-00002-of-00004.safetensors', 'model-00003-of-00004.safetensors', 'model-00004-of-00004.safetensors', 'model.safetensors.index.json', 'preprocessor_config.json', 'special_tokens_map.json', 'tokenizer.json', 'tokenizer.model', 'tokenizer_config.json']
+checkpoint:README.md	PASS	bytes=1865;sha256=2f4d1ee4a885e3b4c0049a26b657a894415837d38bc94c99765ea9b49b59b394
+checkpoint:added_tokens.json	PASS	bytes=21;sha256=ab43123267b190cb7990bc9f2ae4ad32dcb7ed029fb0fccb1b4e062c6f54a2a1
+checkpoint:config.json	PASS	bytes=3528;sha256=f1119b0e0d6c93f10fbd0ad1996c3bff5a7bbb18040d8b2b828c69d302eacd4d
+checkpoint:dataset_statistics.json	PASS	bytes=2129;sha256=54ca346948d5e62e9519a9ed93e45f0a069b9ec997ad1f48f1d8867d4d2d86d2
+checkpoint:generation_config.json	PASS	bytes=136;sha256=67fbe17b12e8beb5be98eb911483971cc78589e51a37ac0cce9cd499d06a8bf1
+checkpoint:model-00001-of-00004.safetensors	PASS	bytes=4925122448;sha256=72f7196d8768c104073d7e9104ad8023cb27727191de1a490612886428b18c51
+checkpoint:model-00002-of-00004.safetensors	PASS	bytes=4947392496;sha256=92a60a88c7dad2ba1fccc4acbebef98fc7a894891bc49f2e21cfbf1600daf413
+checkpoint:model-00003-of-00004.safetensors	PASS	bytes=4947417456;sha256=12b45ae85535565148907e379d6f35bcba83b9497006ff3b66658fa412ffac85
+checkpoint:model-00004-of-00004.safetensors	PASS	bytes=262668432;sha256=d3b8e759db56b86709c56f8d156952415dd64e101feccfd01e701487041dd8c1
+checkpoint:model.safetensors.index.json	PASS	bytes=94764;sha256=ca8b53fed8133ee2afcd2fc483de8febf7f5bb0f6bcb09f91189772e59e8f659
+checkpoint:preprocessor_config.json	PASS	bytes=1690;sha256=52ca6dd7fb31a2757658f94775b659553bc3532ab04babef02779387b3dec214
+checkpoint:special_tokens_map.json	PASS	bytes=552;sha256=cb90ee5cf5793aa444039af9795b00db59d3fef8942e7eca9cf1990bab370d61
+checkpoint:tokenizer.json	PASS	bytes=1842976;sha256=8f5e2869e1807b8bb3c7717a294539c37e9de5d728ad60e31ef57e83cc5ea527
+checkpoint:tokenizer.model	PASS	bytes=499723;sha256=9e556afd44213b6bd1be2b850ebbbd98f5481437a8021afaf58ee7fb1818d347
+checkpoint:tokenizer_config.json	PASS	bytes=1212;sha256=0d9176185eb68a54a7be757961c1957b979920cc81339c4def0202dae5b602bc
+checkpoint_aggregate	PASS	2990c991ffa194ff3e720115454b815e4d83897250c6a88d2f7d70d817543af7
+runtime_file:/home/lijingsu/codex-worktrees/cope-true-clean-runtime/configs/openvla_libero_10_calibration_v2.yaml	PASS	3d6196bc110f61f4db93a73d0bf542ced2ad827a1d6d302b5f787c245f0d2c27
+runtime_file:/home/lijingsu/codex-worktrees/cope-true-clean-runtime/manifests/semantic_task1_config_v1.csv	PASS	7a7371c94a3176a21979f3b4316f542cab2bdc166fda56c90f1a8ddee76626a2
+runtime_file:/home/lijingsu/codex-worktrees/cope-true-clean-runtime/manifests/semantic_oracle_pilot_v1.csv	PASS	65631c1fcc14fbac5e5e712959ad03601b0bda51c35283ef95d55d459949ac80
+runtime_file:/home/lijingsu/codex-worktrees/cope-true-clean-runtime/scripts/run_project_env.sh	PASS	7aac1b843da25d1f5b8be9db71ea373318ae96d6856b82aa75da142377632600
+runtime_file:/home/lijingsu/codex-worktrees/cope-true-clean-runtime/cope/semantic_live_runner.py	PASS	8a2ac99681d78995f0bc288705442ba1f61cb552d2418c2580b01b386ab83c7e
+runtime_file:/home/lijingsu/codex-worktrees/cope-true-clean-runtime/experiments/live_semantic_runner.py	PASS	17ead1b48b38a1cbffaf1e9cf221f636926a49ebe511c0b5a46e4b9a1d564bfb
+runtime_file:/home/lijingsu/codex-worktrees/cope-true-clean-runtime/cope/libero_predicate_validator.py	PASS	7324e44f9c97f016a70a84a25c6ec2bec7c2b44df4458b52c56906ec4e2912db
+runtime_file:/home/lijingsu/codex-worktrees/cope-true-clean-runtime/cope/semantic_replacement.py	PASS	71617836e6683bc63f69cc6d8a2cc8bc61f3030eb5ac79e75093caef3720a3f3
+runtime_file:/home/lijingsu/codex-worktrees/cope-true-clean-runtime/cope/semantic_cancellation.py	PASS	a13459b1569baffad5331ee8ca2e61eb2bdf0796c5f59bd70c5de786ea6de32a
+runtime_file:/home/lijingsu/codex-worktrees/openvla-cope-cleanroom/experiments/robot/openvla_utils.py	PASS	539687fa13e8fc69b79289cbb2be1b7e1076dcaae4dc0cbfb5e76c6739a38e61
+runtime_file:/home/lijingsu/codex-worktrees/openvla-cope-cleanroom/experiments/robot/libero/run_libero_eval.py	PASS	369d9fc3d59067998ebfadafbd516872c7ff6f9f06a0a48cda8b6ca48051de77
+runtime_file:/home/lijingsu/codex-worktrees/openvla-cope-cleanroom/experiments/robot/robot_utils.py	PASS	d513c071fb8eaade42a5bc591a48022c11b63bfd58380d0cf319dcc3bdabb976
+runtime_file:/home/lijingsu/codex-worktrees/openvla-cope-cleanroom/experiments/robot/libero/libero_utils.py	PASS	6c162ce0954c8659018ee8ff1604a33904b50ac0631a8ca0f8bf1f7a4d25181d
+config_source_pins	PASS	{'schema_version': 'cope-semantic-task1-pilot-config-v1', 'study_id': 'cope_task1_semantic_replacement_cancellation_pilot_v1', 'task_suite': 'libero_10', 'task_id': '1', 'checkpoint_id': 'openvla-7b-finetuned-libero-10', 'checkpoint_repository': 'openvla/openvla-7b-finetuned-libero-10', 'checkpoint_revision': '80970322773f81baa2e22fe495d0487b93a05cfa', 'checkpoint_path': '/home/lijingsu/vla/models/openvla-7b-finetuned-libero-10', 'checkpoint_files_manifest_sha256': '2990c991ffa194ff3e720115454b815e4d83897250c6a88d2f7d70d817543af7', 'checkpoint_unnorm_key': 'libero_10', 'expected_weight_files': '4', 'bddl_path': '/home/lijingsu/codex-worktrees/libero-cope-cleanroom/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket.bddl', 'bddl_sha256': '3f552805c7ab34c44debcf38a48b8131d6fee3011dd86c039650b84e0f77d058', 'init_states_path': '/home/lijingsu/codex-worktrees/libero-cope-cleanroom/libero/libero/init_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket.pruned_init', 'init_states_sha256': 'f8ac06ea8f43bb328d40cba1e6a9767da2f8f5386fd7ff3f845c64a96bf6d2ce', 'libero_commit': '8f1084e3132a39270c3a13ebe37270a43ece2a01', 'openvla_commit': '9bf418e79d019d416860990d60379d66f0c06220', 'predicate_factory': 'cope.libero_predicate_validator:create_libero_predicate_validator', 'predicate_producer_commit': '298dac707bb0d57aad050978d6e81d7aab93090d', 'predicate_snapshot_schema': 'cope-libero-predicate-snapshot-v1', 'event_types': 'replace_pending_goal;cancel_pending_goal', 'observation_fields': 'encoding;rgb;sha256;width;height;fresh;predicate_snapshot', 'pilot_manifest_path': 'manifests/semantic_oracle_pilot_v1.csv', 'reserved_state_ids': '25;26', 'rollout_authorized': 'false'}
+python_executable	PASS	/home/lijingsu/codex-worktrees/cope-runtime-python-20260803-v1/bin/python;sha256=5ea655542025bb2bbf1036b59546f860d1400fda31456a83e22e688ce40a047d
+python_freeze	PASS	4cf8a2c18914cd631b8ef38e8b8010aa6f86ae5b0e2faca1a30089beb08380e5
+python_pip_check	PASS	No broken requirements found.
+critical_package_versions	PASS	{'torch': '2.5.1+cu121', 'transformers': '4.40.1', 'robosuite': '1.4.1', 'mujoco': '2.3.7', 'numpy': '1.26.4', 'libero': '0.1.0'}
+libero_import_resolution	PASS	/home/lijingsu/codex-worktrees/libero-cope-cleanroom/libero/libero/__init__.py
+critical_environment	PASS	{'LIBERO_CONFIG_PATH': '/home/lijingsu/codex-worktrees/cope-runtime-config-20260803', 'MUJOCO_GL': 'osmesa', 'PYOPENGL_PLATFORM': 'osmesa', 'HF_HUB_OFFLINE': '1', 'TRANSFORMERS_OFFLINE': '1', 'PYTHONPATH_HEAD': ['/home/lijingsu/codex-worktrees/openvla-cope-cleanroom', '/home/lijingsu/codex-worktrees/libero-cope-cleanroom']}
+FINAL	PASS	checks=53;provider_calls=0;simulator_runs=0;reserved_state_packets_read=0;output_created=false

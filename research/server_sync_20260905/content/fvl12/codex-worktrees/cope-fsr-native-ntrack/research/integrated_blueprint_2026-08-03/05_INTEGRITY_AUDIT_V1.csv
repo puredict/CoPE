@@ -1,0 +1,16 @@
+check,pass,observed,expected
+mandatory_baselines_present,True,"[""COPE-EXACT"",""CURRENT-WORLD-REPLAN"",""CoPE-G"",""Compact-TX"",""DoReMi-H"",""FSR-PC"",""NO-EDIT"",""ORACLE-FULL"",""OpenVLA policy"",""Parameterized skill controller"",""ReKep"",""TX-EXEC+""]","[""CURRENT-WORLD-REPLAN"",""CoPE-G"",""Compact-TX"",""FSR-PC"",""NO-EDIT"",""ORACLE-FULL""]"
+baseline_rows,True,12,12
+claim_rows,True,16,16
+x10_openvla_failures_retained,True,"[true,true]","[true,true]"
+x10_skill_controller_and_credential_boundary,True,"[true,true]","[true,true]"
+x11_equivalence_and_faults,True,"[true,true]","[true,true]"
+x12_sparse_baseline_numbers,True,"[true,true]","[true,true]"
+x13_no_learned_result,True,"{""audit_program_sha256"":""03958879ed7a4f7c79bbc4c35721a2d60a1887ea57805e4b1fe897e40500d427"",""checks_passed"":15,""checks_total"":15,""decision"":""PASS"",""learned_provider_calls"":0,""learned_result_available"":false,""mocked_cells_passed"":36,""mocked_cells_total"":36,""preflight_cells_blocked"":36,""preflight_cells_total"":36,""reserved_states_read"":false}","{""checks"":""15/15"",""learned_provider_calls"":0,""learned_result_available"":false}"
+x15_commission_and_omission_numbers,True,"[""0/14"",""5/14"",""10/14"",""8/8""]","[""0/14"",""5/14"",""10/14"",""8/8""]"
+x16_decomposed_parity,True,"[""48/48"",""39/39"",""136/136""]","[""48/48"",""39/39"",""136/136""]"
+x17_composition_numbers,True,"[""64/64"",""64/64"",""8/8""]","[""64/64"",""64/64"",""8/8""]"
+x18_fail_then_repair,True,"[""FAIL"",""4/2352"",""PASS"",""0/2352"",""14/2352""]","[""FAIL"",""4/2352"",""PASS"",""0/2352"",""14/2352""]"
+clean_gate_math,True,0.664356,""">=0.65"""
+blueprint_compact_mandatory,False,true,true
+recent_resource_boundary,True,true,true

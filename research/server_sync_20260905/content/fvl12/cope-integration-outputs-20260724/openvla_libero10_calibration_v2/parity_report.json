@@ -1,0 +1,246 @@
+{
+  "action_spec_source": "env.env.action_spec",
+  "action_validation": {
+    "action_high": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "action_low": [
+      -1.0,
+      -1.0,
+      -1.0,
+      -1.0,
+      -1.0,
+      -1.0,
+      -1.0
+    ],
+    "environment_action": [
+      0.035215349758372594,
+      -0.11000526044882986,
+      0.00034138186305165963,
+      -0.00046428395252602617,
+      -0.00031470433169719647,
+      -0.0006575529481850362,
+      -1.0
+    ],
+    "expected_dim": 7,
+    "gates": {
+      "action_spec_shape": true,
+      "environment_action_shape": true,
+      "environment_action_within_spec": true,
+      "environment_gripper_binarized": true,
+      "finite": true,
+      "gripper_normalize_binarize_invert": true,
+      "raw_action_shape": true,
+      "raw_gripper_in_unit_interval": true
+    },
+    "passed": true,
+    "raw_action": [
+      0.035215349758372594,
+      -0.11000526044882986,
+      0.00034138186305165963,
+      -0.00046428395252602617,
+      -0.00031470433169719647,
+      -0.0006575529481850362,
+      0.996078431372549
+    ]
+  },
+  "adapter_frame_sha256": "41ea0fc8a999258c0f7e1d77d5a360ba8517fac3c279a6fb6deffe874c44b74f",
+  "adapter_processor_input": {
+    "batch": {
+      "attention_mask": {
+        "dtype": "torch.int64",
+        "sha256": "dbc98745bb89574fe808968d7aafdc064cc3716ca2659f29141f428aa5be64c5",
+        "shape": [
+          1,
+          29
+        ]
+      },
+      "input_ids": {
+        "dtype": "torch.int64",
+        "sha256": "971135c4374f04a22da9779b7b6a7dce99695443da1c8ce3c64000362e72ea52",
+        "shape": [
+          1,
+          29
+        ]
+      },
+      "pixel_values": {
+        "dtype": "torch.float32",
+        "sha256": "866f4d0597687cdbab6f250541a4c1273be2b07903b3e6bb73087e6b618a0641",
+        "shape": [
+          1,
+          6,
+          224,
+          224
+        ]
+      }
+    },
+    "image_sha256": "d84b25c1f41aa5e8871d974adb47bf75d5c2972e78c70adf6b07a460ba4e1197",
+    "image_shape": [
+      224,
+      224,
+      3
+    ],
+    "prompt": "In: What action should the robot take to put both the cream cheese box and the butter in the basket?\nOut:"
+  },
+  "checkpoint": {
+    "action_dim": 7,
+    "action_mask": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      false
+    ],
+    "action_q01": [
+      -0.6348214149475098,
+      -0.7741071581840515,
+      -0.7633928656578064,
+      -0.09749999642372131,
+      -0.14819999992847435,
+      -0.2742857038974762,
+      0.0
+    ],
+    "action_q99": [
+      0.7714285850524902,
+      0.8464285731315613,
+      0.9375,
+      0.13928571343421936,
+      0.15964286029338837,
+      0.3246428668498993,
+      1.0
+    ],
+    "adapter_state_dim": 8,
+    "checkpoint_proprio_statistics_all_zero": true,
+    "checkpoint_proprio_statistics_dim": 7,
+    "files_manifest_sha256": "58773a8ef85515f695c99402f692dc5afe0fb71efd7f3984ff44c1f117c4f034",
+    "model_consumes_proprio": false,
+    "model_index_sha256": "ca8b53fed8133ee2afcd2fc483de8febf7f5bb0f6bcb09f91189772e59e8f659",
+    "normalization_statistics_sha256": "54ca346948d5e62e9519a9ed93e45f0a069b9ec997ad1f48f1d8867d4d2d86d2",
+    "path": "/home/lijingsu/vla/models/openvla-7b-finetuned-libero-10",
+    "repository": "openvla/openvla-7b-finetuned-libero-10",
+    "revision": "80970322773f81baa2e22fe495d0487b93a05cfa",
+    "unnorm_key": "libero_10",
+    "weight_shards": [
+      {
+        "bytes": 4925122448,
+        "name": "model-00001-of-00004.safetensors",
+        "sha256": "72f7196d8768c104073d7e9104ad8023cb27727191de1a490612886428b18c51"
+      },
+      {
+        "bytes": 4947392496,
+        "name": "model-00002-of-00004.safetensors",
+        "sha256": "92a60a88c7dad2ba1fccc4acbebef98fc7a894891bc49f2e21cfbf1600daf413"
+      },
+      {
+        "bytes": 4947417456,
+        "name": "model-00003-of-00004.safetensors",
+        "sha256": "12b45ae85535565148907e379d6f35bcba83b9497006ff3b66658fa412ffac85"
+      },
+      {
+        "bytes": 262668432,
+        "name": "model-00004-of-00004.safetensors",
+        "sha256": "d3b8e759db56b86709c56f8d156952415dd64e101feccfd01e701487041dd8c1"
+      }
+    ]
+  },
+  "config_hash": "6cbc6c22065aa155a7d632fefe97788ec624dfd1aa07612e68ee4e56c11de49d",
+  "done_after_step": false,
+  "entry": {
+    "bddl_file": "LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket.bddl",
+    "bddl_sha256": "3f552805c7ab34c44debcf38a48b8131d6fee3011dd86c039650b84e0f77d058",
+    "description": "put both the cream cheese box and the butter in the basket",
+    "episode_id": "calibration_v2__task01__state00__seed20270724",
+    "initial_state_id": 0,
+    "initial_state_sha256": "5abdf8f466f490901dee9f931b32eb181b2928eaa17bb6379742f988581d564a",
+    "protocol_label": "standard_libero10_clean_calibration_horizon_520",
+    "seed": 20270724,
+    "task_id": 1,
+    "task_name": "LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket"
+  },
+  "environment_step_seconds": 0.1943914145231247,
+  "gates": {
+    "action_valid": true,
+    "adapter_state_is_8d": true,
+    "bddl_identity_exact": true,
+    "camera_is_agentview": true,
+    "camera_orientation_and_resize_exact": true,
+    "center_crop_exact": true,
+    "gripper_official_normalize_and_invert": true,
+    "initial_state_exact": true,
+    "model_proprio_not_consumed": true,
+    "no_shared_inference_port": true,
+    "official_adapter_frame_hash_exact": true,
+    "one_visible_gpu": true,
+    "processor_prompt_exact": true,
+    "processor_tensor_hashes_exact": true,
+    "real_inference_and_env_step": true,
+    "runtime_description_exact": true,
+    "task_name_exact": true,
+    "unnorm_key_exact": true
+  },
+  "gpu": {
+    "allocated_bytes": 15138074624,
+    "cuda_available": true,
+    "device": "cuda:0",
+    "name": "NVIDIA GeForce RTX 3090",
+    "peak_allocated_bytes": 15478815232,
+    "peak_reserved_bytes": 15573450752,
+    "reserved_bytes": 15573450752,
+    "total_bytes": 25438126080
+  },
+  "inference_seconds": 0.9035985665395856,
+  "official_frame_sha256": "41ea0fc8a999258c0f7e1d77d5a360ba8517fac3c279a6fb6deffe874c44b74f",
+  "official_processor_input": {
+    "batch": {
+      "attention_mask": {
+        "dtype": "torch.int64",
+        "sha256": "dbc98745bb89574fe808968d7aafdc064cc3716ca2659f29141f428aa5be64c5",
+        "shape": [
+          1,
+          29
+        ]
+      },
+      "input_ids": {
+        "dtype": "torch.int64",
+        "sha256": "971135c4374f04a22da9779b7b6a7dce99695443da1c8ce3c64000362e72ea52",
+        "shape": [
+          1,
+          29
+        ]
+      },
+      "pixel_values": {
+        "dtype": "torch.float32",
+        "sha256": "866f4d0597687cdbab6f250541a4c1273be2b07903b3e6bb73087e6b618a0641",
+        "shape": [
+          1,
+          6,
+          224,
+          224
+        ]
+      }
+    },
+    "image_sha256": "d84b25c1f41aa5e8871d974adb47bf75d5c2972e78c70adf6b07a460ba4e1197",
+    "image_shape": [
+      224,
+      224,
+      3
+    ],
+    "prompt": "In: What action should the robot take to put both the cream cheese box and the butter in the basket?\nOut:"
+  },
+  "passed": true,
+  "processor_loader": "local_upstream_prismatic_processor_v1",
+  "protocol_label": "standard_libero10_clean_calibration_horizon_520",
+  "reset_agentview_sha256": "cf1ca9bde76152680b6190847892d41126ba0e0f08335d30be6bbdd95b0fbd04",
+  "reward_after_step": 0.0,
+  "runtime_description_supplied_to_model": "put both the cream cheese box and the butter in the basket",
+  "schema_version": "openvla-libero-calibration-v2-parity-v1",
+  "warmup_steps_before_inference": 10
+}

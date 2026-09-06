@@ -1,0 +1,8 @@
+01_top_level_sizes	0	du -sh .[!.]* * 2>/dev/null | sort -h	/home/lijingsu/vla/audit_outputs/20260713_211615/01_top_level_sizes.log
+02_large_files	0	find /home/lijingsu/vla -path /home/lijingsu/vla/.venv -prune -o -path /home/lijingsu/vla/models -prune -o -path /home/lijingsu/vla/cache -prune -o -type f -size +5M -printf "%s %p\\n" | sort -nr | head -100	/home/lijingsu/vla/audit_outputs/20260713_211615/02_large_files.log
+03_all_top_files	0	find /home/lijingsu/vla -maxdepth 2 -type f | sort	/home/lijingsu/vla/audit_outputs/20260713_211615/03_all_top_files.log
+04_source_candidates	0	find /home/lijingsu/vla -maxdepth 3 -type f \( -name "*.py" -o -name "*.sh" -o -name "*.md" -o -name "*.yaml" -o -name "*.yml" -o -name "*.txt" -o -name ".gitignore" \) | sort	/home/lijingsu/vla/audit_outputs/20260713_211615/04_source_candidates.log
+05_pre_git_status	0	git status --short 2>&1 || true	/home/lijingsu/vla/audit_outputs/20260713_211615/05_pre_git_status.log
+06_prepare_baseline_file_list	0	prepare baseline file list and inspect git user/status	/home/lijingsu/vla/audit_outputs/20260713_211615/06_prepare_baseline_file_list.log
+09_validation_audit	0	validate offline smoke outputs and final state	/home/lijingsu/vla/audit_outputs/20260713_211615/09_validation_audit.log
+11_write_stage_1_5_report	0	write STAGE_1_5_REPORT.md	/home/lijingsu/vla/audit_outputs/20260713_211615/STAGE_1_5_REPORT.md

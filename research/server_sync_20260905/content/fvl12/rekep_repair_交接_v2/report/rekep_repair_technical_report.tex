@@ -1,0 +1,999 @@
+\documentclass[11pt]{article}
+
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,bm}
+\usepackage{booktabs,longtable,tabularx,array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{microtype}
+\usepackage{listings}
+\usepackage{caption}
+
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\setlength{\headheight}{14pt}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{ReKep-R Technical Report}
+\rhead{Internal Handoff}
+\cfoot{\thepage}
+
+\definecolor{codegray}{rgb}{0.95,0.95,0.95}
+\lstset{backgroundcolor=\color{codegray},basicstyle=\ttfamily\footnotesize,
+  breaklines=true,frame=single,columns=fullflexible}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+
+\newcommand{\method}{\textsc{ReKep-R}}
+\newcommand{\SD}{\mathrm{SD}}
+\newcommand{\CFR}{\mathrm{CFR}}
+\newcommand{\TS}{\mathrm{TS}}
+\newcommand{\REMOTE}{\textcolor{red}{\textbf{REMOTE GPU SERVER ONLY}}}
+
+\title{\textbf{Verified Online Constraint-Program Repair for\\
+Recoverable Robotic Manipulation}\\[4pt]
+\large Method, Implementation, CPU Evidence, and GPU Integration Plan}
+\author{Internal Technical Report --- Coauthor Handoff}
+\date{\today}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+\noindent
+This report documents the complete state of the \method{} project: an online
+repair layer for ReKep relational-keypoint constraint programs that detects an
+interruption, captures a continuation of the actively executing stage,
+\emph{synthesizes} a repair program at runtime from atomic typed operators,
+\emph{verifies} it by sequential rollout, splices it into the live task graph,
+and then restores and resumes the interrupted stage. We report a frozen CPU
+implementation, six theoretical results with explicit assumptions, and
+$\sim$59{,}000 simulated episodes of evidence. The headline finding is
+deliberately bounded: when the exact recovery branch is precompiled, a strong
+parameterized offline baseline is \emph{exactly equal} to online repair
+($0/0$ discordant pairs, $p=1.0$). The online advantage lies in compact
+operator storage, runtime structural adaptability, and coverage under partial
+precompilation. No GPU code has been executed.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+%=============================================================
+\section{Executive summary}
+
+\paragraph{Research question.}
+\begin{quote}
+How can a robot modify the structure of an actively executing ReKep constraint
+program online, in response to an interruption, and then safely restore and
+resume the original task?
+\end{quote}
+
+\paragraph{Central distinction.}
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{offline precompiled recovery} & select an existing recovery structure \\
+\textbf{online repair} & synthesize, verify, and splice a \emph{new} repair
+structure at runtime \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{What the evidence supports.}
+Exact precompiled coverage \emph{matches} online performance whenever the exact
+branch is available. Across 16{,}200 paired episodes the strong parameterized
+offline baseline and online repair are identical on all three success
+measures ($0.973$ safe delivery, $0.973$ collision-free recovery, $0.683$ task
+success), with zero discordant pairs and $p=1.0$ under an exact McNemar test.
+
+The online advantage is therefore \textbf{not universal superiority}. It is:
+\begin{enumerate}[leftmargin=2em,itemsep=1pt]
+  \item \textbf{compact operator representation} --- $9$ atomic operators and
+        zero compilation, versus $17$ precompiled branches / $109$ graph nodes /
+        $157$ offline search expansions for exact coverage;
+  \item \textbf{runtime structural adaptability} --- a repair sequence never
+        stored before execution can be constructed;
+  \item \textbf{coverage under partial precompilation} --- $+0.380$
+        $[+0.362,+0.399]$ safe delivery over an atomic-coverage offline
+        baseline, concentrated entirely in compound events.
+\end{enumerate}
+
+\paragraph{Status.} The CPU architecture, benchmark, claims, and tests are
+\textbf{frozen}. GPU/ReKep integration is prepared but \textbf{not executed}.
+
+%=============================================================
+\section{Research origin and contribution context}
+
+\begin{quote}
+\textbf{Internal note.} The abstract idea of \emph{online repair} --- that a
+disturbance may require changing the \emph{structure} of the executing task
+program rather than only re-optimizing a trajectory inside a fixed stage ---
+\textbf{originated from the collaborator}. From that starting point the project
+has been \textbf{jointly developed} into a formal method, an implementation, a
+set of theoretical results, and an experimental program.
+
+\textbf{Final authorship, author order, and CRediT contribution statements are
+not decided and will be confirmed jointly by the coauthors before submission.}
+No ordering, percentages, or role assignments are recorded anywhere in this
+handoff, by design.
+\end{quote}
+
+Open questions requiring joint agreement are listed in
+\texttt{COLLABORATION\_NOTES.md}.
+
+%=============================================================
+\section{Original research outline}
+
+The intended runtime pipeline, which the implementation now realizes:
+
+\begin{center}
+\begin{minipage}{0.86\textwidth}
+\begin{lstlisting}
+nominal ReKep program
+  -> runtime event detection
+  -> continuation capture
+  -> abstract repair-goal construction
+  -> online operator synthesis
+  -> structural legality checking
+  -> sequential rollout verification
+  -> candidate selection
+  -> active-program splice
+  -> restoration validation
+  -> resumed nominal execution
+\end{lstlisting}
+\end{minipage}
+\end{center}
+
+\paragraph{Why this is program repair, not trajectory replanning.}
+Trajectory replanning searches for a new continuous path \emph{within a fixed
+discrete stage structure}: the set of active objectives, their ordering, and the
+stage boundaries are unchanged. Program repair changes that discrete structure
+itself --- which objectives are active, in what order, and where the boundaries
+lie --- and then hands the result to the \emph{unchanged} trajectory optimizer.
+
+Three consequences distinguish the two:
+\begin{enumerate}[leftmargin=2em,itemsep=1pt]
+  \item \emph{Objective deactivation.} A path-only reaction must satisfy the
+        nominal and interruption objectives simultaneously and pays the
+        irreducible conflict floor of Theorem~\ref{thm:conflict}. Repair
+        deactivates the nominal objective for a bounded interval.
+  \item \emph{Ordered commitments.} Recoveries such as
+        $\textsf{Retreat}\prec\textsf{WaitUntilClear}\prec\textsf{ReacquireTarget}$
+        are temporal orderings over modes, not geometric constraints, and have
+        no representation inside one stage.
+  \item \emph{Restoration.} After the recovery the system must return to a state
+        satisfying the \emph{interrupted stage's} entry condition --- a program-level
+        contract, not a trajectory property.
+\end{enumerate}
+
+%=============================================================
+\section{Formal problem formulation}
+
+\paragraph{Nominal ordered constraint program.}
+A task is an ordered sequence of stages
+$\mathcal S=(s_1,\dots,s_N)$, each
+\begin{equation}
+s_i=\bigl(\mathcal C^{(i)}_{\mathrm{sub}},\;
+          \mathcal C^{(i)}_{\mathrm{path}},\;
+          \rho_i,\; m_i,\; \psi_i\bigr),
+\end{equation}
+with subgoal constraints $\mathcal C_{\mathrm{sub}}$ (hold at the stage
+boundary), path constraints $\mathcal C_{\mathrm{path}}$ (hold throughout),
+transition guard $\rho_i$, semantic mode $m_i$, and metadata $\psi_i$. A
+relational keypoint constraint is $f:\mathbb R^{K\times3}\to\mathbb R$,
+satisfied when $f(k_t)\le0$.
+
+\paragraph{Runtime state and stage lifecycle.}
+The runtime state is the pair (execution context, stage state), with
+\[
+\textsf{PENDING},\;\textsf{ACTIVE},\;\textsf{SUSPENDED},\;
+\textsf{REPAIR\_ACTIVE},\;\textsf{RESUMED},\;\textsf{COMPLETED},\;\textsf{FAILED}.
+\]
+
+\paragraph{Event predicates.}
+The world exposes a predicate vector
+$P_t \in\{0,1\}^{K_p}$; currently
+$\{\textsf{obstacle\_present},\textsf{object\_slipped},\textsf{target\_relocated}\}$
+plus a clearance flag. \emph{Every} method receives exactly this vector, so no
+method observes a richer world than another.
+
+\paragraph{Continuation.}
+On interruption of the active stage $s_i$ we capture
+\begin{equation}
+\kappa_t=\bigl(i,\;x_t,\;e_t,\;A_t,\;g_i,\;\mathcal C_i,\;
+e_{\mathrm{handoff}},\;\mathrm{Pre}(s_i^{\mathrm{resumed}}),\;\chi_t\bigr),
+\end{equation}
+i.e.\ stage identity, state, end-effector pose, attachment state, the nominal
+target, the active constraints, a handoff pose, the resume contract, and a
+progress marker.
+
+\paragraph{Abstract state and repair operators.}
+Repair planning happens in a finite abstract space
+$S=\{0,1\}^{d}$, $d=11$, over facts such as
+$\textsf{nominal\_suspended}$, $\textsf{object\_grasped}$,
+$\textsf{object\_stable}$, $\textsf{safe\_clearance}$,
+$\textsf{ee\_at\_handoff}$, $\textsf{aligned\_to\_current\_target}$,
+$\textsf{restore\_valid}$. An operator is a triple
+\begin{equation}
+o=(\mathrm{pre}_o,\;\mathrm{eff}_o,\;c_o),\qquad
+\mathrm{pre}_o:S\to\{0,1\},\quad \mathrm{eff}_o:S\to S,\quad c_o>0 .
+\end{equation}
+The library $O$ contains $\textsf{Suspend}$, $\textsf{Stabilize}$,
+$\textsf{Retreat}$, $\textsf{WaitUntilClear}$, $\textsf{ReacquireTarget}$,
+$\textsf{UpdateTargetContract}$, $\textsf{Realign}$, $\textsf{Resume}$,
+$\textsf{SafeStop}$.
+
+\paragraph{RepairGoal.}
+Event requirements are first class. From the active predicate set we build
+\begin{equation}
+G=(T,F),\qquad
+\mathrm{sat}_G(s)\iff
+\Bigl(\bigwedge_{p\in T}s.p\Bigr)\wedge\Bigl(\bigwedge_{p\in F}\neg s.p\Bigr),
+\end{equation}
+as the \emph{union} of every active predicate's requirements plus
+$\textsf{restore\_valid}$. For example
+\begin{align}
+\text{obstacle:}\quad & \neg\textsf{obstacle\_present}\wedge\textsf{safe\_clearance},\\
+\text{slip:}\quad & \textsf{object\_grasped}\wedge\textsf{object\_stable},\\
+\text{relocation:}\quad & \textsf{aligned\_to\_current\_target}.
+\end{align}
+
+\paragraph{Candidate repair program and selection.}
+A candidate is an operator sequence $\pi=(o_1,\dots,o_m)$ instantiated into
+concrete stages. Let $\Omega_t$ be the candidates that survive
+\emph{structural legality} (acyclicity, presence of a restore edge, attachment
+consistency) and \emph{concrete rollout feasibility} (no predicted collision, no
+guard timeout, within the episode horizon, valid attachment, zero requirement
+residual, restore contract reachable). Selection minimizes a state-dependent
+cost computed \emph{from the rollout}:
+\begin{equation}
+\label{eq:select}
+\pi^\star=\operatorname*{arg\,min}_{\pi\in\Omega_t}
+\Bigl[
+w_r\,|\mathrm{res}(\pi)|
++ w_s\,\bigl[\bar d(\sigma)-\hat d_{\min}(\pi)\bigr]_+
++ w_t\,\hat T(\pi)
++ w_h\,\hat E_{\mathrm{ho}}(\pi)
++ w_a\,\mathbb 1[\text{released}]
++ \alpha|\pi|
++ w_{\mathrm{sw}}(|\pi|-1)
+\Bigr],
+\end{equation}
+where $\mathrm{res}$ is the requirement residual, $\hat d_{\min}$ the predicted
+minimum clearance, $\bar d(\sigma)$ a severity-scaled desired standoff, $\hat T$
+the predicted duration and $\hat E_{\mathrm{ho}}$ the predicted handoff error.
+Candidates with $\mathrm{res}\neq\emptyset$ are \emph{rejected}, not merely
+penalized; the residual term in \eqref{eq:select} only ranks survivors.
+
+\paragraph{Repaired program.}
+The splice replaces the edge $s_i\to s_{i+1}$ by
+\begin{equation}
+\label{eq:splice}
+s_i^{\mathrm{suspended}}
+\rightarrow u_1\rightarrow\cdots\rightarrow u_m
+\rightarrow s_i^{\mathrm{resumed}}(\kappa_t)
+\rightarrow s_{i+1}.
+\end{equation}
+
+%=============================================================
+\section{Method}
+
+\subsection{Layers}
+
+\begin{enumerate}[leftmargin=2em,itemsep=1pt]
+\item \textbf{\texttt{TaskProgram} IR.} Ordered stages plus an explicit
+      \texttt{TaskGraph}; the solver only ever asks for \texttt{active\_stage()}.
+\item \textbf{Stage state machine.} Enforces (not by convention) that the
+      interrupted stage becomes \textsf{SUSPENDED}, never \textsf{COMPLETED};
+      that $s_{i+1}$ is unreachable until restore validates; and that
+      \texttt{advance()} is \emph{atomic} --- all legality checks precede any
+      mutation, so a blocked transition leaves state bit-identical.
+\item \textbf{Continuation capture.} $\kappa_t$ as above.
+\item \textbf{First-class event requirements.} \texttt{RepairGoal} built from the
+      full predicate vector; compound events take the union.
+\item \textbf{Symbolic operators.} Preconditions encode physical semantics:
+      \textsf{Stabilize} requires \textsf{object\_grasped} (a released object
+      cannot be reoriented by the gripper); \textsf{WaitUntilClear} requires a
+      safe standoff and does \emph{not} open clearance --- only \textsf{Retreat}
+      does. Operator semantics are deliberately non-overlapping.
+\item \textbf{Bounded best-first search.} Uniform-cost over $O$; each operator
+      used at most once and required to change the state, so search terminates
+      (Prop.~\ref{prop:term}). Observed mean: $15.2$ expansions.
+\item \textbf{Globally unique repair instances.} Node IDs are namespaced
+      \texttt{stage::event::instance::operator\#idx}, so repeated repairs in one
+      episode cannot collide or create cycles.
+\item \textbf{Structural legality filter.} Acyclicity, \textsf{HasRestore},
+      attachment consistency.
+\item \textbf{Sequential rollout verifier.} Propagates state
+      operator-by-operator under the planning model, using the \emph{same}
+      action-clipping utility as the environment, and independently re-derives
+      the requirement residual from the predicted trajectory.
+\item \textbf{Candidate scoring.} Equation~\eqref{eq:select}.
+\item \textbf{Program splice.} Equation~\eqref{eq:splice}.
+\item \textbf{Restoration and resumption.} \textsf{Resume}'s exit guard
+      \emph{is} the resume contract; entry to $s_i^{\mathrm{resumed}}$ is gated
+      on it.
+\item \textbf{Safe fallback.} If no candidate survives, a bounded safe stop.
+\item \textbf{Provenance.} Every action carries
+      $\text{action}\!\leftarrow\!\text{stage}\!\leftarrow\!\text{repair}
+      \!\leftarrow\!\text{event}\!\leftarrow\!\text{continuation}$.
+\end{enumerate}
+
+\subsection{Three paradigms}
+
+\begin{center}
+\begin{tabular}{p{0.19\textwidth}p{0.24\textwidth}p{0.24\textwidth}p{0.24\textwidth}}
+\toprule
+ & \textbf{precompiled full branch} & \textbf{runtime template instantiation}
+ & \textbf{runtime operator synthesis} \\
+\midrule
+stored & complete branch per predicate combination & complete sequence per event
+class & \textbf{atomic operators only} \\
+runtime decision & which branch to activate & which template to instantiate
+& \textbf{which sequence to construct} \\
+graph rewritten & no & yes & yes \\
+novel composition & no & no & \textbf{yes} \\
+storage growth & with covered combinations & with event classes
+& \textbf{constant} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Critically, the strong offline baseline used in all experiments has
+\emph{every} runtime capability online repair has --- same predicates, parameter
+binding, controllers, rollout verifier, scoring, continuation capture, splice,
+restore --- and differs \emph{only} in that it cannot construct a sequence that
+was not compiled before execution.
+
+%=============================================================
+\section{Correctness and theoretical results}
+
+\subsection{Simultaneous-objective conflict}
+
+\begin{theorem}[Conflict lower bound]
+\label{thm:conflict}
+Let $A,B\subseteq\mathcal X$ be nonempty with
+$\delta=\operatorname{dist}(A,B)>0$, and fix $\lambda,\mu>0$. Then for
+$J(x)=\lambda\,d(x,A)^2+\mu\,d(x,B)^2$,
+\begin{equation}
+\inf_{x\in\mathcal X}J(x)\;\ge\;\frac{\lambda\mu}{\lambda+\mu}\,\delta^2 .
+\end{equation}
+\end{theorem}
+\begin{proof}[Proof sketch]
+$d(x,A)+d(x,B)\ge\delta$ for any nonempty sets. Minimizing
+$\lambda a^2+\mu b^2$ subject to $a+b\ge\delta$, $a,b\ge0$ is convex with active
+constraint; the optimum is $a^\star=\mu\delta/(\lambda+\mu)$,
+$b^\star=\lambda\delta/(\lambda+\mu)$, giving the stated value.
+\end{proof}
+
+We write $\inf$, not $\min$: $A,B$ need not be closed.
+
+\begin{corollary}[Threshold failure, \emph{fixed} weights]
+Fix $\lambda,\mu>0$. If success requires $J(x)\le\varepsilon$ with
+$\varepsilon<\frac{\lambda\mu}{\lambda+\mu}\delta^2$, no fixed-stage
+simultaneous optimum \emph{with those weights} succeeds.
+\end{corollary}
+
+\paragraph{Caveat that must accompany the corollary.} The floor is \emph{not}
+uniform over weights: $\lambda\to0$ drives it to $0$ (numerically
+$1.43\to0.19\to0.02$ for $\lambda=2,0.2,0.02$ at $\mu=5$, $\delta=1$). Claiming
+``no weighting can succeed'' requires bounding the weights away from zero.
+Ordered repair removes the \emph{simultaneous-conflict term} only; it does not
+make total trajectory cost zero, and still requires reachability and feasible
+transitions.
+
+\subsection{Synthesis-layer results}
+
+\begin{proposition}[Abstract search soundness]
+If the search expands $o$ at $s$ only when $\mathrm{pre}_o(s)=1$ and returns
+$\pi$ only when $\mathrm{sat}_G$ holds at the terminal abstract state, then every
+operator is applied in a state satisfying its declared precondition and the
+terminal state satisfies every requirement of $G$.
+\end{proposition}
+\emph{Scope:} this concerns the \textbf{abstract model only}. Effects are
+declared, not derived from dynamics; physical validity is established separately
+by rollout verification.
+
+\begin{proposition}[Finite termination]\label{prop:term}
+For finite $S$, finite $O$, all $c_o>0$, and plan length bounded by $L$,
+uniform-cost search terminates. Each operator is used at most once and must
+change the state, giving a much smaller practical bound.
+\end{proposition}
+
+\begin{proposition}[Conditional completeness]
+If a goal-reaching plan exists in the bounded space
+$\Pi_L=\{\pi:|\pi|\le L,\ \pi\ \text{applicable from}\ s_0\}$, uniform-cost
+search returns one; with cost-optimal tie-breaking, one of minimum cost.
+\end{proposition}
+\emph{Scope:} completeness is relative to $\Pi_L$ and to $O$. It is
+\textbf{not} open-set completeness.
+
+\begin{proposition}[Coverage--complexity]
+Under a stated model in which $K$ predicates may hold in any combination, all
+$2^K-1$ combinations are reachable, and a precompiled architecture stores a
+complete branch per covered combination: full coverage requires $\Theta(2^K)$
+branches, whereas a compositional library of $\Theta(K)$ operators covers the
+same combinations provided a goal-reaching plan exists in $\Pi_L$, at the cost of
+runtime search.
+\end{proposition}
+\emph{Scope:} this compares two \emph{idealized} strategies. It does
+\textbf{not} claim every offline architecture is necessarily exponential --- a
+real system may share subgraphs, parameterize branches, or cover only likely
+combinations.
+
+\begin{proposition}[Conditional restoration]
+If repair execution reaches a concrete state $x$ with
+$\mathrm{Pre}(s_i^{\mathrm{resumed}})(x)=1$, the resumed stage begins from a
+state satisfying its declared entry conditions.
+\end{proposition}
+\emph{Explicitly not claimed:} that the controller \emph{reaches} such a state
+under model mismatch.
+
+\subsection{Three levels of validity}
+
+\begin{center}
+\begin{tabular}{p{0.16\textwidth}p{0.44\textwidth}p{0.32\textwidth}}
+\toprule
+Level & Claim & Measured status \\
+\midrule
+\textbf{L1} & abstract plan soundness & holds by construction \\
+\textbf{L2} & rollout feasibility under the planning model $\hat f$ &
+  precision $1.000$ at zero mismatch \\
+\textbf{L3} & physical execution success under $f\neq\hat f$ &
+  \textbf{degrades}: false-accept $0.000\to0.028\to0.063\to0.228$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{No result in this project asserts $\text{L1}\Rightarrow\text{L3}$ or
+$\text{L2}\Rightarrow\text{L3}$.} L2 is the bridge; the mismatch study
+quantifies how leaky it becomes.
+
+%=============================================================
+\section{Code architecture}
+
+\begin{center}
+\begin{longtable}{p{0.16\textwidth}p{0.40\textwidth}p{0.36\textwidth}}
+\toprule
+Package & Responsibility / key entities & Implements \\
+\midrule
+\endhead
+\texttt{program/} & \texttt{StageSpec}, \texttt{StageState},
+  \texttt{TaskProgram} (state machine, \texttt{interrupt\_active\_stage},
+  \texttt{splice\_repair\_before\_successor}, atomic \texttt{advance}),
+  \texttt{Continuation}, \texttt{TaskGraph}, contracts
+  & Eq.~\eqref{eq:splice}; $\kappa_t$ \\
+\texttt{events/} & \texttt{EventType}, deterministic predicates,
+  \texttt{EventDetector}, \texttt{NoiseModel} (delay / FP / FN)
+  & event predicates \\
+\texttt{repair/} & \texttt{AbstractState}, \texttt{RepairGoal},
+  \texttt{SYMBOLIC\_OPS}, \texttt{RepairPlanner} (search),
+  \texttt{SynthesisGenerator} vs.\ \texttt{CandidateGenerator},
+  legality / feasibility filters, \texttt{RolloutVerifier},
+  \texttt{Scorer}, \texttt{RepairManager}
+  & Props.~A--D; Eq.~\eqref{eq:select} \\
+\texttt{execution/} & \texttt{ExecutionContext} (carries the \emph{current}
+  \texttt{task\_goal}), \texttt{action.py} (single clipping utility shared with
+  the verifier), controllers, guard monitor, \texttt{Executor},
+  fallback, provenance & shared harness \\
+\texttt{policies/} & fixed / path-only / safe-stop / template /
+  offline (branch \& parameterized) / online / verifier variants / ablations
+  & the compared methods \\
+\texttt{synthetic/} & \texttt{SceneConfig}, \texttt{Synthetic2DEnv},
+  \texttt{Rollout} (SD, CFR, TS), \texttt{conflict\_bound}
+  & Thm.~\ref{thm:conflict} \\
+\texttt{benchmark/} & \texttt{scenes} (3 families, stable seeding),
+  \texttt{runner} (paired grid), \texttt{statistics},
+  \texttt{mismatch}, \texttt{probe} & §\ref{sec:protocol} \\
+\texttt{adapter.py} & \textbf{frozen} \texttt{RepairEnvironmentAdapter} +
+  \texttt{SyntheticAdapter} & simulator independence \\
+\texttt{rekep\_adapter.py} & \texttt{ReKepOmniGibsonAdapter} (deferred GPU
+  imports; dry-run fake) & §\ref{sec:gpu} \\
+\bottomrule
+\end{longtable}
+\end{center}
+
+\subsection{End-to-end call graph}
+
+\begin{lstlisting}
+Executor.run(policy)
+ loop t = 0 .. horizon
+  policy.act(ctx)                              [policies/online_repair.py]
+   _maybe_advance(ctx)
+     stage_exit(...)                           [execution/guard_monitor.py]
+     _validate_restore(ctx) -> mark_restore_validated
+     TaskProgram.advance()                     ATOMIC; may raise RestorationBlocked
+   detector.detect(ctx)                        [events/detector.py]
+   _plan_and_splice(event, ctx)                only if repair required
+     Continuation(...)                         capture kappa
+     env.predicates(d_react)                   SAME channel for every policy
+     state_from_predicates / goal_from_predicates
+     RepairManager.plan(...)
+       SynthesisGenerator.generate -> RepairPlanner.plan   SEARCH
+       LegalityFilter.check                    acyclic + restore + attachment
+       FeasibilityFilter.check                 cheap reachability screen
+       RolloutVerifier.verify                  SEQUENTIAL; hard reject
+       Scorer.select                           Eq. (select)
+     TaskProgram.interrupt_active_stage(kappa) -> SUSPENDED
+     TaskProgram.splice_repair_before_successor()
+  control(behavior, ctx, stage, kappa, params, ctx.task_goal)
+  env.step(action) -> clip_action(...)         [execution/action.py] SHARED
+\end{lstlisting}
+
+%=============================================================
+\section{Bugs and research-validity issues already resolved}
+
+Each of these changed a conclusion, not merely the code.
+
+\begin{center}
+\begin{longtable}{p{0.26\textwidth}p{0.34\textwidth}p{0.32\textwidth}}
+\toprule
+Issue & Defect & Why it mattered scientifically \\
+\midrule
+\endhead
+Hand-coded solver disconnected from \texttt{TaskProgram}
+ & The first synthetic result compared two hand-written trajectory solvers;
+   the program IR was never invoked
+ & The headline result did not test the claimed mechanism at all \\
+Non-atomic restore transition
+ & \texttt{advance()} marked the node \textsf{COMPLETED} before checking the
+   restore gate
+ & A \emph{blocked} transition still mutated state, violating the state machine's
+   central invariant \\
+Duplicate runtime repair IDs
+ & A second repair reused \texttt{suspend\#0}, corrupting order and making the
+   graph cyclic
+ & Multi-interruption episodes --- the interesting case --- were silently invalid \\
+Template lookup vs.\ true synthesis
+ & \texttt{TEMPLATES[event]} stored complete sequences; the ``synthesis'' claim
+   was instantiation
+ & The paper's central novelty claim was not implemented \\
+Asymmetric offline baseline
+ & Offline saw only one event class and had no runtime verification
+ & The compound-event ``win'' was a baseline artifact; with a fair baseline
+   it disappears (exact parity) \\
+Stale relocation goal
+ & Controllers and metrics used the immutable configured goal
+ & Relocation episodes scored \emph{success} while ending $0.30$ from the moved goal \\
+\textsf{Stabilize} while ungrasped
+ & Compound plans stabilized a released object
+ & Physically meaningless; corrected preconditions changed the synthesized order \\
+Inconsistent action clipping
+ & Environment clipped per axis ($\sqrt2\,v_{\max}$ diagonally), verifier clipped
+   the norm
+ & The verifier predicted trajectories the world could not execute \\
+Sequential vs.\ simultaneous compound events
+ & ``Compound'' scenes fired the second event during repair, where it was
+   deferred, so predicates never co-occurred
+ & There was never a union goal to compose; the composition ablation had nothing
+   to ablate \\
+Observation-noise wiring
+ & \texttt{MismatchedEnv.step()} returned the \emph{inner} env's clean context
+ & Every observation-side mismatch dimension was silently bypassed; the first
+   attribution ranking was wrong \\
+Unused delay parameters
+ & \texttt{detector\_delay} / \texttt{guard\_delay} declared, never used
+ & Two mismatch sources reported exactly zero damage for a wiring reason \\
+Python salted \texttt{hash()}
+ & Scene sampling keyed on \texttt{hash(str)}, salted per process
+ & The benchmark was \textbf{not reproducible across processes} \\
+SD vs.\ TS conflation
+ & Safe delivery was reported as task success
+ & Overstated end-to-end capability by $\sim\!0.29$ absolute \\
+\bottomrule
+\end{longtable}
+\end{center}
+
+%=============================================================
+\section{CPU experimental protocol}
+\label{sec:protocol}
+
+\paragraph{Task families.} \texttt{upright\_transport} (carry upright to a
+goal), \texttt{constrained\_place} (tighter tolerance, slower limits),
+\texttt{align\_insert} (tightest orientation requirement).
+
+\paragraph{Event conditions.} \texttt{obstacle}, \texttt{slip},
+\texttt{relocation}, and the compound \texttt{obstacle+slip},
+\texttt{obstacle+relocation}, \texttt{slip+relocation}. In compound conditions
+the predicates are forced to co-occur at the same detection instant, so the
+repair goal is genuinely a union.
+
+\paragraph{Severities.} \texttt{low}, \texttt{medium}, \texttt{high}, scaling
+obstacle radius/duration, drop displacement, and relocation magnitude.
+
+\paragraph{Paired randomized scenes.} \texttt{sample\_scene(spec)} is a pure
+function of (family, condition, severity, seed) using a process-stable
+\textsc{blake2b} seed, so pairing is exact \emph{by construction} and
+reproducible across processes. Randomized: initial pose, goal, obstacle
+placement/radius/timing, slip time and drop displacement, relocation direction
+and magnitude.
+
+\paragraph{Scale.} Main benchmark $3\times6\times3\times50=2{,}700$ episodes per
+method $\times\,6$ methods $=\mathbf{16{,}200}$ episodes. Ablations
+$\mathbf{9{,}720}$. Aggregate mismatch $\mathbf{17{,}280}$. Per-dimension
+attribution $\mathbf{16{,}740}$.
+
+\paragraph{The three success metrics --- never conflated.}
+\begin{align}
+\SD  &: \text{object delivered to the \emph{current} goal, no collision;}\\
+\CFR &: \text{no collision and no safe-fallback;}\\
+\TS  &: \text{all terminal constraints (goal, orientation, danger-weighted spill, no collision).}
+\end{align}
+
+\paragraph{Statistics.} Wilson intervals for proportions; paired bootstrap
+($10^4$ resamples) for differences; \emph{exact} McNemar for paired binary
+outcomes; Holm correction across each comparison family. Effect sizes are
+reported, not only $p$-values.
+
+%=============================================================
+\section{CPU results}
+
+\subsection{Strong-baseline comparison}
+
+\begin{table}[htbp]\centering
+\caption{Main benchmark, 16{,}200 paired episodes. Wilson 95\% CI.}
+\begin{tabular}{lccc}
+\toprule
+Method & Safe delivery & Collision-free recovery & Task success \\
+\midrule
+path-only            & 0.436 [0.418, 0.455] & 0.776 [0.759, 0.791] & 0.182 [0.168, 0.197] \\
+safe-stop            & 0.623 [0.604, 0.641] & 0.962 [0.954, 0.968] & 0.266 [0.249, 0.283] \\
+template repair      & 0.429 [0.411, 0.448] & 0.427 [0.408, 0.445] & 0.262 [0.246, 0.279] \\
+offline atomic       & 0.593 [0.574, 0.611] & 0.593 [0.574, 0.611] & 0.423 [0.404, 0.442] \\
+\textbf{offline exact} & \textbf{0.973 [0.966, 0.978]} & \textbf{0.973 [0.966, 0.978]} & \textbf{0.683 [0.665, 0.700]} \\
+\textbf{online repair} & \textbf{0.973 [0.966, 0.978]} & \textbf{0.973 [0.966, 0.978]} & \textbf{0.683 [0.665, 0.700]} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]\centering
+\caption{Paired difference vs.\ online repair (bootstrap 95\% CI; exact McNemar,
+Holm-adjusted). \textbf{Offline exact is exactly equal on all three metrics.}}
+\begin{tabular}{lccc}
+\toprule
+Method & $\Delta$ safe delivery & discordant $(+/-)$ & $p_{\mathrm{Holm}}$ \\
+\midrule
+path-only        & $+0.537$ $[+0.518,+0.556]$ & 1450 / 1 & $<10^{-4}$ \\
+safe-stop        & $+0.350$ $[+0.332,+0.369]$ & 948 / 2  & $<10^{-4}$ \\
+template repair  & $+0.544$ $[+0.525,+0.563]$ & 1468 / 0 & $<10^{-4}$ \\
+offline atomic   & $+0.380$ $[+0.362,+0.399]$ & 1026 / 0 & $<10^{-4}$ \\
+\textbf{offline exact} & $\mathbf{+0.000}$ $[+0.000,+0.000]$ & \textbf{0 / 0} & $\mathbf{1.0000}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]\centering
+\caption{Safe delivery by condition. The offline-atomic gap is concentrated
+entirely in compound events.}
+\begin{tabular}{lcccccc}
+\toprule
+Condition & path-only & safe-stop & template & off.\ atomic & off.\ exact & online \\
+\midrule
+obstacle             & 0.431 & 0.984 & 0.984 & 0.984 & 0.984 & 0.984 \\
+slip                 & 0.042 & 0.042 & 1.000 & 1.000 & 1.000 & 1.000 \\
+relocation           & 1.000 & 1.000 & 0.018 & 1.000 & 1.000 & 1.000 \\
+obstacle+slip        & 0.293 & 0.673 & 0.573 & 0.573 & 0.864 & 0.864 \\
+obstacle+relocation  & 0.802 & 0.987 & 0.000 & 0.000 & 0.989 & 0.989 \\
+slip+relocation      & 0.049 & 0.049 & 0.000 & 0.000 & 1.000 & 1.000 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Coverage--storage trade-off}
+
+\begin{table}[htbp]\centering
+\caption{Coverage vs.\ stored structure over all 7 predicate combinations
+($K=3$). Online stores a constant operator library and compiles nothing.}
+\begin{tabular}{lcccccc}
+\toprule
+Method & combos & branches & graph nodes & compile expansions & stored & SD coverage \\
+\midrule
+offline budget(1)  & 1 & 1  & 5   & 6   & 1 branch      & 1/7 \\
+offline atomic(3)  & 3 & 6  & 32  & 31  & 3 branches    & 5/7 \\
+offline exact(7)   & 7 & 17 & 109 & 157 & 7 branches    & 7/7 \\
+\textbf{online}    & --- & --- & \textbf{0} & \textbf{0} & \textbf{9 operators} & \textbf{7/7} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]\centering
+\caption{Runtime cost (means over 2{,}700 episodes/method). Offline latency
+\emph{includes} one-off precompilation performed at reset; in deployment that is
+amortized. \texttt{expand} is the online-only search cost.}
+\begin{tabular}{lcccccc}
+\toprule
+Method & latency (ms) & repairs & repair len & cand.\ gen & cand.\ rej & search expansions \\
+\midrule
+path-only        & 0.40 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+safe-stop        & 0.68 & 0.00 & 0.00 & 0.00 & 0.00 & 0.00 \\
+template repair  & 1.37 & 0.52 & 2.35 & 1.40 & 0.62 & 0.00 \\
+offline atomic   & 1.75 & 0.81 & 4.33 & 1.69 & 0.03 & 0.00 \\
+offline exact    & 4.17 & 1.40 & 7.85 & 3.40 & 0.04 & 0.00 \\
+online repair    & 2.95 & 1.40 & 7.85 & 3.73 & 0.04 & \textbf{15.16} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Ablations}
+
+\begin{table}[htbp]\centering
+\caption{Ablations, 9{,}720 paired episodes. Wilson 95\% CI.}
+\begin{tabular}{lccccc}
+\toprule
+Variant & Safe delivery & Task success & collide & fail-safe & handoff err \\
+\midrule
+\textbf{full}              & 0.972 [0.961, 0.980] & 0.679 & 0.005 & 0.028 & 0.075 \\
+No synthesis               & \textbf{0.427} [0.398, 0.457] & 0.254 & 0.005 & 0.574 & 0.454 \\
+No rollout verification    & 0.964 [0.951, 0.973] & 0.679 & \textbf{0.032} & 0.004 & 0.060 \\
+No continuation contract   & \textbf{0.908} [0.890, 0.924] & 0.582 & 0.005 & 0.092 & \textbf{0.126} \\
+\midrule
+\emph{No event composition}      & 0.972 [0.961, 0.980] & 0.679 & 0.005 & 0.028 & 0.075 \\
+\emph{No restore gate}           & 0.972 [0.961, 0.980] & 0.679 & 0.005 & 0.028 & 0.075 \\
+\emph{No state-dependent scoring}& 0.972 [0.961, 0.980] & 0.679 & 0.005 & 0.028 & 0.075 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Measured causal mechanisms.}
+\emph{No synthesis} costs $-0.535$ safe delivery (compound-event SD collapses
+$0.952\!\to\!0.209$). \emph{No rollout verification} raises the collision rate
+$0.005\!\to\!0.032$ ($\approx6\times$). \emph{No continuation contract} costs
+$-0.070$ SD and raises handoff error $0.075\!\to\!0.126$.
+
+\paragraph{The three nulls, and why they are null.}
+These were investigated by \emph{internal-activation tracing} (does the ablation
+move the intended variable?) and \emph{targeted counterfactuals}. All three are
+\textbf{internally active but outcome-neutral}:
+
+\begin{itemize}[leftmargin=2em,itemsep=2pt]
+\item \textbf{Event composition.} The reduced goal genuinely differs in
+      $163/216$ compound episodes --- yet plans, selections, outcomes, candidate
+      rejections and search expansions are identical in $0/216$. \emph{Cause:}
+      operator preconditions already encode the composition
+      (\textsf{Realign} requires
+      $\textsf{safe\_clearance}\wedge\neg\textsf{obstacle\_present}\wedge
+      \textsf{object\_grasped}\wedge\textsf{object\_stable}$), so a
+      single-predicate goal cannot be reached without resolving the others.
+      $\Rightarrow$ \emph{representation property.}
+\item \textbf{Restore gate.} \textbf{Zero rejections in 706 validations},
+      including under \emph{severe} model mismatch: \textsf{Realign} establishes
+      the contract before the transition is attempted. $\Rightarrow$
+      \emph{safety invariant that always holds}, not a source of gain.
+\item \textbf{State-dependent scoring.} Selection is genuinely contested
+      ($>1$ surviving candidate in $79.2\%$ of decisions; selection changes in
+      $25/432$ episodes) yet yields \textbf{zero} outcome differences --- every
+      rollout-verified candidate is outcome-equivalent. $\Rightarrow$
+      \emph{plan-quality preference.}
+\end{itemize}
+
+Per our own protocol, the benchmark was \textbf{not} redesigned to force these
+significant. Event composition and state-dependent scoring can be removed with
+no measured loss; the restore gate is retained as a cheap invariant.
+
+\subsection{Model mismatch}
+
+\begin{table}[htbp]\centering
+\caption{Aggregate mismatch, 17{,}280 episodes. False-accept rate = accepted by
+the verifier, failed physically.}
+\begin{tabular}{lcccc}
+\toprule
+Verifier & none & mild & moderate & severe \\
+\midrule
+none (accept all)      & 0.034 & 0.067 & 0.094 & 0.253 \\
+\textbf{nominal}       & \textbf{0.000} & \textbf{0.028} & \textbf{0.063} & \textbf{0.228} \\
+conservative           & 0.000 & 0.027 & 0.054 & 0.214 \\
+receding horizon       & 0.000 & 0.028 & 0.064 & 0.226 \\
+\midrule
+false-reject (nominal) & 0.080 & 0.080 & 0.080 & 0.080 \\
+false-reject (conservative) & \textbf{0.667} & \textbf{0.623} & \textbf{0.507} & \textbf{0.304} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Nominal verification is dependable through \emph{mild}, marginal at
+\emph{moderate}, and unreliable at \emph{severe} (precision $0.772$). Neither
+mitigation works: conservative margins barely reduce false accepts while causing
+massive false rejects and \emph{worse} net safe delivery ($0.887$ vs.\ $0.918$
+at moderate); receding-horizon reverification is within noise despite
+$\sim\!2.9$ replans per episode. \textbf{Both are excluded from the claims.}
+
+\begin{table}[htbp]\centering
+\caption{Per-dimension attribution at \emph{severe} (16{,}740 episodes); each
+source enabled \emph{alone}. $\Delta$SD relative to the all-nominal baseline
+($\SD=0.970$).}
+\begin{tabular}{lccc}
+\toprule
+Mismatch source & $\Delta$ safe delivery & false accept & collide \\
+\midrule
+\textbf{guard (observation) delay} & $\mathbf{+0.367}$ & 0.393 & 0.054 \\
+\textbf{object-position noise}     & $\mathbf{+0.280}$ & 0.285 & 0.009 \\
+\textbf{target-position error}     & $\mathbf{+0.178}$ & 0.183 & 0.004 \\
+stochastic regrasp failure         & $+0.135$ & 0.139 & 0.013 \\
+release drift                      & $+0.044$ & 0.046 & 0.009 \\
+action noise                       & $+0.041$ & 0.042 & 0.004 \\
+detector delay                     & $+0.009$ & 0.002 & 0.015 \\
+obstacle-position prediction error & $+0.006$ & 0.006 & 0.009 \\
+translation gain bias              & $+0.004$ & 0.004 & 0.004 \\
+rotation gain bias                 & $+0.000$ & 0.000 & 0.004 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Conclusion.} \textbf{Observation-side mismatch dominates;
+actuation-gain error is comparatively mild.} The top three sources are all cases
+where the robot's \emph{belief} about where or when something is is wrong.
+Actuation error is absorbed by closed-loop feedback. One nuance: detector delay
+is nearly harmless for safe delivery ($0.961$ vs.\ $0.970$) but materially
+damages \emph{task success} ($0.522$ vs.\ $0.681$), because a late repair leaves
+less horizon to restore orientation --- SD and TS rank the sources differently.
+
+The honest scope condition for the verification claim:
+\begin{quote}
+Sequential rollout verification is reliable to the extent that the observed
+state is accurate and current; it is insensitive to actuation-model error and
+sensitive to observation latency and position noise.
+\end{quote}
+
+%=============================================================
+\section{Frozen paper claims}
+
+\begin{center}
+\begin{longtable}{p{0.26\textwidth}p{0.12\textwidth}p{0.30\textwidth}p{0.24\textwidth}}
+\toprule
+Claim & Status & Evidence & Scope \\
+\midrule
+\endhead
+\textbf{1. Runtime operator synthesis} & primary &
+  $-0.535$ SD when ablated; compound SD $0.209$ vs.\ $0.952$ &
+  novel \emph{composition} of known predicates, not open-set \\
+\textbf{2. Sequential rollout verification} & primary &
+  collisions $0.032$ vs.\ $0.005$; FA $0.000$ at zero mismatch &
+  reliable only insofar as observation is accurate/current \\
+\textbf{3. Continuation-carrying restoration} & primary &
+  $-0.070$ SD; handoff error $0.126$ vs.\ $0.075$ &
+  restoration \emph{conditional on arrival} \\
+\textbf{4. Coverage--storage trade-off} & primary &
+  exact parity ($0/0$, $p=1.0$); $+0.380$ under partial coverage;
+  9 operators vs.\ 17 branches / 109 nodes / 157 expansions &
+  under a stated combination model \\
+\midrule
+Event composition & secondary & goal differs $163/216$, outcome $0/216$ &
+  representation property \\
+Restore gate & secondary & 0 rejections / 706 & safety invariant \\
+State-dependent scoring & secondary & contested $79.2\%$, outcome $0$ &
+  plan-quality preference \\
+Provenance logging & secondary & no behavioral path & instrumentation \\
+\bottomrule
+\end{longtable}
+\end{center}
+
+\paragraph{Explicitly not claimed.}
+Arbitrary open-set recovery; universal superiority over precompiled recovery;
+guaranteed physical safety under model mismatch; a learned world model;
+real-robot validation; conservative or receding-horizon verification.
+
+%=============================================================
+\section{Current limitations}
+
+\begin{itemize}[leftmargin=2em,itemsep=1pt]
+\item \textbf{Synthetic kinematic environment.} 2-D point robot, first-order
+      integration, no inertia or contact physics; one scalar orientation.
+\item \textbf{Simplified attachment/regrasp.} Regrasp completes on proximity;
+      no gripper state or grasp quality.
+\item \textbf{Imperfect correspondence to real ReKep stages.} Our
+      \texttt{StageSpec} assumes subgoal+path constraints and a guard; ReKep's
+      actual structure may diverge (risk R7).
+\item \textbf{Rollout model assumptions.} The verifier uses the nominal model;
+      L2 $\neq$ L3.
+\item \textbf{Observation-error sensitivity.} The dominant damage source
+      (up to $\Delta\SD=0.367$).
+\item \textbf{Severe-mismatch false accepts} reach $0.228$.
+\item \textbf{OmniGibson nondeterminism} may weaken the paired-seed protocol.
+\item \textbf{GPU integration not executed.}
+\item \textbf{Scene-specific keypoint mapping} --- adapter indices are
+      placeholders.
+\item \textbf{Simulator runtime cost} --- verification calls ReKep solvers
+      $\sim\!18$ times per repair.
+\item \textbf{Task-success ceiling} $0.683$ for both online and offline exact:
+      residual failures come from the nominal controller and strict terminal
+      criteria, not from recovery.
+\end{itemize}
+
+%=============================================================
+\section{GPU phase plan}
+\label{sec:gpu}
+
+Every command below is \REMOTE{}. Nothing has been executed.
+
+\paragraph{Milestone 0 --- installation.} Verify driver ($\ge$ 525.60) and GPUs;
+create Python 3.10 env; install \texttt{torch==2.2.2+cu121} \emph{first} from the
+CUDA index; install OmniGibson (brings Isaac Sim 2023.1.1) and its assets;
+install ReKep; run \texttt{check\_gpu\_environment.py}.
+
+\paragraph{Milestone 1 --- nominal parity.} Run one official ReKep task
+\emph{unchanged} with cached queries; record the stage sequence and constraints;
+wrap/mirror it in \texttt{TaskProgram}; verify wrapped execution is behaviorally
+\emph{identical}. \textbf{Do not modify ReKep solvers.} Any divergence is a
+wrapping bug and contaminates every later comparison.
+
+\paragraph{Milestone 2 --- first repaired episode.} Inject one deterministic
+temporary obstacle; use simulator ground-truth predicates initially; capture the
+continuation; synthesize; verify; splice; restore; resume; save trace and video.
+The CPU dry-run already produces the expected program shape:
+\begin{lstlisting}
+pour -> ..::r1::suspend#0 -> retreat#1 -> stabilize#2
+     -> waituntilclear#3 -> realign#4 -> resume#5 -> pour#resume::r1
+\end{lstlisting}
+
+\paragraph{Milestone 3 --- task suite.} Upright transport with obstruction;
+alignment/insertion with target relocation; placement with slip; compound
+interruption as a later extension. No fluid simulation initially.
+
+\paragraph{Milestone 4 --- noisy perception.} Keypoint noise, predicate
+hysteresis, observation latency, target uncertainty --- prioritized by the
+attribution table, which says these dominate.
+
+\paragraph{Milestone 5 --- multi-GPU study.} Only after single-GPU
+reproducibility. The launcher refuses to start without the Milestone-1 gate file.
+
+%=============================================================
+\section{ICRA experiment matrix}
+
+\paragraph{Minimum viable.}
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+Tasks & 3 (upright transport, insertion+relocation, placement+slip) \\
+Event types & 3 single (obstacle, slip, relocation) \\
+Compound & 1 (obstacle+slip) \\
+Severity & 2 (moderate, high) \\
+Methods & 4: ReKep fixed recovery, path-only, offline exact parameterized, \method{} \\
+Ablations & 3: NoSynthesis, NoRolloutVerification, NoContinuationContract \\
+Seeds & 20 paired per cell \\
+Metrics & SD, CFR, TS, collision, handoff error, latency, FA rate \\
+Statistics & Wilson, paired bootstrap, exact McNemar, Holm \\
+\bottomrule
+\end{tabular}
+\end{center}
+Approximately $3\times4\times2\times4\times20=1{,}920$ simulator episodes plus
+ablations.
+
+\paragraph{Stretch.} All 6 compound conditions; 3 severities; offline
+budget sweep for the coverage--storage curve in-simulator; noisy-perception study
+(Milestone 4); latency breakdown (detect / synthesize / verify / solve); failure
+gallery with videos; 50 seeds per cell.
+
+%=============================================================
+\section{Handoff checklist}
+
+For the collaborator, on the GPU server, in order:
+
+\begin{enumerate}[leftmargin=2em,itemsep=1pt]
+\item Read \texttt{README\_FIRST.md}, then \texttt{KNOWN\_RISKS.md}
+      (\textbf{before} installing --- R1 alone can cost days).
+\item \texttt{python scripts/check\_gpu\_environment.py --dry-run} --- repo and
+      CPU stack sanity, no GPU imports.
+\item \texttt{python -m pytest} inside \texttt{code/} --- confirm 71 tests pass
+      on your machine.
+\item Follow \texttt{GPU\_RUNBOOK.md} steps 1--6 (inspect, env, deps, assets,
+      checker, OmniGibson smoke test).
+\item Edit \texttt{configs\_gpu/} placeholders (\texttt{<REKEP\_ROOT>},
+      \texttt{<OMNIGIBSON\_ASSET\_PATH>}, \texttt{<OUTPUT\_ROOT>}) and the
+      adapter keypoint indices --- these are certain to be wrong by default.
+\item Runbook steps 7--9: nominal $\to$ wrapped $\to$ repaired ReKep.
+\item Runbook steps 10--11: inspect traces/videos; approve or reject Milestone 1.
+      On approval, \texttt{touch runs/milestone1/GATE\_PASSED}.
+\item Only then consider multi-GPU sweeps.
+\end{enumerate}
+
+\paragraph{Next go/no-go criterion.}
+\begin{quote}
+One nominal ReKep episode and one online-repaired ReKep episode execute
+\emph{reproducibly} on a single RTX 3090 using the \emph{same} underlying ReKep
+solvers.
+\end{quote}
+
+\end{document}

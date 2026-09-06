@@ -1,0 +1,3 @@
+[run_project_env] Using project-isolated LIBERO/OpenVLA environment for this subprocess only.
+[run_project_env] LD_LIBRARY_PATH is unset here to avoid the broken system CUDA nvJitLink path.
+/home/lijingsu/vla/.venv/bin/python: can't open file '/home/lijingsu/vla/scripts/cope_r2_dry_run.py': [Errno 2] No such file or directory

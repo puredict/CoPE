@@ -1,0 +1,7 @@
+libero_source_commit=8f1084e3132a39270c3a13ebe37270a43ece2a01
+libero_source_tree=99f4ada3f1d62e026fc9ff2390eb4ff8a1760e60
+894dab24851b9b6c8f27049aa23ee33856873b17e863856686ed621bf6868ef8  /home/lijingsu/codex-artifacts/cope-python-wheelhouse-20260803-v1/libero-0.1.0-py3-none-any.whl
+dlimp_source_commit=040105d256bd28866cc6620621a3d5f7b6b91b46
+e809786860e9d558b690b933b42ed015d71c664e8d2ddc526bd9f20197e5d972  /home/lijingsu/vla/.venv/lib/python3.10/site-packages/dlimp-0.0.1.dist-info/RECORD
+3924b4251a93e0bf2fcf4beb8b4efe5cb845815ae40d8a810c57e8771eaaed42  /home/lijingsu/vla/.venv/lib/python3.10/site-packages/dlimp-0.0.1.dist-info/direct_url.json
+ac6df513165ff42b1eb978820dd2592b5ba1a4c0405f85fe58d320b1e7f023bf  /home/lijingsu/codex-artifacts/cope-python-wheelhouse-20260803-v1/dlimp-0.0.1-py3-none-any.whl

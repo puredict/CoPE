@@ -1,0 +1,8 @@
+fault_id,collection,fault
+K01,commitments,duplicate stable key
+K02,entities,duplicate stable key
+K03,progress_ledger,duplicate stable key
+K04,commitments,missing stable key
+K05,entities,non-string stable key
+K06,progress_ledger,non-list collection
+K07,commitments,non-mapping record

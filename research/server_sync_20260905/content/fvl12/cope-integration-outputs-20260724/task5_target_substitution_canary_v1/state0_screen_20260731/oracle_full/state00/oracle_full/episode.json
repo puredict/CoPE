@@ -1,0 +1,196 @@
+{
+  "accepted_full_state": {
+    "commitments": [
+      {
+        "authority": 100,
+        "dependencies": [
+          "milestone:book_lifted"
+        ],
+        "grounding": [
+          "black_book_1",
+          "desk_caddy_1_back_contain_region"
+        ],
+        "id": "goal:in:black_book_1:desk_caddy_1_back_contain_region",
+        "lifecycle_status": "superseded",
+        "override_links": [],
+        "owner": "task_owner",
+        "predicate": "in",
+        "source": "task_owner",
+        "supersession_links": [],
+        "support_links": [],
+        "type": "task_goal",
+        "valid_from": "target-substitute-v1:task05:state00:seed20270824",
+        "valid_until": "task_end"
+      },
+      {
+        "authority": 100,
+        "dependencies": [
+          "milestone:book_lifted"
+        ],
+        "grounding": [
+          "black_book_1",
+          "desk_caddy_1_front_contain_region"
+        ],
+        "id": "goal:in:black_book_1:desk_caddy_1_front_contain_region",
+        "lifecycle_status": "active",
+        "override_links": [],
+        "owner": "task_owner",
+        "predicate": "in",
+        "source": "task_owner",
+        "supersession_links": [
+          "goal:in:black_book_1:desk_caddy_1_back_contain_region"
+        ],
+        "support_links": [],
+        "type": "task_goal",
+        "valid_from": "target-substitute-v1:task05:state00:seed20270824",
+        "valid_until": "task_end"
+      }
+    ],
+    "controller_prompt": "diagnostic-only; execution must use the shared compiler",
+    "current_goal": {
+      "all": [
+        {
+          "arguments": [
+            "black_book_1",
+            "desk_caddy_1_front_contain_region"
+          ],
+          "predicate": "in"
+        }
+      ]
+    },
+    "entities": [
+      {
+        "id": "black_book_1",
+        "kind": "object"
+      },
+      {
+        "id": "desk_caddy_1_back_contain_region",
+        "kind": "region"
+      },
+      {
+        "id": "desk_caddy_1_front_contain_region",
+        "kind": "region"
+      }
+    ],
+    "evidence_versions": {
+      "event_id": "target-substitute-v1:task05:state00:seed20270824",
+      "input_state_version": 0,
+      "world_version": 78
+    },
+    "pending_restorations": [],
+    "plan": [
+      {
+        "arguments": [
+          "black_book_1",
+          "desk_caddy_1_front_contain_region"
+        ],
+        "dependencies": [
+          "milestone:book_lifted"
+        ],
+        "effects": [
+          {
+            "arguments": [
+              "black_book_1",
+              "desk_caddy_1_front_contain_region"
+            ],
+            "predicate": "in"
+          }
+        ],
+        "preconditions": [
+          "milestone:book_lifted"
+        ],
+        "skill": "place_in",
+        "status": "pending",
+        "step_id": "place-book-front"
+      }
+    ],
+    "progress_ledger": [
+      {
+        "achieved": true,
+        "milestone_id": "milestone:book_lifted",
+        "physically_valid": true,
+        "still_goal_relevant": true
+      }
+    ],
+    "schema_version": "full-state-v2",
+    "state_version": 1
+  },
+  "action_schema_valid": true,
+  "artifacts": {
+    "episode": "/home/lijingsu/cope-integration-outputs-20260724/task5_target_substitution_canary_v1/state0_screen_20260731/oracle_full/state00/oracle_full/episode.json",
+    "trace": "/home/lijingsu/cope-integration-outputs-20260724/task5_target_substitution_canary_v1/state0_screen_20260731/oracle_full/state00/oracle_full/trace.jsonl"
+  },
+  "back_target_violation": true,
+  "checkpoint": {
+    "path": "/home/lijingsu/vla/models/openvla-7b-finetuned-libero-10",
+    "repository": "openvla/openvla-7b-finetuned-libero-10",
+    "resolved_unnorm_key": "libero_10",
+    "revision": "80970322773f81baa2e22fe495d0487b93a05cfa"
+  },
+  "complete": true,
+  "config_hash": "6cbc6c22065aa155a7d632fefe97788ec624dfd1aa07612e68ee4e56c11de49d",
+  "current_goal_success": false,
+  "event": {
+    "authority": 100,
+    "event_id": "target-substitute-v1:task05:state00:seed20270824",
+    "event_type": "replace_goal_target",
+    "evidence": {
+      "current_z": 0.9514985918694793,
+      "initial_z": 0.882959843039991,
+      "predicate": "lifted",
+      "stable_steps": 5
+    },
+    "issuer": "task_owner",
+    "object": "black_book_1",
+    "old_target": "desk_caddy_1_back_contain_region",
+    "operation": "supersede",
+    "replacement_target": "desk_caddy_1_front_contain_region",
+    "target_commitment_id": "goal:in:black_book_1:desk_caddy_1_back_contain_region",
+    "valid_from_state_version": 0,
+    "world_version": 78
+  },
+  "event_reached": true,
+  "final_book_position": [
+    -0.4075618449785032,
+    -0.1756062923154306,
+    1.0297637202943373
+  ],
+  "final_predicates": {
+    "back": true,
+    "front": false
+  },
+  "final_prompt": "pick up the book and place it in the front compartment of the caddy",
+  "git": {
+    "clean": true,
+    "commit": "d772422a5c4b99b303dfdb864d1ed43858dc88a2",
+    "status": ""
+  },
+  "gpu": {
+    "allocated_bytes": 15138074624,
+    "cuda_available": true,
+    "device": "cuda:0",
+    "name": "NVIDIA GeForce RTX 3090",
+    "peak_allocated_bytes": 15480890368,
+    "peak_reserved_bytes": 15573450752,
+    "reserved_bytes": 15573450752,
+    "total_bytes": 25438126080
+  },
+  "initial_book_z": 0.882959843039991,
+  "initial_state_sha256": "407c3d5eb11fd5b33bd2a6dea73a37415a99d7e72f0cc291074de29b1c63c37c",
+  "manual_intervention": false,
+  "mode": "oracle_full",
+  "original_prompt": "pick up the book and place it in the back compartment of the caddy",
+  "policy_step_budget": 520,
+  "policy_steps_consumed": 164,
+  "prefix_policy_steps_replayed": 79,
+  "reset_after_start": false,
+  "rollback": false,
+  "runtime_seconds": 72.04321636352688,
+  "schema_version": "task5-target-substitution-canary-v1",
+  "seed": 20270824,
+  "state_id": 0,
+  "task_id": 5,
+  "task_suite": "libero_10",
+  "termination_reason": "back_target_violation",
+  "warmup_steps_consumed": 10
+}

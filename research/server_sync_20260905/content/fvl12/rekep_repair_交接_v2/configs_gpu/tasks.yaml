@@ -1,0 +1,28 @@
+# Task definitions -- REMOTE GPU SERVER ONLY
+# Scene files and stage counts MUST be confirmed against the pinned ReKep revision.
+tasks:
+  upright_transport:
+    rekep_scene:   "<REKEP_ROOT>/configs/og_scene_file_mug.json"
+    description:   "carry object upright to a tray; temporary obstacle intrusion"
+    events:        [obstacle]
+    priority:      1                # first GPU task
+
+  pen_insertion:
+    rekep_scene:   "<REKEP_ROOT>/configs/og_scene_file_pen.json"
+    description:   "official ReKep demo; alignment/insertion with target relocation"
+    events:        [relocation]
+    priority:      2
+
+  placement:
+    rekep_scene:   "<REKEP_ROOT>/configs/og_scene_file_tray.json"
+    description:   "placement with object slip"
+    events:        [slip]
+    priority:      3
+
+  compound:
+    base:          upright_transport
+    description:   "obstacle + slip simultaneously (later extension)"
+    events:        [obstacle, slip]
+    priority:      4
+
+# No fluid simulation initially: orientation + relative pose are the pouring proxy.

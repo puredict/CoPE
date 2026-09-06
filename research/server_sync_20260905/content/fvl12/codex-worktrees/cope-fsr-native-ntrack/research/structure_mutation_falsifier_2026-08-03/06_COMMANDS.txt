@@ -1,0 +1,23 @@
+X18 REPRODUCTION COMMANDS — paths are on 10.176.53.120:26575
+
+WORKTREE=/home/lijingsu/codex-worktrees/cope-fsr-native-ntrack
+PYTHON=/home/lijingsu/vla/.venv/bin/python
+
+Structure falsifier (use a new output directory; run_v1 and run_v2 are preserved):
+  cd WORKTREE
+  scripts/run_project_env.sh PYTHON experiments/structure_mutation_falsifier.py --case-manifest research/native_output_tritrack_2026-08-02/01_CASE_MANIFEST.csv --output-dir NEW_OUTPUT_DIRECTORY
+
+Post-repair focused tests:
+  cd WORKTREE
+  scripts/run_project_env.sh PYTHON -m pytest -q tests/test_decomposed_validator.py tests/test_decomposed_validator_experiment.py tests/test_predicate_composition_stress.py tests/test_structure_mutation_falsifier.py
+
+Independent v1/v2 audit:
+  cd WORKTREE
+  PYTHON research/structure_mutation_falsifier_2026-08-03/03_INDEPENDENT_AUDIT_PROGRAM.txt
+
+Complete regression:
+  cd WORKTREE
+  scripts/run_project_env.sh PYTHON -m pytest -q
+
+Literal WORKTREE, PYTHON, and NEW_OUTPUT_DIRECTORY are documentation labels;
+substitute absolute values when executing. Never overwrite run_v1 or run_v2.

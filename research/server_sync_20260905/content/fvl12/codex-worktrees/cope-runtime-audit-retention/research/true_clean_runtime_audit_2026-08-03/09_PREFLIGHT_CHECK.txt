@@ -1,0 +1,217 @@
+#!/usr/bin/env python3
+"""Fail-closed CoPE OpenVLA+LIBERO runtime preflight.
+
+This script is read-only. It does not create the requested output directory,
+load the checkpoint, instantiate LIBERO, call a provider, or read an individual
+reserved-state packet. Run it with the pinned Python interpreter through the
+committed run_project_env.sh wrapper.
+"""
+from __future__ import annotations
+
+import argparse
+import csv
+import hashlib
+import importlib.metadata
+import importlib.util
+import os
+from pathlib import Path
+import subprocess
+import sys
+
+COPE = Path("/home/lijingsu/codex-worktrees/cope-true-clean-runtime")
+OPENVLA = Path("/home/lijingsu/codex-worktrees/openvla-cope-cleanroom")
+LIBERO = Path("/home/lijingsu/codex-worktrees/libero-cope-cleanroom")
+LIBERO_GIT = Path("/home/lijingsu/codex-worktrees/libero-cope-cleanroom-metadata.git")
+CHECKPOINT = Path("/home/lijingsu/vla/models/openvla-7b-finetuned-libero-10")
+PYTHON = Path("/home/lijingsu/vla/.venv/bin/python")
+
+EXPECTED_COMMITS = {
+    "cope": "21b90aed9e2e64152a7bfe0c85553f2ffbc5e730",
+    "openvla": "9bf418e79d019d416860990d60379d66f0c06220",
+    "libero": "8f1084e3132a39270c3a13ebe37270a43ece2a01",
+}
+EXPECTED_LIBERO_TREE = "99f4ada3f1d62e026fc9ff2390eb4ff8a1760e60"
+EXPECTED_LIBERO_CONTENT = "9d34b952bdd5577ddef9861272767c3eb5bce5aa2c9e885f4b705d9e3454c213"
+EXPECTED_CHECKPOINT_AGGREGATE = "2990c991ffa194ff3e720115454b815e4d83897250c6a88d2f7d70d817543af7"
+EXPECTED_FREEZE = "d238fb71daef95ecf4157a277a083c795e7b96bdc0ff8e2e297c87c79183e4c4"
+EXPECTED_PYTHON_SHA256 = "5ea655542025bb2bbf1036b59546f860d1400fda31456a83e22e688ce40a047d"
+EXPECTED_RESERVED_SHA256 = "3e66003b8832c3d711a411bd263d3cf6d75b23ebccfa776cef3b9eb9cbc65c5e"
+EXPECTED_LIBERO_CONFIG_SHA256 = "aa8aa28d67faa43ff3afabe3fd6332a2093cab4fc155bffe31b59a3c2aee3a39"
+
+EXPECTED_CHECKPOINT = {
+    "README.md": (1865, "2f4d1ee4a885e3b4c0049a26b657a894415837d38bc94c99765ea9b49b59b394"),
+    "added_tokens.json": (21, "ab43123267b190cb7990bc9f2ae4ad32dcb7ed029fb0fccb1b4e062c6f54a2a1"),
+    "config.json": (3528, "f1119b0e0d6c93f10fbd0ad1996c3bff5a7bbb18040d8b2b828c69d302eacd4d"),
+    "dataset_statistics.json": (2129, "54ca346948d5e62e9519a9ed93e45f0a069b9ec997ad1f48f1d8867d4d2d86d2"),
+    "generation_config.json": (136, "67fbe17b12e8beb5be98eb911483971cc78589e51a37ac0cce9cd499d06a8bf1"),
+    "model-00001-of-00004.safetensors": (4925122448, "72f7196d8768c104073d7e9104ad8023cb27727191de1a490612886428b18c51"),
+    "model-00002-of-00004.safetensors": (4947392496, "92a60a88c7dad2ba1fccc4acbebef98fc7a894891bc49f2e21cfbf1600daf413"),
+    "model-00003-of-00004.safetensors": (4947417456, "12b45ae85535565148907e379d6f35bcba83b9497006ff3b66658fa412ffac85"),
+    "model-00004-of-00004.safetensors": (262668432, "d3b8e759db56b86709c56f8d156952415dd64e101feccfd01e701487041dd8c1"),
+    "model.safetensors.index.json": (94764, "ca8b53fed8133ee2afcd2fc483de8febf7f5bb0f6bcb09f91189772e59e8f659"),
+    "preprocessor_config.json": (1690, "52ca6dd7fb31a2757658f94775b659553bc3532ab04babef02779387b3dec214"),
+    "special_tokens_map.json": (552, "cb90ee5cf5793aa444039af9795b00db59d3fef8942e7eca9cf1990bab370d61"),
+    "tokenizer.json": (1842976, "8f5e2869e1807b8bb3c7717a294539c37e9de5d728ad60e31ef57e83cc5ea527"),
+    "tokenizer.model": (499723, "9e556afd44213b6bd1be2b850ebbbd98f5481437a8021afaf58ee7fb1818d347"),
+    "tokenizer_config.json": (1212, "0d9176185eb68a54a7be757961c1957b979920cc81339c4def0202dae5b602bc"),
+}
+
+EXPECTED_RUNTIME_FILES = {
+    COPE / "configs/openvla_libero_10_calibration_v2.yaml": "3d6196bc110f61f4db93a73d0bf542ced2ad827a1d6d302b5f787c245f0d2c27",
+    COPE / "manifests/semantic_task1_config_v1.csv": "7a7371c94a3176a21979f3b4316f542cab2bdc166fda56c90f1a8ddee76626a2",
+    COPE / "manifests/semantic_oracle_pilot_v1.csv": "65631c1fcc14fbac5e5e712959ad03601b0bda51c35283ef95d55d459949ac80",
+    COPE / "scripts/run_project_env.sh": "7aac1b843da25d1f5b8be9db71ea373318ae96d6856b82aa75da142377632600",
+    COPE / "cope/semantic_live_runner.py": "8a2ac99681d78995f0bc288705442ba1f61cb552d2418c2580b01b386ab83c7e",
+    COPE / "experiments/live_semantic_runner.py": "17ead1b48b38a1cbffaf1e9cf221f636926a49ebe511c0b5a46e4b9a1d564bfb",
+    COPE / "cope/libero_predicate_validator.py": "7324e44f9c97f016a70a84a25c6ec2bec7c2b44df4458b52c56906ec4e2912db",
+    COPE / "cope/semantic_replacement.py": "71617836e6683bc63f69cc6d8a2cc8bc61f3030eb5ac79e75093caef3720a3f3",
+    COPE / "cope/semantic_cancellation.py": "a13459b1569baffad5331ee8ca2e61eb2bdf0796c5f59bd70c5de786ea6de32a",
+    OPENVLA / "experiments/robot/openvla_utils.py": "539687fa13e8fc69b79289cbb2be1b7e1076dcaae4dc0cbfb5e76c6739a38e61",
+    OPENVLA / "experiments/robot/libero/run_libero_eval.py": "369d9fc3d59067998ebfadafbd516872c7ff6f9f06a0a48cda8b6ca48051de77",
+    OPENVLA / "experiments/robot/robot_utils.py": "d513c071fb8eaade42a5bc591a48022c11b63bfd58380d0cf319dcc3bdabb976",
+    OPENVLA / "experiments/robot/libero/libero_utils.py": "6c162ce0954c8659018ee8ff1604a33904b50ac0631a8ca0f8bf1f7a4d25181d",
+}
+
+
+def run(argv: list[str], *, cwd: Path | None = None) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(argv, cwd=cwd, text=True, capture_output=True, check=False)
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(8 * 1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def tree_content_sha256(root: Path) -> tuple[int, int, str]:
+    files: list[tuple[str, Path]] = []
+    for path in root.rglob("*"):
+        if not path.is_file():
+            continue
+        rel = path.relative_to(root).as_posix()
+        parts = rel.split("/")
+        if rel == ".git" or rel.startswith(".git/") or "__pycache__" in parts or rel.endswith((".pyc", ".pyo", ".DS_Store")):
+            continue
+        files.append((rel, path))
+    files.sort()
+    aggregate = hashlib.sha256()
+    total = 0
+    for rel, path in files:
+        size = path.stat().st_size
+        total += size
+        aggregate.update(rel.encode() + b"\0" + str(size).encode() + b"\0" + sha256_file(path).encode() + b"\n")
+    return len(files), total, aggregate.hexdigest()
+
+
+def main() -> int:
+    # Mandatory first runtime command. This is a query only and allocates no GPU.
+    smi = run(["nvidia-smi", "--query-gpu=index,name,driver_version,memory.used,utilization.gpu", "--format=csv,noheader"])
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument("--reserved-manifest", type=Path, default=Path("/home/lijingsu/codex-worktrees/cope-runtime-config-20260803/reserved_state_lock.csv"))
+    parser.add_argument("--libero-config", type=Path, default=Path("/home/lijingsu/codex-worktrees/cope-runtime-config-20260803/config.yaml"))
+    args = parser.parse_args()
+
+    results: list[tuple[str, bool, str]] = []
+    def check(name: str, ok: bool, evidence: object) -> None:
+        results.append((name, bool(ok), str(evidence).replace("\n", " | ")))
+
+    check("nvidia_smi", smi.returncode == 0, smi.stdout.strip() or smi.stderr.strip())
+    check("output_dir_absent", args.output_dir.is_absolute() and not args.output_dir.exists(), args.output_dir)
+
+    cope_head = run(["git", "rev-parse", "HEAD"], cwd=COPE)
+    cope_status = run(["git", "status", "--porcelain=v1", "--untracked-files=all"], cwd=COPE)
+    check("cope_commit", cope_head.stdout.strip() == EXPECTED_COMMITS["cope"], cope_head.stdout.strip())
+    check("cope_clean", cope_status.returncode == 0 and not cope_status.stdout, cope_status.stdout or "empty")
+    check("cope_tracked_diff", run(["git", "diff", "--quiet"], cwd=COPE).returncode == 0 and run(["git", "diff", "--cached", "--quiet"], cwd=COPE).returncode == 0, "worktree+index")
+
+    ov_head = run(["git", "rev-parse", "HEAD"], cwd=OPENVLA)
+    ov_status = run(["git", "status", "--porcelain=v1", "--untracked-files=all"], cwd=OPENVLA)
+    check("openvla_commit", ov_head.stdout.strip() == EXPECTED_COMMITS["openvla"], ov_head.stdout.strip())
+    check("openvla_clean", ov_status.returncode == 0 and not ov_status.stdout, ov_status.stdout or "empty")
+    check("openvla_tracked_diff", run(["git", "diff", "--quiet"], cwd=OPENVLA).returncode == 0 and run(["git", "diff", "--cached", "--quiet"], cwd=OPENVLA).returncode == 0, "worktree+index")
+
+    libero_git = ["git", f"--git-dir={LIBERO_GIT}", f"--work-tree={LIBERO}"]
+    li_head = run(libero_git + ["rev-parse", "HEAD"])
+    li_tree = run(libero_git + ["rev-parse", "HEAD^{tree}"])
+    li_status = run(libero_git + ["status", "--porcelain=v1", "--untracked-files=all"])
+    li_fsck = run(["git", f"--git-dir={LIBERO_GIT}", "fsck", "--full"])
+    check("libero_commit", li_head.stdout.strip() == EXPECTED_COMMITS["libero"], li_head.stdout.strip())
+    check("libero_git_tree", li_tree.stdout.strip() == EXPECTED_LIBERO_TREE, li_tree.stdout.strip())
+    check("libero_clean", li_status.returncode == 0 and not li_status.stdout, li_status.stdout or "empty")
+    check("libero_object_integrity", li_fsck.returncode == 0, li_fsck.stdout.strip() or li_fsck.stderr.strip() or "fsck clean")
+    li_count, li_bytes, li_content = tree_content_sha256(LIBERO)
+    check("libero_content_address", (li_count, li_bytes, li_content) == (1116, 443644276, EXPECTED_LIBERO_CONTENT), f"files={li_count};bytes={li_bytes};sha256={li_content}")
+
+    check("libero_config_hash", args.libero_config.is_file() and sha256_file(args.libero_config) == EXPECTED_LIBERO_CONFIG_SHA256, args.libero_config)
+    check("reserved_manifest_hash", args.reserved_manifest.is_file() and sha256_file(args.reserved_manifest) == EXPECTED_RESERVED_SHA256, args.reserved_manifest)
+    if args.reserved_manifest.is_file():
+        with args.reserved_manifest.open(newline="", encoding="utf-8") as handle:
+            reserved = list(csv.DictReader(handle))
+        ids = {int(row["state_id"]) for row in reserved}
+        roles = {int(row["state_id"]): row["role"] for row in reserved}
+        locked = all(row["status"] == "locked_unconsumed" and row["indexed"] == "false" and row["consumed"] == "false" for row in reserved)
+        check("reserved_state_inventory", ids == set(range(27, 50)) and all(roles[i] == "formal_candidate" for i in range(27, 47)) and all(roles[i] == "permanent_reserve" for i in range(47, 50)) and locked, sorted(ids))
+
+    actual_checkpoint_names = {p.name for p in CHECKPOINT.iterdir() if p.is_file()} if CHECKPOINT.is_dir() else set()
+    check("checkpoint_file_set", actual_checkpoint_names == set(EXPECTED_CHECKPOINT), sorted(actual_checkpoint_names))
+    checkpoint_aggregate = hashlib.sha256()
+    checkpoint_ok = actual_checkpoint_names == set(EXPECTED_CHECKPOINT)
+    for name in sorted(EXPECTED_CHECKPOINT):
+        expected_size, expected_sha = EXPECTED_CHECKPOINT[name]
+        path = CHECKPOINT / name
+        actual_size = path.stat().st_size if path.is_file() else -1
+        actual_sha = sha256_file(path) if path.is_file() else "MISSING"
+        ok = actual_size == expected_size and actual_sha == expected_sha
+        checkpoint_ok &= ok
+        check(f"checkpoint:{name}", ok, f"bytes={actual_size};sha256={actual_sha}")
+        checkpoint_aggregate.update(name.encode() + b"\0" + str(actual_size).encode() + b"\0" + actual_sha.encode() + b"\n")
+    check("checkpoint_aggregate", checkpoint_ok and checkpoint_aggregate.hexdigest() == EXPECTED_CHECKPOINT_AGGREGATE, checkpoint_aggregate.hexdigest())
+
+    for path, expected in EXPECTED_RUNTIME_FILES.items():
+        actual = sha256_file(path) if path.is_file() else "MISSING"
+        check(f"runtime_file:{path}", actual == expected, actual)
+
+    semantic_config = COPE / "manifests/semantic_task1_config_v1.csv"
+    with semantic_config.open(newline="", encoding="utf-8") as handle:
+        semantic_rows = list(csv.DictReader(handle))
+    semantic_row = semantic_rows[0] if len(semantic_rows) == 1 else {}
+    check("config_source_pins", semantic_row.get("libero_commit") == EXPECTED_COMMITS["libero"] and semantic_row.get("openvla_commit") == EXPECTED_COMMITS["openvla"] and semantic_row.get("checkpoint_files_manifest_sha256") == EXPECTED_CHECKPOINT_AGGREGATE, semantic_row)
+
+    python_actual = Path(sys.executable).resolve()
+    check("python_executable", python_actual == PYTHON.resolve() and sha256_file(PYTHON) == EXPECTED_PYTHON_SHA256, f"{sys.executable};sha256={sha256_file(PYTHON)}")
+    freeze = run([sys.executable, "-m", "pip", "freeze", "--all"])
+    freeze_sha = hashlib.sha256(freeze.stdout.encode()).hexdigest()
+    check("python_freeze", freeze.returncode == 0 and freeze_sha == EXPECTED_FREEZE, freeze_sha)
+    pip_check = run([sys.executable, "-m", "pip", "check"])
+    check("python_pip_check", pip_check.returncode == 0, pip_check.stdout.strip() or pip_check.stderr.strip())
+    package_expected = {"torch": "2.5.1+cu121", "transformers": "4.40.1", "robosuite": "1.4.1", "mujoco": "2.3.7", "numpy": "1.26.4", "libero": "0.1.0"}
+    package_actual = {name: importlib.metadata.version(name) for name in package_expected}
+    check("critical_package_versions", package_actual == package_expected, package_actual)
+    libero_spec = importlib.util.find_spec("libero.libero")
+    check("libero_import_resolution", libero_spec is not None and libero_spec.origin is not None and Path(libero_spec.origin).is_relative_to(LIBERO), libero_spec.origin if libero_spec else "MISSING")
+
+    expected_env = {
+        "LIBERO_CONFIG_PATH": "/home/lijingsu/codex-worktrees/cope-runtime-config-20260803",
+        "MUJOCO_GL": "osmesa",
+        "PYOPENGL_PLATFORM": "osmesa",
+        "HF_HUB_OFFLINE": "1",
+        "TRANSFORMERS_OFFLINE": "1",
+    }
+    env_ok = all(os.environ.get(k) == v for k, v in expected_env.items())
+    pythonpath = os.environ.get("PYTHONPATH", "").split(":")
+    env_ok &= pythonpath[:2] == [str(OPENVLA), str(LIBERO)]
+    check("critical_environment", env_ok, {**{k: os.environ.get(k) for k in expected_env}, "PYTHONPATH_HEAD": pythonpath[:2]})
+
+    for name, ok, evidence in results:
+        print(f"{name}\t{'PASS' if ok else 'FAIL'}\t{evidence}")
+    passed = all(ok for _, ok, _ in results)
+    print(f"FINAL\t{'PASS' if passed else 'FAIL'}\tchecks={len(results)};provider_calls=0;simulator_runs=0;reserved_state_packets_read=0;output_created=false")
+    return 0 if passed else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

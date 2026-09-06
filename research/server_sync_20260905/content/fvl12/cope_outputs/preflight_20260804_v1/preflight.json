@@ -1,0 +1,767 @@
+{
+  "backend": {
+    "backend": "libero_mujoco",
+    "bddl_file": "/home/lijingsu/cope_fsrpc_\u4ea4\u63a5_v2/configs_gpu/cope_basket_sorting.bddl",
+    "controller": "OSC_POSE via privileged geometry oracle",
+    "learned_policy_used": false,
+    "mujoco_gl": "osmesa",
+    "mujoco_version": "2.3.7",
+    "robosuite_version": "1.4.1",
+    "simulator": "LIBERO/robosuite/MuJoCo"
+  },
+  "candidate_debug": [
+    {
+      "accepted": false,
+      "candidate_index": 0,
+      "checkpoint_before": {
+        "checkpoint_id": "libero-s0-t136-c2-debug-root",
+        "metadata": {
+          "object": "milk",
+          "sim_state_size": 97,
+          "target": "basket_A"
+        },
+        "state_hash": "9900d4e25a47565072964060fffc6acc89acd481039966789d7d216efb6de9e0",
+        "step": 136
+      },
+      "collision_status": {
+        "collision": false,
+        "total_contact_observations": 5634,
+        "unsafe_contact_count": 0,
+        "unsafe_contacts": []
+      },
+      "controller_record": {
+        "done": false,
+        "final_error_m": 0.13893271098011592,
+        "phase": "candidate0_downward_collision",
+        "reward": 0.0,
+        "steps": 35
+      },
+      "controls": [
+        [
+          0.0,
+          0.0,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          -0.01535551137672786,
+          0.007050521919618746,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          -0.0325166195405191,
+          0.013798265117624386,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          -0.044746779770502565,
+          0.01899185061983777,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          -0.04943593329878149,
+          0.02168590990164032,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          -0.0468764434798602,
+          0.021528415448645588,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          -0.03812728322035108,
+          0.01853300696920468,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          -0.024382874692916445,
+          0.012989347940953744,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          -0.006852030592835456,
+          0.0053893217607625665,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.013295606274495997,
+          -0.003669778103745913,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.03496861441284138,
+          -0.013579257466588834,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.05718830330806279,
+          -0.023799598927358723,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.07912081403750215,
+          -0.03392839254345803,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.100101412627428,
+          -0.043758319742634444,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.11963855407314317,
+          -0.053318592224141925,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.1375612856331826,
+          -0.06256034430438928,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.13834259046782982,
+          -0.06617460989887636,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          -0.0338223708963159,
+          -0.02991016410540115,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          -0.2838778235179451,
+          -0.017957694880459396,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          -0.5117264554664991,
+          -0.009414120170742057,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          -0.684274245775765,
+          -0.0023248775467926697,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          -0.8250681111226404,
+          0.006948042933666576,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          -0.9334549623898131,
+          0.015955774195209882,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          -1.0,
+          0.02436045362694983,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          -1.0,
+          0.02139330970307496,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          -1.0,
+          0.0034703433835131525,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          -1.0,
+          -0.06407393161337205,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          -1.0,
+          -0.1871456491025275,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          -1.0,
+          -0.3420170168635478,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          -1.0,
+          -0.49825194597236333,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          -0.9571983891496544,
+          -0.5255301378523008,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          -0.9516336929470609,
+          -0.4454588220009309,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          -0.9275982156852921,
+          -0.42061733960224723,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          -0.8908676827344436,
+          -0.4144286339875142,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          -0.8346358855070174,
+          -0.4028044687819615,
+          -1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "failure_class": "collision_not_observed",
+      "name": "downward_collision",
+      "reason": "expected collision absent",
+      "restore": {
+        "actual_hash": "9900d4e25a47565072964060fffc6acc89acd481039966789d7d216efb6de9e0",
+        "checkpoint_id": "libero-s0-t136-c2-debug-root",
+        "exact": true,
+        "expected_hash": "9900d4e25a47565072964060fffc6acc89acd481039966789d7d216efb6de9e0",
+        "restored": true
+      },
+      "video": {
+        "bytes": 13930,
+        "frames": 35,
+        "path": "/home/lijingsu/cope_outputs/preflight_20260804_v1/candidate_0.mp4"
+      }
+    },
+    {
+      "accepted": false,
+      "candidate_index": 1,
+      "checkpoint_before": {
+        "checkpoint_id": "libero-s0-t136-c2-debug-root",
+        "metadata": {
+          "object": "milk",
+          "sim_state_size": 97,
+          "target": "basket_A"
+        },
+        "state_hash": "9900d4e25a47565072964060fffc6acc89acd481039966789d7d216efb6de9e0",
+        "step": 136
+      },
+      "controller_record": {
+        "done": false,
+        "final_error_m": 0.004026263428638355,
+        "phase": "candidate1_invalid_handoff",
+        "reward": 0.0,
+        "steps": 15
+      },
+      "controls": [
+        [
+          1.0,
+          0.0009748636645584563,
+          -0.0027668632094446366,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          1.0,
+          -0.003009817080681376,
+          -0.011908913412266298,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          1.0,
+          -0.016621368865952224,
+          0.012276053711284263,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          1.0,
+          -0.033800784232713155,
+          0.05423748422424657,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          1.0,
+          -0.04901242528738692,
+          0.0919268038368437,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          1.0,
+          -0.05990459639347967,
+          0.11768335594753321,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          1.0,
+          -0.06605538761060181,
+          0.13107228044955566,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          1.0,
+          -0.06815353625760301,
+          0.13435145968960116,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          1.0,
+          -0.0672066747506983,
+          0.13062543552617267,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.912615614840433,
+          -0.06412622302150894,
+          0.12257593015916335,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.6715723882552705,
+          -0.05921158388783376,
+          0.11110342620822111,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.4563717449081936,
+          -0.05095379570429104,
+          0.09235925740497475,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.2806183463364532,
+          -0.03727195065140909,
+          0.0612752899432234,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.14213999728358573,
+          -0.01894375862323827,
+          0.0205146919791388,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.035873448374059286,
+          0.0015990278937116909,
+          -0.02339937954142668,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "failure_class": "invalid_handoff",
+      "handoff_error_m": 0.1421779685569728,
+      "name": "invalid_handoff",
+      "new_collision": false,
+      "reason": "actual handoff error 0.142178 m",
+      "restore": {
+        "actual_hash": "9900d4e25a47565072964060fffc6acc89acd481039966789d7d216efb6de9e0",
+        "checkpoint_id": "libero-s0-t136-c2-debug-root",
+        "exact": true,
+        "expected_hash": "9900d4e25a47565072964060fffc6acc89acd481039966789d7d216efb6de9e0",
+        "restored": true
+      },
+      "video": {
+        "bytes": 6524,
+        "frames": 15,
+        "path": "/home/lijingsu/cope_outputs/preflight_20260804_v1/candidate_1.mp4"
+      }
+    },
+    {
+      "accepted": true,
+      "attached": true,
+      "candidate_index": 2,
+      "checkpoint_before": {
+        "checkpoint_id": "libero-s0-t136-c2-debug-root",
+        "metadata": {
+          "object": "milk",
+          "sim_state_size": 97,
+          "target": "basket_A"
+        },
+        "state_hash": "9900d4e25a47565072964060fffc6acc89acd481039966789d7d216efb6de9e0",
+        "step": 136
+      },
+      "controller_record": {
+        "done": false,
+        "final_error_m": null,
+        "phase": "candidate2_hold",
+        "reward": 0.0,
+        "steps": 2
+      },
+      "controls": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "failure_class": "",
+      "handoff_error_m": 0.0012585678086470937,
+      "name": "checkpoint_hold",
+      "new_collision": false,
+      "reason": "actual rollout satisfies handoff, attachment, and collision checks",
+      "restore": {
+        "actual_hash": "9900d4e25a47565072964060fffc6acc89acd481039966789d7d216efb6de9e0",
+        "checkpoint_id": "libero-s0-t136-c2-debug-root",
+        "exact": true,
+        "expected_hash": "9900d4e25a47565072964060fffc6acc89acd481039966789d7d216efb6de9e0",
+        "restored": true
+      },
+      "video": {
+        "bytes": 3437,
+        "frames": 2,
+        "path": "/home/lijingsu/cope_outputs/preflight_20260804_v1/candidate_2.mp4"
+      }
+    }
+  ],
+  "candidate_gate_passed": false,
+  "finish": {
+    "backend": "libero_mujoco",
+    "collision": false,
+    "contacts": 6338,
+    "frames": 191,
+    "seed": 0,
+    "state_hash": "606c6b9f72c359b6d48e52ff0b9fd43a0f79e5c6b25ee76a4446119f930a84c1",
+    "steps": 190
+  },
+  "native_checkpoint_restore": {
+    "changed_hash": "03d335acf4bb92d332f31a2fe08205abe1048af76e6d075749a131408af54113",
+    "checkpoint": {
+      "checkpoint_id": "libero-s0-t10-c1-pre-pick",
+      "metadata": {
+        "object": "milk",
+        "sim_state_size": 97,
+        "target": "basket_A"
+      },
+      "state_hash": "523361b0ad4c60b583efa450344397a256bc90f1f614386acf1ebc34358b275b",
+      "step": 10
+    },
+    "passed": true,
+    "restore": {
+      "actual_hash": "523361b0ad4c60b583efa450344397a256bc90f1f614386acf1ebc34358b275b",
+      "checkpoint_id": "libero-s0-t10-c1-pre-pick",
+      "exact": true,
+      "expected_hash": "523361b0ad4c60b583efa450344397a256bc90f1f614386acf1ebc34358b275b",
+      "restored": true
+    },
+    "world_edit": {
+      "after_qpos": [
+        0.2623657126753959,
+        0.24276372307022046,
+        0.4321920957259531,
+        0.7071047753027024,
+        -0.001694702411787118,
+        0.0016952900225259775,
+        0.7071047240116486
+      ],
+      "before_qpos": [
+        0.25236571267539587,
+        0.24276372307022046,
+        0.4321920957259531,
+        0.7071047753027024,
+        -0.001694702411787118,
+        0.0016952900225259775,
+        0.7071047240116486
+      ],
+      "delta_xyz": [
+        0.010000000000000009,
+        0.0,
+        0.0
+      ],
+      "target": "basket_C",
+      "world_changed": true
+    }
+  },
+  "pick": {
+    "captured_eef_position": [
+      -0.1671411815793678,
+      -0.19554569466580693,
+      0.7389847847738517
+    ],
+    "failure_reason": null,
+    "grasp_acquired": true,
+    "object_lift_m": 0.2032276832792662,
+    "object_name": "milk_1",
+    "object_start_position": [
+      -0.20073617715700687,
+      -0.19231753625556033,
+      0.5065098419215314
+    ],
+    "phases": [
+      {
+        "done": false,
+        "final_error_m": 0.0019375126308356402,
+        "phase": "approach_object",
+        "reward": 0.0,
+        "steps": 25
+      },
+      {
+        "done": false,
+        "final_error_m": 0.03694882897362788,
+        "phase": "descend_to_grasp",
+        "reward": 0.0,
+        "steps": 60
+      },
+      {
+        "done": false,
+        "final_error_m": null,
+        "phase": "close_gripper",
+        "reward": 0.0,
+        "steps": 20
+      },
+      {
+        "done": false,
+        "final_error_m": 0.0022698887256231504,
+        "phase": "lift_object",
+        "reward": 0.0,
+        "steps": 21
+      }
+    ],
+    "success": true,
+    "total_steps": 126
+  },
+  "placement": {
+    "failure_reason": null,
+    "grasp_acquired": true,
+    "object_lift_m": 0.2032276832792662,
+    "object_name": "milk_1",
+    "phases": [
+      {
+        "done": false,
+        "final_error_m": 0.0029868420930512737,
+        "phase": "transfer_above_target",
+        "reward": 0.0,
+        "steps": 38
+      },
+      {
+        "done": false,
+        "final_error_m": 0.006646427406287006,
+        "phase": "descend_to_release",
+        "reward": 0.0,
+        "steps": 16
+      }
+    ],
+    "success": true,
+    "target_predicate": true,
+    "target_region_name": "basket_1_contain_region",
+    "total_steps": 54
+  },
+  "preflight_passed": false,
+  "reset": {
+    "backend": "libero_mujoco",
+    "language": "place the milk and cream cheese in basket a and the butter in basket b",
+    "objects": [
+      "basket_1",
+      "basket_2",
+      "basket_3",
+      "butter_1",
+      "cream_cheese_1",
+      "milk_1"
+    ],
+    "regions": [
+      "basket_1_contain_region",
+      "basket_2_contain_region",
+      "basket_3_contain_region"
+    ],
+    "seed": 0,
+    "state_hash": "2be2e2478659be35e14011617e90cd3c8b6b378cdf2528c33f25e3b2151a5e99",
+    "warmup_steps": 10
+  },
+  "video": {
+    "bytes": 35593,
+    "fps": 20,
+    "frames": 191,
+    "path": "/home/lijingsu/cope_outputs/preflight_20260804_v1/video.mp4",
+    "written": true
+  }
+}

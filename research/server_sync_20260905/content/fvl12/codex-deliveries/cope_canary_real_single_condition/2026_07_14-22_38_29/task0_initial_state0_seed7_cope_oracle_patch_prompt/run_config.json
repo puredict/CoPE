@@ -1,0 +1,21 @@
+{
+  "config": {
+    "checkpoint": "/home/lijingsu/vla/models/openvla-7b-finetuned-libero-spatial",
+    "task_suite": "libero_spatial",
+    "task_id": 0,
+    "initial_state_id": 0,
+    "seed": 7,
+    "affected_object": "black bowl",
+    "goal": "plate",
+    "target_joint": "akita_black_bowl_1_joint0",
+    "disturbance_step": 70,
+    "dx": 0.1,
+    "dy": 0.05,
+    "max_steps": 220,
+    "warmup_env_steps": 10,
+    "camera_resolution": 256,
+    "resolved_unnorm_key": "libero_spatial",
+    "out_dir": "/home/lijingsu/codex-deliveries/cope_canary_real_single_condition"
+  },
+  "mode": "cope_oracle_patch_prompt"
+}

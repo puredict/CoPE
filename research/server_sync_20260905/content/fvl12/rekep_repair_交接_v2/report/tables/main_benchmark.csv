@@ -1,0 +1,7 @@
+method,safe_delivery,sd_lo,sd_hi,collision_free,task_success
+path_only,0.436,0.418,0.455,0.776,0.182
+safe_stop,0.623,0.604,0.641,0.962,0.266
+template_repair,0.429,0.411,0.448,0.427,0.262
+offline_atomic,0.593,0.574,0.611,0.593,0.423
+offline_exact,0.973,0.966,0.978,0.973,0.683
+online_repair,0.973,0.966,0.978,0.973,0.683

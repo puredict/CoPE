@@ -1,0 +1,1 @@
+{"ambiguous_interrupted_calls":0,"provider_calls":200,"result_cells":200,"retry_count":0,"runtime_git_commit":"3705cf18e75d74d39ffc9b8dc1793c584fe6058c","schema":"occurrence-learned-formal-run-v1","simulator_states_indexed":0}

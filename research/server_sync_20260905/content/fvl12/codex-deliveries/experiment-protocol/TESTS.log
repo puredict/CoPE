@@ -1,0 +1,37 @@
+# TESTS.log for G_EXPERIMENT_PROTOCOL
+
+No runtime experiment tests were run. No GPU was used. No dependency installation was performed.
+
+## Static validations performed
+
+exit 0: `git diff --cached --check` before commit in `/home/lijingsu/codex-worktrees/experiment-protocol`.
+
+exit 0: `git status --short --untracked-files=no` after commit in `/home/lijingsu/codex-worktrees/experiment-protocol`.
+
+exit 0: `git show --name-status --format=fuller --stat HEAD` verified that commit `bc6fc0d3d0da1c40cb7fd2af3aa87a24410bba95` adds only:
+
+- `EXPERIMENT_CONFIG_MATRIX.example.yaml`
+- `EXPERIMENT_PROTOCOL.md`
+- `FAILURE_TAXONOMY.md`
+- `METRICS_AND_CLAIMS.md`
+- `PAPER_EVIDENCE_CHECKLIST.md`
+- `experiment_matrix.example.yaml`
+
+exit 0: `diff -q experiment_matrix.example.yaml EXPERIMENT_CONFIG_MATRIX.example.yaml` verified the two YAML example files are identical.
+
+exit 0: `rg` checks verified that:
+
+- `EXPERIMENT_PROTOCOL.md` contains required sections for research questions, hypotheses, checkpoints, suite/task selection, pairing, disturbance variables, formal modes, budgets, warmup, reset/rollback timing, manual intervention exclusion, outcome definitions, video/log rules, sample sizes, debug/formal isolation, version freeze, statistics, ablations, and failure sampling.
+- `METRICS_AND_CLAIMS.md` contains the ten mandatory claim boundaries.
+- `FAILURE_TAXONOMY.md` contains the required failure labels.
+- `experiment_matrix.example.yaml` contains the primary and auxiliary metrics.
+
+## Not run by design
+
+- No `pytest`.
+- No `python` scripts from `/home/lijingsu/vla`.
+- No LIBERO environment creation.
+- No OpenVLA checkpoint loading.
+- No rollout.
+- No shell runner such as `run_*.sh`.
+- No GPU query or GPU allocation.

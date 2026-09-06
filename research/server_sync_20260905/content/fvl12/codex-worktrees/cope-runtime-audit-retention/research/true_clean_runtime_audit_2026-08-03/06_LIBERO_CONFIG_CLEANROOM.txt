@@ -1,0 +1,5 @@
+benchmark_root: /home/lijingsu/codex-worktrees/libero-cope-cleanroom/libero/libero
+bddl_files: /home/lijingsu/codex-worktrees/libero-cope-cleanroom/libero/libero/bddl_files
+init_states: /home/lijingsu/codex-worktrees/libero-cope-cleanroom/libero/libero/init_files
+datasets: /home/lijingsu/vla/libero_data/datasets
+assets: /home/lijingsu/codex-worktrees/libero-cope-cleanroom/libero/libero/assets

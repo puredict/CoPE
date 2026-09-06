@@ -1,0 +1,20 @@
+{
+  "attempt_path": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_v2/workers/gpu0/episodes/calibration_v2__task05__state03__seed20270827/attempt-001.json",
+  "claim": {
+    "claim_reused_for_resume": false,
+    "config_hash": "6cbc6c22065aa155a7d632fefe97788ec624dfd1aa07612e68ee4e56c11de49d",
+    "episode_id": "calibration_v2__task05__state03__seed20270827",
+    "launcher_id": "calibration-v2-ec28080663976fa9",
+    "path": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_v2/claims/calibration_v2__task05__state03__seed20270827.json",
+    "schema_version": "openvla-libero-calibration-claim-v1",
+    "worker_count": 8,
+    "worker_id": 0
+  },
+  "episode_id": "calibration_v2__task05__state03__seed20270827",
+  "physical_gpu": "0",
+  "schema_version": "openvla-libero-calibration-v2-completion-v1",
+  "success": true,
+  "terminal_path": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_v2/workers/gpu0/episodes/calibration_v2__task05__state03__seed20270827/episode.json",
+  "termination_reason": "libero_done",
+  "worker_id": 0
+}

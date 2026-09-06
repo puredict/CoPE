@@ -1,0 +1,10 @@
+COMMAND: cd /home/lijingsu/vla && source .venv/bin/activate && printf "LD_LIBRARY_PATH=%s\\n" "${LD_LIBRARY_PATH:-}" && printf "PATH=%s\\n" "$PATH"
+START: 2026-07-13T20:32:36+08:00
+END: 2026-07-13T20:32:36+08:00
+EXIT: 0
+
+STDOUT:
+LD_LIBRARY_PATH=/share/apps/cuda/12.2/lib64:
+PATH=/home/lijingsu/vla/.venv/bin:/share/apps/cuda/12.2/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+
+STDERR:

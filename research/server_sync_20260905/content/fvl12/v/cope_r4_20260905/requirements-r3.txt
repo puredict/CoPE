@@ -1,0 +1,7 @@
+# The fixed-model server is intentionally installed in its own GPU environment.
+numpy>=1.23
+PyYAML>=6.0
+jsonschema>=4.18
+imageio>=2.31
+imageio-ffmpeg>=0.4.9
+

@@ -1,0 +1,6 @@
+task=pen_insertion  mode=nominal  [DRY-RUN (scripted fake; proves wiring only)]
+note: official ReKep demo; alignment/insertion proxy
+
+wrote /home/lijingsu/rekep_v2_execution_20260810/pen_insertion_nominal_s0/trace.json  (400 steps)
+
+Status: DRY-RUN only. GPU behaviour is NOT EXECUTED and requires remote GPU verification.

@@ -1,0 +1,2296 @@
+{
+  "mode": "clean",
+  "pair_key": {
+    "checkpoint": "/home/lijingsu/vla/models/openvla-7b-finetuned-libero-spatial",
+    "task_suite": "libero_spatial",
+    "task_id": 0,
+    "initial_state_id": 0,
+    "seed": 7,
+    "target_joint": "akita_black_bowl_1_joint0",
+    "disturbance_step": 70,
+    "disturbance_delta_xyz": [
+      0.1,
+      0.05,
+      0.0
+    ],
+    "max_policy_steps": 220,
+    "warmup_env_steps": 10,
+    "camera_resolution": 256,
+    "model_family": "openvla",
+    "resolved_unnorm_key": "libero_spatial"
+  },
+  "manual_intervention": false,
+  "formal_run": true,
+  "target_joint": "akita_black_bowl_1_joint0",
+  "target_selection": {
+    "selected_joint": "akita_black_bowl_1_joint0",
+    "candidates": [
+      {
+        "name": "akita_black_bowl_1_joint0",
+        "joint_id": 9,
+        "qpos_addr": 9,
+        "object_name": "akita_black_bowl_1",
+        "score": 2,
+        "candidate_tokens": [
+          "akita",
+          "black",
+          "bowl"
+        ],
+        "matched_task_tokens": [
+          "black",
+          "bowl"
+        ],
+        "score_reason": "2 overlapping task/object tokens"
+      },
+      {
+        "name": "akita_black_bowl_2_joint0",
+        "joint_id": 10,
+        "qpos_addr": 16,
+        "object_name": "akita_black_bowl_2",
+        "score": 2,
+        "candidate_tokens": [
+          "akita",
+          "black",
+          "bowl"
+        ],
+        "matched_task_tokens": [
+          "black",
+          "bowl"
+        ],
+        "score_reason": "2 overlapping task/object tokens"
+      },
+      {
+        "name": "glazed_rim_porcelain_ramekin_1_joint0",
+        "joint_id": 12,
+        "qpos_addr": 30,
+        "object_name": "glazed_rim_porcelain_ramekin_1",
+        "score": 1,
+        "candidate_tokens": [
+          "glazed",
+          "porcelain",
+          "ramekin",
+          "rim"
+        ],
+        "matched_task_tokens": [
+          "ramekin"
+        ],
+        "score_reason": "1 overlapping task/object tokens"
+      },
+      {
+        "name": "plate_1_joint0",
+        "joint_id": 13,
+        "qpos_addr": 37,
+        "object_name": "plate_1",
+        "score": 1,
+        "candidate_tokens": [
+          "plate"
+        ],
+        "matched_task_tokens": [
+          "plate"
+        ],
+        "score_reason": "1 overlapping task/object tokens"
+      },
+      {
+        "name": "cookies_1_joint0",
+        "joint_id": 11,
+        "qpos_addr": 23,
+        "object_name": "cookies_1",
+        "score": 0,
+        "candidate_tokens": [
+          "cookies"
+        ],
+        "matched_task_tokens": [],
+        "score_reason": "0 overlapping task/object tokens"
+      }
+    ],
+    "reason": "explicit_target_joint",
+    "requested_joint": "akita_black_bowl_1_joint0",
+    "ambiguous": false
+  },
+  "task_description": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+  "disturbance": null,
+  "cope": null,
+  "status": "success",
+  "success": true,
+  "timeout": false,
+  "stopped": false,
+  "simulator_error": false,
+  "episode_status": {
+    "status": "success",
+    "success": true,
+    "failure": false,
+    "timeout": false,
+    "stopped": false,
+    "simulator_error": false,
+    "reward": 1.0,
+    "done": true,
+    "policy_step": 75,
+    "max_steps": 220,
+    "source": "done_current_libero_bddl_success",
+    "detail": {
+      "info_keys": []
+    }
+  },
+  "policy_step_budget": 220,
+  "warmup_simulator_steps": 10,
+  "policy_inference_steps": 75,
+  "environment_control_steps": 85,
+  "pre_disturbance_policy_steps": 75,
+  "recovery_policy_steps": 0,
+  "success_within_original_budget": true,
+  "total_policy_steps_consumed": 75,
+  "reset_count": 0,
+  "rollback_count": 0,
+  "budget": {
+    "policy_step_budget": 220,
+    "warmup_simulator_steps": 10,
+    "policy_inference_steps": 75,
+    "environment_control_steps": 85,
+    "pre_disturbance_policy_steps": 75,
+    "recovery_policy_steps": 0,
+    "total_policy_steps_consumed": 75,
+    "reset_count": 0,
+    "rollback_count": 0,
+    "success_within_original_budget": true
+  },
+  "video_path": "/home/lijingsu/codex-deliveries/cope_canary_real_single_condition/2026_07_14-22_38_29/task0_initial_state0_seed7_clean/raw.mp4",
+  "actions": [
+    {
+      "policy_step": 0,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        -0.0029850299042814,
+        0.1071428656578064,
+        -0.0026785731315612793,
+        -0.0007794112843625689,
+        4.201572315365443e-05,
+        0.00012604848426930881,
+        0.996078431372549
+      ],
+      "env_action": [
+        -0.0029850299042814,
+        0.1071428656578064,
+        -0.0026785731315612793,
+        -0.0007794112843625689,
+        4.201572315365443e-05,
+        0.00012604848426930881,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 0
+    },
+    {
+      "policy_step": 1,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.25441087301689036,
+        0.3121428688367207,
+        0.06330882170621077,
+        4.831982009551039e-05,
+        4.201572315365443e-05,
+        0.00012604848426930881,
+        0.996078431372549
+      ],
+      "env_action": [
+        0.25441087301689036,
+        0.3121428688367207,
+        0.06330882170621077,
+        4.831982009551039e-05,
+        4.201572315365443e-05,
+        0.00012604848426930881,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 1
+    },
+    {
+      "policy_step": 2,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.14221265892304624,
+        0.0468487470757728,
+        0.18061974586225027,
+        4.831982009551039e-05,
+        0.05118487120843401,
+        0.00012604848426930881,
+        0.996078431372549
+      ],
+      "env_action": [
+        0.14221265892304624,
+        0.0468487470757728,
+        0.18061974586225027,
+        4.831982009551039e-05,
+        0.05118487120843401,
+        0.00012604848426930881,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 2
+    },
+    {
+      "policy_step": 3,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.373208982057431,
+        0.23376051468007697,
+        0.2392752079402698,
+        4.831982009551039e-05,
+        0.06773108915955411,
+        0.00012604848426930881,
+        0.996078431372549
+      ],
+      "env_action": [
+        0.373208982057431,
+        0.23376051468007697,
+        0.2392752079402698,
+        4.831982009551039e-05,
+        0.06773108915955411,
+        0.00012604848426930881,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 3
+    },
+    {
+      "policy_step": 4,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.7758025738059305,
+        0.5412605194484486,
+        0.18061974586225027,
+        4.831982009551039e-05,
+        0.09931932342987437,
+        0.002714283764362335,
+        0.996078431372549
+      ],
+      "env_action": [
+        0.7758025738059305,
+        0.5412605194484486,
+        0.18061974586225027,
+        4.831982009551039e-05,
+        0.09931932342987437,
+        0.002714283764362335,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 4
+    },
+    {
+      "policy_step": 5,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.7758025738059305,
+        0.5412605194484486,
+        0.18061974586225027,
+        4.831982009551039e-05,
+        0.09931932342987437,
+        0.002714283764362335,
+        0.996078431372549
+      ],
+      "env_action": [
+        0.7758025738059305,
+        0.5412605194484486,
+        0.18061974586225027,
+        4.831982009551039e-05,
+        0.09931932342987437,
+        0.002714283764362335,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 5
+    },
+    {
+      "policy_step": 6,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.7758025738059305,
+        0.5412605194484486,
+        0.20994747690126014,
+        4.831982009551039e-05,
+        0.09931932342987437,
+        0.002714283764362335,
+        0.996078431372549
+      ],
+      "env_action": [
+        0.7758025738059305,
+        0.5412605194484486,
+        0.20994747690126014,
+        4.831982009551039e-05,
+        0.09931932342987437,
+        0.002714283764362335,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 6
+    },
+    {
+      "policy_step": 7,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.5976054102451195,
+        0.4628781652918048,
+        0.12196428378423052,
+        4.831982009551039e-05,
+        0.057201677736114065,
+        0.02859663656529257,
+        0.996078431372549
+      ],
+      "env_action": [
+        0.5976054102451195,
+        0.4628781652918048,
+        0.12196428378423052,
+        4.831982009551039e-05,
+        0.057201677736114065,
+        0.02859663656529257,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 7
+    },
+    {
+      "policy_step": 8,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.8748009980063812,
+        0.5774369905976688,
+        0.048644956186705945,
+        4.831982009551039e-05,
+        0.022605040201953808,
+        0.00012604848426930881,
+        0.996078431372549
+      ],
+      "env_action": [
+        0.8748009980063812,
+        0.5774369905976688,
+        0.048644956186705945,
+        4.831982009551039e-05,
+        0.022605040201953808,
+        0.00012604848426930881,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 8
+    },
+    {
+      "policy_step": 9,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.8946006828464713,
+        0.5593487550230587,
+        0.01931722514769607,
+        -0.007401260120027203,
+        0.05419327447227407,
+        0.00012604848426930881,
+        0.996078431372549
+      ],
+      "env_action": [
+        0.8946006828464713,
+        0.5593487550230587,
+        0.01931722514769607,
+        -0.007401260120027203,
+        0.05419327447227407,
+        0.00012604848426930881,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 9
+    },
+    {
+      "policy_step": 10,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.8946006828464713,
+        0.5593487550230587,
+        0.01931722514769607,
+        -0.007401260120027203,
+        0.05419327447227407,
+        0.00012604848426930881,
+        0.996078431372549
+      ],
+      "env_action": [
+        0.8946006828464713,
+        0.5593487550230587,
+        0.01931722514769607,
+        -0.007401260120027203,
+        0.05419327447227407,
+        0.00012604848426930881,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 10
+    },
+    {
+      "policy_step": 11,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.8550013131662909,
+        0.6317016973214991,
+        -0.06133403520958092,
+        -0.03968277319389231,
+        4.201572315365443e-05,
+        0.00012604848426930881,
+        0.996078431372549
+      ],
+      "env_action": [
+        0.8550013131662909,
+        0.6317016973214991,
+        -0.06133403520958092,
+        -0.03968277319389231,
+        4.201572315365443e-05,
+        0.00012604848426930881,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 11
+    },
+    {
+      "policy_step": 12,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.8946006828464713,
+        0.5653781668812621,
+        -0.06133403520958092,
+        -0.01071218453785952,
+        0.034638653257313884,
+        0.0040084014044088345,
+        0.996078431372549
+      ],
+      "env_action": [
+        0.8946006828464713,
+        0.5653781668812621,
+        -0.06133403520958092,
+        -0.01071218453785952,
+        0.034638653257313884,
+        0.0040084014044088345,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 12
+    },
+    {
+      "policy_step": 13,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.9144003676865614,
+        0.5533193431648553,
+        -0.14931722832661054,
+        -0.020644957791356486,
+        0.025613443465793806,
+        0.00012604848426930881,
+        0.996078431372549
+      ],
+      "env_action": [
+        0.9144003676865614,
+        0.5533193431648553,
+        -0.14931722832661054,
+        -0.020644957791356486,
+        0.025613443465793806,
+        0.00012604848426930881,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 13
+    },
+    {
+      "policy_step": 14,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.9144003676865614,
+        0.5653781668812621,
+        -0.28129201800215486,
+        -0.023955882209188803,
+        0.010571427146593732,
+        0.00012604848426930881,
+        0.996078431372549
+      ],
+      "env_action": [
+        0.9144003676865614,
+        0.5653781668812621,
+        -0.28129201800215486,
+        -0.023955882209188803,
+        0.010571427146593732,
+        0.00012604848426930881,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 14
+    },
+    {
+      "policy_step": 15,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.8814008929530778,
+        0.5774369905976688,
+        -0.40593487491794666,
+        -0.007401260120027203,
+        4.201572315365443e-05,
+        0.00012604848426930881,
+        0.996078431372549
+      ],
+      "env_action": [
+        0.8814008929530778,
+        0.5774369905976688,
+        -0.40593487491794666,
+        -0.007401260120027203,
+        4.201572315365443e-05,
+        0.00012604848426930881,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 15
+    },
+    {
+      "policy_step": 16,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.8616012081129877,
+        0.5774369905976688,
+        -0.5745693283922533,
+        4.831982009551039e-05,
+        4.201572315365443e-05,
+        0.00012604848426930881,
+        0.996078431372549
+      ],
+      "env_action": [
+        0.8616012081129877,
+        0.5774369905976688,
+        -0.5745693283922533,
+        4.831982009551039e-05,
+        4.201572315365443e-05,
+        0.00012604848426930881,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 16
+    },
+    {
+      "policy_step": 17,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.6834040445521764,
+        0.529201695732042,
+        -0.6332247904702729,
+        4.831982009551039e-05,
+        -0.03906722670676663,
+        -0.006344539715963271,
+        0.996078431372549
+      ],
+      "env_action": [
+        0.6834040445521764,
+        0.529201695732042,
+        -0.6332247904702729,
+        4.831982009551039e-05,
+        -0.03906722670676663,
+        -0.006344539715963271,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 17
+    },
+    {
+      "policy_step": 18,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.6240049900319061,
+        0.30008404512031406,
+        -0.7651995801458171,
+        4.831982009551039e-05,
+        -0.07667226750476686,
+        0.00012604848426930881,
+        0.996078431372549
+      ],
+      "env_action": [
+        0.6240049900319061,
+        0.30008404512031406,
+        -0.7651995801458171,
+        4.831982009551039e-05,
+        -0.07667226750476686,
+        0.00012604848426930881,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 18
+    },
+    {
+      "policy_step": 19,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.48540719615127503,
+        0.18552521981445025,
+        -0.8458508405030942,
+        0.009981093073592476,
+        -0.12931932462196724,
+        0.00012604848426930881,
+        0.996078431372549
+      ],
+      "env_action": [
+        0.48540719615127503,
+        0.18552521981445025,
+        -0.8458508405030942,
+        0.009981093073592476,
+        -0.12931932462196724,
+        0.00012604848426930881,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 19
+    },
+    {
+      "policy_step": 20,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.4590076163644884,
+        0.08302521822499298,
+        -0.8971743698213615,
+        0.037296219520709106,
+        -0.11427730830276712,
+        0.00012604848426930881,
+        0.996078431372549
+      ],
+      "env_action": [
+        0.4590076163644884,
+        0.08302521822499298,
+        -0.8971743698213615,
+        0.037296219520709106,
+        -0.11427730830276712,
+        0.00012604848426930881,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 20
+    },
+    {
+      "policy_step": 21,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.35340929721734093,
+        0.010672275926552621,
+        -0.9338340336201237,
+        0.05550630381878682,
+        -0.09472268708780701,
+        0.00012604848426930881,
+        0.996078431372549
+      ],
+      "env_action": [
+        0.35340929721734093,
+        0.010672275926552621,
+        -0.9338340336201237,
+        0.05550630381878682,
+        -0.09472268708780701,
+        0.00012604848426930881,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 21
+    },
+    {
+      "policy_step": 22,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.32700971743055407,
+        -0.0013865477898541423,
+        -0.9338340336201237,
+        0.06709453928119996,
+        -0.008983194068366424,
+        0.00012604848426930881,
+        0.996078431372549
+      ],
+      "env_action": [
+        0.32700971743055407,
+        -0.0013865477898541423,
+        -0.9338340336201237,
+        0.06709453928119996,
+        -0.008983194068366424,
+        0.00012604848426930881,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 22
+    },
+    {
+      "policy_step": 23,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.1092131841895626,
+        0.13728992494882308,
+        -0.9338340336201237,
+        0.037296219520709106,
+        -0.09472268708780701,
+        0.00012604848426930881,
+        0.996078431372549
+      ],
+      "env_action": [
+        0.1092131841895626,
+        0.13728992494882308,
+        -0.9338340336201237,
+        0.037296219520709106,
+        -0.09472268708780701,
+        0.00012604848426930881,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 23
+    },
+    {
+      "policy_step": 24,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        -0.0029850299042814,
+        0.20361345538906017,
+        -0.9338340336201237,
+        4.831982009551039e-05,
+        -0.09321848545588698,
+        0.04542016588589723,
+        0.996078431372549
+      ],
+      "env_action": [
+        -0.0029850299042814,
+        0.20361345538906017,
+        -0.9338340336201237,
+        4.831982009551039e-05,
+        -0.09321848545588698,
+        0.04542016588589723,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 24
+    },
+    {
+      "policy_step": 25,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        -0.0029850299042814,
+        0.20361345538906017,
+        -0.9338340336201237,
+        4.831982009551039e-05,
+        -0.09321848545588698,
+        0.04542016588589723,
+        0.996078431372549
+      ],
+      "env_action": [
+        -0.0029850299042814,
+        0.20361345538906017,
+        -0.9338340336201237,
+        4.831982009551039e-05,
+        -0.09321848545588698,
+        0.04542016588589723,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 25
+    },
+    {
+      "policy_step": 26,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        -0.38577893681269054,
+        0.1071428656578064,
+        -0.9338340336201237,
+        0.02239705964046368,
+        -0.03154621854716658,
+        0.002714283764362335,
+        0.996078431372549
+      ],
+      "env_action": [
+        -0.38577893681269054,
+        0.1071428656578064,
+        -0.9338340336201237,
+        0.02239705964046368,
+        -0.03154621854716658,
+        0.002714283764362335,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 26
+    },
+    {
+      "policy_step": 27,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        -0.7421732639343129,
+        0.2277311028218736,
+        -0.9338340336201237,
+        0.0124642863869667,
+        -0.051100839762126704,
+        0.04283193060580423,
+        0.996078431372549
+      ],
+      "env_action": [
+        -0.7421732639343129,
+        0.2277311028218736,
+        -0.9338340336201237,
+        0.0124642863869667,
+        -0.051100839762126704,
+        0.04283193060580423,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 27
+    },
+    {
+      "policy_step": 28,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        -0.7025738942541326,
+        0.3181722806949241,
+        -0.9338340336201237,
+        0.006670168655760145,
+        -0.07516806587284686,
+        0.05318487172617631,
+        0.996078431372549
+      ],
+      "env_action": [
+        -0.7025738942541326,
+        0.3181722806949241,
+        -0.9338340336201237,
+        0.006670168655760145,
+        -0.07516806587284686,
+        0.05318487172617631,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 28
+    },
+    {
+      "policy_step": 29,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        -0.07558387431794511,
+        0.5412605194484486,
+        -0.9338340336201237,
+        4.831982009551039e-05,
+        -0.07968067076860691,
+        0.00012604848426930881,
+        0.996078431372549
+      ],
+      "env_action": [
+        -0.07558387431794511,
+        0.5412605194484486,
+        -0.9338340336201237,
+        4.831982009551039e-05,
+        -0.07968067076860691,
+        0.00012604848426930881,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 29
+    },
+    {
+      "policy_step": 30,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        -0.5375765205867149,
+        0.4327311060007881,
+        -0.9338340336201237,
+        4.831982009551039e-05,
+        -0.07215966260900686,
+        0.049302518806036755,
+        0.996078431372549
+      ],
+      "env_action": [
+        -0.5375765205867149,
+        0.4327311060007881,
+        -0.9338340336201237,
+        4.831982009551039e-05,
+        -0.07215966260900686,
+        0.049302518806036755,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 30
+    },
+    {
+      "policy_step": 31,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        -0.39897872670608403,
+        0.3181722806949241,
+        -0.9338340336201237,
+        -0.0007794112843625689,
+        -0.10976470340700711,
+        0.00012604848426930881,
+        0.996078431372549
+      ],
+      "env_action": [
+        -0.39897872670608403,
+        0.3181722806949241,
+        -0.9338340336201237,
+        -0.0007794112843625689,
+        -0.10976470340700711,
+        0.00012604848426930881,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 31
+    },
+    {
+      "policy_step": 32,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        -0.0029850299042814,
+        0.414642870426178,
+        -0.9338340336201237,
+        -0.014850840060149917,
+        -0.08720167892820695,
+        0.00012604848426930881,
+        0.996078431372549
+      ],
+      "env_action": [
+        -0.0029850299042814,
+        0.414642870426178,
+        -0.9338340336201237,
+        -0.014850840060149917,
+        -0.08720167892820695,
+        0.00012604848426930881,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 32
+    },
+    {
+      "policy_step": 33,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        -0.0029850299042814,
+        0.36037816370234754,
+        -0.9338340336201237,
+        4.831982009551039e-05,
+        -0.09472268708780701,
+        0.00012604848426930881,
+        0.996078431372549
+      ],
+      "env_action": [
+        -0.0029850299042814,
+        0.36037816370234754,
+        -0.9338340336201237,
+        4.831982009551039e-05,
+        -0.09472268708780701,
+        0.00012604848426930881,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 33
+    },
+    {
+      "policy_step": 34,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        -0.0029850299042814,
+        0.36037816370234754,
+        -0.9338340336201237,
+        4.831982009551039e-05,
+        -0.08419327566436693,
+        0.00012604848426930881,
+        0.996078431372549
+      ],
+      "env_action": [
+        -0.0029850299042814,
+        0.36037816370234754,
+        -0.9338340336201237,
+        4.831982009551039e-05,
+        -0.08419327566436693,
+        0.00012604848426930881,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 34
+    },
+    {
+      "policy_step": 35,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        -0.0029850299042814,
+        -0.0013865477898541423,
+        -0.6478886559897779,
+        4.831982009551039e-05,
+        -0.008983194068366424,
+        0.00012604848426930881,
+        0.996078431372549
+      ],
+      "env_action": [
+        -0.0029850299042814,
+        -0.0013865477898541423,
+        -0.6478886559897779,
+        4.831982009551039e-05,
+        -0.008983194068366424,
+        0.00012604848426930881,
+        -1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 35
+    },
+    {
+      "policy_step": 36,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        -0.2801806176655432,
+        0.1312605130906198,
+        -0.5525735301129958,
+        4.831982009551039e-05,
+        -0.024025210387566526,
+        -0.019285716116428375,
+        0.0
+      ],
+      "env_action": [
+        -0.2801806176655432,
+        0.1312605130906198,
+        -0.5525735301129958,
+        4.831982009551039e-05,
+        -0.024025210387566526,
+        -0.019285716116428375,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 36
+    },
+    {
+      "policy_step": 37,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        -0.12838303389151884,
+        -0.1340336086703282,
+        -0.7578676473860647,
+        0.09523739683277466,
+        -0.016504202227966447,
+        0.00012604848426930881,
+        0.0
+      ],
+      "env_action": [
+        -0.12838303389151884,
+        -0.1340336086703282,
+        -0.7578676473860647,
+        0.09523739683277466,
+        -0.016504202227966447,
+        0.00012604848426930881,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 37
+    },
+    {
+      "policy_step": 38,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        -0.2603809328254531,
+        -0.0013865477898541423,
+        -0.5525735301129958,
+        4.831982009551039e-05,
+        4.201572315365443e-05,
+        0.00012604848426930881,
+        0.0
+      ],
+      "env_action": [
+        -0.2603809328254531,
+        -0.0013865477898541423,
+        -0.5525735301129958,
+        4.831982009551039e-05,
+        4.201572315365443e-05,
+        0.00012604848426930881,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 38
+    },
+    {
+      "policy_step": 39,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        -0.0029850299042814,
+        -0.0013865477898541423,
+        -0.0026785731315612793,
+        4.831982009551039e-05,
+        -0.0029663875406863716,
+        0.00012604848426930881,
+        0.0
+      ],
+      "env_action": [
+        -0.0029850299042814,
+        -0.0013865477898541423,
+        -0.0026785731315612793,
+        4.831982009551039e-05,
+        -0.0029663875406863716,
+        0.00012604848426930881,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 39
+    },
+    {
+      "policy_step": 40,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        -0.0029850299042814,
+        -0.08579831380470127,
+        -0.0026785731315612793,
+        0.02239705964046368,
+        0.12037814627675447,
+        -0.01669748083633535,
+        0.0
+      ],
+      "env_action": [
+        -0.0029850299042814,
+        -0.08579831380470127,
+        -0.0026785731315612793,
+        0.02239705964046368,
+        0.12037814627675447,
+        -0.01669748083633535,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 40
+    },
+    {
+      "policy_step": 41,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        -0.0029850299042814,
+        -0.08579831380470127,
+        0.01931722514769607,
+        0.02322479074492176,
+        0.12489075117251452,
+        -0.01669748083633535,
+        0.0
+      ],
+      "env_action": [
+        -0.0029850299042814,
+        -0.08579831380470127,
+        0.01931722514769607,
+        0.02322479074492176,
+        0.12489075117251452,
+        -0.01669748083633535,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 41
+    },
+    {
+      "policy_step": 42,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        -0.0029850299042814,
+        -0.10991596123751468,
+        -0.0026785731315612793,
+        0.004186975342385907,
+        0.031630249993473886,
+        -0.08787395103889355,
+        0.0
+      ],
+      "env_action": [
+        -0.0029850299042814,
+        -0.10991596123751468,
+        -0.0026785731315612793,
+        0.004186975342385907,
+        0.031630249993473886,
+        -0.08787395103889355,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 42
+    },
+    {
+      "policy_step": 43,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        -0.0029850299042814,
+        -0.0013865477898541423,
+        0.048644956186705945,
+        4.831982009551039e-05,
+        4.201572315365443e-05,
+        -0.09563865687917261,
+        0.0
+      ],
+      "env_action": [
+        -0.0029850299042814,
+        -0.0013865477898541423,
+        0.048644956186705945,
+        4.831982009551039e-05,
+        4.201572315365443e-05,
+        -0.09563865687917261,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 43
+    },
+    {
+      "policy_step": 44,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        -0.0029850299042814,
+        -0.0013865477898541423,
+        0.13662814930373535,
+        4.831982009551039e-05,
+        4.201572315365443e-05,
+        -0.11763865675996331,
+        0.0
+      ],
+      "env_action": [
+        -0.0029850299042814,
+        -0.0013865477898541423,
+        0.13662814930373535,
+        4.831982009551039e-05,
+        4.201572315365443e-05,
+        -0.11763865675996331,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 44
+    },
+    {
+      "policy_step": 45,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        -0.0029850299042814,
+        0.08302521822499298,
+        0.05597688894645836,
+        -0.02230042000027263,
+        -0.049596638130206705,
+        -0.09563865687917261,
+        0.0
+      ],
+      "env_action": [
+        -0.0029850299042814,
+        0.08302521822499298,
+        0.05597688894645836,
+        -0.02230042000027263,
+        -0.049596638130206705,
+        -0.09563865687917261,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 45
+    },
+    {
+      "policy_step": 46,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.08941349934947262,
+        0.07699580636678949,
+        0.3199264682975471,
+        -0.007401260120027203,
+        4.201572315365443e-05,
+        -0.15905042124145172,
+        0.0
+      ],
+      "env_action": [
+        0.08941349934947262,
+        0.07699580636678949,
+        0.3199264682975471,
+        -0.007401260120027203,
+        4.201572315365443e-05,
+        -0.15905042124145172,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 46
+    },
+    {
+      "policy_step": 47,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.18181202860322654,
+        -0.043592430797277704,
+        0.24660714070002232,
+        4.831982009551039e-05,
+        0.07976470221491422,
+        -0.12410924496019587,
+        0.0
+      ],
+      "env_action": [
+        0.18181202860322654,
+        -0.043592430797277704,
+        0.24660714070002232,
+        4.831982009551039e-05,
+        0.07976470221491422,
+        -0.12410924496019587,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 47
+    },
+    {
+      "policy_step": 48,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.2082116083900133,
+        0.1071428656578064,
+        0.5032247872913584,
+        4.831982009551039e-05,
+        0.01959663693811381,
+        -0.15905042124145172,
+        0.0
+      ],
+      "env_action": [
+        0.2082116083900133,
+        0.1071428656578064,
+        0.5032247872913584,
+        4.831982009551039e-05,
+        0.01959663693811381,
+        -0.15905042124145172,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 48
+    },
+    {
+      "policy_step": 49,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.2082116083900133,
+        0.1071428656578064,
+        0.5032247872913584,
+        4.831982009551039e-05,
+        0.01959663693811381,
+        -0.10728571563959122,
+        0.0
+      ],
+      "env_action": [
+        0.2082116083900133,
+        0.1071428656578064,
+        0.5032247872913584,
+        4.831982009551039e-05,
+        0.01959663693811381,
+        -0.10728571563959122,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 49
+    },
+    {
+      "policy_step": 50,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.22801129323010338,
+        0.08302521822499298,
+        0.5985399131681404,
+        4.831982009551039e-05,
+        0.04968066957651396,
+        -0.11634453911991681,
+        0.0
+      ],
+      "env_action": [
+        0.22801129323010338,
+        0.08302521822499298,
+        0.5985399131681404,
+        4.831982009551039e-05,
+        0.04968066957651396,
+        -0.11634453911991681,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 50
+    },
+    {
+      "policy_step": 51,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.3204098224838573,
+        -0.0013865477898541423,
+        0.8918172235582389,
+        0.010808824178050555,
+        0.06923529079147411,
+        -0.1059915979995447,
+        0.0
+      ],
+      "env_action": [
+        0.3204098224838573,
+        -0.0013865477898541423,
+        0.8918172235582389,
+        0.010808824178050555,
+        0.06923529079147411,
+        -0.1059915979995447,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 51
+    },
+    {
+      "policy_step": 52,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.3204098224838573,
+        -0.0013865477898541423,
+        0.9284768873570013,
+        4.831982009551039e-05,
+        4.201572315365443e-05,
+        0.00012604848426930881,
+        0.0
+      ],
+      "env_action": [
+        0.3204098224838573,
+        -0.0013865477898541423,
+        0.9284768873570013,
+        4.831982009551039e-05,
+        4.201572315365443e-05,
+        0.00012604848426930881,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 52
+    },
+    {
+      "policy_step": 53,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.5448062506715455,
+        0.12523110123241643,
+        0.8844852907984864,
+        -0.04961554644738926,
+        0.06773108915955411,
+        -0.11634453911991681,
+        0.0
+      ],
+      "env_action": [
+        0.5448062506715455,
+        0.12523110123241643,
+        0.8844852907984864,
+        -0.04961554644738926,
+        0.06773108915955411,
+        -0.11634453911991681,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 53
+    },
+    {
+      "policy_step": 54,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.5448062506715455,
+        0.07699580636678949,
+        0.8038340304412095,
+        -0.01733403337352417,
+        0.07224369405531417,
+        -0.10987395091968424,
+        0.0
+      ],
+      "env_action": [
+        0.5448062506715455,
+        0.07699580636678949,
+        0.8038340304412095,
+        -0.01733403337352417,
+        0.07224369405531417,
+        -0.10987395091968424,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 54
+    },
+    {
+      "policy_step": 55,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.6372047799252994,
+        0.07699580636678949,
+        0.847825626999724,
+        -0.07196428626775742,
+        0.055697476104194066,
+        -0.11763865675996331,
+        0.0
+      ],
+      "env_action": [
+        0.6372047799252994,
+        0.07699580636678949,
+        0.847825626999724,
+        -0.07196428626775742,
+        0.055697476104194066,
+        -0.11763865675996331,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 55
+    },
+    {
+      "policy_step": 56,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.69660383444557,
+        -0.05565125451368447,
+        0.26860293897927967,
+        0.010808824178050555,
+        0.016588233674273756,
+        -0.12799159788033543,
+        0.0
+      ],
+      "env_action": [
+        0.69660383444557,
+        -0.05565125451368447,
+        0.26860293897927967,
+        0.010808824178050555,
+        0.016588233674273756,
+        -0.12799159788033543,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 56
+    },
+    {
+      "policy_step": 57,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.69660383444557,
+        -0.05565125451368447,
+        0.26860293897927967,
+        0.010808824178050555,
+        0.016588233674273756,
+        -0.12799159788033543,
+        0.0
+      ],
+      "env_action": [
+        0.69660383444557,
+        -0.05565125451368447,
+        0.26860293897927967,
+        0.010808824178050555,
+        0.016588233674273756,
+        -0.12799159788033543,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 57
+    },
+    {
+      "policy_step": 58,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.69660383444557,
+        -0.06168066637188785,
+        0.6791911735254177,
+        4.831982009551039e-05,
+        0.04817646794459396,
+        -0.11634453911991681,
+        0.0
+      ],
+      "env_action": [
+        0.69660383444557,
+        -0.06168066637188785,
+        0.6791911735254177,
+        4.831982009551039e-05,
+        0.04817646794459396,
+        -0.11634453911991681,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 58
+    },
+    {
+      "policy_step": 59,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.69660383444557,
+        -0.06168066637188785,
+        0.6791911735254177,
+        4.831982009551039e-05,
+        0.04817646794459396,
+        -0.11634453911991681,
+        0.0
+      ],
+      "env_action": [
+        0.69660383444557,
+        -0.06168066637188785,
+        0.6791911735254177,
+        4.831982009551039e-05,
+        0.04817646794459396,
+        -0.11634453911991681,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 59
+    },
+    {
+      "policy_step": 60,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.8352016283262008,
+        -0.08579831380470127,
+        0.3932457958950717,
+        4.831982009551039e-05,
+        0.02110083857003381,
+        -0.056815127677777244,
+        0.0
+      ],
+      "env_action": [
+        0.8352016283262008,
+        -0.08579831380470127,
+        0.3932457958950717,
+        4.831982009551039e-05,
+        0.02110083857003381,
+        -0.056815127677777244,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 60
+    },
+    {
+      "policy_step": 61,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.8352016283262008,
+        -0.049621842655481085,
+        0.048644956186705945,
+        0.01163655528250862,
+        0.018092435306193783,
+        -0.07363865699838189,
+        0.0
+      ],
+      "env_action": [
+        0.8352016283262008,
+        -0.049621842655481085,
+        0.048644956186705945,
+        0.01163655528250862,
+        0.018092435306193783,
+        -0.07363865699838189,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 61
+    },
+    {
+      "policy_step": 62,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.8814008929530778,
+        0.05890757079217945,
+        0.004653359628191134,
+        0.009981093073592476,
+        0.009067225514673732,
+        -0.056815127677777244,
+        0.0
+      ],
+      "env_action": [
+        0.8814008929530778,
+        0.05890757079217945,
+        0.004653359628191134,
+        0.009981093073592476,
+        0.009067225514673732,
+        -0.056815127677777244,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 62
+    },
+    {
+      "policy_step": 63,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.8484014182195941,
+        -0.25462184583439545,
+        -0.36194327835943185,
+        0.09854832125060697,
+        0.04968066957651396,
+        -0.05940336295787026,
+        0.0
+      ],
+      "env_action": [
+        0.8484014182195941,
+        -0.25462184583439545,
+        -0.36194327835943185,
+        0.09854832125060697,
+        0.04968066957651396,
+        -0.05940336295787026,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 63
+    },
+    {
+      "policy_step": 64,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.7428030990724469,
+        -0.0013865477898541423,
+        -0.0026785731315612793,
+        4.831982009551039e-05,
+        -0.042075629970606626,
+        -0.09563865687917261,
+        0.0
+      ],
+      "env_action": [
+        0.7428030990724469,
+        -0.0013865477898541423,
+        -0.0026785731315612793,
+        4.831982009551039e-05,
+        -0.042075629970606626,
+        -0.09563865687917261,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 64
+    },
+    {
+      "policy_step": 65,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.6438046748719962,
+        -0.0013865477898541423,
+        -0.6845483197885402,
+        4.831982009551039e-05,
+        -0.1067563001431671,
+        -0.06328571587800978,
+        0.0
+      ],
+      "env_action": [
+        0.6438046748719962,
+        -0.0013865477898541423,
+        -0.6845483197885402,
+        4.831982009551039e-05,
+        -0.1067563001431671,
+        -0.06328571587800978,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 65
+    },
+    {
+      "policy_step": 66,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        0.1092131841895626,
+        -0.0013865477898541423,
+        -0.9338340336201237,
+        0.03398529510287676,
+        -0.12781512299004721,
+        0.00012604848426930881,
+        0.0
+      ],
+      "env_action": [
+        0.1092131841895626,
+        -0.0013865477898541423,
+        -0.9338340336201237,
+        0.03398529510287676,
+        -0.12781512299004721,
+        0.00012604848426930881,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 66
+    },
+    {
+      "policy_step": 67,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        -0.0029850299042814,
+        -0.0013865477898541423,
+        -0.9338340336201237,
+        0.04805672387866414,
+        4.201572315365443e-05,
+        0.00012604848426930881,
+        0.0
+      ],
+      "env_action": [
+        -0.0029850299042814,
+        -0.0013865477898541423,
+        -0.9338340336201237,
+        0.04805672387866414,
+        4.201572315365443e-05,
+        0.00012604848426930881,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 67
+    },
+    {
+      "policy_step": 68,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        -0.352779462079207,
+        0.21567227910546694,
+        -0.9338340336201237,
+        0.03315756399841868,
+        -0.033050420179086576,
+        0.01436134252478094,
+        0.0
+      ],
+      "env_action": [
+        -0.352779462079207,
+        0.21567227910546694,
+        -0.9338340336201237,
+        0.03315756399841868,
+        -0.033050420179086576,
+        0.01436134252478094,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 68
+    },
+    {
+      "policy_step": 69,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        -0.43857809638626427,
+        0.19155463167265352,
+        -0.9338340336201237,
+        0.028191177371670206,
+        -0.0526050413940467,
+        -0.006344539715963271,
+        0.0
+      ],
+      "env_action": [
+        -0.43857809638626427,
+        0.19155463167265352,
+        -0.9338340336201237,
+        0.028191177371670206,
+        -0.0526050413940467,
+        -0.006344539715963271,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 69
+    },
+    {
+      "policy_step": 70,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        -0.5243767306933216,
+        -0.0013865477898541423,
+        -0.9338340336201237,
+        0.04722899277420603,
+        -0.10976470340700711,
+        0.00012604848426930881,
+        0.0
+      ],
+      "env_action": [
+        -0.5243767306933216,
+        -0.0013865477898541423,
+        -0.9338340336201237,
+        0.04722899277420603,
+        -0.10976470340700711,
+        0.00012604848426930881,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 70
+    },
+    {
+      "policy_step": 71,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        -0.5903756801602886,
+        -0.0013865477898541423,
+        -0.9338340336201237,
+        0.04805672387866414,
+        -0.11578150993468715,
+        0.009184871964594915,
+        0.0
+      ],
+      "env_action": [
+        -0.5903756801602886,
+        -0.0013865477898541423,
+        -0.9338340336201237,
+        0.04805672387866414,
+        -0.11578150993468715,
+        0.009184871964594915,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 71
+    },
+    {
+      "policy_step": 72,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        -0.5903756801602886,
+        0.20361345538906017,
+        -0.9338340336201237,
+        0.01743067301371519,
+        -0.09622688871972702,
+        0.09589075384771123,
+        0.0
+      ],
+      "env_action": [
+        -0.5903756801602886,
+        0.20361345538906017,
+        -0.9338340336201237,
+        0.01743067301371519,
+        -0.09622688871972702,
+        0.09589075384771123,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 72
+    },
+    {
+      "policy_step": 73,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        -0.7421732639343129,
+        0.23376051468007697,
+        -0.904506302581114,
+        4.831982009551039e-05,
+        -0.11728571156660715,
+        0.09977310676785078,
+        0.0
+      ],
+      "env_action": [
+        -0.7421732639343129,
+        0.23376051468007697,
+        -0.904506302581114,
+        4.831982009551039e-05,
+        -0.11728571156660715,
+        0.09977310676785078,
+        1.0
+      ],
+      "reward": 0.0,
+      "done": false,
+      "episode_status": "failure",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 73
+    },
+    {
+      "policy_step": 74,
+      "prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "raw_action": [
+        -0.7421732639343129,
+        -0.0013865477898541423,
+        -0.8898424370616089,
+        4.831982009551039e-05,
+        -0.09321848545588698,
+        0.08812604800743212,
+        0.0
+      ],
+      "env_action": [
+        -0.7421732639343129,
+        -0.0013865477898541423,
+        -0.8898424370616089,
+        4.831982009551039e-05,
+        -0.09321848545588698,
+        0.08812604800743212,
+        1.0
+      ],
+      "reward": 1.0,
+      "done": true,
+      "episode_status": "success",
+      "fresh_observation": false,
+      "observation_refresh": null,
+      "video_frame_index": 74
+    }
+  ],
+  "events": [
+    {
+      "timestamp": "2026-07-14T14:38:49Z",
+      "event": "episode_start",
+      "policy_step": 0,
+      "payload": {
+        "mode": "clean",
+        "pair_key": {
+          "checkpoint": "/home/lijingsu/vla/models/openvla-7b-finetuned-libero-spatial",
+          "task_suite": "libero_spatial",
+          "task_id": 0,
+          "initial_state_id": 0,
+          "seed": 7,
+          "target_joint": "akita_black_bowl_1_joint0",
+          "disturbance_step": 70,
+          "disturbance_delta_xyz": [
+            0.1,
+            0.05,
+            0.0
+          ],
+          "max_policy_steps": 220,
+          "warmup_env_steps": 10,
+          "camera_resolution": 256,
+          "model_family": "openvla",
+          "resolved_unnorm_key": "libero_spatial"
+        }
+      }
+    },
+    {
+      "timestamp": "2026-07-14T14:38:58Z",
+      "event": "warmup_complete",
+      "policy_step": 0,
+      "payload": {
+        "warmup_env_steps": 10
+      }
+    }
+  ]
+}

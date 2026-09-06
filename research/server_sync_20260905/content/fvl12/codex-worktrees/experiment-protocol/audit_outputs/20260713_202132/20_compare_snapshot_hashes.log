@@ -1,0 +1,33 @@
+COMMAND: python - <<'PY'
+from pathlib import Path
+root = Path("/home/lijingsu/vla/audit_outputs/20260713_202132")
+orig = {}
+for line in (root / "original_snapshot_sha256.txt").read_text().splitlines():
+    parts = line.split(None, 1)
+    if len(parts) == 2:
+        orig[parts[1]] = parts[0]
+remote = {}
+missing = []
+for line in (root / "remote_source_sha256.txt").read_text().splitlines():
+    if line.startswith("MISSING"):
+        missing.append(line.split(None, 1)[1])
+        continue
+    parts = line.split(None, 1)
+    if len(parts) == 2:
+        remote[parts[1]] = parts[0]
+rows = []
+for file, h in sorted(orig.items()):
+    rh = remote.get(file)
+    status = "MISSING" if file in missing else ("MATCH" if rh == h else "DIFF")
+    rows.append(f"{status}\t{file}\torig={h}\tremote={rh}")
+(root / "snapshot_compare.tsv").write_text("\n".join(rows) + "\n")
+print("\n".join(rows))
+PY
+START: 2026-07-13T20:28:58+08:00
+END: 2026-07-13T20:28:58+08:00
+EXIT: 127
+
+STDOUT:
+
+STDERR:
+bash: line 1: python: command not found

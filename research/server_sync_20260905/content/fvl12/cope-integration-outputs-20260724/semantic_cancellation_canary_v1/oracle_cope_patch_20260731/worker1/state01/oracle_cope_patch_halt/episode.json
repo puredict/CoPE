@@ -1,0 +1,665 @@
+{
+  "accepted_full_state": null,
+  "accepted_patch_receipt": {
+    "execution_directive": "HALT",
+    "method_label": "oracle_cope_patch_halt",
+    "oracle_operation_selection": true,
+    "patch": {
+      "event_id": "semantic-cancel-v1:task01:state01:seed20270725",
+      "operation": "Expire",
+      "patch_id": "semantic-cancel-v1:task01:state01:seed20270725:oracle-cope-patch",
+      "target_id": "goal:in:butter_1:basket_1_contain_region"
+    },
+    "provider_called": false,
+    "state_after": {
+      "event_history": [
+        {
+          "affected_slot_ids": [
+            "goal:in:butter_1:basket_1_contain_region",
+            "goal:in:cream_cheese_1:basket_1_contain_region"
+          ],
+          "applied_operation_ids": [
+            "genesis-insert-done",
+            "genesis-insert-pending"
+          ],
+          "details": {
+            "actor": "cancellation-genesis",
+            "event_source": null,
+            "high_level_call_count": 0,
+            "information_budget": null,
+            "manual_intervention": false,
+            "operations": [
+              {
+                "operation_id": "genesis-insert-done",
+                "operation_type": "insert",
+                "slot": {
+                  "constraint_type": "task_goal",
+                  "content": {
+                    "arguments": [
+                      "cream_cheese_1",
+                      "basket_1_contain_region"
+                    ],
+                    "predicate": "in"
+                  },
+                  "created_event_id": "semantic-cancel-v1:task01:state01:seed20270725:genesis",
+                  "evidence_refs": [],
+                  "last_updated_event_id": "semantic-cancel-v1:task01:state01:seed20270725:genesis",
+                  "lineage": [
+                    "goal:in:cream_cheese_1:basket_1_contain_region"
+                  ],
+                  "metadata": {
+                    "semantic_role": "original_goal_commitment"
+                  },
+                  "mode": "active",
+                  "overrides_slot_ids": [],
+                  "parent_slot_id": null,
+                  "priority": 100,
+                  "slot_id": "goal:in:cream_cheese_1:basket_1_contain_region",
+                  "source": "task"
+                }
+              },
+              {
+                "operation_id": "genesis-insert-pending",
+                "operation_type": "insert",
+                "slot": {
+                  "constraint_type": "task_goal",
+                  "content": {
+                    "arguments": [
+                      "butter_1",
+                      "basket_1_contain_region"
+                    ],
+                    "predicate": "in"
+                  },
+                  "created_event_id": "semantic-cancel-v1:task01:state01:seed20270725:genesis",
+                  "evidence_refs": [],
+                  "last_updated_event_id": "semantic-cancel-v1:task01:state01:seed20270725:genesis",
+                  "lineage": [
+                    "goal:in:butter_1:basket_1_contain_region"
+                  ],
+                  "metadata": {
+                    "semantic_role": "original_goal_commitment"
+                  },
+                  "mode": "active",
+                  "overrides_slot_ids": [],
+                  "parent_slot_id": null,
+                  "priority": 100,
+                  "slot_id": "goal:in:butter_1:basket_1_contain_region",
+                  "source": "task"
+                }
+              }
+            ],
+            "policy_step_budget": null
+          },
+          "event_id": "semantic-cancel-v1:task01:state01:seed20270725:genesis",
+          "generator": "oracle-cancellation-canary",
+          "patch_id": "semantic-cancel-v1:task01:state01:seed20270725:genesis-patch",
+          "reason": "initialize two atomic task commitments",
+          "revision": 1
+        },
+        {
+          "affected_slot_ids": [
+            "goal:in:butter_1:basket_1_contain_region"
+          ],
+          "applied_operation_ids": [
+            "expire-cancelled-pending-goal"
+          ],
+          "details": {
+            "actor": "task_owner",
+            "event_source": "oracle",
+            "high_level_call_count": 0,
+            "information_budget": 0,
+            "manual_intervention": false,
+            "operations": [
+              {
+                "operation_id": "expire-cancelled-pending-goal",
+                "operation_type": "expire",
+                "reason": "task owner cancelled the pending goal",
+                "slot_id": "goal:in:butter_1:basket_1_contain_region"
+              }
+            ],
+            "policy_step_budget": 0
+          },
+          "event_id": "semantic-cancel-v1:task01:state01:seed20270725",
+          "generator": "oracle-cope-patch-canary",
+          "patch_id": "semantic-cancel-v1:task01:state01:seed20270725:oracle-cope-patch",
+          "reason": "authorized cancellation of pending task commitment",
+          "revision": 2
+        }
+      ],
+      "patch_history": [
+        {
+          "context": {
+            "actor": "cancellation-genesis",
+            "allow_safety_override": true,
+            "authority_priority": 1000,
+            "authorized_sources": [
+              "task",
+              "user",
+              "safety",
+              "perception",
+              "planner",
+              "system"
+            ],
+            "checkpoint_id": null,
+            "config_hash": null,
+            "event_source": null,
+            "git_commit": null,
+            "high_level_call_count": 0,
+            "information_budget": null,
+            "manual_intervention": false,
+            "metadata": {},
+            "pair_key": {},
+            "policy_step_budget": null,
+            "task_progress": {},
+            "termination_reason": null
+          },
+          "patch": {
+            "created_at": 0,
+            "event_id": "semantic-cancel-v1:task01:state01:seed20270725:genesis",
+            "generator": "oracle-cancellation-canary",
+            "input_state_hash": "5b04037c65eca3c4e86828d01b39847d63e2797e079fed1b181d812a034f93be",
+            "metadata": {},
+            "operations": [
+              {
+                "operation_id": "genesis-insert-done",
+                "operation_type": "insert",
+                "slot": {
+                  "constraint_type": "task_goal",
+                  "content": {
+                    "arguments": [
+                      "cream_cheese_1",
+                      "basket_1_contain_region"
+                    ],
+                    "predicate": "in"
+                  },
+                  "created_event_id": "semantic-cancel-v1:task01:state01:seed20270725:genesis",
+                  "evidence_refs": [],
+                  "last_updated_event_id": "semantic-cancel-v1:task01:state01:seed20270725:genesis",
+                  "lineage": [
+                    "goal:in:cream_cheese_1:basket_1_contain_region"
+                  ],
+                  "metadata": {
+                    "semantic_role": "original_goal_commitment"
+                  },
+                  "mode": "active",
+                  "overrides_slot_ids": [],
+                  "parent_slot_id": null,
+                  "priority": 100,
+                  "slot_id": "goal:in:cream_cheese_1:basket_1_contain_region",
+                  "source": "task"
+                }
+              },
+              {
+                "operation_id": "genesis-insert-pending",
+                "operation_type": "insert",
+                "slot": {
+                  "constraint_type": "task_goal",
+                  "content": {
+                    "arguments": [
+                      "butter_1",
+                      "basket_1_contain_region"
+                    ],
+                    "predicate": "in"
+                  },
+                  "created_event_id": "semantic-cancel-v1:task01:state01:seed20270725:genesis",
+                  "evidence_refs": [],
+                  "last_updated_event_id": "semantic-cancel-v1:task01:state01:seed20270725:genesis",
+                  "lineage": [
+                    "goal:in:butter_1:basket_1_contain_region"
+                  ],
+                  "metadata": {
+                    "semantic_role": "original_goal_commitment"
+                  },
+                  "mode": "active",
+                  "overrides_slot_ids": [],
+                  "parent_slot_id": null,
+                  "priority": 100,
+                  "slot_id": "goal:in:butter_1:basket_1_contain_region",
+                  "source": "task"
+                }
+              }
+            ],
+            "patch_id": "semantic-cancel-v1:task01:state01:seed20270725:genesis-patch",
+            "reason": "initialize two atomic task commitments"
+          }
+        },
+        {
+          "context": {
+            "actor": "task_owner",
+            "allow_safety_override": false,
+            "authority_priority": 100,
+            "authorized_sources": [
+              "task"
+            ],
+            "checkpoint_id": null,
+            "config_hash": null,
+            "event_source": "oracle",
+            "git_commit": null,
+            "high_level_call_count": 0,
+            "information_budget": 0,
+            "manual_intervention": false,
+            "metadata": {
+              "oracle_patch_canary": true
+            },
+            "pair_key": {
+              "event_id": "semantic-cancel-v1:task01:state01:seed20270725"
+            },
+            "policy_step_budget": 0,
+            "task_progress": {
+              "physically_true_objects": [
+                "cream_cheese_1"
+              ]
+            },
+            "termination_reason": null
+          },
+          "patch": {
+            "created_at": 1,
+            "event_id": "semantic-cancel-v1:task01:state01:seed20270725",
+            "generator": "oracle-cope-patch-canary",
+            "input_state_hash": "b871a0caf0e62a00ecd1bd860ef03a2306a15d4f20e94bbda475d0e27591bce8",
+            "metadata": {
+              "oracle_operation_selection": true,
+              "provider_called": false
+            },
+            "operations": [
+              {
+                "operation_id": "expire-cancelled-pending-goal",
+                "operation_type": "expire",
+                "reason": "task owner cancelled the pending goal",
+                "slot_id": "goal:in:butter_1:basket_1_contain_region"
+              }
+            ],
+            "patch_id": "semantic-cancel-v1:task01:state01:seed20270725:oracle-cope-patch",
+            "reason": "authorized cancellation of pending task commitment"
+          }
+        }
+      ],
+      "revision": 2,
+      "schema_version": "1.0",
+      "slots": [
+        {
+          "constraint_type": "task_goal",
+          "content": {
+            "arguments": [
+              "butter_1",
+              "basket_1_contain_region"
+            ],
+            "predicate": "in"
+          },
+          "created_event_id": "semantic-cancel-v1:task01:state01:seed20270725:genesis",
+          "evidence_refs": [],
+          "last_updated_event_id": "semantic-cancel-v1:task01:state01:seed20270725",
+          "lineage": [
+            "goal:in:butter_1:basket_1_contain_region"
+          ],
+          "metadata": {
+            "semantic_role": "original_goal_commitment"
+          },
+          "mode": "expired",
+          "overrides_slot_ids": [],
+          "parent_slot_id": null,
+          "priority": 100,
+          "slot_id": "goal:in:butter_1:basket_1_contain_region",
+          "source": "task"
+        },
+        {
+          "constraint_type": "task_goal",
+          "content": {
+            "arguments": [
+              "cream_cheese_1",
+              "basket_1_contain_region"
+            ],
+            "predicate": "in"
+          },
+          "created_event_id": "semantic-cancel-v1:task01:state01:seed20270725:genesis",
+          "evidence_refs": [],
+          "last_updated_event_id": "semantic-cancel-v1:task01:state01:seed20270725:genesis",
+          "lineage": [
+            "goal:in:cream_cheese_1:basket_1_contain_region"
+          ],
+          "metadata": {
+            "semantic_role": "original_goal_commitment"
+          },
+          "mode": "active",
+          "overrides_slot_ids": [],
+          "parent_slot_id": null,
+          "priority": 100,
+          "slot_id": "goal:in:cream_cheese_1:basket_1_contain_region",
+          "source": "task"
+        }
+      ],
+      "state_hash": "3abf2bbfced880137ae300d9aa805c0e9d565ce42b3859201067c8fbe5efd4c8",
+      "state_id": "cancellation:semantic-cancel-v1:task01:state01:seed20270725",
+      "validation_history": []
+    },
+    "state_before": {
+      "event_history": [
+        {
+          "affected_slot_ids": [
+            "goal:in:butter_1:basket_1_contain_region",
+            "goal:in:cream_cheese_1:basket_1_contain_region"
+          ],
+          "applied_operation_ids": [
+            "genesis-insert-done",
+            "genesis-insert-pending"
+          ],
+          "details": {
+            "actor": "cancellation-genesis",
+            "event_source": null,
+            "high_level_call_count": 0,
+            "information_budget": null,
+            "manual_intervention": false,
+            "operations": [
+              {
+                "operation_id": "genesis-insert-done",
+                "operation_type": "insert",
+                "slot": {
+                  "constraint_type": "task_goal",
+                  "content": {
+                    "arguments": [
+                      "cream_cheese_1",
+                      "basket_1_contain_region"
+                    ],
+                    "predicate": "in"
+                  },
+                  "created_event_id": "semantic-cancel-v1:task01:state01:seed20270725:genesis",
+                  "evidence_refs": [],
+                  "last_updated_event_id": "semantic-cancel-v1:task01:state01:seed20270725:genesis",
+                  "lineage": [
+                    "goal:in:cream_cheese_1:basket_1_contain_region"
+                  ],
+                  "metadata": {
+                    "semantic_role": "original_goal_commitment"
+                  },
+                  "mode": "active",
+                  "overrides_slot_ids": [],
+                  "parent_slot_id": null,
+                  "priority": 100,
+                  "slot_id": "goal:in:cream_cheese_1:basket_1_contain_region",
+                  "source": "task"
+                }
+              },
+              {
+                "operation_id": "genesis-insert-pending",
+                "operation_type": "insert",
+                "slot": {
+                  "constraint_type": "task_goal",
+                  "content": {
+                    "arguments": [
+                      "butter_1",
+                      "basket_1_contain_region"
+                    ],
+                    "predicate": "in"
+                  },
+                  "created_event_id": "semantic-cancel-v1:task01:state01:seed20270725:genesis",
+                  "evidence_refs": [],
+                  "last_updated_event_id": "semantic-cancel-v1:task01:state01:seed20270725:genesis",
+                  "lineage": [
+                    "goal:in:butter_1:basket_1_contain_region"
+                  ],
+                  "metadata": {
+                    "semantic_role": "original_goal_commitment"
+                  },
+                  "mode": "active",
+                  "overrides_slot_ids": [],
+                  "parent_slot_id": null,
+                  "priority": 100,
+                  "slot_id": "goal:in:butter_1:basket_1_contain_region",
+                  "source": "task"
+                }
+              }
+            ],
+            "policy_step_budget": null
+          },
+          "event_id": "semantic-cancel-v1:task01:state01:seed20270725:genesis",
+          "generator": "oracle-cancellation-canary",
+          "patch_id": "semantic-cancel-v1:task01:state01:seed20270725:genesis-patch",
+          "reason": "initialize two atomic task commitments",
+          "revision": 1
+        }
+      ],
+      "patch_history": [
+        {
+          "context": {
+            "actor": "cancellation-genesis",
+            "allow_safety_override": true,
+            "authority_priority": 1000,
+            "authorized_sources": [
+              "task",
+              "user",
+              "safety",
+              "perception",
+              "planner",
+              "system"
+            ],
+            "checkpoint_id": null,
+            "config_hash": null,
+            "event_source": null,
+            "git_commit": null,
+            "high_level_call_count": 0,
+            "information_budget": null,
+            "manual_intervention": false,
+            "metadata": {},
+            "pair_key": {},
+            "policy_step_budget": null,
+            "task_progress": {},
+            "termination_reason": null
+          },
+          "patch": {
+            "created_at": 0,
+            "event_id": "semantic-cancel-v1:task01:state01:seed20270725:genesis",
+            "generator": "oracle-cancellation-canary",
+            "input_state_hash": "5b04037c65eca3c4e86828d01b39847d63e2797e079fed1b181d812a034f93be",
+            "metadata": {},
+            "operations": [
+              {
+                "operation_id": "genesis-insert-done",
+                "operation_type": "insert",
+                "slot": {
+                  "constraint_type": "task_goal",
+                  "content": {
+                    "arguments": [
+                      "cream_cheese_1",
+                      "basket_1_contain_region"
+                    ],
+                    "predicate": "in"
+                  },
+                  "created_event_id": "semantic-cancel-v1:task01:state01:seed20270725:genesis",
+                  "evidence_refs": [],
+                  "last_updated_event_id": "semantic-cancel-v1:task01:state01:seed20270725:genesis",
+                  "lineage": [
+                    "goal:in:cream_cheese_1:basket_1_contain_region"
+                  ],
+                  "metadata": {
+                    "semantic_role": "original_goal_commitment"
+                  },
+                  "mode": "active",
+                  "overrides_slot_ids": [],
+                  "parent_slot_id": null,
+                  "priority": 100,
+                  "slot_id": "goal:in:cream_cheese_1:basket_1_contain_region",
+                  "source": "task"
+                }
+              },
+              {
+                "operation_id": "genesis-insert-pending",
+                "operation_type": "insert",
+                "slot": {
+                  "constraint_type": "task_goal",
+                  "content": {
+                    "arguments": [
+                      "butter_1",
+                      "basket_1_contain_region"
+                    ],
+                    "predicate": "in"
+                  },
+                  "created_event_id": "semantic-cancel-v1:task01:state01:seed20270725:genesis",
+                  "evidence_refs": [],
+                  "last_updated_event_id": "semantic-cancel-v1:task01:state01:seed20270725:genesis",
+                  "lineage": [
+                    "goal:in:butter_1:basket_1_contain_region"
+                  ],
+                  "metadata": {
+                    "semantic_role": "original_goal_commitment"
+                  },
+                  "mode": "active",
+                  "overrides_slot_ids": [],
+                  "parent_slot_id": null,
+                  "priority": 100,
+                  "slot_id": "goal:in:butter_1:basket_1_contain_region",
+                  "source": "task"
+                }
+              }
+            ],
+            "patch_id": "semantic-cancel-v1:task01:state01:seed20270725:genesis-patch",
+            "reason": "initialize two atomic task commitments"
+          }
+        }
+      ],
+      "revision": 1,
+      "schema_version": "1.0",
+      "slots": [
+        {
+          "constraint_type": "task_goal",
+          "content": {
+            "arguments": [
+              "butter_1",
+              "basket_1_contain_region"
+            ],
+            "predicate": "in"
+          },
+          "created_event_id": "semantic-cancel-v1:task01:state01:seed20270725:genesis",
+          "evidence_refs": [],
+          "last_updated_event_id": "semantic-cancel-v1:task01:state01:seed20270725:genesis",
+          "lineage": [
+            "goal:in:butter_1:basket_1_contain_region"
+          ],
+          "metadata": {
+            "semantic_role": "original_goal_commitment"
+          },
+          "mode": "active",
+          "overrides_slot_ids": [],
+          "parent_slot_id": null,
+          "priority": 100,
+          "slot_id": "goal:in:butter_1:basket_1_contain_region",
+          "source": "task"
+        },
+        {
+          "constraint_type": "task_goal",
+          "content": {
+            "arguments": [
+              "cream_cheese_1",
+              "basket_1_contain_region"
+            ],
+            "predicate": "in"
+          },
+          "created_event_id": "semantic-cancel-v1:task01:state01:seed20270725:genesis",
+          "evidence_refs": [],
+          "last_updated_event_id": "semantic-cancel-v1:task01:state01:seed20270725:genesis",
+          "lineage": [
+            "goal:in:cream_cheese_1:basket_1_contain_region"
+          ],
+          "metadata": {
+            "semantic_role": "original_goal_commitment"
+          },
+          "mode": "active",
+          "overrides_slot_ids": [],
+          "parent_slot_id": null,
+          "priority": 100,
+          "slot_id": "goal:in:cream_cheese_1:basket_1_contain_region",
+          "source": "task"
+        }
+      ],
+      "state_hash": "b871a0caf0e62a00ecd1bd860ef03a2306a15d4f20e94bbda475d0e27591bce8",
+      "state_id": "cancellation:semantic-cancel-v1:task01:state01:seed20270725",
+      "validation_history": []
+    },
+    "transition": {
+      "accepted": true,
+      "after_hash": "3abf2bbfced880137ae300d9aa805c0e9d565ce42b3859201067c8fbe5efd4c8",
+      "applied_operation_ids": [
+        "expire-cancelled-pending-goal"
+      ],
+      "audit_record": {
+        "accepted": true,
+        "actor": "task_owner",
+        "after_hash": "3abf2bbfced880137ae300d9aa805c0e9d565ce42b3859201067c8fbe5efd4c8",
+        "applied_operation_ids": [
+          "expire-cancelled-pending-goal"
+        ],
+        "before_hash": "b871a0caf0e62a00ecd1bd860ef03a2306a15d4f20e94bbda475d0e27591bce8",
+        "event_id": "semantic-cancel-v1:task01:state01:seed20270725",
+        "generator": "oracle-cope-patch-canary",
+        "operations": [
+          {
+            "operation_id": "expire-cancelled-pending-goal",
+            "operation_type": "expire",
+            "reason": "task owner cancelled the pending goal",
+            "slot_id": "goal:in:butter_1:basket_1_contain_region"
+          }
+        ],
+        "patch_id": "semantic-cancel-v1:task01:state01:seed20270725:oracle-cope-patch",
+        "revision_after": 2,
+        "revision_before": 1,
+        "validation": {
+          "error_count": 0,
+          "valid": true
+        }
+      },
+      "before_hash": "b871a0caf0e62a00ecd1bd860ef03a2306a15d4f20e94bbda475d0e27591bce8"
+    }
+  },
+  "action_schema_valid": true,
+  "artifacts": {
+    "episode": "/home/lijingsu/cope-integration-outputs-20260724/semantic_cancellation_canary_v1/oracle_cope_patch_20260731/worker1/state01/oracle_cope_patch_halt/episode.json",
+    "trace": "/home/lijingsu/cope-integration-outputs-20260724/semantic_cancellation_canary_v1/oracle_cope_patch_20260731/worker1/state01/oracle_cope_patch_halt/trace.jsonl"
+  },
+  "cancellation_success": true,
+  "cancelled_goal_violated": false,
+  "complete": true,
+  "config_hash": "6cbc6c22065aa155a7d632fefe97788ec624dfd1aa07612e68ee4e56c11de49d",
+  "event": {
+    "authority": 100,
+    "done_object": "cream_cheese_1",
+    "event_id": "semantic-cancel-v1:task01:state01:seed20270725",
+    "event_type": "cancel_pending_goal",
+    "issuer": "task_owner",
+    "operation": "cancel",
+    "pending_object": "butter_1",
+    "target_commitment_id": "goal:in:butter_1:basket_1_contain_region",
+    "valid_from_state_version": 0,
+    "world_version": 145
+  },
+  "event_reached": true,
+  "final_predicates": {
+    "alphabet_soup_1": false,
+    "butter_1": false,
+    "cream_cheese_1": true,
+    "ketchup_1": false,
+    "milk_1": false,
+    "orange_juice_1": false,
+    "tomato_sauce_1": false
+  },
+  "git": {
+    "clean": true,
+    "commit": "2fced05e6a7a8f9c02ca3d62539e2ca553153f0b",
+    "status": ""
+  },
+  "initial_state_sha256": "cd3e7f86ef217ee7b7d26cc505b3f56ea8f49664ef10f6749270dfcd39dd17a6",
+  "manual_intervention": false,
+  "mode": "oracle_cope_patch_halt",
+  "policy_steps_consumed": 146,
+  "post_event_policy_actions": 0,
+  "reset_after_start": false,
+  "rollback": false,
+  "runtime_seconds": 67.38034898042679,
+  "schema_version": "semantic-cancellation-canary-v1",
+  "seed": 20270725,
+  "state_id": 1,
+  "task_id": 1,
+  "task_suite": "libero_10",
+  "termination_reason": "halted_after_authorized_cancellation",
+  "valid_progress_retained": true,
+  "verification_hold_steps": 30,
+  "verification_steps_excluded_from_policy_budget": true
+}

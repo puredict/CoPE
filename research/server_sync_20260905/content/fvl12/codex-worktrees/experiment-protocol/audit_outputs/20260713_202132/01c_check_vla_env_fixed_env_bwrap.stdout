@@ -1,0 +1,11 @@
+torch: 2.5.1+cu121
+transformers: 4.40.1
+cuda_available: True
+gpu_0: NVIDIA GeForce RTX 3090, 23.7 GiB
+gpu_1: NVIDIA GeForce RTX 3090, 23.7 GiB
+gpu_2: NVIDIA GeForce RTX 3090, 23.7 GiB
+gpu_3: NVIDIA GeForce RTX 3090, 23.7 GiB
+gpu_4: NVIDIA GeForce RTX 3090, 23.7 GiB
+gpu_5: NVIDIA GeForce RTX 3090, 23.7 GiB
+gpu_6: NVIDIA GeForce RTX 3090, 23.7 GiB
+gpu_7: NVIDIA GeForce RTX 3090, 23.7 GiB

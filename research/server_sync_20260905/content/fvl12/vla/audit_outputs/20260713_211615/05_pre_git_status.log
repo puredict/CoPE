@@ -1,0 +1,9 @@
+COMMAND: git status --short 2>&1 || true
+START: 2026-07-13T21:20:17+08:00
+END: 2026-07-13T21:20:17+08:00
+EXIT: 0
+
+STDOUT:
+fatal: not a git repository (or any of the parent directories): .git
+
+STDERR:

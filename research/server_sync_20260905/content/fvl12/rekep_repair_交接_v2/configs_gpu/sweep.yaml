@@ -1,0 +1,24 @@
+# Sweep / worker assignment -- REMOTE GPU SERVER ONLY
+# The launcher refuses to start unless runs/milestone1/GATE_PASSED exists.
+sweep:
+  num_gpus:              8
+  seeds_per_gpu:         25          # -> seeds 0..199, disjoint per GPU
+  steps:                 400
+  task:                  upright_transport
+  mode:                  repair
+
+  # methods are looped INSIDE a worker so a paired comparison never spans
+  # two simulator instances
+  methods:
+    - rekep_fixed
+    - path_only
+    - offline_exact
+    - online_repair
+
+  ablations:
+    - no_synthesis
+    - no_rollout
+    - no_cont_contract
+
+  seed_allocation: "gpu g -> [g*seeds_per_gpu, (g+1)*seeds_per_gpu - 1]"
+  output_root:     "<OUTPUT_ROOT>"

@@ -1,0 +1,6 @@
+COMMAND: cd /home/lijingsu/vla && pwd && git status --short && nvidia-smi
+EXIT: 128
+STDOUT:
+/home/lijingsu/vla
+STDERR:
+fatal: not a git repository (or any of the parent directories): .git

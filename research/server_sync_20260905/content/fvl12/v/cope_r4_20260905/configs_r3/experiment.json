@@ -1,0 +1,50 @@
+{
+  "schema_version": "cope-fsrpc-r3-config-v1",
+  "experiment_name": "persistent_lineage_fixed_llm",
+  "primary_profile": "long_lineage",
+  "seeds": 20,
+  "methods": ["CoPE", "FSR-PC"],
+  "model": {
+    "name": "Qwen/Qwen3-32B",
+    "base_url": "http://127.0.0.1:8000",
+    "api_key_env": "COPE_LLM_API_KEY",
+    "seed": 20260904,
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "max_context_tokens": 32768
+  },
+  "shared_budget": {
+    "max_output_tokens": 4096,
+    "timeout_s": 90.0,
+    "calls_per_event": 1
+  },
+  "profiles": {
+    "calibration": {
+      "initial_slots": 8,
+      "lineage_depth": 2
+    },
+    "lineage_valid": {
+      "initial_slots": 10,
+      "lineage_depth": 6
+    },
+    "long_lineage": {
+      "initial_slots": 48,
+      "lineage_depth": 6
+    }
+  },
+  "physical_backend": {
+    "name": "libero_mujoco",
+    "config": "configs_gpu/task_assets.yaml",
+    "controller": "OSC_POSE via privileged geometry oracle",
+    "learned_policy_used": false,
+    "rendering": "CPU OSMesa"
+  },
+  "nominal_gate": {
+    "seeds": 10,
+    "required_successes": 8
+  },
+  "calibration_gate": {
+    "profile": "calibration",
+    "minimum_valid_generation_rate_per_method": 0.8
+  }
+}

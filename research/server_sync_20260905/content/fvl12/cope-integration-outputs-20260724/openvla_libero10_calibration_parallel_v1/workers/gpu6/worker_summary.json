@@ -1,0 +1,12 @@
+{
+  "complete": true,
+  "model_load_count": 1,
+  "model_load_seconds": 33.26300121191889,
+  "physical_gpu": "6",
+  "processed_episode_ids": [
+    "calibration__task01__state01__seed20260825",
+    "calibration__task04__state04__seed20260928"
+  ],
+  "processor_loader": "local_upstream_prismatic_processor_v1",
+  "worker_id": 6
+}

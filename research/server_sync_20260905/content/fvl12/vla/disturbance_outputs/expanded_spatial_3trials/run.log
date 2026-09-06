@@ -1,0 +1,50 @@
+2026-07-08 00:59:49.578513: I tensorflow/core/util/port.cc:113] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-07-08 00:59:49.612357: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:9261] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+2026-07-08 00:59:49.612406: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:607] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2026-07-08 00:59:49.613204: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:1515] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2026-07-08 00:59:49.618132: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2026-07-08 00:59:50.296884: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /home/lijingsu/vla/.venv/lib/python3.10/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+<frozen importlib._bootstrap>:241: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+<frozen importlib._bootstrap>:241: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+/home/lijingsu/vla/.venv/lib/python3.10/site-packages/wandb/analytics/sentry.py:90: SentryHubDeprecationWarning: `sentry_sdk.Hub` is deprecated and will be removed in a future major release. Please consult our 1.x to 2.x migration guide for details on how to migrate `Hub` usage to the new API: https://docs.sentry.io/platforms/python/migration/1.x-to-2.x
+  self.hub = sentry_sdk.Hub(client)
+2026-07-08 00:59:53.048487: W tensorflow/core/common_runtime/gpu/gpu_device.cc:2256] Cannot dlopen some GPU libraries. Please make sure the missing libraries mentioned above are installed properly if you would like to use GPU. Follow the guide at https://www.tensorflow.org/install/gpu for how to download and setup the required libraries for your platform.
+Skipping registering GPU devices...
+<frozen importlib._bootstrap>:283: DeprecationWarning: the load_module() method is deprecated and slated for removal in Python 3.12; use exec_module() instead
+[*] Instantiating Pretrained VLA model
+[*] Loading in BF16 with SDPA Attention
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:00<00:00,  3.63it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:00<00:00,  4.47it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:00<00:00,  4.85it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:00<00:00,  5.14it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:00<00:00,  4.85it/s]
+Traceback (most recent call last):
+  File "/home/lijingsu/vla/libero_disturbance_eval.py", line 297, in <module>
+    main()
+  File "/home/lijingsu/vla/libero_disturbance_eval.py", line 226, in main
+    model = get_model(cfg)
+  File "/home/lijingsu/vla/src/openvla/experiments/robot/robot_utils.py", line 43, in get_model
+    model = get_vla(cfg)
+  File "/home/lijingsu/vla/src/openvla/experiments/robot/openvla_utils.py", line 57, in get_vla
+    vla = vla.to(DEVICE)
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/transformers/modeling_utils.py", line 2692, in to
+    return super().to(*args, **kwargs)
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1340, in to
+    return self._apply(convert)
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/torch/nn/modules/module.py", line 900, in _apply
+    module._apply(fn)
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/torch/nn/modules/module.py", line 900, in _apply
+    module._apply(fn)
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/torch/nn/modules/module.py", line 900, in _apply
+    module._apply(fn)
+  [Previous line repeated 3 more times]
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/torch/nn/modules/module.py", line 927, in _apply
+    param_applied = fn(param)
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1326, in convert
+    return t.to(
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 32.00 MiB. GPU 0 has a total capacity of 23.69 GiB of which 19.00 MiB is free. Process 1732404 has 14.81 GiB memory in use. Including non-PyTorch memory, this process has 8.84 GiB memory in use. Of the allocated memory 8.55 GiB is allocated by PyTorch, and 40.07 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

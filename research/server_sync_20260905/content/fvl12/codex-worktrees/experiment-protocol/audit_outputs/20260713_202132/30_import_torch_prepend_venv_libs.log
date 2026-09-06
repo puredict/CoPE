@@ -1,0 +1,19 @@
+COMMAND: cd /home/lijingsu/vla && source .venv/bin/activate && VENV_NVJIT=$(find /home/lijingsu/vla/.venv -path "*nvjitlink*/lib/libnvJitLink.so.12" -print -quit) && if [ -n "$VENV_NVJIT" ]; then export LD_LIBRARY_PATH="$(dirname "$VENV_NVJIT"):${LD_LIBRARY_PATH:-}"; fi && echo "VENV_NVJIT=$VENV_NVJIT" && python - <<'PY'
+import torch
+print("torch", torch.__version__)
+print("cuda_available", torch.cuda.is_available())
+print("torch_cuda", torch.version.cuda)
+print("device_count", torch.cuda.device_count())
+PY
+START: 2026-07-13T20:32:38+08:00
+END: 2026-07-13T20:32:39+08:00
+EXIT: 0
+
+STDOUT:
+VENV_NVJIT=/home/lijingsu/vla/.venv/lib/python3.10/site-packages/nvidia/nvjitlink/lib/libnvJitLink.so.12
+torch 2.5.1+cu121
+cuda_available True
+torch_cuda 12.1
+device_count 8
+
+STDERR:

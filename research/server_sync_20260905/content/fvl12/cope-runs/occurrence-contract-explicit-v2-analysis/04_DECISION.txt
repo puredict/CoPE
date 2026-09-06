@@ -1,0 +1,1 @@
+{"claim_status":"NO_GO_PRIMARY_NEUTRAL_COMPARISON","governed_gate":true,"infrastructure_valid":true,"joint_primary_gate":false,"neutral_gate":false,"result_cells":200,"schema":"occurrence-formal-analysis-decision-v1","secondary_can_rescue":false}

@@ -1,0 +1,23 @@
+COMMAND: bwrap --bind / / --dev-bind /dev /dev --proc /proc --bind /home/lijingsu/vla/audit_outputs/20260713_213433_offline_smokes/isolated_smoke_outputs /home/lijingsu/vla/smoke_outputs /home/lijingsu/vla/scripts/run_project_env.sh python check_vla_env.py
+START: 2026-07-13T21:34:33+08:00
+END: 2026-07-13T21:34:35+08:00
+EXIT: 0
+
+STDOUT:
+torch: 2.5.1+cu121
+transformers: 4.40.1
+cuda_available: True
+gpu_0: NVIDIA GeForce RTX 3090, 23.7 GiB
+gpu_1: NVIDIA GeForce RTX 3090, 23.7 GiB
+gpu_2: NVIDIA GeForce RTX 3090, 23.7 GiB
+gpu_3: NVIDIA GeForce RTX 3090, 23.7 GiB
+gpu_4: NVIDIA GeForce RTX 3090, 23.7 GiB
+gpu_5: NVIDIA GeForce RTX 3090, 23.7 GiB
+gpu_6: NVIDIA GeForce RTX 3090, 23.7 GiB
+gpu_7: NVIDIA GeForce RTX 3090, 23.7 GiB
+
+STDERR:
+[run_project_env] Using project-isolated LIBERO/OpenVLA environment for this subprocess only.
+[run_project_env] LD_LIBRARY_PATH is unset here to avoid the broken system CUDA nvJitLink path.
+/home/lijingsu/vla/.venv/lib/python3.10/site-packages/transformers/utils/hub.py:124: FutureWarning: Using `TRANSFORMERS_CACHE` is deprecated and will be removed in v5 of Transformers. Use `HF_HOME` instead.
+  warnings.warn(

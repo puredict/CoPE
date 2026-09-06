@@ -1,0 +1,46 @@
+{
+  "controller": "OnTheGroundPanda OSC_POSE privileged geometry oracle",
+  "cpu_snapshot_sha256": "607704af05fd2fa1ccadcde9a3317fb0fefa113ab82312bf3515c154b8ee7418",
+  "created_utc": "2026-08-07T05:06:24.274390+00:00",
+  "cuda_inference_used": false,
+  "excluded_generated_cache_parts": [
+    ".pytest_cache",
+    "__pycache__"
+  ],
+  "frozen_repair_core_included": true,
+  "generated_by": "scripts/refresh_handoff_integrity.py",
+  "learned_policy_used": false,
+  "n_files_covered_by_sha256sums": 154,
+  "old_experiment_outputs_preserved": true,
+  "package": "cope_fsrpc_交接_v2",
+  "platform": "macOS-26.2-arm64-arm-64bit",
+  "python": "3.12.2",
+  "real_backend": "libero_mujoco",
+  "simulator": "LIBERO/robosuite/MuJoCo",
+  "revision": "r2-postaudit",
+  "revision_date": "2026-08-07",
+  "cpu_tests_passing": 227,
+  "repository_tests_passing": 321,
+  "r2_fixes": [
+    "interruption delivery decoupled from goal completion (pre-registered elapsed-step scheduler)",
+    "deterministic failure-layer classification (infrastructure/adaptation/controller/task)",
+    "interruption-level records (interruptions.jsonl)",
+    "condition I5 (nested override and restoration)",
+    "FSR-PC_stable_ids and FSR-PC_provenance diagnostic variants",
+    "CoPE_no_rollout_verification ablation and verifier probe",
+    "representation-neutral repair-goal compilation and audit scoring"
+  ],
+  "first_libero_execution": {
+    "cope": "16/20",
+    "fsrpc": "16/20",
+    "no_adaptation": "0/20",
+    "identical_physical_outcomes": true,
+    "rendering": "CPU OSMesa; GPUs idle",
+    "learned_policy_used": false,
+    "candidates_rollout_verified": 162,
+    "candidates_rejected": 0,
+    "demonstrated_advantage": "representational/auditability, not behavioural"
+  },
+  "behavioural_advantage_claimed": false,
+  "r2_libero_execution_status": "NOT RUN - remote LIBERO/MuJoCo server required"
+}

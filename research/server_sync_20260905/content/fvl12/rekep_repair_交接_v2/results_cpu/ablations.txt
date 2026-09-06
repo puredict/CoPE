@@ -1,0 +1,65 @@
+Ablations: 1080 paired episodes/method x 9 methods = 9720 episodes
+
+====================================================================================================
+ABLATIONS (Wilson 95% CI) + extra outcome rates
+====================================================================================================
+method                                      SD                    TS  collide  failsafe  handoff_err
+online_repair(full)       0.972 [0.961, 0.980]  0.679 [0.650, 0.706]    0.005     0.028        0.075
+abl_no_synthesis          0.427 [0.398, 0.457]  0.254 [0.229, 0.280]    0.005     0.574        0.454
+abl_no_rollout            0.964 [0.951, 0.973]  0.679 [0.650, 0.706]    0.032     0.004        0.060
+abl_no_state_scoring      0.972 [0.961, 0.980]  0.679 [0.650, 0.706]    0.005     0.028        0.075
+abl_no_composition        0.972 [0.961, 0.980]  0.679 [0.650, 0.706]    0.005     0.028        0.075
+abl_no_restore_gate       0.972 [0.961, 0.980]  0.679 [0.650, 0.706]    0.005     0.028        0.075
+abl_no_realign            0.976 [0.965, 0.984]  0.684 [0.656, 0.711]    0.003     0.024        0.072
+abl_no_cont_contract      0.908 [0.890, 0.924]  0.582 [0.553, 0.611]    0.005     0.092        0.126
+abl_no_provenance         0.972 [0.961, 0.980]  0.679 [0.650, 0.706]    0.005     0.028        0.075
+
+====================================================================================================
+PAIRED vs online_repair(full): (full - ablated) risk difference [95% CI], McNemar Holm-adj
+====================================================================================================
+
+-- safe_delivery
+   ablation                   full-abl               95% CI        disc    p_holm
+   abl_no_synthesis             +0.545 [+0.516, +0.575]   589/0        0.0000*
+   abl_no_rollout               +0.008 [+0.004, +0.014]     9/0        0.0234*
+   abl_no_state_scoring         +0.000 [+0.000, +0.000]     0/0        1.0000 
+   abl_no_composition           +0.000 [+0.000, +0.000]     0/0        1.0000 
+   abl_no_restore_gate          +0.000 [+0.000, +0.000]     0/0        1.0000 
+   abl_no_realign               -0.004 [-0.007, -0.001]     0/4        0.6250 
+   abl_no_cont_contract         +0.064 [+0.049, +0.079]    71/2        0.0000*
+   abl_no_provenance            +0.000 [+0.000, +0.000]     0/0        1.0000 
+
+-- collision_free_recovery
+   ablation                   full-abl               95% CI        disc    p_holm
+   abl_no_synthesis             +0.546 [+0.516, +0.576]   590/0        0.0000*
+   abl_no_rollout               +0.008 [+0.004, +0.014]     9/0        0.0234*
+   abl_no_state_scoring         +0.000 [+0.000, +0.000]     0/0        1.0000 
+   abl_no_composition           +0.000 [+0.000, +0.000]     0/0        1.0000 
+   abl_no_restore_gate          +0.000 [+0.000, +0.000]     0/0        1.0000 
+   abl_no_realign               -0.004 [-0.007, -0.001]     0/4        0.6250 
+   abl_no_cont_contract         +0.064 [+0.049, +0.079]    71/2        0.0000*
+   abl_no_provenance            +0.000 [+0.000, +0.000]     0/0        1.0000 
+
+-- task_success
+   ablation                   full-abl               95% CI        disc    p_holm
+   abl_no_synthesis             +0.425 [+0.395, +0.454]   460/1        0.0000*
+   abl_no_rollout               +0.000 [+0.000, +0.000]     0/0        1.0000 
+   abl_no_state_scoring         +0.000 [+0.000, +0.000]     0/0        1.0000 
+   abl_no_composition           +0.000 [+0.000, +0.000]     0/0        1.0000 
+   abl_no_restore_gate          +0.000 [+0.000, +0.000]     0/0        1.0000 
+   abl_no_realign               -0.006 [-0.010, -0.002]     0/6        0.1875 
+   abl_no_cont_contract         +0.096 [+0.080, +0.115]   104/0        0.0000*
+   abl_no_provenance            +0.000 [+0.000, +0.000]     0/0        1.0000 
+
+====================================================================================================
+TARGETED CAUSAL PREDICTIONS
+====================================================================================================
+  [CONFIRMED    ] NoRolloutVerification -> more collisions             ablated=0.032 full=0.005
+  [NOT OBSERVED ] NoEventComposition -> lower COMPOUND safe delivery   ablated=0.950 full=0.950
+  [CONFIRMED    ] NoSynthesis -> lower COMPOUND safe delivery          ablated=0.191 full=0.950
+  [NOT OBSERVED ] NoRestoreGate -> higher goal error                   ablated=0.075 full=0.075
+  [CONFIRMED    ] NoContinuationContract -> higher goal error          ablated=0.126 full=0.075
+
+A 'NOT OBSERVED' row is reported as-is: the mechanism did not measurably
+change that outcome in this benchmark, which is evidence about the
+benchmark's discriminating power, not a result to be hidden.

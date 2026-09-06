@@ -1,0 +1,26 @@
+{
+  "checkpoint": "/home/lijingsu/vla/models/openvla-7b-finetuned-libero-spatial",
+  "task_suite": "libero_spatial",
+  "task_id": 0,
+  "initial_state_id": 1,
+  "seed": 8,
+  "seed_rule": "base_plus_initial_state",
+  "mode": "clean",
+  "target_joint": "akita_black_bowl_1_joint0",
+  "disturbance_step": 70,
+  "disturbance_delta_xyz": [
+    0.1,
+    0.05,
+    0.0
+  ],
+  "warmup_env_steps": 10,
+  "max_policy_steps": 220,
+  "manual_intervention": false,
+  "disabled_modes": [
+    "structured_recovery",
+    "stage_backtrack",
+    "verifier_stop",
+    "full_reset",
+    "oracle_rollback"
+  ]
+}

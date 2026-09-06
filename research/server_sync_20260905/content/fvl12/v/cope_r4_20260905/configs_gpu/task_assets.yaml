@@ -1,0 +1,59 @@
+schema_version: cope-libero-assets-v1
+backend: libero_mujoco
+task:
+  name: cope_basket_sorting
+  bddl_file: configs_gpu/cope_basket_sorting.bddl
+  language: place the milk and cream cheese in basket A and the butter in basket B
+  abstract_objects:
+    milk: milk_1
+    yogurt: cream_cheese_1
+    butter: butter_1
+  abstract_targets:
+    basket_A: basket_1_contain_region
+    basket_B: basket_2_contain_region
+    basket_C: basket_3_contain_region
+  target_objects:
+    basket_A: basket_1
+    basket_B: basket_2
+    basket_C: basket_3
+  equivalences:
+    yogurt: cream_cheese is used because the installed LIBERO asset set has no yogurt object
+  nominal_assignment:
+    milk: basket_A
+    yogurt: basket_A
+    butter: basket_B
+  object_start_regions:
+    milk: living_room_table_milk_init_region
+    yogurt: living_room_table_cream_cheese_init_region
+    butter: living_room_table_butter_init_region
+platform:
+  simulator: LIBERO on robosuite and MuJoCo
+  robot: OnTheGroundPanda
+  controller: OSC_POSE
+  controller_privilege: simulator_geometry_oracle
+  learned_policy_used: false
+  mechanism_stratum_only: true
+  control_dt_s: 0.05
+render:
+  camera: agentview
+  width: 128
+  height: 128
+  fps: 20
+limits:
+  horizon_steps: 900
+  candidate_horizon_steps: 200
+  max_move_steps: 60
+  settle_steps: 40
+  unsafe_contact_force_proxy_n: 250.0
+metrics:
+  stability:
+    max_linear_speed_m_s: 0.02
+    max_angular_speed_rad_s: 0.5
+    consecutive_steps: 10
+    final_settle_max_steps: 200
+world_events:
+  unavailable_storage_xyz: [0.0, 0.65, 0.65]
+  # Move the returned basket toward the clear centre-front workspace.  The
+  # earlier [0.12, -0.08, 0.0] displacement put its centre only about 0.157 m
+  # from basket_C and caused the physical basket meshes to overlap.
+  changed_world_basket_B_delta_xyz: [0.0, -0.12, 0.0]

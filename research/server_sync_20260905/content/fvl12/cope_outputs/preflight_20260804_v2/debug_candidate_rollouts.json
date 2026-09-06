@@ -1,0 +1,348 @@
+[
+  {
+    "accepted": false,
+    "candidate_index": 0,
+    "candidate_world_edit": {
+      "after_qpos": [
+        -0.1671411815793678,
+        -0.19554569466580693,
+        0.7389847847738517,
+        4.059484929929356e-09,
+        5.128872928748011e-07,
+        2.465769452680508e-18,
+        0.9999999999998684
+      ],
+      "before_qpos": [
+        0.20385820905301533,
+        -0.19959559118585848,
+        0.44546993445868416,
+        4.059484929929356e-09,
+        5.128872928748011e-07,
+        2.465769452680508e-18,
+        0.9999999999998684
+      ],
+      "object": "butter",
+      "sim_object": "butter_1",
+      "world_changed": true
+    },
+    "checkpoint_before": {
+      "checkpoint_id": "libero-s0-t136-c2-debug-root",
+      "metadata": {
+        "object": "milk",
+        "sim_state_size": 97,
+        "target": "basket_A"
+      },
+      "state_hash": "9900d4e25a47565072964060fffc6acc89acd481039966789d7d216efb6de9e0",
+      "step": 136
+    },
+    "collision_status": {
+      "collision": false,
+      "total_contact_observations": 4565,
+      "unsafe_contact_count": 0,
+      "unsafe_contacts": []
+    },
+    "controller_record": {
+      "done": false,
+      "final_error_m": null,
+      "phase": "candidate0_protected_collision",
+      "reward": 0.0,
+      "steps": 5
+    },
+    "controls": [
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "failure_class": "collision_not_observed",
+    "name": "downward_collision",
+    "reason": "expected collision absent",
+    "restore": {
+      "actual_hash": "9900d4e25a47565072964060fffc6acc89acd481039966789d7d216efb6de9e0",
+      "checkpoint_id": "libero-s0-t136-c2-debug-root",
+      "exact": true,
+      "expected_hash": "9900d4e25a47565072964060fffc6acc89acd481039966789d7d216efb6de9e0",
+      "restored": true
+    },
+    "video": {
+      "bytes": 4209,
+      "frames": 6,
+      "path": "/home/lijingsu/cope_outputs/preflight_20260804_v2/candidate_0.mp4"
+    }
+  },
+  {
+    "accepted": false,
+    "candidate_index": 1,
+    "checkpoint_before": {
+      "checkpoint_id": "libero-s0-t136-c2-debug-root",
+      "metadata": {
+        "object": "milk",
+        "sim_state_size": 97,
+        "target": "basket_A"
+      },
+      "state_hash": "9900d4e25a47565072964060fffc6acc89acd481039966789d7d216efb6de9e0",
+      "step": 136
+    },
+    "controller_record": {
+      "done": false,
+      "final_error_m": 0.0040394831541656325,
+      "phase": "candidate1_invalid_handoff",
+      "reward": 0.0,
+      "steps": 15
+    },
+    "controls": [
+      [
+        1.0,
+        0.0009748636645584563,
+        -0.0027668632094446366,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      [
+        1.0,
+        -0.0026105599081455155,
+        -0.012059282415017858,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      [
+        1.0,
+        -0.01599290447455104,
+        0.010765843146498533,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      [
+        1.0,
+        -0.033256464915877304,
+        0.05269817450607839,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      [
+        1.0,
+        -0.048738366480007844,
+        0.09110441090840027,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      [
+        1.0,
+        -0.059925119131063465,
+        0.11768517805290868,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      [
+        1.0,
+        -0.06631085442324824,
+        0.13169523724293253,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      [
+        1.0,
+        -0.06854345956645747,
+        0.13530672752697148,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      [
+        1.0,
+        -0.06764499692459847,
+        0.13165722191155416,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      [
+        0.9224037676904414,
+        -0.06455286006925409,
+        0.12352194615660173,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      [
+        0.6801983179530653,
+        -0.05967999098737076,
+        0.11210924903870767,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      [
+        0.46190756545708517,
+        -0.05171134599138261,
+        0.09405606194724303,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      [
+        0.2831748277254398,
+        -0.03835211778231762,
+        0.063697586204714,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      [
+        0.14236959625624532,
+        -0.020147458948490127,
+        0.023088734339926642,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      [
+        0.03445583188508079,
+        0.0005240640039971822,
+        -0.021318698118382162,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "failure_class": "invalid_handoff",
+    "handoff_error_m": 0.14230274353451286,
+    "name": "invalid_handoff",
+    "new_collision": false,
+    "reason": "actual handoff error 0.142303 m",
+    "restore": {
+      "actual_hash": "9900d4e25a47565072964060fffc6acc89acd481039966789d7d216efb6de9e0",
+      "checkpoint_id": "libero-s0-t136-c2-debug-root",
+      "exact": true,
+      "expected_hash": "9900d4e25a47565072964060fffc6acc89acd481039966789d7d216efb6de9e0",
+      "restored": true
+    },
+    "video": {
+      "bytes": 6632,
+      "frames": 15,
+      "path": "/home/lijingsu/cope_outputs/preflight_20260804_v2/candidate_1.mp4"
+    }
+  },
+  {
+    "accepted": true,
+    "attached": true,
+    "candidate_index": 2,
+    "checkpoint_before": {
+      "checkpoint_id": "libero-s0-t136-c2-debug-root",
+      "metadata": {
+        "object": "milk",
+        "sim_state_size": 97,
+        "target": "basket_A"
+      },
+      "state_hash": "9900d4e25a47565072964060fffc6acc89acd481039966789d7d216efb6de9e0",
+      "step": 136
+    },
+    "controller_record": {
+      "done": false,
+      "final_error_m": null,
+      "phase": "candidate2_hold",
+      "reward": 0.0,
+      "steps": 2
+    },
+    "controls": [
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "failure_class": "",
+    "handoff_error_m": 0.0012368879878492508,
+    "name": "checkpoint_hold",
+    "new_collision": false,
+    "reason": "actual rollout satisfies handoff, attachment, and collision checks",
+    "restore": {
+      "actual_hash": "9900d4e25a47565072964060fffc6acc89acd481039966789d7d216efb6de9e0",
+      "checkpoint_id": "libero-s0-t136-c2-debug-root",
+      "exact": true,
+      "expected_hash": "9900d4e25a47565072964060fffc6acc89acd481039966789d7d216efb6de9e0",
+      "restored": true
+    },
+    "video": {
+      "bytes": 3442,
+      "frames": 2,
+      "path": "/home/lijingsu/cope_outputs/preflight_20260804_v2/candidate_2.mp4"
+    }
+  }
+]

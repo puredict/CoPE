@@ -1,0 +1,2 @@
+.venv/bin/activate: line 21: /dev/null: Permission denied
+.venv/bin/activate: line 68: /dev/null: Permission denied

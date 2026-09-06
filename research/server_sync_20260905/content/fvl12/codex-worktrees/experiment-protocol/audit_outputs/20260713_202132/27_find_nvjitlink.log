@@ -1,0 +1,9 @@
+COMMAND: find /home/lijingsu/vla/.venv -name "libnvJitLink.so*" -o -name "libnvjitlink.so*" 2>/dev/null | sort; find /usr /lib /lib64 -name "libnvJitLink.so*" 2>/dev/null | head -50
+START: 2026-07-13T20:32:36+08:00
+END: 2026-07-13T20:32:36+08:00
+EXIT: 0
+
+STDOUT:
+/home/lijingsu/vla/.venv/lib/python3.10/site-packages/nvidia/nvjitlink/lib/libnvJitLink.so.12
+
+STDERR:

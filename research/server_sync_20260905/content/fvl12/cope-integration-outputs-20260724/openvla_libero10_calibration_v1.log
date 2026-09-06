@@ -1,0 +1,50 @@
+2026-07-24 18:32:04.529657: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:9261] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+2026-07-24 18:32:04.529695: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:607] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2026-07-24 18:32:04.530563: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:1515] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+/home/lijingsu/vla/.venv/lib/python3.10/site-packages/transformers/utils/hub.py:124: FutureWarning: Using `TRANSFORMERS_CACHE` is deprecated and will be removed in v5 of Transformers. Use `HF_HOME` instead.
+  warnings.warn(
+[*] Instantiating Pretrained VLA model
+[*] Loading in BF16 with SDPA Attention
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:00<00:00,  3.76it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:00<00:00,  4.50it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:00<00:00,  4.86it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:00<00:00,  5.21it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:00<00:00,  4.91it/s]
+[robosuite WARNING] No private macro file found! (macros.py:53)
+Loaded model: <class 'transformers_modules.openvla.openvla-7b.47a0ec7fc4ec123775a391911046cf33cf9ed83f.modeling_prismatic.OpenVLAForActionPrediction'>
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[Warning]: datasets path /home/lijingsu/vla/src/LIBERO/libero/libero/../datasets does not exist!
+07/24 [18:32:20] WARNING  | >> No private macro file found!         macros.py:53
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+                 WARNING  | >> It is recommended to use a private   macros.py:54
+                          macro file                                            
+[robosuite WARNING] To setup, run: python /home/lijingsu/vla/.venv/lib/python3.10/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+                 WARNING  | >> To setup, run: python                macros.py:55
+                          /home/lijingsu/vla/.venv/lib/python3.10/s             
+                          ite-packages/robosuite/scripts/setup_macr             
+                          os.py                                                 
+                 INFO     | >> No OpenGL_accelerate      acceleratesupport.py:24
+                          module loaded: No module named                        
+                          'OpenGL_accelerate'                                   
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[Warning]: datasets path /home/lijingsu/vla/src/LIBERO/libero/libero/../datasets does not exist!
+{"completed": 1, "episode_id": "calibration__task00__state00__seed20260724", "expected": 20, "success": false, "termination_reason": "policy_step_budget_exhausted"}
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[Warning]: datasets path /home/lijingsu/vla/src/LIBERO/libero/libero/../datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/src/LIBERO/libero/libero/../datasets does not exist!
+{"completed": 2, "episode_id": "calibration__task00__state01__seed20260725", "expected": 20, "success": false, "termination_reason": "policy_step_budget_exhausted"}
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[Warning]: datasets path /home/lijingsu/vla/src/LIBERO/libero/libero/../datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/src/LIBERO/libero/libero/../datasets does not exist!
+{"completed": 3, "episode_id": "calibration__task00__state02__seed20260726", "expected": 20, "success": false, "termination_reason": "policy_step_budget_exhausted"}
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[Warning]: datasets path /home/lijingsu/vla/src/LIBERO/libero/libero/../datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/src/LIBERO/libero/libero/../datasets does not exist!
+{"completed": 4, "episode_id": "calibration__task00__state03__seed20260727", "expected": 20, "success": false, "termination_reason": "policy_step_budget_exhausted"}
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[Warning]: datasets path /home/lijingsu/vla/src/LIBERO/libero/libero/../datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/src/LIBERO/libero/libero/../datasets does not exist!
+{"completed": 5, "episode_id": "calibration__task00__state04__seed20260728", "expected": 20, "success": false, "termination_reason": "policy_step_budget_exhausted"}
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[Warning]: datasets path /home/lijingsu/vla/src/LIBERO/libero/libero/../datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/src/LIBERO/libero/libero/../datasets does not exist!
+{"completed": 6, "episode_id": "calibration__task01__state00__seed20260824", "expected": 20, "success": false, "termination_reason": "policy_step_budget_exhausted"}

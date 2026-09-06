@@ -1,0 +1,56 @@
+[
+  {
+    "profile": "calibration",
+    "seed": 1000,
+    "method": "CoPE",
+    "metrics": {
+      "task_completion": false,
+      "end_to_end_success": false,
+      "all_generations_valid": false,
+      "all_registered_transitions_semantically_matched": false,
+      "all_events_processed": false,
+      "root_lineage_restored": null,
+      "compiled_plan_matches_root": null,
+      "physical_attempted": false,
+      "physical_success": null,
+      "symbolic_execution_success": null,
+      "n_model_calls": 1,
+      "valid_model_calls": 0,
+      "candidate_transition_rejections": 0,
+      "candidate_semantic_errors_after_valid_transition": 0,
+      "committed_semantic_errors": 0,
+      "total_prompt_tokens": 0,
+      "total_completion_tokens": 0,
+      "total_model_latency_s": 1.4076381362974644,
+      "first_failure": "server_error",
+      "first_failure_event": "seed-1000/e01"
+    }
+  },
+  {
+    "profile": "calibration",
+    "seed": 1000,
+    "method": "FSR-PC",
+    "metrics": {
+      "task_completion": false,
+      "end_to_end_success": false,
+      "all_generations_valid": false,
+      "all_registered_transitions_semantically_matched": false,
+      "all_events_processed": false,
+      "root_lineage_restored": null,
+      "compiled_plan_matches_root": null,
+      "physical_attempted": false,
+      "physical_success": null,
+      "symbolic_execution_success": null,
+      "n_model_calls": 1,
+      "valid_model_calls": 0,
+      "candidate_transition_rejections": 0,
+      "candidate_semantic_errors_after_valid_transition": 0,
+      "committed_semantic_errors": 0,
+      "total_prompt_tokens": 0,
+      "total_completion_tokens": 0,
+      "total_model_latency_s": 1.020706184208393,
+      "first_failure": "server_error",
+      "first_failure_event": "seed-1000/e01"
+    }
+  }
+]

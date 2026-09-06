@@ -1,0 +1,233 @@
+{
+  "artifact_files": {
+    "actions": "actions.jsonl",
+    "events": "events.jsonl",
+    "model_calls": "model_calls.jsonl",
+    "raw_outputs": "raw_outputs/",
+    "states": "state_snapshots.jsonl"
+  },
+  "backend": "libero_mujoco",
+  "compiled_plan": [],
+  "episode_id": "long_lineage|seed=1000|method=FSR-PC",
+  "events": [
+    {
+      "adaptation_status": "client_timeout",
+      "adaptation_valid": false,
+      "event": {
+        "current_slot_id": "order-critical/root",
+        "event_id": "seed-1000/e01",
+        "kind": "suspend_current",
+        "ordinal": 1,
+        "reason": "temporary station outage",
+        "user_request": "The original station is temporarily unavailable. Suspend this order without deleting it."
+      },
+      "exogenous_fingerprint": "7c1943d31bc94fa2be0b7e003cd8de77ea87ac31ee7beb16bcc7778cdf34bf0e"
+    }
+  ],
+  "final_state_fingerprint": "d0680d147f84c96bc95d6a2d64b7d083ffc24d32b9925b2ceec0d42f0d47fb55",
+  "method": "FSR-PC",
+  "metrics": {
+    "all_events_processed": false,
+    "all_generations_valid": false,
+    "all_registered_transitions_semantically_matched": false,
+    "candidate_semantic_errors_after_valid_transition": 0,
+    "candidate_transition_rejections": 0,
+    "committed_semantic_errors": 0,
+    "compiled_plan_matches_root": null,
+    "end_to_end_success": false,
+    "first_failure": "client_timeout",
+    "first_failure_event": "seed-1000/e01",
+    "n_model_calls": 1,
+    "physical_attempted": false,
+    "physical_success": null,
+    "root_lineage_restored": null,
+    "symbolic_execution_success": null,
+    "task_completion": false,
+    "total_completion_tokens": 2791,
+    "total_model_latency_s": 90.00027024745941,
+    "total_prompt_tokens": 11946,
+    "valid_model_calls": 0
+  },
+  "model": "Qwen/Qwen3-32B",
+  "model_calls": [
+    {
+      "adaptation_status": "client_timeout",
+      "adaptation_valid": false,
+      "candidate_rejected_by_transition_validator": false,
+      "candidate_semantic_correct": null,
+      "candidate_state_fingerprint": null,
+      "committed_state_semantic_correct": null,
+      "event_id": "seed-1000/e01",
+      "exogenous_fingerprint": "7c1943d31bc94fa2be0b7e003cd8de77ea87ac31ee7beb16bcc7778cdf34bf0e",
+      "failure_stage": "generation",
+      "generation": {
+        "cancellation_status": "connection_closed_server_status_unknown",
+        "completion_tokens": 2791,
+        "error": "timed out",
+        "finish_reason": "",
+        "http_status": 200,
+        "latency_s": 90.00027024745941,
+        "observed_completion_tokens": 2791,
+        "observed_output_chars": 9922,
+        "observed_token_count_kind": "server_usage_cumulative",
+        "ok": false,
+        "output_chars": 9922,
+        "output_sha256": "dc51d352290497cc11d5a720a815cacab41a1ea2b3246f491bd5053625e24486",
+        "prompt_tokens": 11946,
+        "request_completed": false,
+        "request_id": "1740eef9-4308-4131-94e3-8cd68ebb1ca6",
+        "response_id": "chatcmpl-1740eef9-4308-4131-94e3-8cd68ebb1ca6",
+        "server_error": "",
+        "status": "client_timeout",
+        "streamed_chunks": 2792,
+        "telemetry": {
+          "client_connection_closed": true,
+          "content_chunks": 2791,
+          "generation_completed_before_client_deadline": false,
+          "guided_decoding_backend": "guidance",
+          "json_valid": false,
+          "last_usage_at_s": 89.98902984522283,
+          "max_output_tokens": 4096,
+          "model_calls": 1,
+          "observed_token_note": "Only server-reported usage; SSE chunks are not tokens.",
+          "protocol": "vllm-0.8.5-streaming-guided-json",
+          "received_done": false,
+          "schema_valid": false,
+          "server_cancellation_confirmed": null,
+          "server_drain": {
+            "confirmed_idle": true,
+            "samples": [
+              {
+                "queues": [
+                  0.0,
+                  0.0
+                ],
+                "seconds_after_return": 0
+              }
+            ]
+          },
+          "timeout_s": 90.0
+        },
+        "ttft_s": 8.197839939966798
+      },
+      "json_parse_success": false,
+      "method": "FSR-PC",
+      "model": "Qwen/Qwen3-32B",
+      "ordinal": 1,
+      "output_schema_valid": false,
+      "packet_fingerprint": "a0b149bba7d016f8df34367bff263414a28fde304fe0f9bd1f832064811fe19b",
+      "raw_output_file": "raw_outputs/event_01.txt",
+      "request_completed": false,
+      "semantic_match_to_registered_transition": false,
+      "state_committed": false,
+      "state_fingerprint_after": "d0680d147f84c96bc95d6a2d64b7d083ffc24d32b9925b2ceec0d42f0d47fb55",
+      "state_fingerprint_before": "d0680d147f84c96bc95d6a2d64b7d083ffc24d32b9925b2ceec0d42f0d47fb55",
+      "system_prompt_chars": 2557,
+      "system_prompt_sha256": "993605dc58afcfcc4e47c197627dc3514f7a6397e5969b141d7c73b5aeac2c2d",
+      "transition_valid": false,
+      "user_prompt_chars": 41386,
+      "user_prompt_sha256": "fd3e1f18c008cf40fbc08edd433fcdc62483b5dec60b8c62b293a6d3568876ad",
+      "validation_errors": []
+    }
+  ],
+  "model_request_contract": {
+    "calls_per_event": 1,
+    "max_output_tokens": 4096,
+    "model": "Qwen/Qwen3-32B",
+    "timeout_s": 90.0
+  },
+  "pairing_key": "long_lineage|seed=1000",
+  "physical": {
+    "actions": [],
+    "backend": "libero_mujoco",
+    "controller_error": "",
+    "exact_assignment": null,
+    "expected_assignment": {
+      "butter": "basket_B",
+      "milk": "basket_A",
+      "yogurt": "basket_A"
+    },
+    "finish": {},
+    "initialized": false,
+    "invalid_action_count": 0,
+    "observed_assignment": {},
+    "physical_success": null,
+    "skipped_reason": "client_timeout",
+    "video": {
+      "skipped": true,
+      "written": false
+    }
+  },
+  "plan_error": "",
+  "platform": "Linux-5.19.0-50-generic-x86_64-with-glibc2.35",
+  "profile": "long_lineage",
+  "python": "3.10.12",
+  "registered_design": {
+    "critical_logical_id": "order-critical",
+    "expected_plan": [
+      {
+        "object": "butter",
+        "role": "primary_order",
+        "target": "basket_B"
+      },
+      {
+        "object": "milk",
+        "role": "receipt_token",
+        "target": "basket_A"
+      },
+      {
+        "object": "yogurt",
+        "role": "closure_token",
+        "target": "basket_A"
+      }
+    ],
+    "initial_slots": 48,
+    "lineage_depth": 6,
+    "max_output_tokens": 4096,
+    "model_timeout_s": 90.0,
+    "n_events": 11
+  },
+  "run_mode": "free_running",
+  "schema_version": "cope-fsrpc-r4-episode-v1",
+  "seed": 1000,
+  "task_contract": {
+    "critical_logical_id": "order-critical",
+    "lineage_rule": "restore_root follows parent_id edges to depth zero; the root payload is authoritative even when a detour has the same primary target",
+    "objects": [
+      "butter",
+      "milk",
+      "yogurt"
+    ],
+    "root_slot_id": "order-critical/root",
+    "success_definition": {
+      "all_model_updates_valid": true,
+      "exact_object_assignment": true,
+      "no_completed_action_repeated": true,
+      "no_expired_detour_executed": true,
+      "required_final_plan": [
+        {
+          "object": "butter",
+          "role": "primary_order",
+          "target": "basket_B"
+        },
+        {
+          "object": "milk",
+          "role": "receipt_token",
+          "target": "basket_A"
+        },
+        {
+          "object": "yogurt",
+          "role": "closure_token",
+          "target": "basket_A"
+        }
+      ]
+    },
+    "targets": [
+      "basket_A",
+      "basket_B",
+      "basket_C"
+    ],
+    "task_name": "persistent_multi_order_fulfillment"
+  },
+  "utc": "2026-09-05T02:49:39.664310+00:00"
+}

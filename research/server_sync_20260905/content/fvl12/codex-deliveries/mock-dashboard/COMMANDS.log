@@ -1,0 +1,86 @@
+Session: mock-dashboard
+Date: 2026-07-13
+
+1. Read uploaded materials
+   Command: sed/rg/tar reads under /Users/lijingsu/Downloads/C_MOCK_DASHBOARD
+   Exit: 0
+
+2. Attempt protocol worktree check on remote source
+   Command:
+     ssh ... 'cd /home/lijingsu/vla && pwd && git status --short && git rev-parse --show-toplevel && git rev-parse HEAD && ... git worktree add ...'
+   Exit: 11
+   Result:
+     /home/lijingsu/vla exists but is not a Git repository.
+     git status/rev-parse failed with "fatal: not a git repository".
+     No git worktree was created.
+
+3. Inspect remote source and Git availability
+   Command:
+     ssh ... 'ls -la /home/lijingsu/vla; find /home/lijingsu -maxdepth 3 -name .git -type d'
+   Exit: 0
+   Result:
+     Source files exist in /home/lijingsu/vla.
+     No .git directory found for /home/lijingsu/vla.
+
+4. Copy provided source snapshot to remote
+   Command:
+     scp ... /Users/lijingsu/Downloads/C_MOCK_DASHBOARD/original_source_snapshot.tar.gz lijingsu@10.176.53.120:/tmp/C_MOCK_DASHBOARD_original_source_snapshot.tar.gz
+   Exit: 0
+
+5. Create isolated snapshot repo
+   Command:
+     ssh ... 'mkdir -p /home/lijingsu/codex-worktrees /home/lijingsu/codex-deliveries/mock-dashboard; mkdir /home/lijingsu/codex-worktrees/mock-dashboard; tar -xzf /tmp/C_MOCK_DASHBOARD_original_source_snapshot.tar.gz -C /home/lijingsu/codex-worktrees/mock-dashboard; cd /home/lijingsu/codex-worktrees/mock-dashboard; git init; git checkout -b codex/mock-dashboard; git add .; git -c user.name="Codex Parallel Session" -c user.email="codex-parallel@example.invalid" commit -m "chore: import provided source snapshot"'
+   Exit: 0
+   Baseline commit: 76f345c65bed3c05f8029da189567114f07e0997
+
+6. Check existing Python packages in /home/lijingsu/vla/.venv
+   Command:
+     ssh ... '/home/lijingsu/vla/.venv/bin/python - <<PY ... importlib.util.find_spec(...) ... PY'
+   Exit: 0
+   Result:
+     Python 3.10.12
+     numpy 1.26.4
+     PIL 10.4.0
+     imageio 2.37.3
+     gradio 4.44.1
+     pytest 9.1.1
+
+7. Sync newly created files to isolated repo
+   Command:
+     scp ... work/mock-dashboard-src/*.py work/mock-dashboard-src/README_MOCK_DASHBOARD.md ...
+     scp ... work/mock-dashboard-src/tests/*.py ...
+   Exit: 0
+
+8. Gradio smoke, first attempts
+   Command:
+     ssh ... 'cd /home/lijingsu/codex-worktrees/mock-dashboard && python libero_dashboard.py --mock --host 127.0.0.1 --port 7861 & curl ...'
+   Exit: 1
+   Result:
+     Server started but / returned HTTP 500 due Gradio/gradio_client API-info schema parsing of boolean additionalProperties.
+     Fixed by replacing JSON/code components with textboxes and adding a local in-process schema parser patch.
+
+9. Final Gradio smoke
+   Command:
+     ssh ... 'cd /home/lijingsu/codex-worktrees/mock-dashboard && /home/lijingsu/vla/.venv/bin/python libero_dashboard.py --mock --host 127.0.0.1 --port 7861 > /tmp/libero_mock_gradio_smoke.log 2>&1 & pid=$!; ... curl -fsS http://127.0.0.1:7861/ > /tmp/libero_mock_gradio_smoke.html; kill $pid ...'
+   Exit: 0
+   Result:
+     curl_exit=0
+     /tmp/libero_mock_gradio_smoke.html size: 36074 bytes
+
+10. Clean generated pycache
+    Command:
+      ssh ... 'cd /home/lijingsu/codex-worktrees/mock-dashboard && rm -rf __pycache__ tests/__pycache__'
+    Exit: 0
+
+11. Commit feature files
+    Command:
+      ssh ... 'cd /home/lijingsu/codex-worktrees/mock-dashboard && git add README_MOCK_DASHBOARD.md libero_dashboard.py libero_dashboard_controller.py libero_mock_backend.py tests/test_dashboard_controller.py tests/test_mock_backend.py tests/test_mock_dashboard.py tests/test_mock_dashboard_import.py && git -c user.name="Codex Parallel Session" -c user.email="codex-parallel@example.invalid" commit -m "feat: add mock LIBERO experiment dashboard" && git rev-parse HEAD'
+    Exit: 0
+    Commit: d103f87e76501e19264ae511800dd228753b61b4
+
+12. Final status check
+    Command:
+      ssh ... 'cd /home/lijingsu/codex-worktrees/mock-dashboard && git status --short && git rev-parse --abbrev-ref HEAD && git rev-parse HEAD'
+    Exit: 0
+    Result:
+      Clean status, branch codex/mock-dashboard, commit d103f87e76501e19264ae511800dd228753b61b4.

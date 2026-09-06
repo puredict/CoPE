@@ -1,0 +1,2975 @@
+{
+  "adaptation_input_fingerprints": [
+    "a2635de2735934d1ec91c1f6aee878364d8b360d0dd8c7ab4db4d43002575036",
+    "983bcebc9db988505fec738bee979a2d29c0dda32492b0be5c44b3408a952405",
+    "15dadea24cff9e33d0c5191bf26849a7f0fd9dd8d39aada726a1b9429cf5a859"
+  ],
+  "backend": "libero_mujoco",
+  "backend_config_sha256": "58ce269b4bfcf09d82b77b3acf9c465613e25fe3b88440ae3773e2a3ef7bbf8f",
+  "backend_finish": {
+    "backend": "libero_mujoco",
+    "collision": false,
+    "contacts": 31328,
+    "frames": 938,
+    "seed": 4,
+    "state_hash": "770d158f1ffe1a60fbcd811d00d66c3a9cb9479f529c700569016833fb28c19d",
+    "steps": 934
+  },
+  "backend_meta": {
+    "backend": "libero_mujoco",
+    "bddl_file": "/home/lijingsu/cope_fsrpc_\u4ea4\u63a5_v2_r2/configs_gpu/cope_basket_sorting.bddl",
+    "controller": "OSC_POSE via privileged geometry oracle",
+    "learned_policy_used": false,
+    "mujoco_gl": "osmesa",
+    "mujoco_version": "2.3.7",
+    "robosuite_version": "1.4.1",
+    "simulator": "LIBERO/robosuite/MuJoCo"
+  },
+  "cancelled_expected": [],
+  "condition": "I5",
+  "denominators": {
+    "accepted_candidates": 0,
+    "adaptation_valid_episodes": 0,
+    "all_events_delivered_episodes": 1,
+    "attempted_candidates": 10,
+    "attempted_episodes": 1,
+    "candidate_isolation_valid": true,
+    "completed_episodes": 1,
+    "controller_valid_episodes": 1,
+    "evaluable_episodes": 1,
+    "evaluated_candidates": 0,
+    "events_delivered": 3,
+    "events_scheduled": 3,
+    "final_task_successes": 1,
+    "rejected_candidates": 0,
+    "valid_candidates": 0,
+    "valid_episodes": 1
+  },
+  "episode_id": "basket_sorting|I5|4|CoPE_no_rollout_verification",
+  "events": [
+    {
+      "condition": "I5",
+      "delivery_delay": 0,
+      "event_id": "I5-u1",
+      "ordinal": 1,
+      "pipeline_complete": true,
+      "pipeline_markers": [
+        "EVENT",
+        "PATCH",
+        "CONTINUATION_CAPTURED",
+        "REPAIR_GOAL_COMPILED",
+        "CANDIDATES_GENERATED",
+        "ROLLOUT_RESULTS",
+        "CANDIDATE_SELECTED",
+        "GRAPH_SPLICED",
+        "RESTORE_VALIDATED",
+        "STAGE_RESUMED"
+      ],
+      "scheduled_step": 110,
+      "simulator_state_hash_after_adaptation": "1cb61b0974cacb8df515c62f8e9aa9d527f4f4ff7a857ed081addc565c195808",
+      "simulator_state_hash_before_adaptation": "c10d977b7b2e7f0e3e8eb270cf1bdf07433f1542463a8dbc21b8c3d9177361b7",
+      "simulator_step": 110,
+      "update": {
+        "suspend": [
+          "g_butter"
+        ],
+        "suspend_reason": "basket_B removed from the table",
+        "user_request": "basket B is gone -- hold the butter"
+      },
+      "world": {
+        "moved_targets": [],
+        "unavailable_targets": [
+          "basket_B"
+        ]
+      },
+      "world_application": {
+        "requested_world": {
+          "moved_targets": [],
+          "unavailable_targets": [
+            "basket_B"
+          ]
+        },
+        "simulator_changes": [
+          {
+            "after_qpos": [
+              0.0,
+              0.65,
+              0.65,
+              0.7071047489484427,
+              -0.0016949908867567671,
+              0.0016949888166217883,
+              0.7071047503965487
+            ],
+            "available": false,
+            "before_qpos": [
+              -0.008500791810369899,
+              0.24199284163831855,
+              0.43219202665003076,
+              0.7071047489484427,
+              -0.0016949908867567671,
+              0.0016949888166217883,
+              0.7071047503965487
+            ],
+            "target": "basket_B",
+            "world_changed": true
+          }
+        ],
+        "world_changed": true
+      }
+    },
+    {
+      "condition": "I5",
+      "delivery_delay": 54,
+      "event_id": "I5-u2",
+      "ordinal": 2,
+      "pipeline_complete": true,
+      "pipeline_markers": [
+        "EVENT",
+        "PATCH",
+        "CONTINUATION_CAPTURED",
+        "REPAIR_GOAL_COMPILED",
+        "CANDIDATES_GENERATED",
+        "ROLLOUT_RESULTS",
+        "CANDIDATE_SELECTED",
+        "GRAPH_SPLICED",
+        "RESTORE_VALIDATED",
+        "STAGE_RESUMED"
+      ],
+      "scheduled_step": 310,
+      "simulator_state_hash_after_adaptation": "39a67e05ac730e2ffcb6e24822b9b44c5167328d8ed9874f85718cd684a22386",
+      "simulator_state_hash_before_adaptation": "87a9b0562bebcd0f894dc8726b3fd32a666d82aa4b612e11167fc1a7c14f9d49",
+      "simulator_step": 364,
+      "update": {
+        "redirect": {
+          "g_butter": "basket_C"
+        },
+        "user_request": "put the butter in basket C instead"
+      },
+      "world": {
+        "moved_targets": [],
+        "unavailable_targets": [
+          "basket_B"
+        ]
+      },
+      "world_application": {
+        "requested_world": {
+          "unavailable_targets": [
+            "basket_B"
+          ]
+        },
+        "simulator_changes": [],
+        "world_changed": false
+      }
+    },
+    {
+      "condition": "I5",
+      "delivery_delay": 116,
+      "event_id": "I5-u3",
+      "ordinal": 3,
+      "pipeline_complete": false,
+      "pipeline_markers": [
+        "EVENT",
+        "PATCH",
+        "CONTINUATION_CAPTURED",
+        "REPAIR_GOAL_COMPILED",
+        "CANDIDATES_GENERATED",
+        "ROLLOUT_RESULTS",
+        "CANDIDATE_SELECTED",
+        "GRAPH_SPLICED"
+      ],
+      "scheduled_step": 370,
+      "simulator_state_hash_after_adaptation": "1e2fba01a8d1448ec1f0d8a7d127be0514bad64fcf03d198e18f62d3ed858daa",
+      "simulator_state_hash_before_adaptation": "153802ae785eb6834e77f0a9d3c221df8203210bb49fe19c8bffa09b556dbd53",
+      "simulator_step": 486,
+      "update": {
+        "cancel_reason": "user withdrew the basket C detour",
+        "cancel_redirect": [
+          "g_butter@basket_C"
+        ],
+        "restore": [
+          "g_butter"
+        ],
+        "user_request": "no, basket B is back -- use it"
+      },
+      "world": {
+        "moved_targets": [
+          "basket_B"
+        ],
+        "unavailable_targets": []
+      },
+      "world_application": {
+        "requested_world": {
+          "moved_targets": [
+            "basket_B"
+          ],
+          "unavailable_targets": []
+        },
+        "simulator_changes": [
+          {
+            "after_qpos": [
+              -0.008500791810369899,
+              0.24199284163831855,
+              0.43219202665003076,
+              0.7071047489484427,
+              -0.0016949908867567671,
+              0.0016949888166217883,
+              0.7071047503965487
+            ],
+            "available": true,
+            "before_qpos": [
+              4.9988722388259545e-06,
+              0.6500626719200181,
+              0.4321921000010186,
+              0.7071048661282269,
+              -0.0016947378501955784,
+              0.0016947377167235642,
+              0.7071046344251133
+            ],
+            "target": "basket_B",
+            "world_changed": true
+          },
+          {
+            "after_qpos": [
+              -0.008500791810369899,
+              0.12199284163831856,
+              0.43219202665003076,
+              0.7071047489484427,
+              -0.0016949908867567671,
+              0.0016949888166217883,
+              0.7071047503965487
+            ],
+            "before_qpos": [
+              -0.008500791810369899,
+              0.24199284163831855,
+              0.43219202665003076,
+              0.7071047489484427,
+              -0.0016949908867567671,
+              0.0016949888166217883,
+              0.7071047503965487
+            ],
+            "delta_xyz": [
+              0.0,
+              -0.12,
+              0.0
+            ],
+            "target": "basket_B",
+            "world_changed": true
+          }
+        ],
+        "world_changed": true
+      }
+    }
+  ],
+  "expected_final": {
+    "butter": "basket_B",
+    "milk": "basket_A",
+    "yogurt": "basket_A"
+  },
+  "fairness_fingerprint": "5d2cd99a1ab085f8d570dffbbfd180f79c3c491abb34108c51bd175d33e124a7",
+  "fairness_payload": {
+    "backend": "libero_mujoco",
+    "backend_config_sha256": "58ce269b4bfcf09d82b77b3acf9c465613e25fe3b88440ae3773e2a3ef7bbf8f",
+    "condition": "I5",
+    "controller": "OSC_POSE via privileged geometry oracle",
+    "horizon_steps": 900,
+    "initial_simulator_state_hash": "f23ff251de130463353e3f049f57ef1f92ca9d7558b98d3791bd02c5223e405b",
+    "schedule_fingerprint": "cbc0f158020b7f2e",
+    "seed": 4
+  },
+  "final_settle": {
+    "consecutive_stable_steps": 10,
+    "final": {
+      "butter": {
+        "angular_speed_rad_s": 3.560186128343228e-15,
+        "linear_speed_m_s": 2.0507372211087818e-14,
+        "stable": true
+      },
+      "milk": {
+        "angular_speed_rad_s": 2.318592051675248e-06,
+        "linear_speed_m_s": 1.2464728723209198e-07,
+        "stable": true
+      },
+      "yogurt": {
+        "angular_speed_rad_s": 3.635484329548612e-06,
+        "linear_speed_m_s": 3.7746578899628484e-07,
+        "stable": true
+      }
+    },
+    "max_steps": 200,
+    "required_consecutive_steps": 10,
+    "samples": [
+      {
+        "consecutive_stable": 0,
+        "objects": {
+          "butter": {
+            "angular_speed_rad_s": 5.544243100996914e-15,
+            "linear_speed_m_s": 2.0495966983381457e-14,
+            "stable": true
+          },
+          "milk": {
+            "angular_speed_rad_s": 0.00047668243920476265,
+            "linear_speed_m_s": 3.5333497641691075e-05,
+            "stable": true
+          },
+          "yogurt": {
+            "angular_speed_rad_s": 3.6846768127347427,
+            "linear_speed_m_s": 0.2318670276438296,
+            "stable": false
+          }
+        },
+        "step": 922
+      },
+      {
+        "consecutive_stable": 1,
+        "objects": {
+          "butter": {
+            "angular_speed_rad_s": 4.422054251296243e-15,
+            "linear_speed_m_s": 2.0545689932933253e-14,
+            "stable": true
+          },
+          "milk": {
+            "angular_speed_rad_s": 0.07314809726669998,
+            "linear_speed_m_s": 0.005373132071943571,
+            "stable": true
+          },
+          "yogurt": {
+            "angular_speed_rad_s": 0.1515968978361594,
+            "linear_speed_m_s": 0.011910955035367748,
+            "stable": true
+          }
+        },
+        "step": 925
+      },
+      {
+        "consecutive_stable": 2,
+        "objects": {
+          "butter": {
+            "angular_speed_rad_s": 6.610807243753422e-15,
+            "linear_speed_m_s": 2.0507316485473356e-14,
+            "stable": true
+          },
+          "milk": {
+            "angular_speed_rad_s": 0.0039661553238550746,
+            "linear_speed_m_s": 0.0003131159145909412,
+            "stable": true
+          },
+          "yogurt": {
+            "angular_speed_rad_s": 0.016475012043344957,
+            "linear_speed_m_s": 0.0010218642493067056,
+            "stable": true
+          }
+        },
+        "step": 926
+      },
+      {
+        "consecutive_stable": 3,
+        "objects": {
+          "butter": {
+            "angular_speed_rad_s": 5.672952989021854e-15,
+            "linear_speed_m_s": 2.0499048624552424e-14,
+            "stable": true
+          },
+          "milk": {
+            "angular_speed_rad_s": 0.0001387003923434945,
+            "linear_speed_m_s": 1.103144236630418e-05,
+            "stable": true
+          },
+          "yogurt": {
+            "angular_speed_rad_s": 0.0003903447904692447,
+            "linear_speed_m_s": 2.9998387887823454e-05,
+            "stable": true
+          }
+        },
+        "step": 927
+      },
+      {
+        "consecutive_stable": 4,
+        "objects": {
+          "butter": {
+            "angular_speed_rad_s": 4.955727008716363e-15,
+            "linear_speed_m_s": 2.045900391051854e-14,
+            "stable": true
+          },
+          "milk": {
+            "angular_speed_rad_s": 1.1046820748501384e-06,
+            "linear_speed_m_s": 1.456426793536021e-07,
+            "stable": true
+          },
+          "yogurt": {
+            "angular_speed_rad_s": 9.065564354016312e-06,
+            "linear_speed_m_s": 1.3097514980570171e-06,
+            "stable": true
+          }
+        },
+        "step": 928
+      },
+      {
+        "consecutive_stable": 5,
+        "objects": {
+          "butter": {
+            "angular_speed_rad_s": 5.666605058777755e-15,
+            "linear_speed_m_s": 2.0460474602829718e-14,
+            "stable": true
+          },
+          "milk": {
+            "angular_speed_rad_s": 4.762183147103726e-06,
+            "linear_speed_m_s": 2.78437451301329e-07,
+            "stable": true
+          },
+          "yogurt": {
+            "angular_speed_rad_s": 9.00639135080897e-06,
+            "linear_speed_m_s": 8.494787221887343e-07,
+            "stable": true
+          }
+        },
+        "step": 929
+      },
+      {
+        "consecutive_stable": 6,
+        "objects": {
+          "butter": {
+            "angular_speed_rad_s": 4.442712049042409e-15,
+            "linear_speed_m_s": 2.0507662332306515e-14,
+            "stable": true
+          },
+          "milk": {
+            "angular_speed_rad_s": 4.242037344011202e-06,
+            "linear_speed_m_s": 2.4743994261663776e-07,
+            "stable": true
+          },
+          "yogurt": {
+            "angular_speed_rad_s": 7.423659209254476e-06,
+            "linear_speed_m_s": 7.205611155634247e-07,
+            "stable": true
+          }
+        },
+        "step": 930
+      },
+      {
+        "consecutive_stable": 7,
+        "objects": {
+          "butter": {
+            "angular_speed_rad_s": 4.321819974325446e-15,
+            "linear_speed_m_s": 2.050711208141272e-14,
+            "stable": true
+          },
+          "milk": {
+            "angular_speed_rad_s": 3.646870064585309e-06,
+            "linear_speed_m_s": 2.095613011532796e-07,
+            "stable": true
+          },
+          "yogurt": {
+            "angular_speed_rad_s": 5.99819241607036e-06,
+            "linear_speed_m_s": 6.132091752322753e-07,
+            "stable": true
+          }
+        },
+        "step": 931
+      },
+      {
+        "consecutive_stable": 8,
+        "objects": {
+          "butter": {
+            "angular_speed_rad_s": 6.7618386087591704e-15,
+            "linear_speed_m_s": 2.0507549082291908e-14,
+            "stable": true
+          },
+          "milk": {
+            "angular_speed_rad_s": 3.1329282750360386e-06,
+            "linear_speed_m_s": 1.7675290153767429e-07,
+            "stable": true
+          },
+          "yogurt": {
+            "angular_speed_rad_s": 4.901556481683428e-06,
+            "linear_speed_m_s": 5.217587807043101e-07,
+            "stable": true
+          }
+        },
+        "step": 932
+      },
+      {
+        "consecutive_stable": 9,
+        "objects": {
+          "butter": {
+            "angular_speed_rad_s": 5.104085158432195e-15,
+            "linear_speed_m_s": 2.0457681083000896e-14,
+            "stable": true
+          },
+          "milk": {
+            "angular_speed_rad_s": 2.6936801987048548e-06,
+            "linear_speed_m_s": 1.4867132371214954e-07,
+            "stable": true
+          },
+          "yogurt": {
+            "angular_speed_rad_s": 4.121499050191331e-06,
+            "linear_speed_m_s": 4.4382893526861037e-07,
+            "stable": true
+          }
+        },
+        "step": 933
+      },
+      {
+        "consecutive_stable": 10,
+        "objects": {
+          "butter": {
+            "angular_speed_rad_s": 3.560186128343228e-15,
+            "linear_speed_m_s": 2.0507372211087818e-14,
+            "stable": true
+          },
+          "milk": {
+            "angular_speed_rad_s": 2.318592051675248e-06,
+            "linear_speed_m_s": 1.2464728723209198e-07,
+            "stable": true
+          },
+          "yogurt": {
+            "angular_speed_rad_s": 3.635484329548612e-06,
+            "linear_speed_m_s": 3.7746578899628484e-07,
+            "stable": true
+          }
+        },
+        "step": 934
+      }
+    ],
+    "stable": true,
+    "steps": 13,
+    "thresholds": {
+      "max_angular_speed_rad_s": 0.5,
+      "max_linear_speed_m_s": 0.02
+    }
+  },
+  "final_simulator_state_hash": "770d158f1ffe1a60fbcd811d00d66c3a9cb9479f529c700569016833fb28c19d",
+  "final_state": {
+    "n_active": 5,
+    "n_slots": 6,
+    "override_edges": [],
+    "slots": {
+      "c_gentle": {
+        "grounding": "handle_objects_gently",
+        "has_restore": false,
+        "has_validity": false,
+        "history": [],
+        "id": "c_gentle",
+        "lineage": {
+          "depends_on": [],
+          "derived_from": null,
+          "inherited_at": [],
+          "overridden_by": null,
+          "overrides": []
+        },
+        "mode": "active",
+        "payload": {
+          "kind": "user_preference_as_safety"
+        },
+        "priority": "hard",
+        "priority_snapshot": null,
+        "source": "safety_rule"
+      },
+      "c_no_collision": {
+        "grounding": "avoid_collision",
+        "has_restore": false,
+        "has_validity": false,
+        "history": [],
+        "id": "c_no_collision",
+        "lineage": {
+          "depends_on": [],
+          "derived_from": null,
+          "inherited_at": [],
+          "overridden_by": null,
+          "overrides": []
+        },
+        "mode": "active",
+        "payload": {
+          "kind": "safety"
+        },
+        "priority": "hard",
+        "priority_snapshot": null,
+        "source": "safety_rule"
+      },
+      "g_butter": {
+        "grounding": "place_butter_in_basket_B",
+        "has_restore": true,
+        "has_validity": false,
+        "history": [
+          {
+            "detail": "basket_B removed from the table",
+            "mode_after": "suspended",
+            "mode_before": "active",
+            "operation": "Suspend",
+            "patch_id": "patch-I5-u1-1",
+            "seq": 1
+          },
+          {
+            "detail": "user redirected g_butter to basket_C",
+            "mode_after": "overridden",
+            "mode_before": "suspended",
+            "operation": "Override",
+            "patch_id": "patch-I5-u2-2",
+            "seq": 2
+          },
+          {
+            "detail": "check grounding still valid before restore -> OK",
+            "mode_after": "overridden",
+            "mode_before": "overridden",
+            "operation": "Revalidate",
+            "patch_id": "patch-I5-u3-3",
+            "seq": 3
+          },
+          {
+            "detail": "restore after successful revalidation",
+            "mode_after": "active",
+            "mode_before": "overridden",
+            "operation": "Restore",
+            "patch_id": "patch-I5-u3-3",
+            "seq": 4
+          }
+        ],
+        "id": "g_butter",
+        "lineage": {
+          "depends_on": [],
+          "derived_from": null,
+          "inherited_at": [],
+          "overridden_by": null,
+          "overrides": []
+        },
+        "mode": "active",
+        "payload": {
+          "object": "butter",
+          "order": 0,
+          "target": "basket_B"
+        },
+        "priority": "soft",
+        "priority_snapshot": "soft",
+        "source": "initial_task"
+      },
+      "g_butter@basket_C": {
+        "grounding": "place_butter_in_basket_C",
+        "has_restore": false,
+        "has_validity": false,
+        "history": [
+          {
+            "detail": "user redirected g_butter to basket_C",
+            "mode_after": "active",
+            "mode_before": "active",
+            "operation": "Insert(cover)",
+            "patch_id": "patch-I5-u2-2",
+            "seq": 1
+          },
+          {
+            "detail": "user withdrew the basket C detour",
+            "mode_after": "expired",
+            "mode_before": "active",
+            "operation": "Expire",
+            "patch_id": "patch-I5-u3-3",
+            "seq": 2
+          }
+        ],
+        "id": "g_butter@basket_C",
+        "lineage": {
+          "depends_on": [],
+          "derived_from": null,
+          "inherited_at": [],
+          "overridden_by": null,
+          "overrides": []
+        },
+        "mode": "expired",
+        "payload": {
+          "object": "butter",
+          "order": 0,
+          "original_target": "basket_B",
+          "target": "basket_C"
+        },
+        "priority": "soft",
+        "priority_snapshot": null,
+        "source": "event_patch"
+      },
+      "g_milk": {
+        "grounding": "place_milk_in_basket_A",
+        "has_restore": false,
+        "has_validity": false,
+        "history": [
+          {
+            "detail": "completed goal preserved across interruption",
+            "mode_after": "active",
+            "mode_before": "active",
+            "operation": "Inherit",
+            "patch_id": "patch-I5-u3-3",
+            "seq": 1
+          }
+        ],
+        "id": "g_milk",
+        "lineage": {
+          "depends_on": [],
+          "derived_from": null,
+          "inherited_at": [
+            3
+          ],
+          "overridden_by": null,
+          "overrides": []
+        },
+        "mode": "active",
+        "payload": {
+          "object": "milk",
+          "order": 1,
+          "target": "basket_A"
+        },
+        "priority": "soft",
+        "priority_snapshot": null,
+        "source": "initial_task"
+      },
+      "g_yogurt": {
+        "grounding": "place_yogurt_in_basket_A",
+        "has_restore": false,
+        "has_validity": false,
+        "history": [],
+        "id": "g_yogurt",
+        "lineage": {
+          "depends_on": [],
+          "derived_from": null,
+          "inherited_at": [],
+          "overridden_by": null,
+          "overrides": []
+        },
+        "mode": "active",
+        "payload": {
+          "object": "yogurt",
+          "order": 2,
+          "target": "basket_A"
+        },
+        "priority": "soft",
+        "priority_snapshot": null,
+        "source": "initial_task"
+      }
+    },
+    "version": 9
+  },
+  "infrastructure_errors": [],
+  "initial_simulator_state_hash": "f23ff251de130463353e3f049f57ef1f92ca9d7558b98d3791bd02c5223e405b",
+  "interruptions": [
+    {
+      "affected_goal_ids": [
+        "g_butter"
+      ],
+      "condition": "I5",
+      "continuation_id": "I5-u1",
+      "delivered_step": 110,
+      "delivery_delay": 0,
+      "episode_id": "basket_sorting|I5|4|CoPE_no_rollout_verification",
+      "event_delivered": true,
+      "event_id": "I5-u1",
+      "event_index": 1,
+      "event_type": "u1",
+      "method": "CoPE_no_rollout_verification",
+      "new_target": {},
+      "old_target": {},
+      "patch_operations": [
+        "Suspend"
+      ],
+      "physical_world_change": {
+        "requested_world": {
+          "moved_targets": [],
+          "unavailable_targets": [
+            "basket_B"
+          ]
+        },
+        "simulator_changes": [
+          {
+            "after_qpos": [
+              0.0,
+              0.65,
+              0.65,
+              0.7071047489484427,
+              -0.0016949908867567671,
+              0.0016949888166217883,
+              0.7071047503965487
+            ],
+            "available": false,
+            "before_qpos": [
+              -0.008500791810369899,
+              0.24199284163831855,
+              0.43219202665003076,
+              0.7071047489484427,
+              -0.0016949908867567671,
+              0.0016949888166217883,
+              0.7071047503965487
+            ],
+            "target": "basket_B",
+            "world_changed": true
+          }
+        ],
+        "world_changed": true
+      },
+      "regenerated_state_hash": null,
+      "repair_invocation_id": 1,
+      "restoration_required": false,
+      "restoration_result": "restored",
+      "revalidation_result": "OK",
+      "scheduled_step": 110,
+      "seed": 4,
+      "simulator_state_hash_after": "1cb61b0974cacb8df515c62f8e9aa9d527f4f4ff7a857ed081addc565c195808",
+      "simulator_state_hash_before": "c10d977b7b2e7f0e3e8eb270cf1bdf07433f1542463a8dbc21b8c3d9177361b7",
+      "task_state_after": {
+        "n_active": 4,
+        "n_slots": 5,
+        "override_edges": [],
+        "slots": {
+          "c_gentle": {
+            "grounding": "handle_objects_gently",
+            "has_restore": false,
+            "has_validity": false,
+            "history": [],
+            "id": "c_gentle",
+            "lineage": {
+              "depends_on": [],
+              "derived_from": null,
+              "inherited_at": [],
+              "overridden_by": null,
+              "overrides": []
+            },
+            "mode": "active",
+            "payload": {
+              "kind": "user_preference_as_safety"
+            },
+            "priority": "hard",
+            "priority_snapshot": null,
+            "source": "safety_rule"
+          },
+          "c_no_collision": {
+            "grounding": "avoid_collision",
+            "has_restore": false,
+            "has_validity": false,
+            "history": [],
+            "id": "c_no_collision",
+            "lineage": {
+              "depends_on": [],
+              "derived_from": null,
+              "inherited_at": [],
+              "overridden_by": null,
+              "overrides": []
+            },
+            "mode": "active",
+            "payload": {
+              "kind": "safety"
+            },
+            "priority": "hard",
+            "priority_snapshot": null,
+            "source": "safety_rule"
+          },
+          "g_butter": {
+            "grounding": "place_butter_in_basket_B",
+            "has_restore": true,
+            "has_validity": false,
+            "history": [
+              {
+                "detail": "basket_B removed from the table",
+                "mode_after": "suspended",
+                "mode_before": "active",
+                "operation": "Suspend",
+                "patch_id": "patch-I5-u1-1",
+                "seq": 1
+              }
+            ],
+            "id": "g_butter",
+            "lineage": {
+              "depends_on": [],
+              "derived_from": null,
+              "inherited_at": [],
+              "overridden_by": null,
+              "overrides": []
+            },
+            "mode": "suspended",
+            "payload": {
+              "object": "butter",
+              "order": 0,
+              "target": "basket_B"
+            },
+            "priority": "soft",
+            "priority_snapshot": "soft",
+            "source": "initial_task"
+          },
+          "g_milk": {
+            "grounding": "place_milk_in_basket_A",
+            "has_restore": false,
+            "has_validity": false,
+            "history": [],
+            "id": "g_milk",
+            "lineage": {
+              "depends_on": [],
+              "derived_from": null,
+              "inherited_at": [],
+              "overridden_by": null,
+              "overrides": []
+            },
+            "mode": "active",
+            "payload": {
+              "object": "milk",
+              "order": 1,
+              "target": "basket_A"
+            },
+            "priority": "soft",
+            "priority_snapshot": null,
+            "source": "initial_task"
+          },
+          "g_yogurt": {
+            "grounding": "place_yogurt_in_basket_A",
+            "has_restore": false,
+            "has_validity": false,
+            "history": [],
+            "id": "g_yogurt",
+            "lineage": {
+              "depends_on": [],
+              "derived_from": null,
+              "inherited_at": [],
+              "overridden_by": null,
+              "overrides": []
+            },
+            "mode": "active",
+            "payload": {
+              "object": "yogurt",
+              "order": 2,
+              "target": "basket_A"
+            },
+            "priority": "soft",
+            "priority_snapshot": null,
+            "source": "initial_task"
+          }
+        },
+        "version": 2
+      },
+      "task_state_before": {
+        "n_active": 5,
+        "n_slots": 5,
+        "override_edges": [],
+        "slots": {
+          "c_gentle": {
+            "grounding": "handle_objects_gently",
+            "has_restore": false,
+            "has_validity": false,
+            "history": [],
+            "id": "c_gentle",
+            "lineage": {
+              "depends_on": [],
+              "derived_from": null,
+              "inherited_at": [],
+              "overridden_by": null,
+              "overrides": []
+            },
+            "mode": "active",
+            "payload": {
+              "kind": "user_preference_as_safety"
+            },
+            "priority": "hard",
+            "priority_snapshot": null,
+            "source": "safety_rule"
+          },
+          "c_no_collision": {
+            "grounding": "avoid_collision",
+            "has_restore": false,
+            "has_validity": false,
+            "history": [],
+            "id": "c_no_collision",
+            "lineage": {
+              "depends_on": [],
+              "derived_from": null,
+              "inherited_at": [],
+              "overridden_by": null,
+              "overrides": []
+            },
+            "mode": "active",
+            "payload": {
+              "kind": "safety"
+            },
+            "priority": "hard",
+            "priority_snapshot": null,
+            "source": "safety_rule"
+          },
+          "g_butter": {
+            "grounding": "place_butter_in_basket_B",
+            "has_restore": false,
+            "has_validity": false,
+            "history": [],
+            "id": "g_butter",
+            "lineage": {
+              "depends_on": [],
+              "derived_from": null,
+              "inherited_at": [],
+              "overridden_by": null,
+              "overrides": []
+            },
+            "mode": "active",
+            "payload": {
+              "object": "butter",
+              "order": 0,
+              "target": "basket_B"
+            },
+            "priority": "soft",
+            "priority_snapshot": null,
+            "source": "initial_task"
+          },
+          "g_milk": {
+            "grounding": "place_milk_in_basket_A",
+            "has_restore": false,
+            "has_validity": false,
+            "history": [],
+            "id": "g_milk",
+            "lineage": {
+              "depends_on": [],
+              "derived_from": null,
+              "inherited_at": [],
+              "overridden_by": null,
+              "overrides": []
+            },
+            "mode": "active",
+            "payload": {
+              "object": "milk",
+              "order": 1,
+              "target": "basket_A"
+            },
+            "priority": "soft",
+            "priority_snapshot": null,
+            "source": "initial_task"
+          },
+          "g_yogurt": {
+            "grounding": "place_yogurt_in_basket_A",
+            "has_restore": false,
+            "has_validity": false,
+            "history": [],
+            "id": "g_yogurt",
+            "lineage": {
+              "depends_on": [],
+              "derived_from": null,
+              "inherited_at": [],
+              "overridden_by": null,
+              "overrides": []
+            },
+            "mode": "active",
+            "payload": {
+              "object": "yogurt",
+              "order": 2,
+              "target": "basket_A"
+            },
+            "priority": "soft",
+            "priority_snapshot": null,
+            "source": "initial_task"
+          }
+        },
+        "version": 1
+      }
+    },
+    {
+      "affected_goal_ids": [
+        "g_butter"
+      ],
+      "condition": "I5",
+      "continuation_id": "I5-u2",
+      "delivered_step": 364,
+      "delivery_delay": 54,
+      "episode_id": "basket_sorting|I5|4|CoPE_no_rollout_verification",
+      "event_delivered": true,
+      "event_id": "I5-u2",
+      "event_index": 2,
+      "event_type": "u2",
+      "method": "CoPE_no_rollout_verification",
+      "new_target": {
+        "g_butter": "basket_C"
+      },
+      "old_target": {
+        "g_butter": "basket_B"
+      },
+      "patch_operations": [
+        "Override"
+      ],
+      "physical_world_change": {
+        "requested_world": {
+          "unavailable_targets": [
+            "basket_B"
+          ]
+        },
+        "simulator_changes": [],
+        "world_changed": false
+      },
+      "regenerated_state_hash": null,
+      "repair_invocation_id": 2,
+      "restoration_required": false,
+      "restoration_result": "restored",
+      "revalidation_result": "OK",
+      "scheduled_step": 310,
+      "seed": 4,
+      "simulator_state_hash_after": "39a67e05ac730e2ffcb6e24822b9b44c5167328d8ed9874f85718cd684a22386",
+      "simulator_state_hash_before": "87a9b0562bebcd0f894dc8726b3fd32a666d82aa4b612e11167fc1a7c14f9d49",
+      "task_state_after": {
+        "n_active": 5,
+        "n_slots": 6,
+        "override_edges": [
+          [
+            "g_butter@basket_C",
+            "g_butter"
+          ]
+        ],
+        "slots": {
+          "c_gentle": {
+            "grounding": "handle_objects_gently",
+            "has_restore": false,
+            "has_validity": false,
+            "history": [],
+            "id": "c_gentle",
+            "lineage": {
+              "depends_on": [],
+              "derived_from": null,
+              "inherited_at": [],
+              "overridden_by": null,
+              "overrides": []
+            },
+            "mode": "active",
+            "payload": {
+              "kind": "user_preference_as_safety"
+            },
+            "priority": "hard",
+            "priority_snapshot": null,
+            "source": "safety_rule"
+          },
+          "c_no_collision": {
+            "grounding": "avoid_collision",
+            "has_restore": false,
+            "has_validity": false,
+            "history": [],
+            "id": "c_no_collision",
+            "lineage": {
+              "depends_on": [],
+              "derived_from": null,
+              "inherited_at": [],
+              "overridden_by": null,
+              "overrides": []
+            },
+            "mode": "active",
+            "payload": {
+              "kind": "safety"
+            },
+            "priority": "hard",
+            "priority_snapshot": null,
+            "source": "safety_rule"
+          },
+          "g_butter": {
+            "grounding": "place_butter_in_basket_B",
+            "has_restore": true,
+            "has_validity": false,
+            "history": [
+              {
+                "detail": "basket_B removed from the table",
+                "mode_after": "suspended",
+                "mode_before": "active",
+                "operation": "Suspend",
+                "patch_id": "patch-I5-u1-1",
+                "seq": 1
+              },
+              {
+                "detail": "user redirected g_butter to basket_C",
+                "mode_after": "overridden",
+                "mode_before": "suspended",
+                "operation": "Override",
+                "patch_id": "patch-I5-u2-2",
+                "seq": 2
+              }
+            ],
+            "id": "g_butter",
+            "lineage": {
+              "depends_on": [],
+              "derived_from": null,
+              "inherited_at": [],
+              "overridden_by": "g_butter@basket_C",
+              "overrides": []
+            },
+            "mode": "overridden",
+            "payload": {
+              "object": "butter",
+              "order": 0,
+              "target": "basket_B"
+            },
+            "priority": "soft",
+            "priority_snapshot": "soft",
+            "source": "initial_task"
+          },
+          "g_butter@basket_C": {
+            "grounding": "place_butter_in_basket_C",
+            "has_restore": false,
+            "has_validity": false,
+            "history": [
+              {
+                "detail": "user redirected g_butter to basket_C",
+                "mode_after": "active",
+                "mode_before": "active",
+                "operation": "Insert(cover)",
+                "patch_id": "patch-I5-u2-2",
+                "seq": 1
+              }
+            ],
+            "id": "g_butter@basket_C",
+            "lineage": {
+              "depends_on": [],
+              "derived_from": null,
+              "inherited_at": [],
+              "overridden_by": null,
+              "overrides": [
+                "g_butter"
+              ]
+            },
+            "mode": "active",
+            "payload": {
+              "object": "butter",
+              "order": 0,
+              "original_target": "basket_B",
+              "target": "basket_C"
+            },
+            "priority": "soft",
+            "priority_snapshot": null,
+            "source": "event_patch"
+          },
+          "g_milk": {
+            "grounding": "place_milk_in_basket_A",
+            "has_restore": false,
+            "has_validity": false,
+            "history": [],
+            "id": "g_milk",
+            "lineage": {
+              "depends_on": [],
+              "derived_from": null,
+              "inherited_at": [],
+              "overridden_by": null,
+              "overrides": []
+            },
+            "mode": "active",
+            "payload": {
+              "object": "milk",
+              "order": 1,
+              "target": "basket_A"
+            },
+            "priority": "soft",
+            "priority_snapshot": null,
+            "source": "initial_task"
+          },
+          "g_yogurt": {
+            "grounding": "place_yogurt_in_basket_A",
+            "has_restore": false,
+            "has_validity": false,
+            "history": [],
+            "id": "g_yogurt",
+            "lineage": {
+              "depends_on": [],
+              "derived_from": null,
+              "inherited_at": [],
+              "overridden_by": null,
+              "overrides": []
+            },
+            "mode": "active",
+            "payload": {
+              "object": "yogurt",
+              "order": 2,
+              "target": "basket_A"
+            },
+            "priority": "soft",
+            "priority_snapshot": null,
+            "source": "initial_task"
+          }
+        },
+        "version": 4
+      },
+      "task_state_before": {
+        "n_active": 4,
+        "n_slots": 5,
+        "override_edges": [],
+        "slots": {
+          "c_gentle": {
+            "grounding": "handle_objects_gently",
+            "has_restore": false,
+            "has_validity": false,
+            "history": [],
+            "id": "c_gentle",
+            "lineage": {
+              "depends_on": [],
+              "derived_from": null,
+              "inherited_at": [],
+              "overridden_by": null,
+              "overrides": []
+            },
+            "mode": "active",
+            "payload": {
+              "kind": "user_preference_as_safety"
+            },
+            "priority": "hard",
+            "priority_snapshot": null,
+            "source": "safety_rule"
+          },
+          "c_no_collision": {
+            "grounding": "avoid_collision",
+            "has_restore": false,
+            "has_validity": false,
+            "history": [],
+            "id": "c_no_collision",
+            "lineage": {
+              "depends_on": [],
+              "derived_from": null,
+              "inherited_at": [],
+              "overridden_by": null,
+              "overrides": []
+            },
+            "mode": "active",
+            "payload": {
+              "kind": "safety"
+            },
+            "priority": "hard",
+            "priority_snapshot": null,
+            "source": "safety_rule"
+          },
+          "g_butter": {
+            "grounding": "place_butter_in_basket_B",
+            "has_restore": true,
+            "has_validity": false,
+            "history": [
+              {
+                "detail": "basket_B removed from the table",
+                "mode_after": "suspended",
+                "mode_before": "active",
+                "operation": "Suspend",
+                "patch_id": "patch-I5-u1-1",
+                "seq": 1
+              }
+            ],
+            "id": "g_butter",
+            "lineage": {
+              "depends_on": [],
+              "derived_from": null,
+              "inherited_at": [],
+              "overridden_by": null,
+              "overrides": []
+            },
+            "mode": "suspended",
+            "payload": {
+              "object": "butter",
+              "order": 0,
+              "target": "basket_B"
+            },
+            "priority": "soft",
+            "priority_snapshot": "soft",
+            "source": "initial_task"
+          },
+          "g_milk": {
+            "grounding": "place_milk_in_basket_A",
+            "has_restore": false,
+            "has_validity": false,
+            "history": [],
+            "id": "g_milk",
+            "lineage": {
+              "depends_on": [],
+              "derived_from": null,
+              "inherited_at": [],
+              "overridden_by": null,
+              "overrides": []
+            },
+            "mode": "active",
+            "payload": {
+              "object": "milk",
+              "order": 1,
+              "target": "basket_A"
+            },
+            "priority": "soft",
+            "priority_snapshot": null,
+            "source": "initial_task"
+          },
+          "g_yogurt": {
+            "grounding": "place_yogurt_in_basket_A",
+            "has_restore": false,
+            "has_validity": false,
+            "history": [],
+            "id": "g_yogurt",
+            "lineage": {
+              "depends_on": [],
+              "derived_from": null,
+              "inherited_at": [],
+              "overridden_by": null,
+              "overrides": []
+            },
+            "mode": "active",
+            "payload": {
+              "object": "yogurt",
+              "order": 2,
+              "target": "basket_A"
+            },
+            "priority": "soft",
+            "priority_snapshot": null,
+            "source": "initial_task"
+          }
+        },
+        "version": 2
+      }
+    },
+    {
+      "affected_goal_ids": [
+        "g_butter",
+        "g_butter@basket_C"
+      ],
+      "condition": "I5",
+      "continuation_id": "I5-u3",
+      "delivered_step": 486,
+      "delivery_delay": 116,
+      "episode_id": "basket_sorting|I5|4|CoPE_no_rollout_verification",
+      "event_delivered": true,
+      "event_id": "I5-u3",
+      "event_index": 3,
+      "event_type": "u3",
+      "method": "CoPE_no_rollout_verification",
+      "new_target": {},
+      "old_target": {},
+      "patch_operations": [
+        "Inherit",
+        "Expire",
+        "Revalidate",
+        "Restore"
+      ],
+      "physical_world_change": {
+        "requested_world": {
+          "moved_targets": [
+            "basket_B"
+          ],
+          "unavailable_targets": []
+        },
+        "simulator_changes": [
+          {
+            "after_qpos": [
+              -0.008500791810369899,
+              0.24199284163831855,
+              0.43219202665003076,
+              0.7071047489484427,
+              -0.0016949908867567671,
+              0.0016949888166217883,
+              0.7071047503965487
+            ],
+            "available": true,
+            "before_qpos": [
+              4.9988722388259545e-06,
+              0.6500626719200181,
+              0.4321921000010186,
+              0.7071048661282269,
+              -0.0016947378501955784,
+              0.0016947377167235642,
+              0.7071046344251133
+            ],
+            "target": "basket_B",
+            "world_changed": true
+          },
+          {
+            "after_qpos": [
+              -0.008500791810369899,
+              0.12199284163831856,
+              0.43219202665003076,
+              0.7071047489484427,
+              -0.0016949908867567671,
+              0.0016949888166217883,
+              0.7071047503965487
+            ],
+            "before_qpos": [
+              -0.008500791810369899,
+              0.24199284163831855,
+              0.43219202665003076,
+              0.7071047489484427,
+              -0.0016949908867567671,
+              0.0016949888166217883,
+              0.7071047503965487
+            ],
+            "delta_xyz": [
+              0.0,
+              -0.12,
+              0.0
+            ],
+            "target": "basket_B",
+            "world_changed": true
+          }
+        ],
+        "world_changed": true
+      },
+      "regenerated_state_hash": null,
+      "repair_invocation_id": 3,
+      "restoration_required": true,
+      "restoration_result": "unresolved",
+      "revalidation_result": null,
+      "scheduled_step": 370,
+      "seed": 4,
+      "simulator_state_hash_after": "1e2fba01a8d1448ec1f0d8a7d127be0514bad64fcf03d198e18f62d3ed858daa",
+      "simulator_state_hash_before": "153802ae785eb6834e77f0a9d3c221df8203210bb49fe19c8bffa09b556dbd53",
+      "task_state_after": {
+        "n_active": 5,
+        "n_slots": 6,
+        "override_edges": [],
+        "slots": {
+          "c_gentle": {
+            "grounding": "handle_objects_gently",
+            "has_restore": false,
+            "has_validity": false,
+            "history": [],
+            "id": "c_gentle",
+            "lineage": {
+              "depends_on": [],
+              "derived_from": null,
+              "inherited_at": [],
+              "overridden_by": null,
+              "overrides": []
+            },
+            "mode": "active",
+            "payload": {
+              "kind": "user_preference_as_safety"
+            },
+            "priority": "hard",
+            "priority_snapshot": null,
+            "source": "safety_rule"
+          },
+          "c_no_collision": {
+            "grounding": "avoid_collision",
+            "has_restore": false,
+            "has_validity": false,
+            "history": [],
+            "id": "c_no_collision",
+            "lineage": {
+              "depends_on": [],
+              "derived_from": null,
+              "inherited_at": [],
+              "overridden_by": null,
+              "overrides": []
+            },
+            "mode": "active",
+            "payload": {
+              "kind": "safety"
+            },
+            "priority": "hard",
+            "priority_snapshot": null,
+            "source": "safety_rule"
+          },
+          "g_butter": {
+            "grounding": "place_butter_in_basket_B",
+            "has_restore": true,
+            "has_validity": false,
+            "history": [
+              {
+                "detail": "basket_B removed from the table",
+                "mode_after": "suspended",
+                "mode_before": "active",
+                "operation": "Suspend",
+                "patch_id": "patch-I5-u1-1",
+                "seq": 1
+              },
+              {
+                "detail": "user redirected g_butter to basket_C",
+                "mode_after": "overridden",
+                "mode_before": "suspended",
+                "operation": "Override",
+                "patch_id": "patch-I5-u2-2",
+                "seq": 2
+              },
+              {
+                "detail": "check grounding still valid before restore -> OK",
+                "mode_after": "overridden",
+                "mode_before": "overridden",
+                "operation": "Revalidate",
+                "patch_id": "patch-I5-u3-3",
+                "seq": 3
+              },
+              {
+                "detail": "restore after successful revalidation",
+                "mode_after": "active",
+                "mode_before": "overridden",
+                "operation": "Restore",
+                "patch_id": "patch-I5-u3-3",
+                "seq": 4
+              }
+            ],
+            "id": "g_butter",
+            "lineage": {
+              "depends_on": [],
+              "derived_from": null,
+              "inherited_at": [],
+              "overridden_by": null,
+              "overrides": []
+            },
+            "mode": "active",
+            "payload": {
+              "object": "butter",
+              "order": 0,
+              "target": "basket_B"
+            },
+            "priority": "soft",
+            "priority_snapshot": "soft",
+            "source": "initial_task"
+          },
+          "g_butter@basket_C": {
+            "grounding": "place_butter_in_basket_C",
+            "has_restore": false,
+            "has_validity": false,
+            "history": [
+              {
+                "detail": "user redirected g_butter to basket_C",
+                "mode_after": "active",
+                "mode_before": "active",
+                "operation": "Insert(cover)",
+                "patch_id": "patch-I5-u2-2",
+                "seq": 1
+              },
+              {
+                "detail": "user withdrew the basket C detour",
+                "mode_after": "expired",
+                "mode_before": "active",
+                "operation": "Expire",
+                "patch_id": "patch-I5-u3-3",
+                "seq": 2
+              }
+            ],
+            "id": "g_butter@basket_C",
+            "lineage": {
+              "depends_on": [],
+              "derived_from": null,
+              "inherited_at": [],
+              "overridden_by": null,
+              "overrides": []
+            },
+            "mode": "expired",
+            "payload": {
+              "object": "butter",
+              "order": 0,
+              "original_target": "basket_B",
+              "target": "basket_C"
+            },
+            "priority": "soft",
+            "priority_snapshot": null,
+            "source": "event_patch"
+          },
+          "g_milk": {
+            "grounding": "place_milk_in_basket_A",
+            "has_restore": false,
+            "has_validity": false,
+            "history": [
+              {
+                "detail": "completed goal preserved across interruption",
+                "mode_after": "active",
+                "mode_before": "active",
+                "operation": "Inherit",
+                "patch_id": "patch-I5-u3-3",
+                "seq": 1
+              }
+            ],
+            "id": "g_milk",
+            "lineage": {
+              "depends_on": [],
+              "derived_from": null,
+              "inherited_at": [
+                3
+              ],
+              "overridden_by": null,
+              "overrides": []
+            },
+            "mode": "active",
+            "payload": {
+              "object": "milk",
+              "order": 1,
+              "target": "basket_A"
+            },
+            "priority": "soft",
+            "priority_snapshot": null,
+            "source": "initial_task"
+          },
+          "g_yogurt": {
+            "grounding": "place_yogurt_in_basket_A",
+            "has_restore": false,
+            "has_validity": false,
+            "history": [],
+            "id": "g_yogurt",
+            "lineage": {
+              "depends_on": [],
+              "derived_from": null,
+              "inherited_at": [],
+              "overridden_by": null,
+              "overrides": []
+            },
+            "mode": "active",
+            "payload": {
+              "object": "yogurt",
+              "order": 2,
+              "target": "basket_A"
+            },
+            "priority": "soft",
+            "priority_snapshot": null,
+            "source": "initial_task"
+          }
+        },
+        "version": 9
+      },
+      "task_state_before": {
+        "n_active": 5,
+        "n_slots": 6,
+        "override_edges": [
+          [
+            "g_butter@basket_C",
+            "g_butter"
+          ]
+        ],
+        "slots": {
+          "c_gentle": {
+            "grounding": "handle_objects_gently",
+            "has_restore": false,
+            "has_validity": false,
+            "history": [],
+            "id": "c_gentle",
+            "lineage": {
+              "depends_on": [],
+              "derived_from": null,
+              "inherited_at": [],
+              "overridden_by": null,
+              "overrides": []
+            },
+            "mode": "active",
+            "payload": {
+              "kind": "user_preference_as_safety"
+            },
+            "priority": "hard",
+            "priority_snapshot": null,
+            "source": "safety_rule"
+          },
+          "c_no_collision": {
+            "grounding": "avoid_collision",
+            "has_restore": false,
+            "has_validity": false,
+            "history": [],
+            "id": "c_no_collision",
+            "lineage": {
+              "depends_on": [],
+              "derived_from": null,
+              "inherited_at": [],
+              "overridden_by": null,
+              "overrides": []
+            },
+            "mode": "active",
+            "payload": {
+              "kind": "safety"
+            },
+            "priority": "hard",
+            "priority_snapshot": null,
+            "source": "safety_rule"
+          },
+          "g_butter": {
+            "grounding": "place_butter_in_basket_B",
+            "has_restore": true,
+            "has_validity": false,
+            "history": [
+              {
+                "detail": "basket_B removed from the table",
+                "mode_after": "suspended",
+                "mode_before": "active",
+                "operation": "Suspend",
+                "patch_id": "patch-I5-u1-1",
+                "seq": 1
+              },
+              {
+                "detail": "user redirected g_butter to basket_C",
+                "mode_after": "overridden",
+                "mode_before": "suspended",
+                "operation": "Override",
+                "patch_id": "patch-I5-u2-2",
+                "seq": 2
+              }
+            ],
+            "id": "g_butter",
+            "lineage": {
+              "depends_on": [],
+              "derived_from": null,
+              "inherited_at": [],
+              "overridden_by": "g_butter@basket_C",
+              "overrides": []
+            },
+            "mode": "overridden",
+            "payload": {
+              "object": "butter",
+              "order": 0,
+              "target": "basket_B"
+            },
+            "priority": "soft",
+            "priority_snapshot": "soft",
+            "source": "initial_task"
+          },
+          "g_butter@basket_C": {
+            "grounding": "place_butter_in_basket_C",
+            "has_restore": false,
+            "has_validity": false,
+            "history": [
+              {
+                "detail": "user redirected g_butter to basket_C",
+                "mode_after": "active",
+                "mode_before": "active",
+                "operation": "Insert(cover)",
+                "patch_id": "patch-I5-u2-2",
+                "seq": 1
+              }
+            ],
+            "id": "g_butter@basket_C",
+            "lineage": {
+              "depends_on": [],
+              "derived_from": null,
+              "inherited_at": [],
+              "overridden_by": null,
+              "overrides": [
+                "g_butter"
+              ]
+            },
+            "mode": "active",
+            "payload": {
+              "object": "butter",
+              "order": 0,
+              "original_target": "basket_B",
+              "target": "basket_C"
+            },
+            "priority": "soft",
+            "priority_snapshot": null,
+            "source": "event_patch"
+          },
+          "g_milk": {
+            "grounding": "place_milk_in_basket_A",
+            "has_restore": false,
+            "has_validity": false,
+            "history": [],
+            "id": "g_milk",
+            "lineage": {
+              "depends_on": [],
+              "derived_from": null,
+              "inherited_at": [],
+              "overridden_by": null,
+              "overrides": []
+            },
+            "mode": "active",
+            "payload": {
+              "object": "milk",
+              "order": 1,
+              "target": "basket_A"
+            },
+            "priority": "soft",
+            "priority_snapshot": null,
+            "source": "initial_task"
+          },
+          "g_yogurt": {
+            "grounding": "place_yogurt_in_basket_A",
+            "has_restore": false,
+            "has_validity": false,
+            "history": [],
+            "id": "g_yogurt",
+            "lineage": {
+              "depends_on": [],
+              "derived_from": null,
+              "inherited_at": [],
+              "overridden_by": null,
+              "overrides": []
+            },
+            "mode": "active",
+            "payload": {
+              "object": "yogurt",
+              "order": 2,
+              "target": "basket_A"
+            },
+            "priority": "soft",
+            "priority_snapshot": null,
+            "source": "initial_task"
+          }
+        },
+        "version": 4
+      }
+    }
+  ],
+  "layers": {
+    "adaptation_failure": true,
+    "adaptation_input_valid": true,
+    "all_required_events_delivered": true,
+    "candidate_generation_complete": true,
+    "continuation_captured": true,
+    "controller_failure": false,
+    "controller_success": true,
+    "event_schedule_valid": true,
+    "failure_detail": "missing_repair_stage",
+    "failure_layer": "adaptation",
+    "graph_splice_complete": true,
+    "grasp_success": true,
+    "infrastructure_failure": false,
+    "patch_or_regeneration_valid": true,
+    "placement_success": true,
+    "repair_goal_compiled": true,
+    "restore_contract_valid": true,
+    "restore_event_delivered": true,
+    "revalidation_performed": false,
+    "revised_task_success": true,
+    "rollout_verification_complete": true,
+    "stage_resumed": false,
+    "state_update_valid": false,
+    "task_failure_reason": "missing_repair_stage"
+  },
+  "legs": [
+    {
+      "abandoned_after_update": true,
+      "failure_reason": "goal_cancelled_or_suspended",
+      "goal_id": "g_butter",
+      "leg_index": 0,
+      "object": "butter",
+      "pick": {
+        "captured_eef_position": [
+          0.20967458372430364,
+          -0.18671917465087268,
+          0.6440760032737751
+        ],
+        "failure_reason": null,
+        "grasp_acquired": true,
+        "object_lift_m": 0.1961624671660161,
+        "object_name": "butter_1",
+        "object_start_position": [
+          0.22145973906751618,
+          -0.1912770345412816,
+          0.4454699143392136
+        ],
+        "phases": [
+          {
+            "done": false,
+            "final_error_m": 0.005052884869666781,
+            "phase": "approach_object",
+            "reward": 0.0,
+            "steps": 28
+          },
+          {
+            "done": false,
+            "final_error_m": 0.004725972775642816,
+            "phase": "descend_to_grasp",
+            "reward": 0.0,
+            "steps": 33
+          },
+          {
+            "done": false,
+            "final_error_m": null,
+            "phase": "close_gripper",
+            "reward": 0.0,
+            "steps": 20
+          },
+          {
+            "done": false,
+            "final_error_m": 0.004997454716671771,
+            "phase": "lift_object",
+            "reward": 0.0,
+            "steps": 19
+          }
+        ],
+        "success": true,
+        "total_steps": 100
+      },
+      "placed": false,
+      "step_end": 216,
+      "step_start": 10,
+      "stop": {
+        "failure_reason": null,
+        "object_name": "butter_1",
+        "phases": [
+          {
+            "done": false,
+            "final_error_m": 0.004120435039545699,
+            "phase": "return_above_start",
+            "reward": 0.0,
+            "steps": 13
+          },
+          {
+            "done": false,
+            "final_error_m": 0.00457344539265362,
+            "phase": "return_descend",
+            "reward": 0.0,
+            "steps": 26
+          },
+          {
+            "done": false,
+            "final_error_m": null,
+            "phase": "return_release",
+            "reward": 0.0,
+            "steps": 10
+          },
+          {
+            "done": false,
+            "final_error_m": 0.002245789585259791,
+            "phase": "return_retreat",
+            "reward": 0.0,
+            "steps": 15
+          },
+          {
+            "done": false,
+            "final_error_m": null,
+            "phase": "return_settle",
+            "reward": 0.0,
+            "steps": 40
+          }
+        ],
+        "released": true,
+        "return_position_error_m": 0.0031348096455886716,
+        "success": true,
+        "total_steps": 104
+      },
+      "target_before": "basket_B"
+    },
+    {
+      "collision": false,
+      "goal_id": "g_milk",
+      "leg_index": 1,
+      "object": "milk",
+      "pick": {
+        "captured_eef_position": [
+          -0.16851531385772792,
+          -0.18370315812788165,
+          0.7389008051473944
+        ],
+        "failure_reason": null,
+        "grasp_acquired": true,
+        "object_lift_m": 0.20320682514529753,
+        "object_name": "milk_1",
+        "object_start_position": [
+          -0.20274930349239015,
+          -0.18031841761390474,
+          0.506509843038735
+        ],
+        "phases": [
+          {
+            "done": false,
+            "final_error_m": 0.0037581785412779756,
+            "phase": "approach_object",
+            "reward": 0.0,
+            "steps": 47
+          },
+          {
+            "done": false,
+            "final_error_m": 0.037307072164993293,
+            "phase": "descend_to_grasp",
+            "reward": 0.0,
+            "steps": 60
+          },
+          {
+            "done": false,
+            "final_error_m": null,
+            "phase": "close_gripper",
+            "reward": 0.0,
+            "steps": 20
+          },
+          {
+            "done": false,
+            "final_error_m": 0.0023369120565417813,
+            "phase": "lift_object",
+            "reward": 0.0,
+            "steps": 21
+          }
+        ],
+        "success": true,
+        "total_steps": 148
+      },
+      "placed": true,
+      "placement": {
+        "failure_reason": null,
+        "grasp_acquired": true,
+        "object_lift_m": 0.20320682514529753,
+        "object_name": "milk_1",
+        "phases": [
+          {
+            "done": false,
+            "final_error_m": 0.003108459578503316,
+            "phase": "transfer_above_target",
+            "reward": 0.0,
+            "steps": 37
+          },
+          {
+            "done": false,
+            "final_error_m": 0.006016472934131655,
+            "phase": "descend_to_release",
+            "reward": 0.0,
+            "steps": 16
+          },
+          {
+            "done": false,
+            "final_error_m": null,
+            "phase": "open_gripper",
+            "reward": 0.0,
+            "steps": 10
+          },
+          {
+            "done": false,
+            "final_error_m": 0.004365567727123369,
+            "phase": "retreat",
+            "reward": 0.0,
+            "steps": 17
+          },
+          {
+            "done": false,
+            "final_error_m": null,
+            "phase": "settle",
+            "reward": 0.0,
+            "steps": 40
+          }
+        ],
+        "released": true,
+        "success": true,
+        "target_predicate": true,
+        "target_region_name": "basket_1_contain_region",
+        "total_steps": 120
+      },
+      "step_end": 486,
+      "step_start": 216,
+      "target_after": "basket_A",
+      "target_before": "basket_A"
+    },
+    {
+      "collision": false,
+      "goal_id": "g_butter@basket_C",
+      "leg_index": 2,
+      "object": "butter",
+      "pick": {
+        "captured_eef_position": [
+          0.226712950099753,
+          -0.19221286112321,
+          0.6549855201968681
+        ],
+        "failure_reason": null,
+        "grasp_acquired": true,
+        "object_lift_m": 0.2025347920697651,
+        "object_name": "butter_1",
+        "object_start_position": [
+          0.21896655835142265,
+          -0.18937674997891435,
+          0.4454699171999401
+        ],
+        "phases": [
+          {
+            "done": false,
+            "final_error_m": 0.01574720264941223,
+            "phase": "approach_object",
+            "reward": 0.0,
+            "steps": 60
+          },
+          {
+            "done": false,
+            "final_error_m": 0.004199829289341215,
+            "phase": "descend_to_grasp",
+            "reward": 0.0,
+            "steps": 24
+          },
+          {
+            "done": false,
+            "final_error_m": null,
+            "phase": "close_gripper",
+            "reward": 0.0,
+            "steps": 20
+          },
+          {
+            "done": false,
+            "final_error_m": 0.0038711237846279435,
+            "phase": "lift_object",
+            "reward": 0.0,
+            "steps": 19
+          }
+        ],
+        "success": true,
+        "total_steps": 123
+      },
+      "placed": true,
+      "placement": {
+        "failure_reason": null,
+        "grasp_acquired": true,
+        "object_lift_m": 0.2025347920697651,
+        "object_name": "butter_1",
+        "phases": [
+          {
+            "done": false,
+            "final_error_m": 0.0005550576500223958,
+            "phase": "transfer_above_target",
+            "reward": 0.0,
+            "steps": 35
+          },
+          {
+            "done": false,
+            "final_error_m": 0.004343744456745033,
+            "phase": "descend_to_release",
+            "reward": 0.0,
+            "steps": 16
+          },
+          {
+            "done": false,
+            "final_error_m": null,
+            "phase": "open_gripper",
+            "reward": 0.0,
+            "steps": 10
+          },
+          {
+            "done": false,
+            "final_error_m": 0.0015753075197076404,
+            "phase": "retreat",
+            "reward": 0.0,
+            "steps": 16
+          },
+          {
+            "done": false,
+            "final_error_m": null,
+            "phase": "settle",
+            "reward": 0.0,
+            "steps": 40
+          }
+        ],
+        "released": true,
+        "success": true,
+        "target_predicate": true,
+        "target_region_name": "basket_2_contain_region",
+        "total_steps": 117
+      },
+      "retarget": {
+        "after": "basket_B",
+        "before": "basket_C",
+        "target_position": [
+          -0.008500792021071001,
+          0.12233730070502923,
+          0.5040412009525331
+        ]
+      },
+      "step_end": 769,
+      "step_start": 486,
+      "target_after": "basket_B",
+      "target_before": "basket_C"
+    },
+    {
+      "collision": false,
+      "goal_id": "g_yogurt",
+      "leg_index": 3,
+      "object": "yogurt",
+      "pick": {
+        "captured_eef_position": [
+          -0.017587605774614254,
+          -0.1925794303124,
+          0.6462972125269396
+        ],
+        "failure_reason": null,
+        "grasp_acquired": true,
+        "object_lift_m": 0.19854348186261794,
+        "object_name": "cream_cheese_1",
+        "object_start_position": [
+          -0.0098202780466489,
+          -0.1922685743471274,
+          0.44569592152000004
+        ],
+        "phases": [
+          {
+            "done": false,
+            "final_error_m": 0.0011486215187934295,
+            "phase": "approach_object",
+            "reward": 0.0,
+            "steps": 28
+          },
+          {
+            "done": false,
+            "final_error_m": 0.004585910686135263,
+            "phase": "descend_to_grasp",
+            "reward": 0.0,
+            "steps": 16
+          },
+          {
+            "done": false,
+            "final_error_m": null,
+            "phase": "close_gripper",
+            "reward": 0.0,
+            "steps": 20
+          },
+          {
+            "done": false,
+            "final_error_m": 0.0023663354062393774,
+            "phase": "lift_object",
+            "reward": 0.0,
+            "steps": 20
+          }
+        ],
+        "success": true,
+        "total_steps": 84
+      },
+      "placed": true,
+      "placement": {
+        "failure_reason": null,
+        "grasp_acquired": true,
+        "object_lift_m": 0.19854348186261794,
+        "object_name": "cream_cheese_1",
+        "phases": [
+          {
+            "done": false,
+            "final_error_m": 0.006941618430431609,
+            "phase": "transfer_above_target",
+            "reward": 0.0,
+            "steps": 40
+          },
+          {
+            "done": false,
+            "final_error_m": 0.0072973057027939416,
+            "phase": "descend_to_release",
+            "reward": 0.0,
+            "steps": 17
+          },
+          {
+            "done": true,
+            "final_error_m": null,
+            "phase": "open_gripper",
+            "reward": 1.0,
+            "steps": 9
+          },
+          {
+            "done": true,
+            "final_error_m": 0.1452423284758615,
+            "phase": "retreat",
+            "reward": 1.0,
+            "steps": 1
+          },
+          {
+            "done": true,
+            "final_error_m": null,
+            "phase": "settle",
+            "reward": 1.0,
+            "steps": 1
+          }
+        ],
+        "released": true,
+        "success": true,
+        "target_predicate": true,
+        "target_region_name": "basket_1_contain_region",
+        "total_steps": 68
+      },
+      "step_end": 921,
+      "step_start": 769,
+      "target_after": "basket_A",
+      "target_before": "basket_A"
+    }
+  ],
+  "method": "CoPE_no_rollout_verification",
+  "metrics": {
+    "adaptation_failure": null,
+    "adaptation_latency_s": 13.92645,
+    "all_required_events_delivered": null,
+    "audit_answerable": {
+      "Q1_which_goal_cancelled": true,
+      "Q2_which_completed_preserved": true,
+      "Q3_why_suspended": true,
+      "Q4_restore_condition": true,
+      "Q5_replacement_state": true
+    },
+    "audit_coverage": 1.0,
+    "cancelled_goal_violations": 0,
+    "candidates_generated": 10,
+    "candidates_rejected": 0,
+    "collision": false,
+    "completed_goals_repeated": 0,
+    "completed_progress_preserved": true,
+    "completion_steps": 934,
+    "condition": "I5",
+    "controller_failure": null,
+    "engine_safe_fallbacks": 1,
+    "failure_layer": "",
+    "history_monotonic": true,
+    "identity_preserved": true,
+    "infrastructure_failure": null,
+    "invalid_action_count": 0,
+    "invalid_restore_count": 0,
+    "lifecycle_transitions_legal": true,
+    "lineage_correct": true,
+    "method": "CoPE_no_rollout_verification",
+    "normalized_edit_distance": 0.3444,
+    "notes": "",
+    "ops_per_event": 2.0,
+    "pipelines_complete": 2,
+    "planner_calls": 3,
+    "recovery_after_repeat": null,
+    "remaining_goal_correct": true,
+    "repairs_invoked": 3,
+    "restore_preceded_by_revalidation": true,
+    "restores_validated": 2,
+    "revised_task_success": true,
+    "rollouts_run": 0,
+    "safe_fallback": true,
+    "seed": 4,
+    "slots_edited": 6,
+    "slots_regenerated": 0,
+    "slots_touched_per_event": 2.0,
+    "splices": 3,
+    "stages_resumed": 2,
+    "stale_goal_executions": 0,
+    "state_churn": 1.0,
+    "token_usage": null
+  },
+  "pairing_key": "basket_sorting|I5|4",
+  "repair_outcomes": [
+    {
+      "abstract_plans": [
+        [
+          [
+            "Suspend",
+            "UpdateTargetContract",
+            "Stabilize",
+            "Realign",
+            "Resume"
+          ],
+          6.5
+        ],
+        [
+          [
+            "Suspend",
+            "Stabilize",
+            "UpdateTargetContract",
+            "Realign",
+            "Resume"
+          ],
+          6.5
+        ],
+        [
+          [
+            "Suspend",
+            "Stabilize",
+            "Realign",
+            "UpdateTargetContract",
+            "Resume"
+          ],
+          6.5
+        ]
+      ],
+      "candidate_names": [
+        "Suspend+UpdateTargetContract+Stabilize+Realign+Resume",
+        "Suspend+Stabilize+UpdateTargetContract+Realign+Resume",
+        "Suspend+Stabilize+Realign+UpdateTargetContract+Resume"
+      ],
+      "event_id": "I5-u1",
+      "fallback_reason": "",
+      "markers": [
+        "EVENT",
+        "PATCH",
+        "CONTINUATION_CAPTURED",
+        "REPAIR_GOAL_COMPILED",
+        "CANDIDATES_GENERATED",
+        "ROLLOUT_RESULTS",
+        "CANDIDATE_SELECTED",
+        "GRAPH_SPLICED",
+        "RESTORE_VALIDATED",
+        "STAGE_RESUMED"
+      ],
+      "n_candidates": 3,
+      "n_rejected": 0,
+      "pipeline_complete": true,
+      "pipeline_problems": [],
+      "planner_expanded": 13,
+      "program_size_after": 7,
+      "program_size_before": 1,
+      "rejections": [],
+      "repair_steps": 2,
+      "requirements": {
+        "abstract_init_true": [
+          "safe_clearance",
+          "object_grasped",
+          "target_changed",
+          "new_target_known"
+        ],
+        "affected_entities": [
+          "g_butter"
+        ],
+        "event_id": "I5-u1",
+        "event_type": "TARGET_RELOCATION",
+        "goal_label": "active->suspended",
+        "needs_physical_repair": true,
+        "note": "",
+        "predicates_active": [
+          "target_relocated"
+        ],
+        "required_false": [],
+        "required_true": [
+          "aligned_to_current_target",
+          "restore_valid"
+        ],
+        "severity": 0.5,
+        "sources": [
+          {
+            "reason": "derived by the engine from the active predicate set",
+            "requirement": "aligned_to_current_target",
+            "slot_id": "(world)",
+            "transition": "observed_predicates"
+          },
+          {
+            "reason": "derived by the engine from the active predicate set",
+            "requirement": "restore_valid",
+            "slot_id": "(world)",
+            "transition": "observed_predicates"
+          },
+          {
+            "reason": "goal g_butter was suspended because its target is unavailable; the program must end in a state the remaining task can resume from",
+            "requirement": "restore_valid",
+            "slot_id": "g_butter",
+            "transition": "active->suspended"
+          }
+        ]
+      },
+      "requirements_fingerprint": "6af956e3eb3de6c0",
+      "restore_handoff_error": 0.00074,
+      "restore_validated": true,
+      "rollout_verification_enabled": false,
+      "rollouts": [],
+      "safe_fallback": false,
+      "selected": "Suspend+UpdateTargetContract+Stabilize+Realign+Resume",
+      "selected_score": 1.5,
+      "skip_reason": "",
+      "skipped": false,
+      "spliced_stage_ids": [
+        "suspend#0",
+        "updatetargetcontract#1",
+        "stabilize#2",
+        "realign#3",
+        "resume#4"
+      ],
+      "stage_resumed": true
+    },
+    {
+      "abstract_plans": [
+        [
+          [
+            "Suspend",
+            "UpdateTargetContract",
+            "Stabilize",
+            "Realign",
+            "Resume"
+          ],
+          6.5
+        ],
+        [
+          [
+            "Suspend",
+            "Stabilize",
+            "UpdateTargetContract",
+            "Realign",
+            "Resume"
+          ],
+          6.5
+        ],
+        [
+          [
+            "Suspend",
+            "Stabilize",
+            "Realign",
+            "UpdateTargetContract",
+            "Resume"
+          ],
+          6.5
+        ]
+      ],
+      "candidate_names": [
+        "Suspend+UpdateTargetContract+Stabilize+Realign+Resume",
+        "Suspend+Stabilize+UpdateTargetContract+Realign+Resume",
+        "Suspend+Stabilize+Realign+UpdateTargetContract+Resume"
+      ],
+      "event_id": "I5-u2",
+      "fallback_reason": "",
+      "markers": [
+        "EVENT",
+        "PATCH",
+        "CONTINUATION_CAPTURED",
+        "REPAIR_GOAL_COMPILED",
+        "CANDIDATES_GENERATED",
+        "ROLLOUT_RESULTS",
+        "CANDIDATE_SELECTED",
+        "GRAPH_SPLICED",
+        "RESTORE_VALIDATED",
+        "STAGE_RESUMED"
+      ],
+      "n_candidates": 3,
+      "n_rejected": 0,
+      "pipeline_complete": true,
+      "pipeline_problems": [],
+      "planner_expanded": 13,
+      "program_size_after": 7,
+      "program_size_before": 1,
+      "rejections": [],
+      "repair_steps": 2,
+      "requirements": {
+        "abstract_init_true": [
+          "safe_clearance",
+          "object_grasped",
+          "target_changed",
+          "new_target_known"
+        ],
+        "affected_entities": [
+          "g_butter"
+        ],
+        "event_id": "I5-u2",
+        "event_type": "TARGET_RELOCATION",
+        "goal_label": "suspended->active",
+        "needs_physical_repair": true,
+        "note": "",
+        "predicates_active": [
+          "target_relocated"
+        ],
+        "required_false": [],
+        "required_true": [
+          "aligned_to_current_target",
+          "restore_valid"
+        ],
+        "severity": 0.5,
+        "sources": [
+          {
+            "reason": "derived by the engine from the active predicate set",
+            "requirement": "aligned_to_current_target",
+            "slot_id": "(world)",
+            "transition": "observed_predicates"
+          },
+          {
+            "reason": "derived by the engine from the active predicate set",
+            "requirement": "restore_valid",
+            "slot_id": "(world)",
+            "transition": "observed_predicates"
+          },
+          {
+            "reason": "goal g_butter was restored; the resume contract must hold before the stage may continue",
+            "requirement": "restore_valid",
+            "slot_id": "g_butter",
+            "transition": "suspended->active"
+          }
+        ]
+      },
+      "requirements_fingerprint": "6af956e3eb3de6c0",
+      "restore_handoff_error": 0.00127,
+      "restore_validated": true,
+      "rollout_verification_enabled": false,
+      "rollouts": [],
+      "safe_fallback": false,
+      "selected": "Suspend+UpdateTargetContract+Stabilize+Realign+Resume",
+      "selected_score": 1.5,
+      "skip_reason": "",
+      "skipped": false,
+      "spliced_stage_ids": [
+        "suspend#0",
+        "updatetargetcontract#1",
+        "stabilize#2",
+        "realign#3",
+        "resume#4"
+      ],
+      "stage_resumed": true
+    },
+    {
+      "abstract_plans": [
+        [
+          [
+            "Suspend",
+            "UpdateTargetContract",
+            "ReacquireTarget",
+            "Stabilize",
+            "Realign",
+            "Resume"
+          ],
+          9.5
+        ],
+        [
+          [
+            "Suspend",
+            "ReacquireTarget",
+            "UpdateTargetContract",
+            "Stabilize",
+            "Realign",
+            "Resume"
+          ],
+          9.5
+        ],
+        [
+          [
+            "Suspend",
+            "ReacquireTarget",
+            "Stabilize",
+            "UpdateTargetContract",
+            "Realign",
+            "Resume"
+          ],
+          9.5
+        ],
+        [
+          [
+            "Suspend",
+            "ReacquireTarget",
+            "Stabilize",
+            "Realign",
+            "UpdateTargetContract",
+            "Resume"
+          ],
+          9.5
+        ]
+      ],
+      "candidate_names": [
+        "Suspend+UpdateTargetContract+ReacquireTarget+Stabilize+Realign+Resume",
+        "Suspend+ReacquireTarget+UpdateTargetContract+Stabilize+Realign+Resume",
+        "Suspend+ReacquireTarget+Stabilize+UpdateTargetContract+Realign+Resume",
+        "Suspend+ReacquireTarget+Stabilize+Realign+UpdateTargetContract+Resume"
+      ],
+      "event_id": "I5-u3",
+      "fallback_reason": "pour::I5-u3::r1::reacquiretarget#2 exceeded its step bound",
+      "markers": [
+        "EVENT",
+        "PATCH",
+        "CONTINUATION_CAPTURED",
+        "REPAIR_GOAL_COMPILED",
+        "CANDIDATES_GENERATED",
+        "ROLLOUT_RESULTS",
+        "CANDIDATE_SELECTED",
+        "GRAPH_SPLICED"
+      ],
+      "n_candidates": 4,
+      "n_rejected": 0,
+      "pipeline_complete": false,
+      "pipeline_problems": [
+        "missing marker: RESTORE_VALIDATED",
+        "missing marker: STAGE_RESUMED"
+      ],
+      "planner_expanded": 19,
+      "program_size_after": 8,
+      "program_size_before": 1,
+      "rejections": [],
+      "repair_steps": 43,
+      "requirements": {
+        "abstract_init_true": [
+          "safe_clearance",
+          "target_changed",
+          "new_target_known"
+        ],
+        "affected_entities": [
+          "g_butter"
+        ],
+        "event_id": "I5-u3",
+        "event_type": "OBJECT_SLIP",
+        "goal_label": "active->overridden",
+        "needs_physical_repair": true,
+        "note": "",
+        "predicates_active": [
+          "object_slipped",
+          "target_relocated"
+        ],
+        "required_false": [],
+        "required_true": [
+          "aligned_to_current_target",
+          "object_grasped",
+          "object_stable",
+          "restore_valid"
+        ],
+        "severity": 0.75,
+        "sources": [
+          {
+            "reason": "derived by the engine from the active predicate set",
+            "requirement": "aligned_to_current_target",
+            "slot_id": "(world)",
+            "transition": "observed_predicates"
+          },
+          {
+            "reason": "derived by the engine from the active predicate set",
+            "requirement": "object_grasped",
+            "slot_id": "(world)",
+            "transition": "observed_predicates"
+          },
+          {
+            "reason": "derived by the engine from the active predicate set",
+            "requirement": "object_stable",
+            "slot_id": "(world)",
+            "transition": "observed_predicates"
+          },
+          {
+            "reason": "derived by the engine from the active predicate set",
+            "requirement": "restore_valid",
+            "slot_id": "(world)",
+            "transition": "observed_predicates"
+          },
+          {
+            "reason": "goal g_butter was re-grounded onto a new target; the program must adopt the new target contract before resuming",
+            "requirement": "aligned_to_current_target",
+            "slot_id": "g_butter",
+            "transition": "active->overridden"
+          },
+          {
+            "reason": "goal g_butter was re-grounded onto a new target; the program must adopt the new target contract before resuming",
+            "requirement": "restore_valid",
+            "slot_id": "g_butter",
+            "transition": "active->overridden"
+          }
+        ]
+      },
+      "requirements_fingerprint": "597b66591b074d82",
+      "restore_handoff_error": null,
+      "restore_validated": null,
+      "rollout_verification_enabled": false,
+      "rollouts": [],
+      "safe_fallback": true,
+      "selected": "Suspend+UpdateTargetContract+ReacquireTarget+Stabilize+Realign+Resume",
+      "selected_score": 1.7999999999999998,
+      "skip_reason": "",
+      "skipped": false,
+      "spliced_stage_ids": [
+        "suspend#0",
+        "updatetargetcontract#1",
+        "reacquiretarget#2",
+        "stabilize#3",
+        "realign#4",
+        "resume#5"
+      ],
+      "stage_resumed": false
+    }
+  ],
+  "requirement_fingerprints": [
+    "6af956e3eb3de6c0",
+    "6af956e3eb3de6c0",
+    "597b66591b074d82"
+  ],
+  "reset_meta": {
+    "backend": "libero_mujoco",
+    "language": "place the milk and cream cheese in basket a and the butter in basket b",
+    "objects": [
+      "basket_1",
+      "basket_2",
+      "basket_3",
+      "butter_1",
+      "cream_cheese_1",
+      "milk_1"
+    ],
+    "regions": [
+      "basket_1_contain_region",
+      "basket_2_contain_region",
+      "basket_3_contain_region"
+    ],
+    "seed": 4,
+    "state_hash": "f23ff251de130463353e3f049f57ef1f92ca9d7558b98d3791bd02c5223e405b",
+    "warmup_steps": 10
+  },
+  "schedule": {
+    "all_delivered": true,
+    "anchor_step": 110,
+    "condition": "I5",
+    "events": [
+      {
+        "actual_delivery_step": 110,
+        "delivery_delay": 0,
+        "delivery_failure_reason": "",
+        "event_delivered": true,
+        "event_id": "I5-u1",
+        "scheduled_step": 110,
+        "tag": "u1",
+        "world_state_hash_after": "1cb61b0974cacb8df515c62f8e9aa9d527f4f4ff7a857ed081addc565c195808",
+        "world_state_hash_before": "c10d977b7b2e7f0e3e8eb270cf1bdf07433f1542463a8dbc21b8c3d9177361b7"
+      },
+      {
+        "actual_delivery_step": 364,
+        "delivery_delay": 54,
+        "delivery_failure_reason": "",
+        "event_delivered": true,
+        "event_id": "I5-u2",
+        "scheduled_step": 310,
+        "tag": "u2",
+        "world_state_hash_after": "39a67e05ac730e2ffcb6e24822b9b44c5167328d8ed9874f85718cd684a22386",
+        "world_state_hash_before": "87a9b0562bebcd0f894dc8726b3fd32a666d82aa4b612e11167fc1a7c14f9d49"
+      },
+      {
+        "actual_delivery_step": 486,
+        "delivery_delay": 116,
+        "delivery_failure_reason": "",
+        "event_delivered": true,
+        "event_id": "I5-u3",
+        "scheduled_step": 370,
+        "tag": "u3",
+        "world_state_hash_after": "1e2fba01a8d1448ec1f0d8a7d127be0514bad64fcf03d198e18f62d3ed858daa",
+        "world_state_hash_before": "153802ae785eb6834e77f0a9d3c221df8203210bb49fe19c8bffa09b556dbd53"
+      }
+    ],
+    "n_delivered": 3,
+    "n_updates": 3,
+    "profile": "libero",
+    "schedule_fingerprint": "cbc0f158020b7f2e",
+    "seed": 4,
+    "u1_step": 110,
+    "u2_delta": 200,
+    "u3_delta": 260
+  },
+  "seed": 4,
+  "task_metrics": {
+    "all_objects_stable": true,
+    "cancellation_violation": false,
+    "cancelled_goal_violation": false,
+    "cancelled_object_regions": {},
+    "collision": false,
+    "completed_progress_preserved": true,
+    "environment_steps": 934,
+    "expected_predicates": {
+      "butter": {
+        "predicate": true,
+        "target": "basket_B"
+      },
+      "milk": {
+        "predicate": true,
+        "target": "basket_A"
+      },
+      "yogurt": {
+        "predicate": true,
+        "target": "basket_A"
+      }
+    },
+    "no_task_object_attached": true,
+    "object_attachment": {
+      "butter": false,
+      "milk": false,
+      "yogurt": false
+    },
+    "object_positions": {
+      "butter": [
+        -0.017028175407785614,
+        0.1220654498212134,
+        0.4624696737949596
+      ],
+      "milk": [
+        -0.2867601606888647,
+        0.24234965264757835,
+        0.5235096036060003
+      ],
+      "yogurt": [
+        -0.22937437311819228,
+        0.24166580997087403,
+        0.4929488496933999
+      ]
+    },
+    "object_stability": {
+      "butter": {
+        "angular_speed_rad_s": 3.560186128343228e-15,
+        "linear_speed_m_s": 2.0507372211087818e-14,
+        "stable": true
+      },
+      "milk": {
+        "angular_speed_rad_s": 2.318592051675248e-06,
+        "linear_speed_m_s": 1.2464728723209198e-07,
+        "stable": true
+      },
+      "yogurt": {
+        "angular_speed_rad_s": 3.635484329548612e-06,
+        "linear_speed_m_s": 3.7746578899628484e-07,
+        "stable": true
+      }
+    },
+    "progress_completed": 3,
+    "progress_fraction": 1.0,
+    "progress_total": 3,
+    "redirected_goal_success": true,
+    "revised_task_success": true,
+    "safe_fallback": true,
+    "stability_gate_passed": true,
+    "stability_thresholds": {
+      "max_angular_speed_rad_s": 0.5,
+      "max_linear_speed_m_s": 0.02
+    },
+    "stale_goal_by_object": {
+      "butter": false,
+      "milk": false,
+      "yogurt": false
+    },
+    "stale_goal_execution": false,
+    "task_time": 46.7,
+    "task_time_s": 46.7,
+    "unsafe_contact": false
+  },
+  "video": {
+    "bytes": 208572,
+    "fps": 20,
+    "frames": 938,
+    "path": "/home/lijingsu/cope_fsrpc_v2_execution_r2/stage_d_verifier_ablation_final/CoPE_no_rollout_verification/I5/seed_04/video.mp4",
+    "written": true
+  }
+}

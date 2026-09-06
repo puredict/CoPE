@@ -1,0 +1,15 @@
+case_id,x18_mutation_id,collection_path,strict_policy_accepts_provider_candidate,normalize_policy_accepts,normalized_bytes_equal,normalized_hash_equal,normalized_idempotent,normalization_version,pass
+replace_pending_target,replace_pending_target:S0054,/entities,False,True,True,True,True,stable-record-order-v1,True
+replace_pending_target,replace_pending_target:S0082,/commitments,False,True,True,True,True,stable-record-order-v1,True
+continuity_invalid,continuity_invalid:S0052,/entities,False,True,True,True,True,stable-record-order-v1,True
+continuity_invalid,continuity_invalid:S0075,/commitments,False,True,True,True,True,stable-record-order-v1,True
+cancel_sibling,cancel_sibling:S0037,/entities,False,True,True,True,True,stable-record-order-v1,True
+cancel_sibling,cancel_sibling:S0058,/commitments,False,True,True,True,True,stable-record-order-v1,True
+activate_override,activate_override:S0052,/entities,False,True,True,True,True,stable-record-order-v1,True
+activate_override,activate_override:S0075,/commitments,False,True,True,True,True,stable-record-order-v1,True
+release_override,release_override:S0052,/entities,False,True,True,True,True,stable-record-order-v1,True
+release_override,release_override:S0075,/commitments,False,True,True,True,True,stable-record-order-v1,True
+world_change_release,world_change_release:S0054,/entities,False,True,True,True,True,stable-record-order-v1,True
+world_change_release,world_change_release:S0082,/commitments,False,True,True,True,True,stable-record-order-v1,True
+irrelevant_sibling_change,irrelevant_sibling_change:S0052,/entities,False,True,True,True,True,stable-record-order-v1,True
+continuity_valid,continuity_valid:S0052,/entities,False,True,True,True,True,stable-record-order-v1,True

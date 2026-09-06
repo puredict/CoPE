@@ -1,0 +1,357 @@
+{
+  "after_disturbance": {
+    "camera": {
+      "height": 224,
+      "mode": "RGB",
+      "path": "/tmp/gradio/1ffca83b56af568a6aa7f597b1896eca687e6b632d3c78bb49118c5fb02d938a/image.webp",
+      "present": true,
+      "sha256": "1ffca83b56af568a6aa7f597b1896eca687e6b632d3c78bb49118c5fb02d938a",
+      "size_bytes": 3652,
+      "width": 224
+    },
+    "fresh_observation": {
+      "consumed_noop_env_step": false,
+      "fresh_observation": true,
+      "method": "env.env._get_observations(force_update=True)",
+      "observation_refresh_method": "env.env._get_observations(force_update=True)",
+      "operations": [
+        "sim.forward",
+        "env.check_success",
+        "env._post_process",
+        "env._update_observables",
+        "env.env._post_process",
+        "env.env._update_observables"
+      ]
+    },
+    "last_disturbance": {
+      "actual_delta": [
+        0.1,
+        0.05000000000000002,
+        0.0
+      ],
+      "after_position": [
+        0.0365256330376815,
+        0.25202566460700615,
+        0.8984041304892996
+      ],
+      "after_qpos": [
+        0.0365256330376815,
+        0.25202566460700615,
+        0.8984041304892996,
+        0.7071067829265203,
+        -2.7754861596142396e-05,
+        3.3351978181101873e-06,
+        0.7071067788940022
+      ],
+      "applied_at": "2026-07-14T11:18:26.354292+00:00",
+      "before_position": [
+        -0.06347436696231851,
+        0.20202566460700613,
+        0.8984041304892996
+      ],
+      "before_qpos": [
+        -0.06347436696231851,
+        0.20202566460700613,
+        0.8984041304892996,
+        0.7071067829265203,
+        -2.7754861596142396e-05,
+        3.3351978181101873e-06,
+        0.7071067788940022
+      ],
+      "consumed_noop_env_step": false,
+      "current_prompt": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+      "delta_xy": [
+        0.1,
+        0.05
+      ],
+      "delta_xyz_actual": [
+        0.1,
+        0.05000000000000002,
+        0.0
+      ],
+      "disturbance_count": 1,
+      "fresh_observation": true,
+      "joint": "akita_black_bowl_1_joint0",
+      "joint_id": 9,
+      "observation_refresh_method": "env.env._get_observations(force_update=True)",
+      "policy_step": 2,
+      "policy_step_after_disturbance": 2,
+      "policy_step_before_disturbance": 2,
+      "policy_step_unchanged_by_disturbance": true,
+      "prompt_changed": false,
+      "qpos_addr": 9,
+      "refresh": {
+        "consumed_noop_env_step": false,
+        "fresh_observation": true,
+        "method": "env.env._get_observations(force_update=True)",
+        "observation_refresh_method": "env.env._get_observations(force_update=True)",
+        "operations": [
+          "sim.forward",
+          "env.check_success",
+          "env._post_process",
+          "env._update_observables",
+          "env.env._post_process",
+          "env.env._update_observables"
+        ]
+      },
+      "requested_target_joint": "akita_black_bowl_1_joint0",
+      "source": "manual_ui",
+      "target_joint": "akita_black_bowl_1_joint0",
+      "timestamp": "2026-07-14T11:18:26.354292+00:00"
+    },
+    "policy_step": 2,
+    "target_position": [
+      0.0365256330376815,
+      0.25202566460700615,
+      0.8984041304892996
+    ]
+  },
+  "after_manual_step": {
+    "fresh_observation": {
+      "consumed_noop_env_step": false,
+      "fresh_observation": true,
+      "method": "env.env._get_observations(force_update=True)",
+      "observation_refresh_method": "env.env._get_observations(force_update=True)",
+      "operations": [
+        "sim.forward",
+        "env.check_success",
+        "env._post_process",
+        "env._update_observables",
+        "env.env._post_process",
+        "env.env._update_observables"
+      ]
+    },
+    "latest_action": {
+      "env_action": [
+        -0.0029850299042814,
+        0.1071428656578064,
+        -0.0026785731315612793,
+        -0.0007794112843625689,
+        4.201572315365443e-05,
+        0.00012604848426930881,
+        -1.0
+      ],
+      "raw_action": [
+        -0.0029850299042814,
+        0.1071428656578064,
+        -0.0026785731315612793,
+        -0.0007794112843625689,
+        4.201572315365443e-05,
+        0.00012604848426930881,
+        0.996078431372549
+      ]
+    },
+    "policy_step": 3,
+    "state": "PAUSED"
+  },
+  "api_names": [
+    "refresh",
+    "on_load",
+    "on_load_task",
+    "on_start",
+    "on_pause_resume",
+    "on_step",
+    "on_disturb",
+    "on_stop",
+    "on_reset"
+  ],
+  "base_url": "http://127.0.0.1:7862",
+  "before_disturbance": {
+    "camera": {
+      "height": 224,
+      "mode": "RGB",
+      "path": "/tmp/gradio/078baa4ae2a987c425945f25148afa4b320343c9e3250ea5d71da101ab12f819/image.webp",
+      "present": true,
+      "sha256": "078baa4ae2a987c425945f25148afa4b320343c9e3250ea5d71da101ab12f819",
+      "size_bytes": 5574,
+      "width": 224
+    },
+    "policy_step": 2,
+    "run_dir": "interactive_outputs/dashboard_manual_disturbance_smoke/20260714T111811Z_task0_trial0_reactive_disturbed_d2dbd444",
+    "target_position": [
+      -0.06347436696231851,
+      0.20202566460700613,
+      0.8984041304892996
+    ]
+  },
+  "camera_updated_after_disturbance": true,
+  "checkpoint": "/home/lijingsu/vla/models/openvla-7b-finetuned-libero-spatial",
+  "dashboard_root": "http://127.0.0.1:7862",
+  "dx": 0.1,
+  "dy": 0.05,
+  "error": "AssertionError: Missing event manual_disturbance.",
+  "load_model_response": "Backend load queued.",
+  "load_task_response": "Task loaded. Select a target joint before starting disturbed mode.",
+  "loaded_snapshot": {
+    "backend": "real",
+    "checkpoint": "/home/lijingsu/vla/models/openvla-7b-finetuned-libero-spatial",
+    "device_summary": {
+      "allocated_gb": 14.09,
+      "cuda_available": true,
+      "device": "cuda:0",
+      "name": "NVIDIA GeForce RTX 3090",
+      "reserved_gb": 14.13,
+      "total_memory_gb": 23.69
+    },
+    "state": "READY"
+  },
+  "manual_disturbance_clicked": true,
+  "manual_disturbance_response": "Manual disturbance requested.",
+  "ok": false,
+  "output_dir": "interactive_outputs/dashboard_manual_disturbance_smoke",
+  "pause_response": "Pause requested.",
+  "required_outputs": {
+    "actions.jsonl": {
+      "path": "interactive_outputs/dashboard_manual_disturbance_smoke/20260714T111811Z_task0_trial0_reactive_disturbed_d2dbd444/actions.jsonl",
+      "size_bytes": 3135
+    },
+    "annotated.mp4": {
+      "path": "interactive_outputs/dashboard_manual_disturbance_smoke/20260714T111811Z_task0_trial0_reactive_disturbed_d2dbd444/annotated.mp4",
+      "size_bytes": 8294
+    },
+    "episode_summary.json": {
+      "path": "interactive_outputs/dashboard_manual_disturbance_smoke/20260714T111811Z_task0_trial0_reactive_disturbed_d2dbd444/episode_summary.json",
+      "size_bytes": 3911
+    },
+    "events.jsonl": {
+      "path": "interactive_outputs/dashboard_manual_disturbance_smoke/20260714T111811Z_task0_trial0_reactive_disturbed_d2dbd444/events.jsonl",
+      "size_bytes": 10146
+    },
+    "raw.mp4": {
+      "path": "interactive_outputs/dashboard_manual_disturbance_smoke/20260714T111811Z_task0_trial0_reactive_disturbed_d2dbd444/raw.mp4",
+      "size_bytes": 6588
+    },
+    "run_config.json": {
+      "path": "interactive_outputs/dashboard_manual_disturbance_smoke/20260714T111811Z_task0_trial0_reactive_disturbed_d2dbd444/run_config.json",
+      "size_bytes": 865
+    }
+  },
+  "selected_target_joint": "akita_black_bowl_1_joint0",
+  "start_response": "Episode start queued.",
+  "started_at": "2026-07-14T11:17:42Z",
+  "stop_response": "Stop requested.",
+  "strict_single_step_response": "Single policy step requested.",
+  "target_joint": "akita_black_bowl_1_joint0",
+  "task": {
+    "camera": {
+      "height": 256,
+      "mode": "RGB",
+      "path": "/tmp/gradio/24eb94623cfbce870e9f8a3be803a4ba1ec08c8b3ba0ee445a60612d2d7df552/image.webp",
+      "present": true,
+      "sha256": "24eb94623cfbce870e9f8a3be803a4ba1ec08c8b3ba0ee445a60612d2d7df552",
+      "size_bytes": 4714,
+      "width": 256
+    },
+    "candidate_names": [
+      "akita_black_bowl_1_joint0",
+      "akita_black_bowl_2_joint0",
+      "glazed_rim_porcelain_ramekin_1_joint0",
+      "plate_1_joint0",
+      "cookies_1_joint0"
+    ],
+    "target_candidate_text": "akita_black_bowl_1_joint0 | score=2 | 2 overlapping task/object tokens\nakita_black_bowl_2_joint0 | score=2 | 2 overlapping task/object tokens\nglazed_rim_porcelain_ramekin_1_joint0 | score=1 | 1 overlapping task/object tokens\nplate_1_joint0 | score=1 | 1 overlapping task/object tokens\ncookies_1_joint0 | score=0 | 0 overlapping task/object tokens\nambiguous=true",
+    "target_joint_candidates": [
+      {
+        "candidate_tokens": [
+          "akita",
+          "black",
+          "bowl"
+        ],
+        "joint": "akita_black_bowl_1_joint0",
+        "joint_id": 9,
+        "matched_task_tokens": [
+          "black",
+          "bowl"
+        ],
+        "name": "akita_black_bowl_1_joint0",
+        "object_name": "akita_black_bowl_1",
+        "qpos_addr": 9,
+        "reason": "2 overlapping task/object tokens",
+        "score": 2,
+        "score_reason": "2 overlapping task/object tokens"
+      },
+      {
+        "candidate_tokens": [
+          "akita",
+          "black",
+          "bowl"
+        ],
+        "joint": "akita_black_bowl_2_joint0",
+        "joint_id": 10,
+        "matched_task_tokens": [
+          "black",
+          "bowl"
+        ],
+        "name": "akita_black_bowl_2_joint0",
+        "object_name": "akita_black_bowl_2",
+        "qpos_addr": 16,
+        "reason": "2 overlapping task/object tokens",
+        "score": 2,
+        "score_reason": "2 overlapping task/object tokens"
+      },
+      {
+        "candidate_tokens": [
+          "glazed",
+          "porcelain",
+          "ramekin",
+          "rim"
+        ],
+        "joint": "glazed_rim_porcelain_ramekin_1_joint0",
+        "joint_id": 12,
+        "matched_task_tokens": [
+          "ramekin"
+        ],
+        "name": "glazed_rim_porcelain_ramekin_1_joint0",
+        "object_name": "glazed_rim_porcelain_ramekin_1",
+        "qpos_addr": 30,
+        "reason": "1 overlapping task/object tokens",
+        "score": 1,
+        "score_reason": "1 overlapping task/object tokens"
+      },
+      {
+        "candidate_tokens": [
+          "plate"
+        ],
+        "joint": "plate_1_joint0",
+        "joint_id": 13,
+        "matched_task_tokens": [
+          "plate"
+        ],
+        "name": "plate_1_joint0",
+        "object_name": "plate_1",
+        "qpos_addr": 37,
+        "reason": "1 overlapping task/object tokens",
+        "score": 1,
+        "score_reason": "1 overlapping task/object tokens"
+      },
+      {
+        "candidate_tokens": [
+          "cookies"
+        ],
+        "joint": "cookies_1_joint0",
+        "joint_id": 11,
+        "matched_task_tokens": [],
+        "name": "cookies_1_joint0",
+        "object_name": "cookies_1",
+        "qpos_addr": 23,
+        "reason": "0 overlapping task/object tokens",
+        "score": 0,
+        "score_reason": "0 overlapping task/object tokens"
+      }
+    ],
+    "target_position": null,
+    "task_text": "pick up the black bowl between the plate and the ramekin and place it on the plate"
+  },
+  "terminal_snapshot": {
+    "annotated_video_path": "interactive_outputs/dashboard_manual_disturbance_smoke/20260714T111811Z_task0_trial0_reactive_disturbed_d2dbd444/annotated.mp4",
+    "eligible_for_official_metrics": false,
+    "episode_summary_path": "interactive_outputs/dashboard_manual_disturbance_smoke/20260714T111811Z_task0_trial0_reactive_disturbed_d2dbd444/episode_summary.json",
+    "exclude_from_formal_success_summaries": true,
+    "formal_run": false,
+    "interactive": true,
+    "raw_video_path": "interactive_outputs/dashboard_manual_disturbance_smoke/20260714T111811Z_task0_trial0_reactive_disturbed_d2dbd444/raw.mp4",
+    "run_dir": "interactive_outputs/dashboard_manual_disturbance_smoke/20260714T111811Z_task0_trial0_reactive_disturbed_d2dbd444",
+    "state": "FAILED",
+    "termination_reason": "manual_stop"
+  }
+}

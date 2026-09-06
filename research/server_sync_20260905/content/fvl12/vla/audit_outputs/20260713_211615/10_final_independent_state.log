@@ -1,0 +1,13 @@
+COMMAND: final independent process and gpu check
+START: 2026-07-13T21:37:53+08:00
+index, name, memory.total [MiB], memory.used [MiB], utilization.gpu [%]
+0, NVIDIA GeForce RTX 3090, 24576 MiB, 12 MiB, 0 %
+1, NVIDIA GeForce RTX 3090, 24576 MiB, 12 MiB, 0 %
+2, NVIDIA GeForce RTX 3090, 24576 MiB, 12 MiB, 0 %
+3, NVIDIA GeForce RTX 3090, 24576 MiB, 12 MiB, 0 %
+4, NVIDIA GeForce RTX 3090, 24576 MiB, 12 MiB, 0 %
+5, NVIDIA GeForce RTX 3090, 24576 MiB, 12 MiB, 0 %
+6, NVIDIA GeForce RTX 3090, 24576 MiB, 12 MiB, 0 %
+7, NVIDIA GeForce RTX 3090, 24576 MiB, 12 MiB, 0 %
+END: 2026-07-13T21:37:54+08:00
+EXIT: 0

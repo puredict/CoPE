@@ -1,0 +1,40 @@
+# Gated real-simulator protocol. Do not expand beyond the 60-episode pilot.
+stages:
+  A_preflight:
+    seeds:         [0]
+    checks:        [reset, observation, native_checkpoint_restore,
+                    candidate_collision_rejection,
+                    candidate_handoff_rejection, candidate_acceptance,
+                    one_pick_place, task_predicate, video]
+    stop_if_failed: true
+  B_reliability_gate:
+    seeds:         10
+    conditions:    [nominal]
+    arms:          [no_adaptation]
+    episodes:      10
+    stop_if_failed: true
+  C_manual_debug:
+    seeds:         [0]
+    conditions:    [nominal, I1]
+    arms:          [no_adaptation, CoPE]
+    inspect:       [result.json, events.jsonl, adaptation_trace.jsonl,
+                    repair_trace.jsonl, state_snapshots.json,
+                    simulator.log, video.mp4]
+    stop_if_failed: true
+  D_paired_pilot:
+    seeds:         5                  # start here; expand only after A passes
+    conditions:    [I1, I2, I3, I4]
+    arms:          [CoPE, FSR-PC, no_adaptation]
+    episodes:      60
+expansion:
+  authorized:      false
+  note:            "No ablation or full sweep in this handoff; inspect the 60-episode pilot first."
+
+statistics:
+  pairing_key:     "task|condition|seed"      # method deliberately excluded
+  binary:          exact_mcnemar
+  interval:        wilson_95
+  continuous:      paired_bootstrap
+  bootstrap_resamples: 10000
+  bootstrap_seed:  0
+  multiplicity:    holm_bonferroni

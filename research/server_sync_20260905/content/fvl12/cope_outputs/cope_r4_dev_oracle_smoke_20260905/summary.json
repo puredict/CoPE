@@ -1,0 +1,29 @@
+[
+  {
+    "profile": "calibration",
+    "seed": 1000,
+    "method": "CoPE",
+    "metrics": {
+      "task_completion": true,
+      "end_to_end_success": true,
+      "all_generations_valid": true,
+      "all_registered_transitions_semantically_matched": true,
+      "all_events_processed": true,
+      "root_lineage_restored": true,
+      "compiled_plan_matches_root": true,
+      "physical_attempted": true,
+      "physical_success": true,
+      "symbolic_execution_success": null,
+      "n_model_calls": 7,
+      "valid_model_calls": 7,
+      "candidate_transition_rejections": 0,
+      "candidate_semantic_errors_after_valid_transition": 0,
+      "committed_semantic_errors": 0,
+      "total_prompt_tokens": 17010,
+      "total_completion_tokens": 514,
+      "total_model_latency_s": 0.00012576021254062653,
+      "first_failure": "",
+      "first_failure_event": null
+    }
+  }
+]

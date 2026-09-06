@@ -1,0 +1,219 @@
+{
+  "accepted_full_state": {
+    "commitments": [
+      {
+        "authority": 100,
+        "dependencies": [],
+        "grounding": [
+          "cream_cheese_1",
+          "basket_1_contain_region"
+        ],
+        "id": "goal:in:cream_cheese_1:basket_1_contain_region",
+        "lifecycle_status": "satisfied",
+        "override_links": [],
+        "owner": "task_owner",
+        "predicate": "in",
+        "source": "task_owner",
+        "supersession_links": [],
+        "support_links": [],
+        "type": "task_goal",
+        "valid_from": "semantic-replace-v1:task01:state03:seed20270727",
+        "valid_until": "task_end"
+      },
+      {
+        "authority": 100,
+        "dependencies": [],
+        "grounding": [
+          "butter_1",
+          "basket_1_contain_region"
+        ],
+        "id": "goal:in:butter_1:basket_1_contain_region",
+        "lifecycle_status": "superseded",
+        "override_links": [],
+        "owner": "task_owner",
+        "predicate": "in",
+        "source": "task_owner",
+        "supersession_links": [],
+        "support_links": [],
+        "type": "task_goal",
+        "valid_from": "semantic-replace-v1:task01:state03:seed20270727",
+        "valid_until": "task_end"
+      },
+      {
+        "authority": 100,
+        "dependencies": [],
+        "grounding": [
+          "alphabet_soup_1",
+          "basket_1_contain_region"
+        ],
+        "id": "goal:in:alphabet_soup_1:basket_1_contain_region",
+        "lifecycle_status": "active",
+        "override_links": [],
+        "owner": "task_owner",
+        "predicate": "in",
+        "source": "task_owner",
+        "supersession_links": [
+          "goal:in:butter_1:basket_1_contain_region"
+        ],
+        "support_links": [],
+        "type": "task_goal",
+        "valid_from": "semantic-replace-v1:task01:state03:seed20270727",
+        "valid_until": "task_end"
+      }
+    ],
+    "controller_prompt": "diagnostic-only; execution must use the shared compiler",
+    "current_goal": {
+      "all": [
+        {
+          "arguments": [
+            "cream_cheese_1",
+            "basket_1_contain_region"
+          ],
+          "predicate": "in"
+        },
+        {
+          "arguments": [
+            "alphabet_soup_1",
+            "basket_1_contain_region"
+          ],
+          "predicate": "in"
+        }
+      ]
+    },
+    "entities": [
+      {
+        "id": "cream_cheese_1",
+        "kind": "object"
+      },
+      {
+        "id": "butter_1",
+        "kind": "object"
+      },
+      {
+        "id": "alphabet_soup_1",
+        "kind": "object"
+      },
+      {
+        "id": "basket_1_contain_region",
+        "kind": "region"
+      }
+    ],
+    "evidence_versions": {
+      "event_id": "semantic-replace-v1:task01:state03:seed20270727",
+      "input_state_version": 0,
+      "world_version": 173
+    },
+    "pending_restorations": [],
+    "plan": [
+      {
+        "arguments": [
+          "alphabet_soup_1",
+          "basket_1_contain_region"
+        ],
+        "dependencies": [
+          "goal:in:cream_cheese_1:basket_1_contain_region"
+        ],
+        "effects": [
+          {
+            "arguments": [
+              "alphabet_soup_1",
+              "basket_1_contain_region"
+            ],
+            "predicate": "in"
+          }
+        ],
+        "preconditions": [],
+        "skill": "place_in",
+        "status": "pending",
+        "step_id": "place-replacement"
+      }
+    ],
+    "progress_ledger": [
+      {
+        "achieved": true,
+        "milestone_id": "goal:in:cream_cheese_1:basket_1_contain_region",
+        "physically_valid": true,
+        "still_goal_relevant": true
+      }
+    ],
+    "schema_version": "full-state-v2",
+    "state_version": 1
+  },
+  "action_schema_valid": true,
+  "artifacts": {
+    "episode": "/home/lijingsu/cope-integration-outputs-20260724/semantic_replacement_canary_v1/alphabet_5state_screen_20260731/state3/state03/oracle_full/episode.json",
+    "trace": "/home/lijingsu/cope-integration-outputs-20260724/semantic_replacement_canary_v1/alphabet_5state_screen_20260731/state3/state03/oracle_full/trace.jsonl"
+  },
+  "checkpoint": {
+    "path": "/home/lijingsu/vla/models/openvla-7b-finetuned-libero-10",
+    "repository": "openvla/openvla-7b-finetuned-libero-10",
+    "resolved_unnorm_key": "libero_10",
+    "revision": "80970322773f81baa2e22fe495d0487b93a05cfa"
+  },
+  "complete": true,
+  "config_hash": "6cbc6c22065aa155a7d632fefe97788ec624dfd1aa07612e68ee4e56c11de49d",
+  "current_goal_success": false,
+  "done_object": "cream_cheese_1",
+  "event": {
+    "authority": 100,
+    "done_object": "cream_cheese_1",
+    "event_id": "semantic-replace-v1:task01:state03:seed20270727",
+    "event_type": "replace_pending_goal",
+    "issuer": "task_owner",
+    "operation": "supersede",
+    "pending_object": "butter_1",
+    "replacement_object": "alphabet_soup_1",
+    "replacement_target": "basket_1_contain_region",
+    "target_commitment_id": "goal:in:butter_1:basket_1_contain_region",
+    "valid_from_state_version": 0,
+    "world_version": 173
+  },
+  "event_reached": true,
+  "final_predicates": {
+    "alphabet_soup_1": false,
+    "butter_1": false,
+    "cream_cheese_1": true,
+    "ketchup_1": false,
+    "milk_1": false,
+    "orange_juice_1": false,
+    "tomato_sauce_1": true
+  },
+  "final_prompt": "put both the alphabet soup and the cream cheese box in the basket",
+  "git": {
+    "clean": true,
+    "commit": "a24e0a883ca2c4ddc2943afc1d807b795cecd442",
+    "status": ""
+  },
+  "gpu": {
+    "allocated_bytes": 15138074624,
+    "cuda_available": true,
+    "device": "cuda:0",
+    "name": "NVIDIA GeForce RTX 3090",
+    "peak_allocated_bytes": 15478815232,
+    "peak_reserved_bytes": 15573450752,
+    "reserved_bytes": 15573450752,
+    "total_bytes": 25438126080
+  },
+  "initial_state_sha256": "3e0d23df2cf22ae6e897e15a1739d5bf25474b4e33196644890b8485f0e880f5",
+  "manual_intervention": false,
+  "mode": "oracle_full",
+  "original_prompt": "put both the cream cheese box and the butter in the basket",
+  "original_task_success": false,
+  "pending_object": "butter_1",
+  "policy_step_budget": 520,
+  "policy_steps_consumed": 520,
+  "prefix_policy_steps_replayed": 174,
+  "prompt_variant": "shared_compiler",
+  "replacement_object": "alphabet_soup_1",
+  "reset_after_start": false,
+  "rollback": false,
+  "runtime_seconds": 307.150865489617,
+  "schema_version": "semantic-replacement-canary-v1",
+  "seed": 20270727,
+  "state_id": 3,
+  "task_id": 1,
+  "task_suite": "libero_10",
+  "termination_reason": "policy_step_budget_exhausted",
+  "valid_progress_retained": true,
+  "warmup_steps_consumed": 10
+}

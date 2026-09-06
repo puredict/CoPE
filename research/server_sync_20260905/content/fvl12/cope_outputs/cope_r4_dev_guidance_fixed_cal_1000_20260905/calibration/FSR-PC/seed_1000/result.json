@@ -1,0 +1,524 @@
+{
+  "artifact_files": {
+    "actions": "actions.jsonl",
+    "events": "events.jsonl",
+    "model_calls": "model_calls.jsonl",
+    "raw_outputs": "raw_outputs/",
+    "states": "state_snapshots.jsonl"
+  },
+  "backend": "libero_mujoco",
+  "compiled_plan": [],
+  "episode_id": "calibration|seed=1000|method=FSR-PC",
+  "events": [
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "event": {
+        "current_slot_id": "order-critical/root",
+        "event_id": "seed-1000/e01",
+        "kind": "suspend_current",
+        "ordinal": 1,
+        "reason": "temporary station outage",
+        "user_request": "The original station is temporarily unavailable. Suspend this order without deleting it."
+      },
+      "exogenous_fingerprint": "7c1943d31bc94fa2be0b7e003cd8de77ea87ac31ee7beb16bcc7778cdf34bf0e"
+    },
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "event": {
+        "current_slot_id": "order-critical/root",
+        "event_id": "seed-1000/e02",
+        "kind": "restore_current",
+        "ordinal": 2,
+        "reason": "original station revalidated",
+        "user_request": "The original station is available again. Revalidate and resume the suspended order."
+      },
+      "exogenous_fingerprint": "dabe9605a490a19036709da1c92d5b9ad1baece0c1c63260b95d63c9d346d3a2"
+    },
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "event": {
+        "current_slot_id": "order-critical/root",
+        "event_id": "seed-1000/e03",
+        "kind": "override_current",
+        "new_slot": {
+          "grounding": "place_butter_in_basket_C_then_execute_receipt_v2",
+          "logical_id": "order-critical",
+          "payload": {
+            "audit_nonce": "4427748028d6685e00f2",
+            "continuation_key": "receipt-v2",
+            "object": "butter",
+            "order_id": "critical-1000",
+            "plan": [
+              {
+                "object": "butter",
+                "role": "primary_order",
+                "target": "basket_C"
+              },
+              {
+                "object": "milk",
+                "role": "receipt_token",
+                "target": "basket_A"
+              },
+              {
+                "object": "yogurt",
+                "role": "closure_token",
+                "target": "basket_C"
+              }
+            ],
+            "target": "basket_C"
+          },
+          "priority": "soft",
+          "slot_id": "order-critical/detour-01"
+        },
+        "ordinal": 3,
+        "reason": "temporary detour level 1",
+        "user_request": "Temporarily replace the current version with detour 1. Use basket_C and its explicitly registered continuation."
+      },
+      "exogenous_fingerprint": "47490d79bd69b3ae32175e38db0d7d4c72b695f77a9330388941702a741357d9"
+    },
+    {
+      "adaptation_status": "schema_validation_failure",
+      "adaptation_valid": false,
+      "event": {
+        "current_slot_id": "order-critical/detour-01",
+        "event_id": "seed-1000/e04",
+        "kind": "override_current",
+        "new_slot": {
+          "grounding": "place_butter_in_basket_B_then_execute_receipt_v3",
+          "logical_id": "order-critical",
+          "payload": {
+            "audit_nonce": "cfd136e42e1ed7d5113a",
+            "continuation_key": "receipt-v3",
+            "object": "butter",
+            "order_id": "critical-1000",
+            "plan": [
+              {
+                "object": "butter",
+                "role": "primary_order",
+                "target": "basket_B"
+              },
+              {
+                "object": "milk",
+                "role": "receipt_token",
+                "target": "basket_B"
+              },
+              {
+                "object": "yogurt",
+                "role": "closure_token",
+                "target": "basket_C"
+              }
+            ],
+            "target": "basket_B"
+          },
+          "priority": "soft",
+          "slot_id": "order-critical/detour-02"
+        },
+        "ordinal": 4,
+        "reason": "temporary detour level 2",
+        "user_request": "Temporarily replace the current version with detour 2. Use basket_B and its explicitly registered continuation."
+      },
+      "exogenous_fingerprint": "bf82117c73b38d83e2f35eea69f11b03899c28332c6d9492a0e8e477ba8a79ff"
+    }
+  ],
+  "final_state_fingerprint": "dcbb2b1ca8ecb4249fda4fb91c489b7e83cfcb106c854b4057680642f0ff4e04",
+  "method": "FSR-PC",
+  "metrics": {
+    "all_events_processed": false,
+    "all_generations_valid": false,
+    "all_registered_transitions_semantically_matched": false,
+    "candidate_semantic_errors_after_valid_transition": 0,
+    "candidate_transition_rejections": 1,
+    "committed_semantic_errors": 0,
+    "compiled_plan_matches_root": null,
+    "end_to_end_success": false,
+    "first_failure": "schema_validation_failure",
+    "first_failure_event": "seed-1000/e04",
+    "n_model_calls": 4,
+    "physical_attempted": false,
+    "physical_success": null,
+    "root_lineage_restored": null,
+    "symbolic_execution_success": null,
+    "task_completion": false,
+    "total_completion_tokens": 7254,
+    "total_model_latency_s": 210.20262242294848,
+    "total_prompt_tokens": 10845,
+    "valid_model_calls": 3
+  },
+  "model": "Qwen/Qwen3-32B",
+  "model_calls": [
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "candidate_rejected_by_transition_validator": false,
+      "candidate_semantic_correct": true,
+      "candidate_state_fingerprint": "027cb2d1de49a6044f3306f300454e55c85c5a7498a24de47c26012338b7f4ef",
+      "committed_state_semantic_correct": true,
+      "event_id": "seed-1000/e01",
+      "exogenous_fingerprint": "7c1943d31bc94fa2be0b7e003cd8de77ea87ac31ee7beb16bcc7778cdf34bf0e",
+      "failure_stage": null,
+      "generation": {
+        "cancellation_status": "not_requested",
+        "completion_tokens": 1579,
+        "error": "",
+        "finish_reason": "stop",
+        "http_status": 200,
+        "latency_s": 46.00692102313042,
+        "observed_completion_tokens": 1579,
+        "observed_output_chars": 5834,
+        "observed_token_count_kind": "server_usage_cumulative",
+        "ok": true,
+        "output_chars": 5834,
+        "output_sha256": "eead4462cb5479aff91a6fc61a9bd3fb26cc2b0b58de5cc094e8a5082e890479",
+        "prompt_tokens": 2386,
+        "request_completed": true,
+        "request_id": "9e284ce9-0ffe-4834-9a08-ba0b2021eeb3",
+        "response_id": "chatcmpl-9e284ce9-0ffe-4834-9a08-ba0b2021eeb3",
+        "server_error": "",
+        "status": "ok",
+        "streamed_chunks": 1581,
+        "telemetry": {
+          "client_connection_closed": true,
+          "content_chunks": 1578,
+          "generation_completed_before_client_deadline": true,
+          "guided_decoding_backend": "guidance",
+          "json_valid": true,
+          "last_usage_at_s": 46.00600226968527,
+          "max_output_tokens": 4096,
+          "model_calls": 1,
+          "observed_token_note": "Only server-reported usage; SSE chunks are not tokens.",
+          "protocol": "vllm-0.8.5-streaming-guided-json",
+          "received_done": true,
+          "schema_valid": true,
+          "server_cancellation_confirmed": null,
+          "timeout_s": 90.0
+        },
+        "ttft_s": 2.4398927856236696
+      },
+      "json_parse_success": true,
+      "method": "FSR-PC",
+      "model": "Qwen/Qwen3-32B",
+      "ordinal": 1,
+      "output_schema_valid": true,
+      "packet_fingerprint": "946073205d98cdea4c3b742d4868dbacf8eb652e6ac87cf4a59140a66da982a2",
+      "raw_output_file": "raw_outputs/event_01.txt",
+      "request_completed": true,
+      "semantic_match_to_registered_transition": true,
+      "state_committed": true,
+      "state_fingerprint_after": "027cb2d1de49a6044f3306f300454e55c85c5a7498a24de47c26012338b7f4ef",
+      "state_fingerprint_before": "1cdf4408c345d6b43bf9801bead9e0aa71190a39072ffc0c402c392e806d326d",
+      "system_prompt_chars": 2557,
+      "system_prompt_sha256": "993605dc58afcfcc4e47c197627dc3514f7a6397e5969b141d7c73b5aeac2c2d",
+      "transition_valid": true,
+      "user_prompt_chars": 6989,
+      "user_prompt_sha256": "dcf6aca082fbd48e4bd744be718b47d4841c051de7af4b0b6d3304cadec55b06",
+      "validation_errors": []
+    },
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "candidate_rejected_by_transition_validator": false,
+      "candidate_semantic_correct": true,
+      "candidate_state_fingerprint": "021db275bf5da85fee4d5ed1cbc6e8101e7786f6dd2b6c5a04b452020313cc8e",
+      "committed_state_semantic_correct": true,
+      "event_id": "seed-1000/e02",
+      "exogenous_fingerprint": "dabe9605a490a19036709da1c92d5b9ad1baece0c1c63260b95d63c9d346d3a2",
+      "failure_stage": null,
+      "generation": {
+        "cancellation_status": "not_requested",
+        "completion_tokens": 1617,
+        "error": "",
+        "finish_reason": "stop",
+        "http_status": 200,
+        "latency_s": 46.84428175538778,
+        "observed_completion_tokens": 1617,
+        "observed_output_chars": 5978,
+        "observed_token_count_kind": "server_usage_cumulative",
+        "ok": true,
+        "output_chars": 5978,
+        "output_sha256": "2079a983980c6e47945177001bb0405e8140cd03613211e2063709494e777cb0",
+        "prompt_tokens": 2488,
+        "request_completed": true,
+        "request_id": "4422c757-fa5b-4c38-a6ea-3fa9770dd709",
+        "response_id": "chatcmpl-4422c757-fa5b-4c38-a6ea-3fa9770dd709",
+        "server_error": "",
+        "status": "ok",
+        "streamed_chunks": 1619,
+        "telemetry": {
+          "client_connection_closed": true,
+          "content_chunks": 1616,
+          "generation_completed_before_client_deadline": true,
+          "guided_decoding_backend": "guidance",
+          "json_valid": true,
+          "last_usage_at_s": 46.84331067092717,
+          "max_output_tokens": 4096,
+          "model_calls": 1,
+          "observed_token_note": "Only server-reported usage; SSE chunks are not tokens.",
+          "protocol": "vllm-0.8.5-streaming-guided-json",
+          "received_done": true,
+          "schema_valid": true,
+          "server_cancellation_confirmed": null,
+          "timeout_s": 90.0
+        },
+        "ttft_s": 2.1674469467252493
+      },
+      "json_parse_success": true,
+      "method": "FSR-PC",
+      "model": "Qwen/Qwen3-32B",
+      "ordinal": 2,
+      "output_schema_valid": true,
+      "packet_fingerprint": "bbc0827a3acca8d61aa29c22e05029ce76b6d6e359ab8524c72388aa684e40ed",
+      "raw_output_file": "raw_outputs/event_02.txt",
+      "request_completed": true,
+      "semantic_match_to_registered_transition": true,
+      "state_committed": true,
+      "state_fingerprint_after": "021db275bf5da85fee4d5ed1cbc6e8101e7786f6dd2b6c5a04b452020313cc8e",
+      "state_fingerprint_before": "027cb2d1de49a6044f3306f300454e55c85c5a7498a24de47c26012338b7f4ef",
+      "system_prompt_chars": 2557,
+      "system_prompt_sha256": "993605dc58afcfcc4e47c197627dc3514f7a6397e5969b141d7c73b5aeac2c2d",
+      "transition_valid": true,
+      "user_prompt_chars": 7397,
+      "user_prompt_sha256": "6221518a1292cfbbbd4f00f0521bb86cda49de1e29e13a88ff9937908c20494e",
+      "validation_errors": []
+    },
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "candidate_rejected_by_transition_validator": false,
+      "candidate_semantic_correct": true,
+      "candidate_state_fingerprint": "dcbb2b1ca8ecb4249fda4fb91c489b7e83cfcb106c854b4057680642f0ff4e04",
+      "committed_state_semantic_correct": true,
+      "event_id": "seed-1000/e03",
+      "exogenous_fingerprint": "47490d79bd69b3ae32175e38db0d7d4c72b695f77a9330388941702a741357d9",
+      "failure_stage": null,
+      "generation": {
+        "cancellation_status": "not_requested",
+        "completion_tokens": 1892,
+        "error": "",
+        "finish_reason": "stop",
+        "http_status": 200,
+        "latency_s": 54.57671934738755,
+        "observed_completion_tokens": 1892,
+        "observed_output_chars": 6941,
+        "observed_token_count_kind": "server_usage_cumulative",
+        "ok": true,
+        "output_chars": 6941,
+        "output_sha256": "7b0abce992603763072daa52724f26f69d8bdc38b73e2fd62186a408af205097",
+        "prompt_tokens": 2742,
+        "request_completed": true,
+        "request_id": "64aebe16-34e1-4bc3-8d33-d2d2b58dc28f",
+        "response_id": "chatcmpl-64aebe16-34e1-4bc3-8d33-d2d2b58dc28f",
+        "server_error": "",
+        "status": "ok",
+        "streamed_chunks": 1894,
+        "telemetry": {
+          "client_connection_closed": true,
+          "content_chunks": 1891,
+          "generation_completed_before_client_deadline": true,
+          "guided_decoding_backend": "guidance",
+          "json_valid": true,
+          "last_usage_at_s": 54.57566784322262,
+          "max_output_tokens": 4096,
+          "model_calls": 1,
+          "observed_token_note": "Only server-reported usage; SSE chunks are not tokens.",
+          "protocol": "vllm-0.8.5-streaming-guided-json",
+          "received_done": true,
+          "schema_valid": true,
+          "server_cancellation_confirmed": null,
+          "timeout_s": 90.0
+        },
+        "ttft_s": 2.28990943916142
+      },
+      "json_parse_success": true,
+      "method": "FSR-PC",
+      "model": "Qwen/Qwen3-32B",
+      "ordinal": 3,
+      "output_schema_valid": true,
+      "packet_fingerprint": "ddea117f4fb48640f2168a8286e241a541892e21f425b7cbf2d65b6ac2a37cff",
+      "raw_output_file": "raw_outputs/event_03.txt",
+      "request_completed": true,
+      "semantic_match_to_registered_transition": true,
+      "state_committed": true,
+      "state_fingerprint_after": "dcbb2b1ca8ecb4249fda4fb91c489b7e83cfcb106c854b4057680642f0ff4e04",
+      "state_fingerprint_before": "021db275bf5da85fee4d5ed1cbc6e8101e7786f6dd2b6c5a04b452020313cc8e",
+      "system_prompt_chars": 2557,
+      "system_prompt_sha256": "993605dc58afcfcc4e47c197627dc3514f7a6397e5969b141d7c73b5aeac2c2d",
+      "transition_valid": true,
+      "user_prompt_chars": 8332,
+      "user_prompt_sha256": "aa345be3b7002865c2545cda89ee6711fbc3a5f2da0bae056b9711e8d01fc2b6",
+      "validation_errors": []
+    },
+    {
+      "adaptation_status": "schema_validation_failure",
+      "adaptation_valid": false,
+      "candidate_rejected_by_transition_validator": true,
+      "candidate_semantic_correct": null,
+      "candidate_state_fingerprint": null,
+      "committed_state_semantic_correct": null,
+      "event_id": "seed-1000/e04",
+      "exogenous_fingerprint": "bf82117c73b38d83e2f35eea69f11b03899c28332c6d9492a0e8e477ba8a79ff",
+      "failure_stage": "transition_validation",
+      "generation": {
+        "cancellation_status": "not_requested",
+        "completion_tokens": 2166,
+        "error": "",
+        "finish_reason": "stop",
+        "http_status": 200,
+        "latency_s": 62.77470029704273,
+        "observed_completion_tokens": 2166,
+        "observed_output_chars": 7905,
+        "observed_token_count_kind": "server_usage_cumulative",
+        "ok": true,
+        "output_chars": 7905,
+        "output_sha256": "f76aaea71727006787995f67e6fcc761cc63b621c430cb50f5ad41a2790f99bd",
+        "prompt_tokens": 3229,
+        "request_completed": true,
+        "request_id": "da7b26da-f908-40bd-b61d-bb7ca5443ac6",
+        "response_id": "chatcmpl-da7b26da-f908-40bd-b61d-bb7ca5443ac6",
+        "server_error": "",
+        "status": "ok",
+        "streamed_chunks": 2168,
+        "telemetry": {
+          "client_connection_closed": true,
+          "content_chunks": 2165,
+          "generation_completed_before_client_deadline": true,
+          "guided_decoding_backend": "guidance",
+          "json_valid": true,
+          "last_usage_at_s": 62.773818500339985,
+          "max_output_tokens": 4096,
+          "model_calls": 1,
+          "observed_token_note": "Only server-reported usage; SSE chunks are not tokens.",
+          "protocol": "vllm-0.8.5-streaming-guided-json",
+          "received_done": true,
+          "schema_valid": true,
+          "server_cancellation_confirmed": null,
+          "timeout_s": 90.0
+        },
+        "ttft_s": 2.6730109583586454
+      },
+      "json_parse_success": true,
+      "method": "FSR-PC",
+      "model": "Qwen/Qwen3-32B",
+      "ordinal": 4,
+      "output_schema_valid": true,
+      "packet_fingerprint": "be04f9b70728b031492e63ec5c33918dacaf7d0d939405f72cbbe46e18af0940",
+      "raw_output_file": "raw_outputs/event_04.txt",
+      "request_completed": true,
+      "semantic_match_to_registered_transition": false,
+      "state_committed": false,
+      "state_fingerprint_after": "dcbb2b1ca8ecb4249fda4fb91c489b7e83cfcb106c854b4057680642f0ff4e04",
+      "state_fingerprint_before": "dcbb2b1ca8ecb4249fda4fb91c489b7e83cfcb106c854b4057680642f0ff4e04",
+      "system_prompt_chars": 2557,
+      "system_prompt_sha256": "993605dc58afcfcc4e47c197627dc3514f7a6397e5969b141d7c73b5aeac2c2d",
+      "transition_valid": false,
+      "user_prompt_chars": 10075,
+      "user_prompt_sha256": "9b70fd5516a6a47fa5a78c0b04c7f02421dd33aa626f578fa43cfa627da3a07d",
+      "validation_errors": [
+        "critical workflow must have exactly one live carrier, got 2",
+        "order-critical/detour-02: depth differs from parent depth + 1"
+      ]
+    }
+  ],
+  "model_request_contract": {
+    "calls_per_event": 1,
+    "max_output_tokens": 4096,
+    "model": "Qwen/Qwen3-32B",
+    "timeout_s": 90.0
+  },
+  "pairing_key": "calibration|seed=1000",
+  "physical": {
+    "actions": [],
+    "backend": "libero_mujoco",
+    "controller_error": "",
+    "exact_assignment": null,
+    "expected_assignment": {
+      "butter": "basket_B",
+      "milk": "basket_A",
+      "yogurt": "basket_A"
+    },
+    "finish": {},
+    "initialized": false,
+    "invalid_action_count": 0,
+    "observed_assignment": {},
+    "physical_success": null,
+    "skipped_reason": "schema_validation_failure",
+    "video": {
+      "skipped": true,
+      "written": false
+    }
+  },
+  "plan_error": "",
+  "platform": "Linux-5.19.0-50-generic-x86_64-with-glibc2.35",
+  "profile": "calibration",
+  "python": "3.10.12",
+  "registered_design": {
+    "critical_logical_id": "order-critical",
+    "expected_plan": [
+      {
+        "object": "butter",
+        "role": "primary_order",
+        "target": "basket_B"
+      },
+      {
+        "object": "milk",
+        "role": "receipt_token",
+        "target": "basket_A"
+      },
+      {
+        "object": "yogurt",
+        "role": "closure_token",
+        "target": "basket_A"
+      }
+    ],
+    "initial_slots": 8,
+    "lineage_depth": 2,
+    "max_output_tokens": 4096,
+    "model_timeout_s": 90.0,
+    "n_events": 7
+  },
+  "run_mode": "free_running",
+  "schema_version": "cope-fsrpc-r4-episode-v1",
+  "seed": 1000,
+  "task_contract": {
+    "critical_logical_id": "order-critical",
+    "lineage_rule": "restore_root follows parent_id edges to depth zero; the root payload is authoritative even when a detour has the same primary target",
+    "objects": [
+      "butter",
+      "milk",
+      "yogurt"
+    ],
+    "root_slot_id": "order-critical/root",
+    "success_definition": {
+      "all_model_updates_valid": true,
+      "exact_object_assignment": true,
+      "no_completed_action_repeated": true,
+      "no_expired_detour_executed": true,
+      "required_final_plan": [
+        {
+          "object": "butter",
+          "role": "primary_order",
+          "target": "basket_B"
+        },
+        {
+          "object": "milk",
+          "role": "receipt_token",
+          "target": "basket_A"
+        },
+        {
+          "object": "yogurt",
+          "role": "closure_token",
+          "target": "basket_A"
+        }
+      ]
+    },
+    "targets": [
+      "basket_A",
+      "basket_B",
+      "basket_C"
+    ],
+    "task_name": "persistent_multi_order_fulfillment"
+  },
+  "utc": "2026-09-05T02:44:15.806848+00:00"
+}

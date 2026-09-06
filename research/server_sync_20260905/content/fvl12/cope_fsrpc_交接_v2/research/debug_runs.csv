@@ -1,0 +1,10 @@
+run_id,backend,condition,method,seed,attempted,valid,success,collision,steps,status,exclusion_reason
+preflight_20260804_v1,libero_mujoco,preflight,diagnostic,0,1,0,,false,,excluded,candidate_0_did_not_create_required_real_collision
+preflight_20260804_v2,libero_mujoco,preflight,diagnostic,0,1,0,,,,excluded,diagnostic_iteration
+preflight_20260804_v3,libero_mujoco,preflight,diagnostic,0,1,0,,,,excluded,diagnostic_iteration
+preflight_20260804_v4,libero_mujoco,preflight,diagnostic,0,1,1,true,false,,pass,
+preflight_20260804_v5,libero_mujoco,preflight,diagnostic,0,1,1,true,false,,pass_final,
+debug_nominal_seed0_v1,libero_mujoco,nominal,no_adaptation,0,1,1,true,false,599,pass,
+debug_I1_cope_seed0_v1,libero_mujoco,I1,CoPE,0,1,0,,,,excluded,raw_float_state_hash_mismatch_at_1.11e-16
+debug_I1_cope_seed0_v2,libero_mujoco,I1,CoPE,0,1,0,,,,excluded,ssh_broken_pipe_before_episode_artifacts_completed
+debug_I1_cope_seed0_v3,libero_mujoco,I1,CoPE,0,1,1,true,false,601,pass,

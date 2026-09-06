@@ -1,0 +1,8 @@
+source_host,scope,reason
+fvl12,/home/lijingsu/heart_libero10_swap_6_7_20260812 and /home/lijingsu/heart_taskgraph_6_7_20260821,HEART excluded by user; no HEART payload uploaded
+fvl12,codex-worktrees/libero-cope-cleanroom; libero-cope-cleanroom-v2; openvla-cope-cleanroom,Third-party upstream checkouts and assets excluded; project-specific patch/provenance reports are included
+all,Git metadata; hidden personal config; credentials; virtual environments; models; checkpoints; datasets; common caches,Out of scope; original audit exclusions retained
+fvl12,15 *.bundle Git transport files,Git history transport containers excluded; current working files included; historical objects not expanded
+fvl12,4 source/evidence ZIP/TAR containers,597 ordinary members fully represented in source_manifest.csv; raw duplicate containers omitted
+fvl12,182 __MACOSX / ._* archive members and archive directory entries,Mac metadata and directory-only entries omitted
+fvl12,2 *.pid files and symlink targets,Transient process IDs and symlinks not uploaded; no symlink traversal

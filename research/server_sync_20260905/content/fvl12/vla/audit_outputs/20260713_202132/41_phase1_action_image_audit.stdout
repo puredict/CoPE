@@ -1,0 +1,321 @@
+{
+  "outroot": "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind",
+  "json_files": {
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/base_closed_loop_smoke.json": {
+      "rows": 10,
+      "action_lengths": [
+        7
+      ],
+      "all_actions_finite": true,
+      "gripper_min": -1.0,
+      "gripper_max": 1.0,
+      "reward_done_json_serializable": true
+    },
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/disturbance/disturbance_smoke.json": {
+      "rows": 12,
+      "action_lengths": [
+        7
+      ],
+      "all_actions_finite": true,
+      "gripper_min": -1.0,
+      "gripper_max": 1.0,
+      "reward_done_json_serializable": true
+    }
+  },
+  "png_files": {
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/disturbance/frame_t10.png": {
+      "size": [
+        224,
+        224
+      ],
+      "mode": "RGB",
+      "dtype": "uint8",
+      "shape": [
+        224,
+        224,
+        3
+      ],
+      "min": 0,
+      "max": 255
+    },
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/disturbance/frame_t11.png": {
+      "size": [
+        224,
+        224
+      ],
+      "mode": "RGB",
+      "dtype": "uint8",
+      "shape": [
+        224,
+        224,
+        3
+      ],
+      "min": 0,
+      "max": 255
+    },
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/disturbance/frame_t3.png": {
+      "size": [
+        224,
+        224
+      ],
+      "mode": "RGB",
+      "dtype": "uint8",
+      "shape": [
+        224,
+        224,
+        3
+      ],
+      "min": 0,
+      "max": 255
+    },
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/disturbance/frame_t4.png": {
+      "size": [
+        224,
+        224
+      ],
+      "mode": "RGB",
+      "dtype": "uint8",
+      "shape": [
+        224,
+        224,
+        3
+      ],
+      "min": 0,
+      "max": 255
+    },
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/disturbance/frame_t5.png": {
+      "size": [
+        224,
+        224
+      ],
+      "mode": "RGB",
+      "dtype": "uint8",
+      "shape": [
+        224,
+        224,
+        3
+      ],
+      "min": 0,
+      "max": 255
+    },
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/disturbance/frame_t6.png": {
+      "size": [
+        224,
+        224
+      ],
+      "mode": "RGB",
+      "dtype": "uint8",
+      "shape": [
+        224,
+        224,
+        3
+      ],
+      "min": 0,
+      "max": 255
+    },
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/disturbance/frame_t7.png": {
+      "size": [
+        224,
+        224
+      ],
+      "mode": "RGB",
+      "dtype": "uint8",
+      "shape": [
+        224,
+        224,
+        3
+      ],
+      "min": 0,
+      "max": 255
+    },
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/disturbance/frame_t8.png": {
+      "size": [
+        224,
+        224
+      ],
+      "mode": "RGB",
+      "dtype": "uint8",
+      "shape": [
+        224,
+        224,
+        3
+      ],
+      "min": 0,
+      "max": 255
+    },
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/disturbance/frame_t9.png": {
+      "size": [
+        224,
+        224
+      ],
+      "mode": "RGB",
+      "dtype": "uint8",
+      "shape": [
+        224,
+        224,
+        3
+      ],
+      "min": 0,
+      "max": 255
+    },
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/frame_t3.png": {
+      "size": [
+        224,
+        224
+      ],
+      "mode": "RGB",
+      "dtype": "uint8",
+      "shape": [
+        224,
+        224,
+        3
+      ],
+      "min": 0,
+      "max": 255
+    },
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/frame_t4.png": {
+      "size": [
+        224,
+        224
+      ],
+      "mode": "RGB",
+      "dtype": "uint8",
+      "shape": [
+        224,
+        224,
+        3
+      ],
+      "min": 0,
+      "max": 255
+    },
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/frame_t5.png": {
+      "size": [
+        224,
+        224
+      ],
+      "mode": "RGB",
+      "dtype": "uint8",
+      "shape": [
+        224,
+        224,
+        3
+      ],
+      "min": 0,
+      "max": 255
+    },
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/frame_t6.png": {
+      "size": [
+        224,
+        224
+      ],
+      "mode": "RGB",
+      "dtype": "uint8",
+      "shape": [
+        224,
+        224,
+        3
+      ],
+      "min": 0,
+      "max": 255
+    },
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/frame_t7.png": {
+      "size": [
+        224,
+        224
+      ],
+      "mode": "RGB",
+      "dtype": "uint8",
+      "shape": [
+        224,
+        224,
+        3
+      ],
+      "min": 0,
+      "max": 255
+    },
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/frame_t8.png": {
+      "size": [
+        224,
+        224
+      ],
+      "mode": "RGB",
+      "dtype": "uint8",
+      "shape": [
+        224,
+        224,
+        3
+      ],
+      "min": 0,
+      "max": 255
+    },
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/frame_t9.png": {
+      "size": [
+        224,
+        224
+      ],
+      "mode": "RGB",
+      "dtype": "uint8",
+      "shape": [
+        224,
+        224,
+        3
+      ],
+      "min": 0,
+      "max": 255
+    }
+  },
+  "openvla_local_diagnostic": {
+    "action": [
+      0.01164595,
+      0.00475603,
+      0.00469544,
+      -0.00397045,
+      0.03070304,
+      0.01443947,
+      0.99607843
+    ],
+    "action_length": 7,
+    "all_finite": true,
+    "gripper_value": 0.99607843,
+    "log": "/home/lijingsu/vla/audit_outputs/20260713_202132/40_openvla_smoke_local_model_diagnostic.log"
+  },
+  "disturbance_position_delta": {
+    "from_t": 5,
+    "to_t": 6,
+    "before": [
+      -0.117287,
+      0.055748,
+      0.475169
+    ],
+    "after": [
+      -0.017287,
+      0.105748,
+      0.475169
+    ],
+    "delta": [
+      0.1,
+      0.05,
+      0.0
+    ],
+    "event": {
+      "type": "target_displacement",
+      "joint": "tomato_sauce_1_joint0",
+      "delta_xy": [
+        0.1,
+        0.05
+      ]
+    }
+  },
+  "overall": {
+    "action_lengths": [
+      7
+    ],
+    "all_actions_finite": true,
+    "num_actions": 22,
+    "reward_done_json_serializable": true
+  },
+  "contact_sheets": {
+    "base": "/home/lijingsu/vla/audit_outputs/20260713_202132/base_smoke_contact_sheet.png",
+    "disturbance": "/home/lijingsu/vla/audit_outputs/20260713_202132/disturbance_smoke_contact_sheet.png"
+  }
+}

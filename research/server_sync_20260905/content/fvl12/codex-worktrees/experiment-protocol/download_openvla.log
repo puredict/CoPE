@@ -1,0 +1,4 @@
+/home/lijingsu/vla/.venv/lib/python3.10/site-packages/huggingface_hub/file_download.py:949: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+Fetching 18 files:   0%|          | 0/18 [00:00<?, ?it/s]Fetching 18 files:   6%|▌         | 1/18 [00:01<00:33,  1.97s/it]Fetching 18 files:  11%|█         | 2/18 [00:03<00:22,  1.43s/it]Fetching 18 files:  39%|███▉      | 7/18 [03:19<05:52, 32.02s/it]Fetching 18 files:  44%|████▍     | 8/18 [06:34<10:24, 62.49s/it]Fetching 18 files: 100%|██████████| 18/18 [06:34<00:00, 21.89s/it]
+downloaded /home/lijingsu/vla/models/openvla-7b

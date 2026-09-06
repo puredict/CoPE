@@ -1,0 +1,4 @@
+# Qwen3 support first appeared in the vLLM 0.8 generation. A newer compatible
+# vLLM is acceptable; record the exact installed version in the returned logs.
+vllm>=0.8.5
+

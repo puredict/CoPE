@@ -1,0 +1,20 @@
+{
+  "controller": "OnTheGroundPanda OSC_POSE privileged geometry oracle",
+  "cpu_snapshot_sha256": "607704af05fd2fa1ccadcde9a3317fb0fefa113ab82312bf3515c154b8ee7418",
+  "created_utc": "2026-08-04T06:28:42.183371+00:00",
+  "cuda_inference_used": false,
+  "excluded_generated_cache_parts": [
+    ".pytest_cache",
+    "__pycache__"
+  ],
+  "frozen_repair_core_included": true,
+  "generated_by": "scripts/refresh_handoff_integrity.py",
+  "learned_policy_used": false,
+  "n_files_covered_by_sha256sums": 146,
+  "old_experiment_outputs_preserved": true,
+  "package": "cope_fsrpc_交接_v2",
+  "platform": "macOS-15.7.3-arm64-arm-64bit-Mach-O",
+  "python": "3.13.5",
+  "real_backend": "libero_mujoco",
+  "simulator": "LIBERO/robosuite/MuJoCo"
+}

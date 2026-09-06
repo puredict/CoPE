@@ -1,0 +1,20 @@
+{
+  "modes": [
+    "oracle_full"
+  ],
+  "physical_gpu": "2",
+  "results": [
+    {
+      "back_target_violation": true,
+      "current_goal_success": false,
+      "event_reached": true,
+      "event_step": 78,
+      "mode": "oracle_full",
+      "policy_steps_consumed": 164,
+      "runtime_seconds": 72.04321636352688,
+      "termination_reason": "back_target_violation"
+    }
+  ],
+  "schema_version": "task5-target-substitution-worker-summary-v1",
+  "state_id": 0
+}

@@ -1,0 +1,20 @@
+{
+  "modes": [
+    "no_edit"
+  ],
+  "physical_gpu": "1",
+  "results": [
+    {
+      "back_target_violation": true,
+      "current_goal_success": false,
+      "event_reached": true,
+      "event_step": 78,
+      "mode": "no_edit",
+      "policy_steps_consumed": 418,
+      "runtime_seconds": 205.88979546632618,
+      "termination_reason": "back_target_violation"
+    }
+  ],
+  "schema_version": "task5-target-substitution-worker-summary-v1",
+  "state_id": 0
+}

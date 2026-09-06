@@ -1,0 +1,18 @@
+claim,current_decision,evidence,what_would_upgrade_it
+"CoPE uniquely expresses persistent commitment recovery",REJECTED,"TX-EXEC+ 12/12 semantic equivalence","Do not revive; reframe around inductive bias or assurance"
+"Sparse executable recovery is unique to CoPE",REJECTED,"Compact-TX equivalent and smaller than FSR 12/12","Do not revive"
+"CoPE is smaller than every sparse baseline on every event",REJECTED,"CoPE smaller than Compact-TX only 8/12 overall; 0/4 no-op/rejection","Preregister event-density strata and learned token outcomes"
+"CoPE typed operations reduce commission error surface",SUPPORTED_SYNTHETIC,"Oracle-free CoPE-G 0/14 vs Compact-TX 5/14 vs FSR-PC 10/14 representation fail-open","Held-out schemas and learned native outputs"
+"Typed operations alone guarantee complete edits",REJECTED,"CoPE-G Compact-TX and FSR-PC each fail-open 8/8 omission probes before common validator","Keep decomposed completeness layer"
+"Decomposed predicates catch frozen omissions and corruptions",SUPPORTED_SYNTHETIC,"48/48 clean; 39/39 materialized faults rejected; 136/136 exact parity","Held-out/property-based and embodied validator packets"
+"All eight predicate groups are independently necessary",SUPPORTED_WHITE_BOX,"8/8 singleton ablation fail-open; 64/64 compositions exact attribution","Independent generator and broader task schemas"
+"Validator is robust to structure-agnostic one-edit mutation",SUPPORTED_WITH_REPAIR,"v1 found 4/2352 blind spots; v2 0 dangerous on identical replay","Multi-edit/adaptive fuzzing and canonical-order resolution"
+"CoPE improves learned first-pass semantic generation",PENDING,"Real matched-provider calls=0 because credential unavailable","Frozen tri-arm real provider run then larger paired corpus"
+"CoPE improves embodied interruption recovery",PENDING,"No real end-to-end CoPE semantic provider-to-controller result","Clean-qualified paired Track C"
+"CoPE is end-to-end safer than Compact-TX/FSR-PC under same validator",NOT_SHOWN,"All frozen complete pipelines were fail-closed","Real frequency/severity differences under learned generation"
+"CoPE has a universal runtime or memory advantage",NEGATIVE_OR_PENDING,"Prior scaling/resource diagnostics show current Python path often slower/higher allocation","Optimized implementation and fair end-to-end profiling"
+"Canonical list order is irrelevant",OPEN,"14 v2 order-only divergences accepted semantically but exact hashes differ","Freeze sort/normalization semantics and replay receipts"
+"ReKep is an adequate main comparator",REJECTED_CURRENTLY,"Reported reproduction clean about 30%","Pass identical 25/30 clean and updated-goal admission per geometric cell"
+"OpenVLA is an adequate replacement controller",REJECTED_CURRENTLY,"oracle updated goal 0/5; task5 target substitution 0/4","New checkpoint/controller passes admission before comparison"
+"CoPE supports a long-horizon headline",PENDING,"Current strong results use 12 small synthetic events","At least four admitted deep multi-stage tasks with progress-bearing milestones"
+

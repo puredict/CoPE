@@ -1,0 +1,254 @@
+{
+  "handoff": "rekep_repair_交接",
+  "purpose": "Coauthor handoff: frozen CPU research state + GPU integration package",
+  "gpu_execution_status": "NOT EXECUTED anywhere; dry-run / syntax-check only",
+  "status_vocabulary": [
+    "locally tested",
+    "locally dry-run validated",
+    "syntax-checked only",
+    "remote GPU required",
+    "not started"
+  ],
+  "artifacts": [
+    {
+      "path": "report/rekep_repair_technical_report.pdf",
+      "purpose": "Main technical report (16pp)",
+      "locally_tested": "locally tested (compiled)",
+      "gpu_required": false,
+      "generation_command": "cd report && pdflatex rekep_repair_technical_report.tex (x2)",
+      "expected_output": "16-page PDF"
+    },
+    {
+      "path": "report/tables/*.csv",
+      "purpose": "Machine-readable result tables",
+      "locally_tested": "locally tested",
+      "gpu_required": false,
+      "generation_command": "generated alongside the report",
+      "expected_output": "4 CSV files"
+    },
+    {
+      "path": "README_FIRST.md",
+      "purpose": "Entry point for the collaborator",
+      "locally_tested": "locally tested",
+      "gpu_required": false,
+      "generation_command": "authored",
+      "expected_output": "-"
+    },
+    {
+      "path": "PROJECT_STATUS.md",
+      "purpose": "Status table; never marks GPU as tested",
+      "locally_tested": "locally tested",
+      "gpu_required": false,
+      "generation_command": "authored",
+      "expected_output": "-"
+    },
+    {
+      "path": "CODE_MAP.md",
+      "purpose": "Navigation + end-to-end call graph",
+      "locally_tested": "locally tested",
+      "gpu_required": false,
+      "generation_command": "authored",
+      "expected_output": "-"
+    },
+    {
+      "path": "CPU_RESULTS.md",
+      "purpose": "Frozen CPU tables + repro commands",
+      "locally_tested": "locally tested",
+      "gpu_required": false,
+      "generation_command": "authored",
+      "expected_output": "-"
+    },
+    {
+      "path": "GPU_HANDOFF.md",
+      "purpose": "Install assumptions and proposed pins",
+      "locally_tested": "syntax-checked only",
+      "gpu_required": true,
+      "generation_command": "authored",
+      "expected_output": "all pins UNCONFIRMED on hardware"
+    },
+    {
+      "path": "GPU_RUNBOOK.md",
+      "purpose": "Ordered commands with success/failure/rollback",
+      "locally_tested": "syntax-checked only",
+      "gpu_required": true,
+      "generation_command": "authored",
+      "expected_output": "11 ordered steps"
+    },
+    {
+      "path": "GPU_EXPERIMENT_PLAN.md",
+      "purpose": "Single- and multi-GPU plan, seeds, video, nondeterminism",
+      "locally_tested": "syntax-checked only",
+      "gpu_required": true,
+      "generation_command": "authored",
+      "expected_output": "-"
+    },
+    {
+      "path": "KNOWN_RISKS.md",
+      "purpose": "Risk register R1-R9; R3/R4 flagged as paper-affecting",
+      "locally_tested": "locally tested",
+      "gpu_required": false,
+      "generation_command": "authored",
+      "expected_output": "-"
+    },
+    {
+      "path": "COLLABORATION_NOTES.md",
+      "purpose": "Intellectual history; open questions; blank CRediT table",
+      "locally_tested": "locally tested",
+      "gpu_required": false,
+      "generation_command": "authored",
+      "expected_output": "no author order recorded"
+    },
+    {
+      "path": "REPRODUCIBILITY.md",
+      "purpose": "Environment, determinism, repro commands",
+      "locally_tested": "locally tested",
+      "gpu_required": false,
+      "generation_command": "authored",
+      "expected_output": "-"
+    },
+    {
+      "path": "VALIDATION_REPORT.md",
+      "purpose": "Exact validation outputs",
+      "locally_tested": "locally tested",
+      "gpu_required": false,
+      "generation_command": "authored",
+      "expected_output": "-"
+    },
+    {
+      "path": "code/",
+      "purpose": "Complete reproducible project (85 py files)",
+      "locally_tested": "locally tested",
+      "gpu_required": false,
+      "generation_command": "rsync from source repo excluding caches",
+      "expected_output": "71 tests pass"
+    },
+    {
+      "path": "results_cpu/benchmark_main.txt",
+      "purpose": "Main benchmark 16,200 episodes",
+      "locally_tested": "locally tested",
+      "gpu_required": false,
+      "generation_command": "cd code && python scripts/run_benchmark.py",
+      "expected_output": "offline_exact == online_repair"
+    },
+    {
+      "path": "results_cpu/ablations.txt",
+      "purpose": "Ablations 9,720 episodes",
+      "locally_tested": "locally tested",
+      "gpu_required": false,
+      "generation_command": "cd code && python scripts/run_ablations.py --seeds 20",
+      "expected_output": "3 causal, 3 null"
+    },
+    {
+      "path": "results_cpu/coverage_storage.txt",
+      "purpose": "Coverage vs branch count",
+      "locally_tested": "locally tested",
+      "gpu_required": false,
+      "generation_command": "cd code && python scripts/offline_regimes.py",
+      "expected_output": "online 7/7 with 0 compile"
+    },
+    {
+      "path": "results_cpu/mismatch_aggregate.txt",
+      "purpose": "Mismatch 17,280 episodes",
+      "locally_tested": "locally tested",
+      "gpu_required": false,
+      "generation_command": "cd code && python scripts/run_mismatch.py --seeds 20",
+      "expected_output": "FA curve 0.000->0.228"
+    },
+    {
+      "path": "results_cpu/mismatch_attribution.json",
+      "purpose": "Per-dimension attribution 16,740 episodes",
+      "locally_tested": "locally tested",
+      "gpu_required": false,
+      "generation_command": "cd code && python scripts/run_mismatch_attribution.py --seeds 10",
+      "expected_output": "guard_delay ranks 1st"
+    },
+    {
+      "path": "results_cpu/theorem1.txt",
+      "purpose": "Theorem 1 numerical sanity check",
+      "locally_tested": "locally tested",
+      "gpu_required": false,
+      "generation_command": "cd code && python scripts/validate_theorem1.py",
+      "expected_output": "ALL CHECKS PASSED"
+    },
+    {
+      "path": "configs_gpu/*.yaml",
+      "purpose": "GPU config templates with <PLACEHOLDER>s",
+      "locally_tested": "syntax-checked only",
+      "gpu_required": true,
+      "generation_command": "authored",
+      "expected_output": "MUST be edited before GPU runs"
+    },
+    {
+      "path": "scripts/run_cpu_tests.sh",
+      "purpose": "CPU test runner",
+      "locally_tested": "locally tested",
+      "gpu_required": false,
+      "generation_command": "bash scripts/run_cpu_tests.sh",
+      "expected_output": "71 passed"
+    },
+    {
+      "path": "scripts/reproduce_cpu_results.sh",
+      "purpose": "Regenerates all CPU artifacts",
+      "locally_tested": "locally tested",
+      "gpu_required": false,
+      "generation_command": "bash scripts/reproduce_cpu_results.sh",
+      "expected_output": "6 result files"
+    },
+    {
+      "path": "scripts/check_gpu_environment.py",
+      "purpose": "Env validator (wrapper)",
+      "locally_tested": "locally dry-run validated",
+      "gpu_required": true,
+      "generation_command": "python scripts/check_gpu_environment.py --dry-run",
+      "expected_output": "GPU rows SKIP in dry-run"
+    },
+    {
+      "path": "scripts/run_omni_smoke_test.py",
+      "purpose": "OmniGibson smoke test (wrapper)",
+      "locally_tested": "locally dry-run validated",
+      "gpu_required": true,
+      "generation_command": "python scripts/run_omni_smoke_test.py --dry-run",
+      "expected_output": "prints plan; imports nothing GPU"
+    },
+    {
+      "path": "scripts/run_rekep_baseline.py",
+      "purpose": "nominal/wrapped/repair runner (wrapper)",
+      "locally_tested": "locally dry-run validated",
+      "gpu_required": true,
+      "generation_command": "python scripts/run_rekep_baseline.py --mode repair --dry-run --steps 120",
+      "expected_output": "synthesizes + splices via adapter fake"
+    },
+    {
+      "path": "scripts/run_milestone1.sh",
+      "purpose": "One-GPU milestone runner",
+      "locally_tested": "locally dry-run validated",
+      "gpu_required": true,
+      "generation_command": "DRY_RUN=1 bash scripts/run_milestone1.sh",
+      "expected_output": "runs 3 modes, prints parity check"
+    },
+    {
+      "path": "scripts/launch_gpu_workers.sh",
+      "purpose": "8-GPU launcher",
+      "locally_tested": "syntax-checked only",
+      "gpu_required": true,
+      "generation_command": "DRY_RUN=1 bash scripts/launch_gpu_workers.sh",
+      "expected_output": "refuses without GATE_PASSED"
+    },
+    {
+      "path": "scripts/aggregate_results.py",
+      "purpose": "Trace aggregation",
+      "locally_tested": "locally tested",
+      "gpu_required": false,
+      "generation_command": "python scripts/aggregate_results.py --root runs",
+      "expected_output": "summary per trace"
+    },
+    {
+      "path": "code/rekep_repair/rekep_adapter.py",
+      "purpose": "ReKep/OmniGibson adapter",
+      "locally_tested": "locally dry-run validated",
+      "gpu_required": true,
+      "generation_command": "exercised by the CPU test suite in dry_run mode",
+      "expected_output": "REQUIRES keypoint indices to be set per scene"
+    }
+  ]
+}

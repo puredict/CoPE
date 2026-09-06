@@ -1,0 +1,19 @@
+[run_project_env] Using project-isolated LIBERO/OpenVLA environment for this subprocess only.
+[run_project_env] LD_LIBRARY_PATH is unset here to avoid the broken system CUDA nvJitLink path.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /home/lijingsu/vla/.venv/lib/python3.10/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+regression_pilot I2 seed=0 method=CoPE: success=True layer=none events=2/2
+regression_pilot I2 seed=0 method=FSR-PC: success=True layer=none events=2/2
+Wrote /home/lijingsu/cope_fsrpc_v2_execution_r2/stage_b_fairness_debug_v2/stage_b_regression_pilot.json
+  attempt_count_exact: True
+  all_results_completed: True
+  all_required_artifacts_present: True
+  all_interruption_events_delivered: True
+  failure_layers_present: True
+  repair_pipelines_complete_or_classified: True
+  paired_fairness_passed: False

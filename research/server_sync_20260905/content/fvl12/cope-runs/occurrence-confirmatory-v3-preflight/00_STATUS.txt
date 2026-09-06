@@ -1,0 +1,1 @@
+{"arms":5,"cases":40,"gate":"PASS","manifest_sha256":"fa76ee03d207eb7a1959143881a0886b06965e6ebc0900ecde5631307a065bc5","oracle_cells":200,"planned_provider_calls":200,"provider_calls_made":0,"schema":"occurrence-learned-formal-cold-preflight-v1","simulator_states_indexed":0}

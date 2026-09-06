@@ -1,0 +1,17 @@
+--- git status --short before commit ---
+A  README_OFFLINE_ENVIRONMENT.md
+A  scripts/run_project_env.sh
+A  scripts/run_smokes_offline.sh
+--- git diff --cached --stat before commit ---
+ README_OFFLINE_ENVIRONMENT.md |  80 ++++++++++++++++++++++++++++++++
+ scripts/run_project_env.sh    |  33 +++++++++++++
+ scripts/run_smokes_offline.sh | 105 ++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 218 insertions(+)
+[main 68c3cdd] Add reproducible offline smoke-test launcher
+ 3 files changed, 218 insertions(+)
+ create mode 100644 README_OFFLINE_ENVIRONMENT.md
+ create mode 100755 scripts/run_project_env.sh
+ create mode 100755 scripts/run_smokes_offline.sh
+--- offline tools HEAD ---
+68c3cddcc8393da78c28bdc1b90f869ab00b045f
+--- git status --short after commit ---

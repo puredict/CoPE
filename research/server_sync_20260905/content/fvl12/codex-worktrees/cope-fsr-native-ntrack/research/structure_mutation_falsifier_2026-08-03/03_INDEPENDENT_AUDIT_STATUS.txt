@@ -1,0 +1,1 @@
+{"audit_program_sha256":"df5917a0b3b8f96f593d5ef8a54c3da69b631eb6e989fa928f9fca48722fb230","checks_passed":14,"checks_total":14,"decision":"PASS","learned_provider_calls":0,"order_only_divergences":14,"reserved_states_read":false,"retained_mutations":2352,"v1_dangerous_blind_spots":4,"v2_dangerous_blind_spots":0}

@@ -1,0 +1,26 @@
+COMMAND: find /home/lijingsu/vla/audit_outputs/20260713_213433_offline_smokes -type f \( -name \*.json -o -name \*.png -o -name \*.mp4 \) -printf %TY-%Tm-%Td\ %TH:%TM:%TS\ %s\ %p\\n
+START: 2026-07-13T21:36:15+08:00
+END: 2026-07-13T21:36:15+08:00
+EXIT: 0
+
+STDOUT:
+2026-07-13 21:35:32.2858719640 56428 /home/lijingsu/vla/audit_outputs/20260713_213433_offline_smokes/isolated_smoke_outputs/frame_t3.png
+2026-07-13 21:35:36.1378931140 56358 /home/lijingsu/vla/audit_outputs/20260713_213433_offline_smokes/isolated_smoke_outputs/frame_t9.png
+2026-07-13 21:35:36.9538975940 2394 /home/lijingsu/vla/audit_outputs/20260713_213433_offline_smokes/isolated_smoke_outputs/base_closed_loop_smoke.json
+2026-07-13 21:35:33.4338782680 56270 /home/lijingsu/vla/audit_outputs/20260713_213433_offline_smokes/isolated_smoke_outputs/frame_t4.png
+2026-07-13 21:35:35.0538871630 56594 /home/lijingsu/vla/audit_outputs/20260713_213433_offline_smokes/isolated_smoke_outputs/frame_t7.png
+2026-07-13 21:35:34.5058841540 56461 /home/lijingsu/vla/audit_outputs/20260713_213433_offline_smokes/isolated_smoke_outputs/frame_t6.png
+2026-07-13 21:35:33.9738812330 56426 /home/lijingsu/vla/audit_outputs/20260713_213433_offline_smokes/isolated_smoke_outputs/frame_t5.png
+2026-07-13 21:35:35.6018901710 56615 /home/lijingsu/vla/audit_outputs/20260713_213433_offline_smokes/isolated_smoke_outputs/frame_t8.png
+2026-07-13 21:36:08.4460702180 56428 /home/lijingsu/vla/audit_outputs/20260713_213433_offline_smokes/isolated_smoke_outputs/disturbance/frame_t3.png
+2026-07-13 21:36:12.2540910590 56792 /home/lijingsu/vla/audit_outputs/20260713_213433_offline_smokes/isolated_smoke_outputs/disturbance/frame_t9.png
+2026-07-13 21:36:14.0981011480 4501 /home/lijingsu/vla/audit_outputs/20260713_213433_offline_smokes/isolated_smoke_outputs/disturbance/disturbance_smoke.json
+2026-07-13 21:36:09.5940765010 56270 /home/lijingsu/vla/audit_outputs/20260713_213433_offline_smokes/isolated_smoke_outputs/disturbance/frame_t4.png
+2026-07-13 21:36:11.1900852360 56891 /home/lijingsu/vla/audit_outputs/20260713_213433_offline_smokes/isolated_smoke_outputs/disturbance/frame_t7.png
+2026-07-13 21:36:12.7940940140 56860 /home/lijingsu/vla/audit_outputs/20260713_213433_offline_smokes/isolated_smoke_outputs/disturbance/frame_t10.png
+2026-07-13 21:36:10.6500822810 56461 /home/lijingsu/vla/audit_outputs/20260713_213433_offline_smokes/isolated_smoke_outputs/disturbance/frame_t6.png
+2026-07-13 21:36:10.1260794130 56426 /home/lijingsu/vla/audit_outputs/20260713_213433_offline_smokes/isolated_smoke_outputs/disturbance/frame_t5.png
+2026-07-13 21:36:11.7260881690 56717 /home/lijingsu/vla/audit_outputs/20260713_213433_offline_smokes/isolated_smoke_outputs/disturbance/frame_t8.png
+2026-07-13 21:36:13.3100968370 56863 /home/lijingsu/vla/audit_outputs/20260713_213433_offline_smokes/isolated_smoke_outputs/disturbance/frame_t11.png
+
+STDERR:

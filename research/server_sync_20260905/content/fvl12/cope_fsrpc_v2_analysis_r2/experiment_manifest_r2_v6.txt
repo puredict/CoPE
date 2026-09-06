@@ -1,0 +1,46 @@
+CoPE / FSR-PC r2 verifier-ablation v7 pre-run manifest
+======================================================
+
+frozen_utc: 2026-08-10T13:57:53Z
+hostname: fvl12
+package_zip_sha256: 4276d9ec8d87d9a7370109da00771fae4b241e518f70f00ee9c3b6d347a39be5
+source_git_commit: 13c2a7b439550528426ac14d29c58304696feebb
+source_git_tree: cc3043aacd4b549f7d49861e4aa809c5d47c7bbb
+source_branch: codex/r2-real-execution
+working_tree_clean: true
+task_assets_yaml_sha256: 58ce269b4bfcf09d82b77b3acf9c465613e25fe3b88440ae3773e2a3ef7bbf8f
+bddl_sha256: f0c08a9c870f0a52cde6cc0900c6ab5bd8a1a88dcd1ab7a88bc76fe4df1b10a8
+
+backend: libero_mujoco
+rendering: CPU OSMesa
+gpu_compute_used: false
+robot: OnTheGroundPanda
+controller: OSC_POSE
+controller_privilege: simulator_geometry_oracle
+python: 3.10.12
+LIBERO: 0.1.0 (source commit 570d33724a78e6387ab6ab0fc28b7392d4a31e5e)
+robosuite: 1.4.1
+mujoco: 2.3.7
+
+stage: verifier_probe
+methods: CoPE_full, CoPE_no_rollout_verification
+conditions: I3, I4, I5
+paired_seeds: 0, 1, 2, 3, 4
+horizon_steps: 900
+candidate_horizon_steps: 200
+schedule_I3: u1_step=340, u2_delta_from_actual_u1=230
+schedule_I4: u1_step=110, u2_delta_from_actual_u1=450
+schedule_I5: u1_step=110, u2_delta_from_actual_u1=200, u3_delta_from_actual_u1=260
+fairness_protocol: all_event_exogenous_plus_pre_treatment_causal_pairing
+
+controller_gate: /home/lijingsu/cope_fsrpc_v2_execution_r2/stage_a_controller_gate/stage_a_controller_gate.json
+controller_gate_result: pass, 10/10 nominal final success
+package_tests_after_schema_fix: 59 passed
+schema_debug: /home/lijingsu/cope_fsrpc_v2_execution_r2/stage_d_verifier_schema_debug_v7
+schema_debug_result: 2/2 complete; 6/6 verifier rows contain all canonical fields; 6/6 checkpoint/start hashes match; 6/6 restores exact
+new_output: /home/lijingsu/cope_fsrpc_v2_execution_r2/stage_d_verifier_ablation_final_v7
+
+change_scope_from_v6: audit logging adapter and isolation assertion only. CoPE,
+FSR-PC, repair synthesis, candidate scoring, verifier decisions, controller,
+task, seeds, event schedule, budgets, and success evaluator are unchanged.
+The v6 output remains read-only historical evidence.

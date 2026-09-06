@@ -1,0 +1,103 @@
+#!/usr/bin/env python3
+"""Cross-check integrated blueprint claims against committed X10--X18 artifacts."""
+
+from __future__ import annotations
+
+import csv
+import json
+import math
+from pathlib import Path
+
+
+ROOT = Path("research")
+OUT = ROOT / "integrated_blueprint_2026-08-03"
+
+
+def status_lines(path: Path) -> dict[str, str]:
+    result = {}
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if "=" in line:
+            key, value = line.split("=", 1)
+            result[key] = value
+    return result
+
+
+def read_csv(path: Path) -> list[dict[str, str]]:
+    with path.open(newline="", encoding="utf-8") as stream:
+        return list(csv.DictReader(stream))
+
+
+def add(rows, check, passed, observed, expected):
+    rows.append({
+        "check": check,
+        "pass": str(bool(passed)),
+        "observed": json.dumps(observed, sort_keys=True, separators=(",", ":")),
+        "expected": json.dumps(expected, sort_keys=True, separators=(",", ":")),
+    })
+
+
+def wilson_lower(successes: int, total: int, z: float = 1.959963984540054) -> float:
+    p = successes / total
+    denominator = 1 + z * z / total
+    center = p + z * z / (2 * total)
+    margin = z * math.sqrt(p * (1 - p) / total + z * z / (4 * total * total))
+    return (center - margin) / denominator
+
+
+def main() -> int:
+    rows = []
+    baseline = read_csv(OUT / "01_BASELINE_MATRIX.csv")
+    claims = read_csv(OUT / "03_CLAIM_LEDGER.csv")
+    methods = {row["baseline"] for row in baseline}
+    required_methods = {"CoPE-G", "Compact-TX", "FSR-PC", "NO-EDIT", "CURRENT-WORLD-REPLAN", "ORACLE-FULL"}
+    add(rows, "mandatory_baselines_present", required_methods.issubset(methods), sorted(methods), sorted(required_methods))
+    add(rows, "baseline_rows", len(baseline) == 12, len(baseline), 12)
+    add(rows, "claim_rows", len(claims) == 16, len(claims), 16)
+
+    x10 = (ROOT / "baseline_qualification_2026-08-02/06_RESULT_AND_NEXT_ACTION.md").read_text(encoding="utf-8")
+    add(rows, "x10_openvla_failures_retained", "replacement 0/5" in x10 and "front/left/right" in x10 and "0/4" in x10, ["replacement 0/5" in x10, "0/4" in x10], [True, True])
+    add(rows, "x10_skill_controller_and_credential_boundary", "fresh 10/10" in x10 and "零真实调用" in x10, ["fresh 10/10" in x10, "零真实调用" in x10], [True, True])
+
+    x11 = (ROOT / "tx_exec_falsification_2026-08-02/15_RESULT_AND_CLAIM_BOUNDARY.md").read_text(encoding="utf-8")
+    add(rows, "x11_equivalence_and_faults", "12/12 TX candidates" in x11 and "Eight of eight" in x11, ["12/12 TX candidates" in x11, "Eight of eight" in x11], [True, True])
+    x12 = (ROOT / "compact_tx_ablation_2026-08-02/14_RESULT_AND_CLAIM_BOUNDARY.md").read_text(encoding="utf-8")
+    add(rows, "x12_sparse_baseline_numbers", "compact TX smaller than FSR | 12/12" in x12 and "CoPE smaller than compact TX | 8/12" in x12, ["12/12" in x12, "8/12" in x12], [True, True])
+
+    x13 = json.loads((ROOT / "native_output_tritrack_2026-08-02/03_INDEPENDENT_AUDIT_STATUS.txt").read_text(encoding="utf-8"))
+    add(rows, "x13_no_learned_result", x13["learned_provider_calls"] == 0 and x13["learned_result_available"] is False and x13["checks_passed"] == x13["checks_total"] == 15, x13, {"learned_provider_calls": 0, "learned_result_available": False, "checks": "15/15"})
+
+    x15 = status_lines(ROOT / "generic_typed_interpreter_2026-08-03/run_v1/06_STATUS.txt")
+    add(rows, "x15_commission_and_omission_numbers", x15.get("representation_fail_open_commission_cope_generic") == "0/14" and x15.get("representation_fail_open_commission_compact_tx") == "5/14" and x15.get("representation_fail_open_commission_fsr_pc") == "10/14" and x15.get("representation_fail_open_omission_cope_generic") == "8/8", [x15.get("representation_fail_open_commission_cope_generic"), x15.get("representation_fail_open_commission_compact_tx"), x15.get("representation_fail_open_commission_fsr_pc"), x15.get("representation_fail_open_omission_cope_generic")], ["0/14", "5/14", "10/14", "8/8"])
+    x16 = status_lines(ROOT / "decomposed_validator_2026-08-03/run_v1/06_STATUS.txt")
+    add(rows, "x16_decomposed_parity", x16.get("clean_pass") == "48/48" and x16.get("decomposed_validator_rejected") == "39/39" and x16.get("exact_decomposed_parity") == "136/136", [x16.get("clean_pass"), x16.get("decomposed_validator_rejected"), x16.get("exact_decomposed_parity")], ["48/48", "39/39", "136/136"])
+    x17 = status_lines(ROOT / "predicate_composition_2026-08-03/run_v1/05_STATUS.txt")
+    add(rows, "x17_composition_numbers", x17.get("decomposed_rejected") == "64/64" and x17.get("exact_attribution") == "64/64" and x17.get("singleton_ablation_fail_open") == "8/8", [x17.get("decomposed_rejected"), x17.get("exact_attribution"), x17.get("singleton_ablation_fail_open")], ["64/64", "64/64", "8/8"])
+    x18v1 = status_lines(ROOT / "structure_mutation_falsifier_2026-08-03/run_v1/05_STATUS.txt")
+    x18v2 = status_lines(ROOT / "structure_mutation_falsifier_2026-08-03/run_v2/05_STATUS.txt")
+    add(rows, "x18_fail_then_repair", x18v1.get("decision") == "FAIL" and x18v1.get("dangerous_blind_spot") == "4/2352" and x18v2.get("decision") == "PASS" and x18v2.get("dangerous_blind_spot") == "0/2352" and x18v2.get("order_only_divergence") == "14/2352", [x18v1.get("decision"), x18v1.get("dangerous_blind_spot"), x18v2.get("decision"), x18v2.get("dangerous_blind_spot"), x18v2.get("order_only_divergence")], ["FAIL", "4/2352", "PASS", "0/2352", "14/2352"])
+
+    lower = wilson_lower(25, 30)
+    blueprint = (OUT / "02_COMPLETE_EXPERIMENT_BLUEPRINT.md").read_text(encoding="utf-8")
+    add(rows, "clean_gate_math", lower >= 0.65 and "at least 25/30" in blueprint and "Wilson lower bound at least 0.65" in blueprint, round(lower, 6), ">=0.65")
+    compact_mandatory = required_methods.issubset(methods) and "Methods: CoPE-G, Compact-TX, FSR-PC" in blueprint and "Compact-TX omitted" in (OUT / "04_EXECUTION_PRIORITY.txt").read_text(encoding="utf-8")
+    add(rows, "blueprint_compact_mandatory", compact_mandatory, compact_mandatory, True)
+
+    reserved_false = all(
+        status.get("reserved_states_27_49_read") == "false"
+        for status in (x15, x16, x17, x18v1, x18v2)
+    )
+    add(rows, "recent_resource_boundary", reserved_false, reserved_false, True)
+
+    with (OUT / "05_INTEGRITY_AUDIT.csv").open("x", newline="", encoding="utf-8") as stream:
+        writer = csv.DictWriter(stream, fieldnames=["check", "pass", "observed", "expected"], lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(rows)
+    passed = sum(row["pass"] == "True" for row in rows)
+    result = {"checks_passed": passed, "checks_total": len(rows), "decision": "PASS" if passed == len(rows) else "FAIL", "wilson_lower_25_of_30": round(lower, 6)}
+    (OUT / "05_INTEGRITY_AUDIT_STATUS.txt").write_text(json.dumps(result, sort_keys=True, separators=(",", ":")) + "\n", encoding="utf-8")
+    print(json.dumps(result, sort_keys=True))
+    return 0 if result["decision"] == "PASS" else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -1,0 +1,46 @@
+# CoPE vs FSR-PC real LIBERO/MuJoCo basket-sorting benchmark.
+# The separate CPU/Synthetic2D pilot ignores this file.
+
+task:
+  name:            basket_sorting
+  objects:         [milk, yogurt, butter]
+  baskets:         [basket_A, basket_B, basket_C]
+  nominal_assignment:
+    milk:          basket_A
+    yogurt:        basket_A
+    butter:        basket_B
+  # basket_C is a spare destination so a repeated redirection can end somewhere
+  # other than the nominal target (condition I3).
+  safety_constraints: [avoid_collision, handle_objects_gently]
+  horizon_steps:   900
+
+executor:
+  kind:            libero_geometry_oracle_pick_place
+  backend:         libero_mujoco
+  backend_config:  configs_gpu/task_assets.yaml
+  robot:           OnTheGroundPanda
+  controller:      OSC_POSE
+  learned_policy_used: false
+  # The benchmark tests task-state adaptation, not manipulation. Use a
+  # primitive/motion-planning executor whose nominal reliability you have
+  # already measured.
+  max_attempts_per_object: 1
+  grasp_retry:     false
+  place_tolerance_m: 0.05
+
+conditions:
+  # Deterministic in (condition, seed). NEVER in the method.
+  nominal: {}
+  I1: {trigger_after_goal: g_milk}
+  I2: {trigger_after_goal: "", second_trigger_after_goal: g_milk,
+       execution_order: {butter: 0, milk: 1, yogurt: 2}}
+  I3: {trigger_after_goal: g_milk, second_trigger_after_goal: g_yogurt}
+  I4: {trigger_after_goal: "", second_trigger_after_goal: g_milk,
+       execution_order: {butter: 0, milk: 1, yogurt: 2}}
+
+gate:
+  # Stage A. A precondition, not a result. If it fails, change the TASK.
+  n_seeds:         10
+  required:        8
+  preferred:       9
+  measured_with:   no_adaptation      # measures the task+executor, not a method

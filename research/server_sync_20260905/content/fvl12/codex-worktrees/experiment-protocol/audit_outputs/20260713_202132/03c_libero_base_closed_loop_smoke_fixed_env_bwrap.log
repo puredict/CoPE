@@ -1,0 +1,47 @@
+COMMAND: bwrap --bind / / --dev-bind /dev /dev --proc /proc --bind /home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind /home/lijingsu/vla/smoke_outputs bash -lc 'cd /home/lijingsu/vla && source .venv/bin/activate && unset LD_LIBRARY_PATH && export PYTHONPATH=$HOME/vla/src/openvla:$HOME/vla/src/LIBERO:${PYTHONPATH:-} && export MUJOCO_GL=osmesa && export PYOPENGL_PLATFORM=osmesa && export HF_HOME=$HOME/vla/cache/huggingface && export TRANSFORMERS_CACHE=$HOME/vla/cache/transformers && export TOKENIZERS_PARALLELISM=false && python libero_base_closed_loop_smoke.py'
+START: 2026-07-13T20:55:39+08:00
+END: 2026-07-13T20:56:16+08:00
+EXIT: 0
+
+STDOUT:
+loading model
+model loaded
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+{"t": 0, "phase": "wait", "reward": 0.0, "done": false, "action": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0]}
+{"t": 1, "phase": "wait", "reward": 0.0, "done": false, "action": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0]}
+{"t": 2, "phase": "wait", "reward": 0.0, "done": false, "action": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0]}
+{"t": 3, "phase": "vla", "reward": 0.0, "done": false, "action": [-0.002669, 0.00249, 0.002877, 0.014549, 0.001899, -0.024244, 1.0]}
+{"t": 4, "phase": "vla", "reward": 0.0, "done": false, "action": [-0.003564, 0.007346, -0.00154, 0.01838, 0.000559, -0.040362, 1.0]}
+{"t": 5, "phase": "vla", "reward": 0.0, "done": false, "action": [-0.001103, 0.006375, -0.00154, 0.010079, 0.008598, 0.004769, 1.0]}
+{"t": 6, "phase": "vla", "reward": 0.0, "done": false, "action": [-0.001103, 0.004432, 0.003136, -0.025683, 0.008598, -0.030691, 1.0]}
+{"t": 7, "phase": "vla", "reward": 0.0, "done": false, "action": [-0.001103, 0.006375, 0.002357, -0.001416, -0.010829, 0.027334, 1.0]}
+{"t": 8, "phase": "vla", "reward": 0.0, "done": false, "action": [-0.001103, 0.006375, -0.00206, -0.005248, -0.010159, 0.043452, 1.0]}
+{"t": 9, "phase": "vla", "reward": 0.0, "done": false, "action": [-0.003788, 0.004432, -0.016091, 0.031152, 0.009937, -0.016185, 1.0]}
+wrote /home/lijingsu/vla/smoke_outputs/base_closed_loop_smoke.json
+
+STDERR:
+2026-07-13 20:55:41.136756: I tensorflow/core/util/port.cc:113] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-07-13 20:55:41.170116: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:9261] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+2026-07-13 20:55:41.170160: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:607] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2026-07-13 20:55:41.171008: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:1515] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2026-07-13 20:55:41.175963: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2026-07-13 20:55:41.862127: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /home/lijingsu/vla/.venv/lib/python3.10/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+/home/lijingsu/vla/.venv/lib/python3.10/site-packages/transformers/utils/hub.py:124: FutureWarning: Using `TRANSFORMERS_CACHE` is deprecated and will be removed in v5 of Transformers. Use `HF_HOME` instead.
+  warnings.warn(
+<frozen importlib._bootstrap>:241: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+<frozen importlib._bootstrap>:241: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+/home/lijingsu/vla/.venv/lib/python3.10/site-packages/wandb/analytics/sentry.py:90: SentryHubDeprecationWarning: `sentry_sdk.Hub` is deprecated and will be removed in a future major release. Please consult our 1.x to 2.x migration guide for details on how to migrate `Hub` usage to the new API: https://docs.sentry.io/platforms/python/migration/1.x-to-2.x
+  self.hub = sentry_sdk.Hub(client)
+2026-07-13 20:55:45.208484: W tensorflow/core/common_runtime/gpu/gpu_device.cc:2256] Cannot dlopen some GPU libraries. Please make sure the missing libraries mentioned above are installed properly if you would like to use GPU. Follow the guide at https://www.tensorflow.org/install/gpu for how to download and setup the required libraries for your platform.
+Skipping registering GPU devices...
+<frozen importlib._bootstrap>:283: DeprecationWarning: the load_module() method is deprecated and slated for removal in Python 3.12; use exec_module() instead
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  33%|███▎      | 1/3 [00:00<00:00,  3.35it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:00<00:00,  4.19it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:00<00:00,  4.65it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:00<00:00,  4.40it/s]
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

@@ -1,0 +1,11 @@
+operator,retained_candidates,exact_rejected,decomposed_rejected,order_only_divergence,dangerous_blind_spot,decomposed_crash,passed
+add_unknown_field,150,150,150,0,0,0,150
+append_scalar,250,250,250,0,0,0,250
+delete_field,757,757,757,0,0,0,757
+drop_list_item,243,243,243,0,0,0,243
+duplicate_list_item,243,243,243,0,0,0,243
+mutate_bool,36,36,36,0,0,0,36
+mutate_int,65,65,65,0,0,0,65
+mutate_null,9,9,9,0,0,0,9
+mutate_string,502,502,502,0,0,0,502
+reverse_list,97,97,83,14,0,0,97

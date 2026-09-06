@@ -1,0 +1,68 @@
+#!/usr/bin/env python3
+"""Independent CSV-only audit for X20; imports no CoPE code."""
+
+import csv
+import json
+import statistics
+from pathlib import Path
+
+
+ROOT = Path("research/canonical_order_policy_2026-08-03")
+RUN = ROOT / "run_v1"
+
+
+def read_csv(path):
+    with path.open(newline="", encoding="utf-8") as stream:
+        return list(csv.DictReader(stream))
+
+
+def truth(value):
+    if value not in {"True", "False"}: raise ValueError(value)
+    return value == "True"
+
+
+def status_map(path):
+    result = {}
+    for line in path.read_text(encoding="utf-8").splitlines():
+        key, value = line.split("=", 1)
+        result[key] = value
+    return result
+
+
+def add(rows, check, passed, observed, expected):
+    rows.append({"check": check, "pass": str(bool(passed)), "observed": json.dumps(observed, sort_keys=True, separators=(",", ":")), "expected": json.dumps(expected, sort_keys=True, separators=(",", ":"))})
+
+
+def main():
+    clean = read_csv(RUN / "02_CLEAN_NORMALIZATION.csv")
+    reorder = read_csv(RUN / "03_REORDER_POLICY_RESULTS.csv")
+    faults = read_csv(RUN / "04_KEY_FAULT_RESULTS.csv")
+    timing = read_csv(RUN / "05_TIMING.csv")
+    status = status_map(RUN / "06_STATUS.txt")
+    checks = []
+    add(checks, "clean_12", len(clean) == 12 and all(truth(row["pass"]) for row in clean), sum(truth(row["pass"]) for row in clean), 12)
+    add(checks, "legacy_zero_normalized_twelve", sum(truth(row["legacy_already_strict"]) for row in clean) == 0 and sum(truth(row["normalized_strict"]) for row in clean) == 12, [sum(truth(row["legacy_already_strict"]) for row in clean), sum(truth(row["normalized_strict"]) for row in clean)], [0, 12])
+    add(checks, "clean_idempotent_semantic", all(truth(row["idempotent"]) and truth(row["decomposed_semantic_accepted"]) and truth(row["caller_state_unchanged"]) for row in clean), sum(truth(row["idempotent"]) for row in clean), 12)
+    add(checks, "reorder_14", len(reorder) == 14 and len({row["x18_mutation_id"] for row in reorder}) == 14, [len(reorder), len({row["x18_mutation_id"] for row in reorder})], [14, 14])
+    add(checks, "strict_rejects_14", all(not truth(row["strict_policy_accepts_provider_candidate"]) for row in reorder), sum(not truth(row["strict_policy_accepts_provider_candidate"]) for row in reorder), 14)
+    normalize_ok = all(truth(row["normalize_policy_accepts"]) and truth(row["normalized_bytes_equal"]) and truth(row["normalized_hash_equal"]) and truth(row["normalized_idempotent"]) and truth(row["pass"]) for row in reorder)
+    add(checks, "normalize_accepts_equal_14", normalize_ok, sum(truth(row["pass"]) for row in reorder), 14)
+    add(checks, "faults_reject_7", len(faults) == 7 and all(truth(row["rejected"]) and truth(row["caller_candidate_unchanged"]) and truth(row["pass"]) for row in faults), sum(truth(row["pass"]) for row in faults), 7)
+    medians = [int(row["median_normalization_ns"]) for row in timing]
+    aggregate = int(statistics.median(medians))
+    add(checks, "timing_12x1000", len(timing) == 12 and all(row["warmups"] == "20" and row["recorded_repetitions"] == "1000" for row in timing), len(timing), 12)
+    add(checks, "timing_status_recomputed", str(aggregate) == status.get("aggregate_median_normalization_ns") and aggregate < 1_000_000, aggregate, status.get("aggregate_median_normalization_ns"))
+    add(checks, "policy_selected", status.get("selected_policy") == "normalize_before_validate_publish_hash" and status.get("decision") == "PASS", [status.get("selected_policy"), status.get("decision")], ["normalize_before_validate_publish_hash", "PASS"])
+    add(checks, "resource_boundary", status.get("learned_provider_calls") == "0" and status.get("gpu_llm_robot_simulator_used") == "false" and status.get("reserved_states_27_49_read") == "false", [status.get("learned_provider_calls"), status.get("gpu_llm_robot_simulator_used"), status.get("reserved_states_27_49_read")], ["0", "false", "false"])
+    with (ROOT / "02_INDEPENDENT_AUDIT.csv").open("x", newline="", encoding="utf-8") as stream:
+        writer = csv.DictWriter(stream, fieldnames=["check", "pass", "observed", "expected"], lineterminator="\n")
+        writer.writeheader(); writer.writerows(checks)
+    passed = sum(row["pass"] == "True" for row in checks)
+    result = {"checks_passed": passed, "checks_total": len(checks), "decision": "PASS" if passed == len(checks) else "FAIL", "aggregate_median_normalization_ns": aggregate}
+    (ROOT / "02_INDEPENDENT_AUDIT_STATUS.txt").write_text(json.dumps(result, sort_keys=True, separators=(",", ":")) + "\n", encoding="utf-8")
+    print(json.dumps(result, sort_keys=True))
+    return 0 if result["decision"] == "PASS" else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

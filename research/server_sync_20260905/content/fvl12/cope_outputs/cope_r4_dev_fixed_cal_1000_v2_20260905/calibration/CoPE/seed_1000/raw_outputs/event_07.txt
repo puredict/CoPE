@@ -1,0 +1,1 @@
+{"schema_version":"cope-lineage-patch-v1","event_id":"seed-1000/e07","base_revision":6,"ops":[{"op":"restore_root","from_slot_id":"order-critical/detour-02"}]}

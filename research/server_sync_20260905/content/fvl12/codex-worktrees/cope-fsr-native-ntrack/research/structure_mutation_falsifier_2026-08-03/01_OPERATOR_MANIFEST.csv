@@ -1,0 +1,12 @@
+operator,applicable_node,deterministic_action
+delete_field,mapping,remove one existing key
+add_unknown_field,mapping,insert __unknown_mutation__ with scalar value
+drop_list_item,list,remove one existing index
+duplicate_list_item,list,insert a deep copy after one existing index
+append_scalar,list,append __mutation_scalar__
+reverse_list,list,reverse when length at least two and order changes
+mutate_bool,bool,logical negation
+mutate_int,int,add one
+mutate_float,float,add one half
+mutate_string,string,append __mutation__
+mutate_null,null,replace with __mutation_null__

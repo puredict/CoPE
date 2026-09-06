@@ -1,0 +1,132 @@
+{
+  "atomic_claim_count": 14,
+  "calibration_excluded_from_evaluation": true,
+  "complete": true,
+  "episode_count": 20,
+  "errors": [],
+  "excluded_tasks": [
+    {
+      "reason": "clean success rate 0.000 is below 0.600",
+      "task_id": 0
+    },
+    {
+      "reason": "clean success rate 0.000 is below 0.600",
+      "task_id": 1
+    },
+    {
+      "reason": "clean success rate 0.200 is below 0.600",
+      "task_id": 4
+    },
+    {
+      "reason": "clean success rate 0.000 is below 0.600",
+      "task_id": 8
+    }
+  ],
+  "expected_episode_count": 20,
+  "independent_worker_output_directories": [
+    "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_parallel_v1/workers/gpu0/episodes",
+    "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_parallel_v1/workers/gpu1/episodes",
+    "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_parallel_v1/workers/gpu2/episodes",
+    "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_parallel_v1/workers/gpu3/episodes",
+    "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_parallel_v1/workers/gpu4/episodes",
+    "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_parallel_v1/workers/gpu5/episodes",
+    "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_parallel_v1/workers/gpu6/episodes",
+    "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_parallel_v1/workers/gpu7/episodes"
+  ],
+  "minimum_clean_success_rate": 0.6,
+  "no_selective_reruns": true,
+  "original_terminal_count": 6,
+  "parallel_manifest": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_parallel_v1/parallel_manifest.json",
+  "passed": true,
+  "phase": "calibration",
+  "pilot_authorized_by_calibration": false,
+  "schema_version": "openvla-libero-clean-calibration-parallel-summary-v1",
+  "selected_task_ids": [],
+  "tasks": {
+    "0": {
+      "mean_policy_steps": 220.0,
+      "n": 5,
+      "success_rate": 0.0,
+      "successes": 0,
+      "termination_breakdown": {
+        "policy_step_budget_exhausted": 5
+      },
+      "wilson_95_ci": [
+        0.0,
+        0.43448246478317476
+      ]
+    },
+    "1": {
+      "mean_policy_steps": 220.0,
+      "n": 5,
+      "success_rate": 0.0,
+      "successes": 0,
+      "termination_breakdown": {
+        "policy_step_budget_exhausted": 5
+      },
+      "wilson_95_ci": [
+        0.0,
+        0.43448246478317476
+      ]
+    },
+    "4": {
+      "mean_policy_steps": 217.6,
+      "n": 5,
+      "success_rate": 0.2,
+      "successes": 1,
+      "termination_breakdown": {
+        "libero_done": 1,
+        "policy_step_budget_exhausted": 4
+      },
+      "wilson_95_ci": [
+        0.03622410863243014,
+        0.6244653702374747
+      ]
+    },
+    "8": {
+      "mean_policy_steps": 220.0,
+      "n": 5,
+      "success_rate": 0.0,
+      "successes": 0,
+      "termination_breakdown": {
+        "policy_step_budget_exhausted": 5
+      },
+      "wilson_95_ci": [
+        0.0,
+        0.43448246478317476
+      ]
+    }
+  },
+  "terminal_audit": {
+    "duplicate_episode_ids": [],
+    "errors": [],
+    "expected_count": 20,
+    "missing_episode_ids": [],
+    "passed": true,
+    "terminal_count": 20,
+    "unexpected_episode_ids": []
+  },
+  "terminal_paths": {
+    "calibration__task00__state00__seed20260724": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_v1/episodes/calibration__task00__state00__seed20260724/episode.json",
+    "calibration__task00__state01__seed20260725": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_v1/episodes/calibration__task00__state01__seed20260725/episode.json",
+    "calibration__task00__state02__seed20260726": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_v1/episodes/calibration__task00__state02__seed20260726/episode.json",
+    "calibration__task00__state03__seed20260727": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_v1/episodes/calibration__task00__state03__seed20260727/episode.json",
+    "calibration__task00__state04__seed20260728": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_v1/episodes/calibration__task00__state04__seed20260728/episode.json",
+    "calibration__task01__state00__seed20260824": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_v1/episodes/calibration__task01__state00__seed20260824/episode.json",
+    "calibration__task01__state01__seed20260825": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_parallel_v1/workers/gpu6/episodes/calibration__task01__state01__seed20260825/episode.json",
+    "calibration__task01__state02__seed20260826": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_parallel_v1/workers/gpu7/episodes/calibration__task01__state02__seed20260826/episode.json",
+    "calibration__task01__state03__seed20260827": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_parallel_v1/workers/gpu0/episodes/calibration__task01__state03__seed20260827/episode.json",
+    "calibration__task01__state04__seed20260828": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_parallel_v1/workers/gpu1/episodes/calibration__task01__state04__seed20260828/episode.json",
+    "calibration__task04__state00__seed20260924": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_parallel_v1/workers/gpu2/episodes/calibration__task04__state00__seed20260924/episode.json",
+    "calibration__task04__state01__seed20260925": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_parallel_v1/workers/gpu3/episodes/calibration__task04__state01__seed20260925/episode.json",
+    "calibration__task04__state02__seed20260926": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_parallel_v1/workers/gpu4/episodes/calibration__task04__state02__seed20260926/episode.json",
+    "calibration__task04__state03__seed20260927": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_parallel_v1/workers/gpu5/episodes/calibration__task04__state03__seed20260927/episode.json",
+    "calibration__task04__state04__seed20260928": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_parallel_v1/workers/gpu6/episodes/calibration__task04__state04__seed20260928/episode.json",
+    "calibration__task08__state00__seed20261024": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_parallel_v1/workers/gpu7/episodes/calibration__task08__state00__seed20261024/episode.json",
+    "calibration__task08__state01__seed20261025": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_parallel_v1/workers/gpu0/episodes/calibration__task08__state01__seed20261025/episode.json",
+    "calibration__task08__state02__seed20261026": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_parallel_v1/workers/gpu1/episodes/calibration__task08__state02__seed20261026/episode.json",
+    "calibration__task08__state03__seed20261027": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_parallel_v1/workers/gpu2/episodes/calibration__task08__state03__seed20261027/episode.json",
+    "calibration__task08__state04__seed20261028": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_calibration_parallel_v1/workers/gpu3/episodes/calibration__task08__state04__seed20261028/episode.json"
+  },
+  "worker_count": 8
+}

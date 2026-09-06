@@ -1,0 +1,23 @@
+[run_project_env] Using project-isolated LIBERO/OpenVLA environment for this subprocess only.
+[run_project_env] LD_LIBRARY_PATH is unset here to avoid the broken system CUDA nvJitLink path.
+MODE: full (REMOTE GPU SERVER ONLY)
+
+  [PASS] python                        3.10
+  [PASS] os                            Linux-5.19.0-50-generic-x86_64-with-glibc2.35
+  [PASS] rekep_repair (repair layer)   v0.0.1
+  [PASS] numpy                         1.26.4
+  [PASS] scipy                         1.15.3
+  [PASS] matplotlib                    3.10.9
+  [PASS] nvidia driver                 8 GPU(s), driver 535.54.03
+  [WARN] torch                         2.5.1+cu121
+  [PASS] torch CUDA build              cuda 12.1
+  [PASS] torch device count            8
+  [PASS] compute capability            sm_86
+  [PASS] cuda smoke (alloc+add)        ok
+  [FAIL] omnigibson                    not importable
+  [FAIL] omni                          not importable
+  [WARN] open3d                        not importable
+  [PASS] cv2                           4.9.0
+  [WARN] transforms3d                  not importable
+
+FAIL: environment not ready.

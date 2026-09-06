@@ -1,0 +1,156 @@
+{
+  "denominators": {
+    "accepted_candidates": 0,
+    "adaptation_valid_episodes": 10,
+    "all_events_delivered_episodes": 0,
+    "attempted_candidates": 0,
+    "attempted_episodes": 10,
+    "completed_episodes": 10,
+    "controller_valid_episodes": 10,
+    "evaluable_episodes": 10,
+    "evaluated_candidates": 0,
+    "events_delivered": 0,
+    "events_scheduled": 0,
+    "final_task_successes": 10,
+    "rejected_candidates": 0,
+    "valid_candidates": 0,
+    "valid_episodes": 10
+  },
+  "meta": {
+    "backend": "libero_mujoco",
+    "backend_config": "/home/lijingsu/cope_fsrpc_\u4ea4\u63a5_v2_r2/configs_gpu/task_assets.yaml",
+    "conditions": [
+      "nominal"
+    ],
+    "controller_privilege": "simulator_geometry_oracle",
+    "evidence_stratum": "mechanism",
+    "gate_seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "git_rev": "b9e4d1ab3fe86a411305c680de102e19353a550d",
+    "gpu_compute_used": false,
+    "learned_policy_used": false,
+    "methods": [
+      "no_adaptation"
+    ],
+    "platform": "Linux-5.19.0-50-generic-x86_64-with-glibc2.35",
+    "python": "3.10.12",
+    "rendering": "CPU OSMesa",
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "stage": "controller_gate",
+    "utc": "2026-08-10T15:49:16.515597+00:00"
+  },
+  "missing_artifacts": [],
+  "passed": true,
+  "per_object": {
+    "butter": {
+      "attempts": 10,
+      "failure_reasons": {},
+      "grasp_rate": 1.0,
+      "grasp_successes": 10,
+      "placement_attempts": 10,
+      "placement_rate": 1.0,
+      "placement_successes": 10
+    },
+    "milk": {
+      "attempts": 10,
+      "failure_reasons": {},
+      "grasp_rate": 1.0,
+      "grasp_successes": 10,
+      "placement_attempts": 10,
+      "placement_rate": 1.0,
+      "placement_successes": 10
+    },
+    "yogurt": {
+      "attempts": 10,
+      "failure_reasons": {},
+      "grasp_rate": 1.0,
+      "grasp_successes": 10,
+      "placement_attempts": 10,
+      "placement_rate": 1.0,
+      "placement_successes": 10
+    }
+  },
+  "per_seed": [
+    {
+      "episode_dir": "/home/lijingsu/cope_fsrpc_v2_execution_r2/stage_a_controller_gate_final_v8/no_adaptation/nominal/seed_00",
+      "failure_layer": "none",
+      "seed": 0,
+      "success": true
+    },
+    {
+      "episode_dir": "/home/lijingsu/cope_fsrpc_v2_execution_r2/stage_a_controller_gate_final_v8/no_adaptation/nominal/seed_01",
+      "failure_layer": "none",
+      "seed": 1,
+      "success": true
+    },
+    {
+      "episode_dir": "/home/lijingsu/cope_fsrpc_v2_execution_r2/stage_a_controller_gate_final_v8/no_adaptation/nominal/seed_02",
+      "failure_layer": "none",
+      "seed": 2,
+      "success": true
+    },
+    {
+      "episode_dir": "/home/lijingsu/cope_fsrpc_v2_execution_r2/stage_a_controller_gate_final_v8/no_adaptation/nominal/seed_03",
+      "failure_layer": "none",
+      "seed": 3,
+      "success": true
+    },
+    {
+      "episode_dir": "/home/lijingsu/cope_fsrpc_v2_execution_r2/stage_a_controller_gate_final_v8/no_adaptation/nominal/seed_04",
+      "failure_layer": "none",
+      "seed": 4,
+      "success": true
+    },
+    {
+      "episode_dir": "/home/lijingsu/cope_fsrpc_v2_execution_r2/stage_a_controller_gate_final_v8/no_adaptation/nominal/seed_05",
+      "failure_layer": "none",
+      "seed": 5,
+      "success": true
+    },
+    {
+      "episode_dir": "/home/lijingsu/cope_fsrpc_v2_execution_r2/stage_a_controller_gate_final_v8/no_adaptation/nominal/seed_06",
+      "failure_layer": "none",
+      "seed": 6,
+      "success": true
+    },
+    {
+      "episode_dir": "/home/lijingsu/cope_fsrpc_v2_execution_r2/stage_a_controller_gate_final_v8/no_adaptation/nominal/seed_07",
+      "failure_layer": "none",
+      "seed": 7,
+      "success": true
+    },
+    {
+      "episode_dir": "/home/lijingsu/cope_fsrpc_v2_execution_r2/stage_a_controller_gate_final_v8/no_adaptation/nominal/seed_08",
+      "failure_layer": "none",
+      "seed": 8,
+      "success": true
+    },
+    {
+      "episode_dir": "/home/lijingsu/cope_fsrpc_v2_execution_r2/stage_a_controller_gate_final_v8/no_adaptation/nominal/seed_09",
+      "failure_layer": "none",
+      "seed": 9,
+      "success": true
+    }
+  ],
+  "threshold": {
+    "episode_successes": 8,
+    "per_object_grasp_rate": 0.9
+  },
+  "weakest_grasp_rate": 1.0
+}

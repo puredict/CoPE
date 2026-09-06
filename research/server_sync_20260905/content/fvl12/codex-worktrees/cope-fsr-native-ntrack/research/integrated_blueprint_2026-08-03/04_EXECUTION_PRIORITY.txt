@@ -1,0 +1,40 @@
+COPE EXECUTION PRIORITY — after X10–X18
+
+P0 — unblock the only missing learned result
+1. Provide a legitimate provider credential through the frozen environment variable.
+2. Run the already-preregistered four-triplet tri-arm smoke unchanged.
+3. Expand to 12 only if fairness and availability gates pass.
+4. Inspect semantic error types before designing a 60-case corpus; do not tune prompts on evaluation cases.
+
+P1 — qualify an embodied substrate without a 30% ceiling
+1. Repeat the parameterized skill-controller clean and updated-goal qualification on 30 independent episodes per task/goal variant.
+2. Admit only variants with at least 25/30 success and Wilson lower bound >=0.65.
+3. Keep OpenVLA and ReKep qualification failures as results; do not use them as main disturbed baselines.
+
+P2 — run mechanism bridge before learned end-to-end
+1. Use oracle semantics with no-edit, current-world replan, CoPE-G, Compact-TX, FSR-PC, and oracle-full.
+2. Require event-to-state-to-plan-to-action-to-terminal receipts.
+3. Test cancellation, replacement, override/release, irrelevant change, and action conflict/continuity.
+
+P3 — freeze paper statistics
+1. Run a separate blinded pilot to estimate paired discordance.
+2. Power CoPE-G vs Compact-TX and CoPE-G vs FSR-PC; minimum 30, maximum 100 paired seeds per stratum.
+3. Freeze task/event/timing strata and Holm-corrected primary comparisons.
+
+P4 — learned embodied comparison
+1. Run identical-provider CoPE-G, Compact-TX, and FSR-PC on admitted cells.
+2. Include no-edit, current-world replan, and oracle-full controls.
+3. Report unconditional assigned success first, conditional-on-clean only as ceiling diagnosis.
+
+P5 — assurance generalization
+1. Add independently generated held-out task schemas.
+2. Run multi-edit/adaptive fuzzing.
+3. Resolve canonical ordering: deterministic sort before receipt hashing or explicit order rejection.
+4. Measure validator authoring effort and transfer without task-specific edits.
+
+Hard no-go conditions
+- No admitted updated-goal controller: no behavioral superiority claim.
+- No real provider output: no learned-generation claim.
+- Compact-TX omitted: comparison invalid after X12.
+- Oracle-exact reported as CoPE: comparison invalid.
+- Any hidden failed run or post-hoc denominator filtering: evidence package invalid.

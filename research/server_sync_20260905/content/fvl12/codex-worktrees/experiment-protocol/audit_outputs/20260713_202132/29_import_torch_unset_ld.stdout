@@ -1,0 +1,4 @@
+torch 2.5.1+cu121
+cuda_available True
+torch_cuda 12.1
+device_count 8

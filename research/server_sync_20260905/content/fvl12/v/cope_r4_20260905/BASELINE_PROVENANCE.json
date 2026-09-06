@@ -1,0 +1,20 @@
+{
+  "schema_version": "cope-fsrpc-r3-provenance-v1",
+  "created_utc": "2026-09-04",
+  "repository_commit_at_copy": "59bfa9c03034052471faac119d4b1f438b73591d",
+  "baseline_source": "CoPE_FSRPC_R2_complete_handoff_2026-08-11/source/cope_fsrpc_r2",
+  "baseline_copy_policy": "all r2 final-v8 files are byte-identical; r3 files are additions in separate paths",
+  "verification": "diff -qr showed only r3 additions after local generated artifacts were excluded",
+  "legacy_checksum_note": {
+    "status": "pre-existing stale entries in the supplied SHA256SUMS.txt",
+    "files": [
+      "code/cope/benchmark/backend_episode.py",
+      "code/cope/benchmark/failure_layers.py",
+      "scripts/run_cope_pilot.py",
+      "tests/test_postaudit_fixes.py"
+    ],
+    "explanation": "These four final-v8 post-audit files are byte-identical to the selected source directory but were changed after that directory's legacy checksum list was written. The r3 packager creates a fresh complete manifest."
+  },
+  "r3_source_root": "code/cope/lineage_benchmark"
+}
+

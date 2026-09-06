@@ -1,0 +1,15 @@
+{
+  "complete": true,
+  "model_load_count": 1,
+  "model_load_seconds": 29.470163662917912,
+  "physical_gpu": "2",
+  "processed_episode_ids": [
+    "calibration_v2__task01__state02__seed20270726",
+    "calibration_v2__task07__state00__seed20270924"
+  ],
+  "processor_loader": "local_upstream_prismatic_processor_v1",
+  "schema_version": "openvla-libero-calibration-v2-worker-summary-v1",
+  "shared_inference_port": null,
+  "shared_inference_server": false,
+  "worker_id": 2
+}

@@ -1,0 +1,67 @@
+{
+  "accepted_full_state": null,
+  "action_schema_valid": true,
+  "artifacts": {
+    "episode": "/home/lijingsu/cope-integration-outputs-20260724/task5_target_substitution_canary_v1/region_ceiling_state0_20260731/right/state00/target_from_reset/episode.json",
+    "trace": "/home/lijingsu/cope-integration-outputs-20260724/task5_target_substitution_canary_v1/region_ceiling_state0_20260731/right/state00/target_from_reset/trace.jsonl"
+  },
+  "back_target_violation": true,
+  "checkpoint": {
+    "path": "/home/lijingsu/vla/models/openvla-7b-finetuned-libero-10",
+    "repository": "openvla/openvla-7b-finetuned-libero-10",
+    "resolved_unnorm_key": "libero_10",
+    "revision": "80970322773f81baa2e22fe495d0487b93a05cfa"
+  },
+  "complete": true,
+  "config_hash": "6cbc6c22065aa155a7d632fefe97788ec624dfd1aa07612e68ee4e56c11de49d",
+  "current_goal_success": false,
+  "event": null,
+  "event_reached": false,
+  "final_book_position": [
+    -0.4005441603693172,
+    -0.1413181400839876,
+    1.0108518461869545
+  ],
+  "final_predicates": {
+    "back": true,
+    "front": false,
+    "left": false,
+    "right": false
+  },
+  "final_prompt": "pick up the book and place it in the right compartment of the caddy",
+  "git": {
+    "clean": true,
+    "commit": "a24e0a883ca2c4ddc2943afc1d807b795cecd442",
+    "status": ""
+  },
+  "gpu": {
+    "allocated_bytes": 15138074624,
+    "cuda_available": true,
+    "device": "cuda:0",
+    "name": "NVIDIA GeForce RTX 3090",
+    "peak_allocated_bytes": 15480890368,
+    "peak_reserved_bytes": 15573450752,
+    "reserved_bytes": 15573450752,
+    "total_bytes": 25438126080
+  },
+  "initial_book_z": 0.882959843039991,
+  "initial_state_sha256": "407c3d5eb11fd5b33bd2a6dea73a37415a99d7e72f0cc291074de29b1c63c37c",
+  "manual_intervention": false,
+  "mode": "target_from_reset",
+  "original_prompt": "pick up the book and place it in the back compartment of the caddy",
+  "policy_step_budget": 520,
+  "policy_steps_consumed": 205,
+  "prefix_policy_steps_replayed": 0,
+  "replacement_target": "desk_caddy_1_right_contain_region",
+  "reset_after_start": false,
+  "rollback": false,
+  "runtime_seconds": 116.52171988785267,
+  "schema_version": "task5-target-substitution-canary-v1",
+  "seed": 20270824,
+  "state_id": 0,
+  "task_id": 5,
+  "task_suite": "libero_10",
+  "termination_reason": "back_target_violation",
+  "warmup_steps_consumed": 10,
+  "wrong_replacement_target_violation": false
+}

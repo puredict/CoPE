@@ -1,0 +1,13 @@
+label,condition,n,successes,success_rate,disturbance_applied,run_dir
+baseline_base_openvla,clean,10,0,0.0,0,/home/lijingsu/vla/disturbance_outputs/baseline_base_openvla/2026_07_08-01_00_03
+baseline_base_openvla,disturbed,10,0,0.0,10,/home/lijingsu/vla/disturbance_outputs/baseline_base_openvla/2026_07_08-01_00_03
+expanded_spatial_3trials,clean,30,23,0.7666666666666667,0,/home/lijingsu/vla/disturbance_outputs/expanded_spatial_3trials/2026_07_08-01_26_41
+expanded_spatial_3trials,disturbed,30,0,0.0,30,/home/lijingsu/vla/disturbance_outputs/expanded_spatial_3trials/2026_07_08-01_26_41
+timing_step30,clean,10,9,0.9,0,/home/lijingsu/vla/disturbance_outputs/timing_step30/2026_07_08-01_27_39
+timing_step30,disturbed,10,1,0.1,10,/home/lijingsu/vla/disturbance_outputs/timing_step30/2026_07_08-01_27_39
+timing_step60,clean,10,9,0.9,0,/home/lijingsu/vla/disturbance_outputs/timing_step60/2026_07_08-01_31_28
+timing_step60,disturbed,10,0,0.0,10,/home/lijingsu/vla/disturbance_outputs/timing_step60/2026_07_08-01_31_28
+magnitude_small,clean,10,9,0.9,0,/home/lijingsu/vla/disturbance_outputs/magnitude_small/2026_07_08-01_41_05
+magnitude_small,disturbed,10,1,0.1,10,/home/lijingsu/vla/disturbance_outputs/magnitude_small/2026_07_08-01_41_05
+magnitude_large,clean,10,9,0.9,0,/home/lijingsu/vla/disturbance_outputs/magnitude_large/2026_07_08-01_41_03
+magnitude_large,disturbed,10,0,0.0,10,/home/lijingsu/vla/disturbance_outputs/magnitude_large/2026_07_08-01_41_03

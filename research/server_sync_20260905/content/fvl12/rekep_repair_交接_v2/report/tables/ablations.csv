@@ -1,0 +1,8 @@
+variant,safe_delivery,task_success,collide,failsafe,handoff_err,verdict
+full,0.972,0.679,0.005,0.028,0.075,-
+no_synthesis,0.427,0.254,0.005,0.574,0.454,causal
+no_rollout,0.964,0.679,0.032,0.004,0.06,causal
+no_cont_contract,0.908,0.582,0.005,0.092,0.126,causal
+no_composition,0.972,0.679,0.005,0.028,0.075,null-representation
+no_restore_gate,0.972,0.679,0.005,0.028,0.075,null-invariant
+no_state_scoring,0.972,0.679,0.005,0.028,0.075,null-quality

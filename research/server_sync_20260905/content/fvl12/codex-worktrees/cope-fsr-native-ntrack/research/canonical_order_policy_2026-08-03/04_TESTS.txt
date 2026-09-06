@@ -1,0 +1,32 @@
+X20 TEST RECORD — 2026-08-03 Asia/Shanghai
+
+Focused tests:
+  tests/test_record_normalization.py
+  tests/test_canonical_order_policy.py
+  Result: 4 passed in 0.11s
+
+Policy campaign:
+  clean/idempotent/semantic: 12/12
+  legacy already strict: 0/12
+  normalized strict: 12/12
+  strict rejects reorder: 14/14
+  normalize accepts reorder: 14/14
+  normalized bytes/hash equal: 14/14
+  key faults rejected: 7/7
+  aggregate median: 100979 ns
+  selected policy: normalize_before_validate_publish_hash
+  decision: PASS
+
+Independent CSV-only audit:
+  checks: 11/11
+  decision: PASS
+
+Complete repository regression:
+  436 passed in 50.94s
+  exit status: 0
+
+Resource boundary:
+  provider/LLM calls: 0
+  GPU/robot/simulator used: false
+  reserved states 27--49 read: false
+

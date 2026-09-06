@@ -1,0 +1,55 @@
+[run_project_env] Using project-isolated LIBERO/OpenVLA environment for this subprocess only.
+[run_project_env] LD_LIBRARY_PATH is unset here to avoid the broken system CUDA nvJitLink path.
+2026-07-24 18:57:21.248325: I tensorflow/core/util/port.cc:113] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-07-24 18:57:21.283209: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:9261] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+2026-07-24 18:57:21.283250: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:607] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2026-07-24 18:57:21.284130: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:1515] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2026-07-24 18:57:21.289713: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2026-07-24 18:57:21.933140: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+/home/lijingsu/vla/.venv/lib/python3.10/site-packages/transformers/utils/hub.py:124: FutureWarning: Using `TRANSFORMERS_CACHE` is deprecated and will be removed in v5 of Transformers. Use `HF_HOME` instead.
+  warnings.warn(
+2026-07-24 18:57:25.930385: W tensorflow/core/common_runtime/gpu/gpu_device.cc:2256] Cannot dlopen some GPU libraries. Please make sure the missing libraries mentioned above are installed properly if you would like to use GPU. Follow the guide at https://www.tensorflow.org/install/gpu for how to download and setup the required libraries for your platform.
+Skipping registering GPU devices...
+[*] Instantiating Pretrained VLA model
+[*] Loading in BF16 with SDPA Attention
+Traceback (most recent call last):
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/transformers/utils/hub.py", line 398, in cached_file
+    resolved_file = hf_hub_download(
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+    return fn(*args, **kwargs)
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 1014, in hf_hub_download
+    return _hf_hub_download_to_cache_dir(
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 1121, in _hf_hub_download_to_cache_dir
+    _raise_on_head_call_error(head_call_error, force_download, local_files_only)
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 1653, in _raise_on_head_call_error
+    raise LocalEntryNotFoundError(
+huggingface_hub.errors.LocalEntryNotFoundError: Cannot find the requested files in the disk cache and outgoing traffic has been disabled. To enable hf.co look-ups and downloads online, set 'local_files_only' to False.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/lijingsu/cope-integration-20260724/experiments/openvla_libero_calibration_parallel.py", line 520, in <module>
+    raise SystemExit(main())
+  File "/home/lijingsu/cope-integration-20260724/experiments/openvla_libero_calibration_parallel.py", line 507, in main
+    result = worker(
+  File "/home/lijingsu/cope-integration-20260724/experiments/openvla_libero_calibration_parallel.py", line 282, in worker
+    model, processor, runtime_model_cfg, resolved_unnorm_key = load_model_and_processor(
+  File "/home/lijingsu/cope-integration-20260724/libero_experiment_core.py", line 358, in load_model_and_processor
+    model = get_model(model_cfg)
+  File "/home/lijingsu/vla/src/openvla/experiments/robot/robot_utils.py", line 43, in get_model
+    model = get_vla(cfg)
+  File "/home/lijingsu/vla/src/openvla/experiments/robot/openvla_utils.py", line 43, in get_vla
+    vla = AutoModelForVision2Seq.from_pretrained(
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/transformers/models/auto/auto_factory.py", line 523, in from_pretrained
+    config, kwargs = AutoConfig.from_pretrained(
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/transformers/models/auto/configuration_auto.py", line 937, in from_pretrained
+    config_class = get_class_from_dynamic_module(
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/transformers/dynamic_module_utils.py", line 489, in get_class_from_dynamic_module
+    final_module = get_cached_module_file(
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/transformers/dynamic_module_utils.py", line 294, in get_cached_module_file
+    resolved_module_file = cached_file(
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/transformers/utils/hub.py", line 441, in cached_file
+    raise EnvironmentError(
+OSError: We couldn't connect to 'https://huggingface.co' to load this file, couldn't find it in the cached files and it looks like openvla/openvla-7b is not the path to a directory containing a file named configuration_prismatic.py.
+Checkout your internet connection or see how to run the library in offline mode at 'https://huggingface.co/docs/transformers/installation#offline-mode'.

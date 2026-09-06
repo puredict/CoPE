@@ -1,0 +1,76 @@
+{
+  "schema_version": "cope-fsrpc-r4-config-v1",
+  "experiment_name": "persistent_lineage_interface_and_capacity_repair",
+  "protocol_phase": "phase1_diagnostic",
+  "primary_profile": "long_lineage",
+  "methods": ["CoPE", "FSR-PC"],
+  "development_seeds": [1000, 1001],
+  "test_seeds": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+  "model": {
+    "name": "Qwen/Qwen3-32B",
+    "revision": "9216db5781bf21249d130ec9da846c4624c16137",
+    "base_url": "http://127.0.0.1:8000",
+    "api_key_env": "COPE_LLM_API_KEY",
+    "seed": 20260904,
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "enable_thinking": false,
+    "guided_decoding_backend": "guidance",
+    "max_context_tokens": 40960
+  },
+  "budgets": {
+    "fixed": {
+      "status": "frozen",
+      "max_output_tokens": 4096,
+      "timeout_s": 90.0,
+      "calls_per_event": 1,
+      "provenance": "R3 resource-limited reference condition, retained without tuning"
+    },
+    "adequate": {
+      "status": "pending_development_capacity_and_throughput_audit",
+      "max_output_tokens": null,
+      "timeout_s": null,
+      "calls_per_event": 1,
+      "provenance": null
+    }
+  },
+  "budget_freeze_policy": {
+    "reference_serialization": "max_of_pretty_and_compact",
+    "output_margin_fraction": 0.15,
+    "output_round_to_tokens": 1024,
+    "timeout_margin_factor": 1.5,
+    "timeout_round_to_seconds": 30,
+    "one_global_budget_per_condition": true,
+    "per_test_example_budget_adjustment": false,
+    "require_actual_tokenizer_chat_template": true,
+    "require_measured_throughput": true
+  },
+  "profiles": {
+    "calibration": {"initial_slots": 8, "lineage_depth": 2},
+    "lineage_valid": {"initial_slots": 10, "lineage_depth": 6},
+    "long_lineage": {"initial_slots": 48, "lineage_depth": 6}
+  },
+  "physical_backend": {
+    "name": "libero_mujoco",
+    "config": "configs_gpu/task_assets.yaml",
+    "controller": "OSC_POSE via privileged geometry oracle",
+    "learned_policy_used": false,
+    "rendering": "CPU OSMesa",
+    "execution_schedule": "after_all_model_events"
+  },
+  "nominal_gate": {"seeds": 10, "required_successes": 8},
+  "interface_gate": {
+    "split": "development",
+    "required_event_kinds": ["suspend_current", "restore_current", "override_current", "restore_root"],
+    "complete_seven_event_trace_required": true,
+    "state_executor_tests_required": true
+  },
+  "difficult_profile_success_gate": null,
+  "phase2_planned_not_implemented": [
+    "Generic Patch baseline with equivalent information and representational power",
+    "Restore-parent, restore-specific-occurrence, branch-withdrawal and stale-message scenarios",
+    "Causal variation of order identity, target binding and completed-action position",
+    "Independent history-size, lineage-depth and interruption-loop sweeps",
+    "Physical action-boundary interruption and continuation of unfinished actions"
+  ]
+}

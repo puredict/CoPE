@@ -1,0 +1,9 @@
+COMMAND: ldd /home/lijingsu/vla/.venv/lib/python3.10/site-packages/torch/lib/libtorch_cuda.so | grep -i "jit\|cuda\|nv" | sed -n "1,120p"
+START: 2026-07-13T20:32:36+08:00
+END: 2026-07-13T20:32:36+08:00
+EXIT: 0
+
+STDOUT:
+/home/lijingsu/vla/.venv/lib/python3.10/site-packages/torch/lib/libtorch_cuda.so: error while loading shared libraries: /share/apps/cuda/12.2/lib64/libnvJitLink.so.12: cannot read file data: Input/output error
+
+STDERR:

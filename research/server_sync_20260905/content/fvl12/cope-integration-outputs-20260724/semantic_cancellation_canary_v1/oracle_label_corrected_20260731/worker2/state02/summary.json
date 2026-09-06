@@ -1,0 +1,21 @@
+{
+  "gpu_inference_used": false,
+  "modes": [
+    "oracle_cancel_halt"
+  ],
+  "results": [
+    {
+      "cancellation_success": true,
+      "cancelled_goal_violated": false,
+      "event_reached": true,
+      "event_step": 131,
+      "mode": "oracle_cancel_halt",
+      "post_event_policy_actions": 0,
+      "runtime_seconds": 65.24934733938426,
+      "termination_reason": "halted_after_authorized_cancellation",
+      "valid_progress_retained": true
+    }
+  ],
+  "schema_version": "semantic-cancellation-worker-summary-v1",
+  "state_id": 2
+}

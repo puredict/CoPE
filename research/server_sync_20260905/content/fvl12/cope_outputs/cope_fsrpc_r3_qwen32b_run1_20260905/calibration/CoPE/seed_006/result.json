@@ -1,0 +1,294 @@
+{
+  "artifact_files": {
+    "actions": "actions.jsonl",
+    "events": "events.jsonl",
+    "model_calls": "model_calls.jsonl",
+    "raw_outputs": "raw_outputs/",
+    "states": "state_snapshots.jsonl"
+  },
+  "backend": "libero_mujoco",
+  "compiled_plan": [],
+  "episode_id": "calibration|seed=6|method=CoPE",
+  "events": [
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "event": {
+        "current_slot_id": "order-critical/root",
+        "event_id": "seed-0006/e01",
+        "kind": "suspend_current",
+        "ordinal": 1,
+        "reason": "temporary station outage",
+        "user_request": "The original station is temporarily unavailable. Suspend this order without deleting it."
+      },
+      "exogenous_fingerprint": "c363af01b046407aa0b7bcbf73f8d13faddd3822aa9323d4c803aa0ef737eab9"
+    },
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "event": {
+        "current_slot_id": "order-critical/root",
+        "event_id": "seed-0006/e02",
+        "kind": "restore_current",
+        "ordinal": 2,
+        "reason": "original station revalidated",
+        "user_request": "The original station is available again. Revalidate and resume the suspended order."
+      },
+      "exogenous_fingerprint": "c01e1f770f16b8e6fd8eb07245e58efc68ae10b63b74f73d8d32de6af79dd07d"
+    },
+    {
+      "adaptation_status": "schema_validation_failure",
+      "adaptation_valid": false,
+      "event": {
+        "current_slot_id": "order-critical/root",
+        "event_id": "seed-0006/e03",
+        "kind": "override_current",
+        "new_slot": {
+          "grounding": "place_butter_in_basket_C_then_execute_receipt_v2",
+          "logical_id": "order-critical",
+          "payload": {
+            "audit_nonce": "484c3905d11cff3f7d77",
+            "continuation_key": "receipt-v2",
+            "object": "butter",
+            "order_id": "critical-0006",
+            "plan": [
+              {
+                "object": "butter",
+                "role": "primary_order",
+                "target": "basket_C"
+              },
+              {
+                "object": "milk",
+                "role": "receipt_token",
+                "target": "basket_A"
+              },
+              {
+                "object": "yogurt",
+                "role": "closure_token",
+                "target": "basket_C"
+              }
+            ],
+            "target": "basket_C"
+          },
+          "priority": "soft",
+          "slot_id": "order-critical/detour-01"
+        },
+        "ordinal": 3,
+        "reason": "temporary detour level 1",
+        "user_request": "Temporarily replace the current version with detour 1. Use basket_C and its explicitly registered continuation."
+      },
+      "exogenous_fingerprint": "56beba0bf7b85c893757191742d13a0370659296863a9a6b30bf7231b6944a52"
+    }
+  ],
+  "final_state_fingerprint": "7dc53a9674e23669910aad41ad6c3bc9bcb9ac1a23035e4594c45d8d23ca03a2",
+  "method": "CoPE",
+  "metrics": {
+    "all_events_processed": false,
+    "all_generations_valid": false,
+    "all_registered_transitions_semantically_matched": false,
+    "compiled_plan_matches_root": false,
+    "first_failure": "schema_validation_failure",
+    "n_model_calls": 3,
+    "physical_success": false,
+    "root_lineage_restored": true,
+    "task_completion": false,
+    "total_completion_tokens": 307,
+    "total_model_latency_s": 13.861167550086975,
+    "total_prompt_tokens": 6774,
+    "valid_model_calls": 2
+  },
+  "model": "Qwen/Qwen3-32B",
+  "model_calls": [
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "event_id": "seed-0006/e01",
+      "exogenous_fingerprint": "c363af01b046407aa0b7bcbf73f8d13faddd3822aa9323d4c803aa0ef737eab9",
+      "generation": {
+        "completion_tokens": 70,
+        "error": "",
+        "finish_reason": "stop",
+        "latency_s": 3.623763896524906,
+        "ok": true,
+        "output_chars": 190,
+        "output_sha256": "7beb86a13c26f17db2a2e047fe71e0901822745f772af3a6fd12f34342a866d0",
+        "prompt_tokens": 2106,
+        "response_id": "chatcmpl-74eab080cce44914aa1a52e2fe395360",
+        "status": "ok"
+      },
+      "method": "CoPE",
+      "model": "Qwen/Qwen3-32B",
+      "ordinal": 1,
+      "packet_fingerprint": "8fdb35cd11be02e181b795b84f9f373ade9fdf77b7f554729dd5090fb9054a55",
+      "raw_output_file": "raw_outputs/event_01.txt",
+      "semantic_match_to_registered_transition": true,
+      "state_fingerprint_before": "6da1585fd8168f822d85de246b55a77c819fab740f9f487925c0d11a75bd2f22",
+      "system_prompt_chars": 1205,
+      "system_prompt_sha256": "0f5096e82bff3a1eac40c31f00fe82d86712046ada10215e06c60e7df3499d8c",
+      "user_prompt_chars": 6989,
+      "user_prompt_sha256": "e899e8ae4b5e2c405c3cf06cca2b326d777a29977625e9730e23b5c31f7c5d8a",
+      "validation_errors": []
+    },
+    {
+      "adaptation_status": "ok",
+      "adaptation_valid": true,
+      "event_id": "seed-0006/e02",
+      "exogenous_fingerprint": "c01e1f770f16b8e6fd8eb07245e58efc68ae10b63b74f73d8d32de6af79dd07d",
+      "generation": {
+        "completion_tokens": 46,
+        "error": "",
+        "finish_reason": "stop",
+        "latency_s": 3.051797393709421,
+        "ok": true,
+        "output_chars": 144,
+        "output_sha256": "639280da7ee7747d29aea6110448468324884bc5b2ab994d9f01cf9ec774a13d",
+        "prompt_tokens": 2208,
+        "response_id": "chatcmpl-85ef249b9f324881a4a579aab869db94",
+        "status": "ok"
+      },
+      "method": "CoPE",
+      "model": "Qwen/Qwen3-32B",
+      "ordinal": 2,
+      "packet_fingerprint": "fbb2b9abdb6f6b972532e95c610186a83287f7c23b28160468164f279a775a77",
+      "raw_output_file": "raw_outputs/event_02.txt",
+      "semantic_match_to_registered_transition": true,
+      "state_fingerprint_before": "af1849b47a3460c47b1f727995f234b8b0fa87f06f006e9a1df707c9fb0213f6",
+      "system_prompt_chars": 1205,
+      "system_prompt_sha256": "0f5096e82bff3a1eac40c31f00fe82d86712046ada10215e06c60e7df3499d8c",
+      "user_prompt_chars": 7397,
+      "user_prompt_sha256": "c84d2badb6b2420d86172debcdeb270c4d3e8e5abdb241dd56d937998e53ffc8",
+      "validation_errors": []
+    },
+    {
+      "adaptation_status": "schema_validation_failure",
+      "adaptation_valid": false,
+      "event_id": "seed-0006/e03",
+      "exogenous_fingerprint": "56beba0bf7b85c893757191742d13a0370659296863a9a6b30bf7231b6944a52",
+      "generation": {
+        "completion_tokens": 191,
+        "error": "",
+        "finish_reason": "stop",
+        "latency_s": 7.185606259852648,
+        "ok": true,
+        "output_chars": 656,
+        "output_sha256": "62d490fca4ee0e72cf7302f12f97a2f715db8ffe315c45230d792cd9024f3cad",
+        "prompt_tokens": 2460,
+        "response_id": "chatcmpl-5eaa5fbc4e1140bda7442f878dac9297",
+        "status": "ok"
+      },
+      "method": "CoPE",
+      "model": "Qwen/Qwen3-32B",
+      "ordinal": 3,
+      "packet_fingerprint": "060695634cead1fbed00441b5523c3f216a82e2e02e54c1bd7a3059bad485e90",
+      "raw_output_file": "raw_outputs/event_03.txt",
+      "semantic_match_to_registered_transition": false,
+      "state_fingerprint_before": "7dc53a9674e23669910aad41ad6c3bc9bcb9ac1a23035e4594c45d8d23ca03a2",
+      "system_prompt_chars": 1205,
+      "system_prompt_sha256": "0f5096e82bff3a1eac40c31f00fe82d86712046ada10215e06c60e7df3499d8c",
+      "user_prompt_chars": 8332,
+      "user_prompt_sha256": "96e762df2c01be4f8d73d593ff8b218ac8acc9f41b90c7f2c578620d1385eeab",
+      "validation_errors": [
+        "unsupported patch operation 'override_current'"
+      ]
+    }
+  ],
+  "model_request_contract": {
+    "calls_per_event": 1,
+    "max_output_tokens": 4096,
+    "model": "Qwen/Qwen3-32B",
+    "timeout_s": 90.0
+  },
+  "pairing_key": "calibration|seed=6",
+  "physical": {
+    "actions": [],
+    "backend": "libero_mujoco",
+    "controller_error": "",
+    "exact_assignment": false,
+    "expected_assignment": {
+      "butter": "basket_B",
+      "milk": "basket_A",
+      "yogurt": "basket_A"
+    },
+    "finish": {},
+    "initialized": false,
+    "invalid_action_count": 0,
+    "observed_assignment": {},
+    "physical_success": false,
+    "skipped_reason": "schema_validation_failure",
+    "video": {
+      "skipped": true,
+      "written": false
+    }
+  },
+  "plan_error": "",
+  "platform": "Linux-5.19.0-50-generic-x86_64-with-glibc2.35",
+  "profile": "calibration",
+  "python": "3.10.12",
+  "registered_design": {
+    "critical_logical_id": "order-critical",
+    "expected_plan": [
+      {
+        "object": "butter",
+        "role": "primary_order",
+        "target": "basket_B"
+      },
+      {
+        "object": "milk",
+        "role": "receipt_token",
+        "target": "basket_A"
+      },
+      {
+        "object": "yogurt",
+        "role": "closure_token",
+        "target": "basket_A"
+      }
+    ],
+    "initial_slots": 8,
+    "lineage_depth": 2,
+    "max_output_tokens": 4096,
+    "model_timeout_s": 90.0,
+    "n_events": 7
+  },
+  "schema_version": "cope-fsrpc-r3-episode-v1",
+  "seed": 6,
+  "task_contract": {
+    "critical_logical_id": "order-critical",
+    "lineage_rule": "restore_root follows parent_id edges to depth zero; the root payload is authoritative even when a detour has the same primary target",
+    "objects": [
+      "butter",
+      "milk",
+      "yogurt"
+    ],
+    "root_slot_id": "order-critical/root",
+    "success_definition": {
+      "all_model_updates_valid": true,
+      "exact_object_assignment": true,
+      "no_completed_action_repeated": true,
+      "no_expired_detour_executed": true,
+      "required_final_plan": [
+        {
+          "object": "butter",
+          "role": "primary_order",
+          "target": "basket_B"
+        },
+        {
+          "object": "milk",
+          "role": "receipt_token",
+          "target": "basket_A"
+        },
+        {
+          "object": "yogurt",
+          "role": "closure_token",
+          "target": "basket_A"
+        }
+      ]
+    },
+    "targets": [
+      "basket_A",
+      "basket_B",
+      "basket_C"
+    ],
+    "task_name": "persistent_multi_order_fulfillment"
+  },
+  "utc": "2026-09-05T01:23:02.514030+00:00"
+}

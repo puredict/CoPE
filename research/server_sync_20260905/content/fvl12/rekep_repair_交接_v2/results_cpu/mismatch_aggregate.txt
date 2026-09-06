@@ -1,0 +1,77 @@
+Mismatch study: 1080 paired episodes x 4 levels x 4 verifiers = 17280 episodes
+
+====================================================================================================
+VERIFICATION CONFUSION BY MISMATCH LEVEL
+  FA = false accept (verifier accepted, execution failed)
+  FR = false reject (verifier rejected -> fallback, but scene was solvable)
+====================================================================================================
+level      verifier                   TA     FA     FR     TR   FA rate   FR rate  precision   recall                  SD
+none       online[none]             1041     39      0      0     0.036     0.000      0.964    1.000 0.964 [0.951, 0.973]
+none       online[nominal]          1050      0      0     30     0.000     0.000      1.000    1.000 0.972 [0.961, 0.980]
+none       online[conservative]     1004      0     46     30     0.000     0.605      1.000    1.000 0.930 [0.913, 0.943]
+none       online[receding]         1050      0      0     30     0.000     0.000      1.000    1.000 0.972 [0.961, 0.980]
+
+mild       online[none]             1016     64      0      0     0.059     0.000      0.941    1.000 0.941 [0.925, 0.953]
+mild       online[nominal]          1030     19      0     31     0.018     0.000      0.982    1.000 0.954 [0.939, 0.965]
+mild       online[conservative]      989     17     41     33     0.017     0.554      0.983    1.000 0.916 [0.898, 0.931]
+mild       online[receding]         1031     18      0     31     0.017     0.000      0.983    1.000 0.955 [0.941, 0.966]
+
+moderate   online[none]              919    161      0      0     0.149     0.000      0.851    1.000 0.851 [0.828, 0.871]
+moderate   online[nominal]           961    104      0     15     0.098     0.000      0.902    1.000 0.890 [0.870, 0.907]
+moderate   online[conservative]      952     81      9     38     0.078     0.191      0.922    1.000 0.881 [0.861, 0.899]
+moderate   online[receding]          961    104      0     15     0.098     0.000      0.902    1.000 0.890 [0.870, 0.907]
+
+severe     online[none]              651    429      0      0     0.397     0.000      0.603    1.000 0.603 [0.573, 0.632]
+severe     online[nominal]           673    389      0     18     0.366     0.000      0.634    1.000 0.623 [0.594, 0.652]
+severe     online[conservative]      672    360      1     47     0.349     0.021      0.651    1.000 0.622 [0.593, 0.651]
+severe     online[receding]          679    383      0     18     0.361     0.000      0.639    1.000 0.629 [0.599, 0.657]
+
+====================================================================================================
+FALSE-ACCEPT / FALSE-REJECT CURVES (rate vs mismatch level)
+====================================================================================================
+
+FALSE ACCEPT
+  verifier                      none        mild    moderate      severe
+  online[none]                 0.036       0.059       0.149       0.397
+  online[nominal]              0.000       0.018       0.098       0.366
+  online[conservative]         0.000       0.017       0.078       0.349
+  online[receding]             0.000       0.017       0.098       0.361
+
+FALSE REJECT
+  verifier                      none        mild    moderate      severe
+  online[none]                 0.000       0.000       0.000       0.000
+  online[nominal]              0.000       0.000       0.000       0.000
+  online[conservative]         0.605       0.554       0.191       0.021
+  online[receding]             0.000       0.000       0.000       0.000
+
+====================================================================================================
+PAIRED safe-delivery difference vs online[nominal] (bootstrap 95% CI, McNemar Holm)
+====================================================================================================
+
+-- none
+   online[none]           nominal-other  +0.008 [+0.004, +0.014]  p_holm=0.0078*
+   online[conservative]   nominal-other  +0.043 [+0.031, +0.055]  p_holm=0.0000*
+   online[receding]       nominal-other  +0.000 [+0.000, +0.000]  p_holm=1.0000 
+
+-- mild
+   online[none]           nominal-other  +0.013 [+0.006, +0.020]  p_holm=0.0010*
+   online[conservative]   nominal-other  +0.038 [+0.027, +0.049]  p_holm=0.0000*
+   online[receding]       nominal-other  -0.001 [-0.003, +0.000]  p_holm=1.0000 
+
+-- moderate
+   online[none]           nominal-other  +0.039 [+0.026, +0.053]  p_holm=0.0000*
+   online[conservative]   nominal-other  +0.008 [+0.004, +0.014]  p_holm=0.0078*
+   online[receding]       nominal-other  +0.000 [-0.005, +0.005]  p_holm=1.0000 
+
+-- severe
+   online[none]           nominal-other  +0.020 [+0.007, +0.033]  p_holm=0.0078*
+   online[conservative]   nominal-other  +0.001 [+0.000, +0.003]  p_holm=1.0000 
+   online[receding]       nominal-other  -0.006 [-0.024, +0.012]  p_holm=1.0000 
+
+====================================================================================================
+RECEDING-HORIZON COST (mean replans per episode)
+====================================================================================================
+  none       replans=0.000
+  mild       replans=2.404
+  moderate   replans=2.958
+  severe     replans=2.950

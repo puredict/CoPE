@@ -1,0 +1,17 @@
+2026-07-24 18:51:25.396224: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:9261] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+2026-07-24 18:51:25.396280: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:607] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2026-07-24 18:51:25.397315: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:1515] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+/home/lijingsu/vla/.venv/lib/python3.10/site-packages/transformers/utils/hub.py:124: FutureWarning: Using `TRANSFORMERS_CACHE` is deprecated and will be removed in v5 of Transformers. Use `HF_HOME` instead.
+  warnings.warn(
+[*] Instantiating Pretrained VLA model
+[*] Loading in BF16 with SDPA Attention
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:00<00:02,  1.14it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:01<00:01,  1.51it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:01<00:00,  1.62it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.89it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:02<00:00,  1.70it/s]
+Loaded model: <class 'transformers_modules.openvla.openvla-7b.47a0ec7fc4ec123775a391911046cf33cf9ed83f.modeling_prismatic.OpenVLAForActionPrediction'>
+Traceback (most recent call last):
+  File "/home/lijingsu/cope-integration-20260724/experiments/openvla_libero_calibration_parallel.py", line 520, in <module>
+    raise SystemExit(main())
+  File "/home/lijingsu/cope-integration-20260724/experiments/openvla_libero_calibration_parallel.py", line 507, in main
+    result = worker(
+  File "/home/lijingsu/cope-integration-20260724/experiments/openvla_libero_calibration_parallel.py", line 315, in worker
+    record = _run_clean_episode(
+TypeError: _run_clean_episode() got an unexpected keyword argument 'resume_trace_path'

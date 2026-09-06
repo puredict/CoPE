@@ -1,0 +1,76 @@
+
+==============================================================================
+  1. Interruption delivery (was coupled to g_milk completing)
+==============================================================================
+  episodes            : 75
+  events scheduled    : 150
+  events delivered    : 150
+  short-delivery cases: 0
+
+==============================================================================
+  2. Restore still delivered when every grasp fails (the v2 regression)
+==============================================================================
+  I2: placements=0 events delivered=2/2  layer=task
+  I4: placements=0 events delivered=2/2  layer=task
+  I5: placements=0 events delivered=3/3  layer=task
+
+==============================================================================
+  3. Failure-layer separation
+==============================================================================
+  I1: CoPE=none  F=none  F_stable_ids=none  F_provenance=none  none=adaptation  
+  I2: CoPE=none  F=none  F_stable_ids=none  F_provenance=none  none=task  
+  I3: CoPE=none  F=none  F_stable_ids=none  F_provenance=none  none=adaptation  
+  I4: CoPE=none  F=none  F_stable_ids=none  F_provenance=none  none=task  
+  I5: CoPE=none  F=none  F_stable_ids=none  F_provenance=none  none=task  
+
+==============================================================================
+  4. Audit-coverage decomposition (what causes CoPE's advantage?)
+==============================================================================
+  cond      CoPE   FSR-PC  +stable_ids  +provenance
+  I1        1.000    0.667    0.667    1.000
+  I2        1.000    0.333    0.333    1.000
+  I3        1.000    0.500    0.500    1.000
+  I4        1.000    0.333    0.333    1.000
+  I5        1.000    0.200    0.200    0.800
+
+  Reading: stable IDs do NOT close the gap; explicit provenance
+  almost entirely does. The audit advantage is attributable to
+  RECORDING PROVENANCE, not to local editing per se.
+
+==============================================================================
+  5. I5 nested override / restoration
+==============================================================================
+  CoPE                   success=True  active_butter_goals=1 stale=0 detour_executed=False
+  FSR-PC                 success=True  active_butter_goals=1 stale=0 detour_executed=False
+  FSR-PC_stable_ids      success=True  active_butter_goals=1 stale=0 detour_executed=False
+  FSR-PC_provenance      success=True  active_butter_goals=1 stale=0 detour_executed=False
+
+  CoPE lifecycle trace:
+    patch-I5-u1-1: ['Suspend(g_butter)']
+    patch-I5-u2-2: ['Override(g_butter)']
+    patch-I5-u3-3: ['Inherit(g_milk)', 'Expire(g_butter@basket_C)', 'Revalidate(g_butter)', 'Restore(g_butter)']
+
+==============================================================================
+  6. Verifier discrimination probe
+==============================================================================
+  CoPE_full: candidates=4 rejected=4 selected=None fallback=True
+  CoPE_no_rollout_verification: candidates=4 rejected=0 selected=Suspend+UpdateTargetContract+Stabilize fallback=False
+    CANDIDATE_REJECTED Suspend+UpdateTargetContract+Stabilize+Retreat+WaitUntilClear+Realign+Resume 
+    CANDIDATE_REJECTED Suspend+Stabilize+UpdateTargetContract+Retreat+WaitUntilClear+Realign+Resume 
+    CANDIDATE_REJECTED Suspend+UpdateTargetContract+Retreat+Stabilize+WaitUntilClear+Realign+Resume 
+    CANDIDATE_REJECTED Suspend+Retreat+UpdateTargetContract+Stabilize+WaitUntilClear+Realign+Resume 
+
+  verifier changed the decision: True
+  NOTE: on this CPU world the synthesised candidates share an
+  operator multiset, so the verifier rejects them uniformly
+  rather than 2-of-3. The reject/reject/accept split is
+  established on LIBERO (v2 preflight recorded exactly it).
+
+==============================================================================
+  7. Fairness fingerprints
+==============================================================================
+  I1: identical adaptation inputs AND compiled repair goals across all four arms: True
+  I2: identical adaptation inputs AND compiled repair goals across all four arms: True
+  I3: identical adaptation inputs AND compiled repair goals across all four arms: True
+  I4: identical adaptation inputs AND compiled repair goals across all four arms: True
+  I5: identical adaptation inputs AND compiled repair goals across all four arms: True

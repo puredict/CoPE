@@ -1,0 +1,55 @@
+{
+  "checkpoint": "/home/lijingsu/vla/models/openvla-7b-finetuned-libero-spatial",
+  "task_suite": "libero_spatial",
+  "task_id": 0,
+  "initial_state_id": 0,
+  "seed": 7,
+  "target_joint": "akita_black_bowl_1_joint0",
+  "disturbance_step": 70,
+  "dx": 0.1,
+  "dy": 0.05,
+  "max_steps": 220,
+  "num_steps_wait": 10,
+  "resolution": 256,
+  "out_dir": "/home/lijingsu/vla/recovery_canary_outputs/cope_i2_2026_07_31_run1",
+  "mode": "structured_relocalize_prompt",
+  "resolved_target_joint": "akita_black_bowl_1_joint0",
+  "resolved_unnorm_key": "libero_spatial",
+  "pair_key": {
+    "checkpoint": "/home/lijingsu/vla/models/openvla-7b-finetuned-libero-spatial",
+    "task_suite": "libero_spatial",
+    "task_id": 0,
+    "initial_state_id": 0,
+    "seed": 7,
+    "initial_state_digest": "4e3eaf7a315bc3bafb6db4837c8eef0e5f8aea717782a2a3ea33139392d966ed",
+    "target_joint": "akita_black_bowl_1_joint0",
+    "disturbance_step": 70,
+    "disturbance_delta_xyz": [
+      0.1,
+      0.05,
+      0.0
+    ],
+    "max_policy_steps": 220,
+    "warmup_env_steps": 10,
+    "camera_resolution": 256,
+    "model_family": "openvla",
+    "resolved_unnorm_key": "libero_spatial",
+    "action_normalization": {
+      "normalize_gripper_action": true,
+      "binarize_gripper": true,
+      "invert_openvla_gripper": true
+    }
+  },
+  "allowed_modes": [
+    "reactive_disturbed",
+    "structured_relocalize_prompt",
+    "stage_backtrack_subgoal"
+  ],
+  "disabled_modes": [
+    "clean",
+    "verifier_stop",
+    "full_reset_replan",
+    "oracle_rollback"
+  ],
+  "manual_intervention": false
+}

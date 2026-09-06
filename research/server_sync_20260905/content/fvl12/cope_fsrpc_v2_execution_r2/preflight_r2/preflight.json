@@ -1,0 +1,1262 @@
+{
+  "backend": {
+    "backend": "libero_mujoco",
+    "bddl_file": "/home/lijingsu/cope_fsrpc_\u4ea4\u63a5_v2_r2/configs_gpu/cope_basket_sorting.bddl",
+    "controller": "OSC_POSE via privileged geometry oracle",
+    "learned_policy_used": false,
+    "mujoco_gl": "osmesa",
+    "mujoco_version": "2.3.7",
+    "robosuite_version": "1.4.1",
+    "simulator": "LIBERO/robosuite/MuJoCo"
+  },
+  "candidate_debug": [
+    {
+      "accepted": false,
+      "candidate_index": 0,
+      "candidate_world_edit": {
+        "after_qpos": [
+          -0.19256299857156114,
+          -0.18821817254063983,
+          0.9511743466930327,
+          4.059484929929356e-09,
+          5.128872928748011e-07,
+          2.465769452680508e-18,
+          0.9999999999998684
+        ],
+        "before_qpos": [
+          0.20385820905301533,
+          -0.19959559118585848,
+          0.44546993445868416,
+          4.059484929929356e-09,
+          5.128872928748011e-07,
+          2.465769452680508e-18,
+          0.9999999999998684
+        ],
+        "contacts_after_edit": [
+          {
+            "action": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pair": "10 <-> cream_cheese_1_g1",
+            "step": 136,
+            "unsafe": false
+          },
+          {
+            "action": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pair": "10 <-> cream_cheese_1_g1",
+            "step": 136,
+            "unsafe": false
+          },
+          {
+            "action": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pair": "10 <-> cream_cheese_1_g1",
+            "step": 136,
+            "unsafe": false
+          },
+          {
+            "action": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pair": "10 <-> cream_cheese_1_g1",
+            "step": 136,
+            "unsafe": false
+          },
+          {
+            "action": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pair": "10 <-> basket_1_g1",
+            "step": 136,
+            "unsafe": false
+          },
+          {
+            "action": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pair": "10 <-> basket_1_g1",
+            "step": 136,
+            "unsafe": false
+          },
+          {
+            "action": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pair": "10 <-> basket_1_g1",
+            "step": 136,
+            "unsafe": false
+          },
+          {
+            "action": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pair": "10 <-> basket_1_g1",
+            "step": 136,
+            "unsafe": false
+          },
+          {
+            "action": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pair": "10 <-> basket_2_g1",
+            "step": 136,
+            "unsafe": false
+          },
+          {
+            "action": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pair": "10 <-> basket_2_g1",
+            "step": 136,
+            "unsafe": false
+          },
+          {
+            "action": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pair": "10 <-> basket_2_g1",
+            "step": 136,
+            "unsafe": false
+          },
+          {
+            "action": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pair": "10 <-> basket_2_g1",
+            "step": 136,
+            "unsafe": false
+          },
+          {
+            "action": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pair": "10 <-> basket_3_g1",
+            "step": 136,
+            "unsafe": false
+          },
+          {
+            "action": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pair": "10 <-> basket_3_g1",
+            "step": 136,
+            "unsafe": false
+          },
+          {
+            "action": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pair": "10 <-> basket_3_g1",
+            "step": 136,
+            "unsafe": false
+          },
+          {
+            "action": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pair": "10 <-> basket_3_g1",
+            "step": 136,
+            "unsafe": false
+          },
+          {
+            "action": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pair": "13 <-> basket_3_g1",
+            "step": 136,
+            "unsafe": false
+          },
+          {
+            "action": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pair": "13 <-> basket_3_g1",
+            "step": 136,
+            "unsafe": false
+          },
+          {
+            "action": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pair": "13 <-> basket_3_g1",
+            "step": 136,
+            "unsafe": false
+          },
+          {
+            "action": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pair": "13 <-> basket_3_g1",
+            "step": 136,
+            "unsafe": false
+          },
+          {
+            "action": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pair": "butter_1_g1 <-> robot0_link6_collision",
+            "step": 136,
+            "unsafe": true
+          },
+          {
+            "action": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pair": "gripper0_hand_collision <-> milk_1_g4",
+            "step": 136,
+            "unsafe": false
+          },
+          {
+            "action": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pair": "gripper0_finger1_pad_collision <-> milk_1_g1",
+            "step": 136,
+            "unsafe": false
+          },
+          {
+            "action": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pair": "gripper0_finger1_pad_collision <-> milk_1_g1",
+            "step": 136,
+            "unsafe": false
+          },
+          {
+            "action": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pair": "gripper0_finger2_collision <-> milk_1_g1",
+            "step": 136,
+            "unsafe": false
+          },
+          {
+            "action": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pair": "gripper0_finger2_pad_collision <-> milk_1_g1",
+            "step": 136,
+            "unsafe": false
+          },
+          {
+            "action": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pair": "gripper0_finger2_pad_collision <-> milk_1_g1",
+            "step": 136,
+            "unsafe": false
+          }
+        ],
+        "mujoco_ncon_after_edit": 27,
+        "object": "butter",
+        "robot_geom": "robot0_link6_collision",
+        "robot_geom_xyz": [
+          -0.19256299857156114,
+          -0.18821817254063983,
+          0.9511743466930327
+        ],
+        "sim_object": "butter_1",
+        "world_changed": true
+      },
+      "checkpoint_before": {
+        "checkpoint_id": "libero-s0-t136-c2-debug-root",
+        "metadata": {
+          "hash_quantization_decimals": 12,
+          "object": "milk",
+          "sim_state_size": 97,
+          "target": "basket_A"
+        },
+        "state_hash": "611572da829c51e58346b392aea09a62ae72645dd02313752328c42e5f7460a2",
+        "step": 136
+      },
+      "collision_status": {
+        "collision": true,
+        "total_contact_observations": 4557,
+        "unsafe_contact_count": 1,
+        "unsafe_contacts": [
+          {
+            "action": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "pair": "butter_1_g1 <-> robot0_link6_collision",
+            "step": 136,
+            "unsafe": true
+          }
+        ]
+      },
+      "controller_record": {
+        "done": false,
+        "final_error_m": null,
+        "phase": "candidate0_protected_collision",
+        "reward": 0.0,
+        "steps": 5
+      },
+      "controls": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "failure_class": "collision",
+      "name": "downward_collision",
+      "reason": "real MuJoCo unsafe contact observed",
+      "restore": {
+        "actual_hash": "611572da829c51e58346b392aea09a62ae72645dd02313752328c42e5f7460a2",
+        "canonical_hash_quantization_decimals": 12,
+        "checkpoint_id": "libero-s0-t136-c2-debug-root",
+        "exact": true,
+        "expected_hash": "611572da829c51e58346b392aea09a62ae72645dd02313752328c42e5f7460a2",
+        "restored": true
+      },
+      "video": {
+        "bytes": 4268,
+        "frames": 6,
+        "path": "/home/lijingsu/cope_fsrpc_v2_execution_r2/preflight_r2/candidate_0.mp4"
+      }
+    },
+    {
+      "accepted": false,
+      "candidate_index": 1,
+      "checkpoint_before": {
+        "checkpoint_id": "libero-s0-t136-c2-debug-root",
+        "metadata": {
+          "hash_quantization_decimals": 12,
+          "object": "milk",
+          "sim_state_size": 97,
+          "target": "basket_A"
+        },
+        "state_hash": "611572da829c51e58346b392aea09a62ae72645dd02313752328c42e5f7460a2",
+        "step": 136
+      },
+      "controller_record": {
+        "done": false,
+        "final_error_m": 0.004039483154165663,
+        "phase": "candidate1_invalid_handoff",
+        "reward": 0.0,
+        "steps": 15
+      },
+      "controls": [
+        [
+          1.0,
+          0.0009748636645584563,
+          -0.0027668632094446366,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          1.0,
+          -0.0026105599081455155,
+          -0.012059282415017858,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          1.0,
+          -0.01599290447455104,
+          0.010765843146498533,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          1.0,
+          -0.033256464915877304,
+          0.05269817450607839,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          1.0,
+          -0.048738366480007844,
+          0.09110441090840027,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          1.0,
+          -0.059925119131063465,
+          0.11768517805290868,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          1.0,
+          -0.06631085442324658,
+          0.1316952372429303,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          1.0,
+          -0.06854345956645636,
+          0.13530672752697148,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          1.0,
+          -0.06764499692459902,
+          0.13165722191155194,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.9224037676904423,
+          -0.06455286006925298,
+          0.12352194615660173,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.6801983179530644,
+          -0.05967999098737187,
+          0.11210924903870767,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.461907565457082,
+          -0.05171134599138205,
+          0.09405606194723859,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.2831748277254406,
+          -0.03835211778231762,
+          0.063697586204714,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.14236959625624643,
+          -0.020147458948491792,
+          0.023088734339928862,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.03445583188508079,
+          0.0005240640039971822,
+          -0.021318698118384383,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "failure_class": "invalid_handoff",
+      "handoff_error_m": 0.1423027435345129,
+      "name": "invalid_handoff",
+      "new_collision": false,
+      "reason": "actual handoff error 0.142303 m",
+      "restore": {
+        "actual_hash": "611572da829c51e58346b392aea09a62ae72645dd02313752328c42e5f7460a2",
+        "canonical_hash_quantization_decimals": 12,
+        "checkpoint_id": "libero-s0-t136-c2-debug-root",
+        "exact": true,
+        "expected_hash": "611572da829c51e58346b392aea09a62ae72645dd02313752328c42e5f7460a2",
+        "restored": true
+      },
+      "video": {
+        "bytes": 6632,
+        "frames": 15,
+        "path": "/home/lijingsu/cope_fsrpc_v2_execution_r2/preflight_r2/candidate_1.mp4"
+      }
+    },
+    {
+      "accepted": true,
+      "attached": true,
+      "candidate_index": 2,
+      "checkpoint_before": {
+        "checkpoint_id": "libero-s0-t136-c2-debug-root",
+        "metadata": {
+          "hash_quantization_decimals": 12,
+          "object": "milk",
+          "sim_state_size": 97,
+          "target": "basket_A"
+        },
+        "state_hash": "611572da829c51e58346b392aea09a62ae72645dd02313752328c42e5f7460a2",
+        "step": 136
+      },
+      "controller_record": {
+        "done": false,
+        "final_error_m": null,
+        "phase": "candidate2_hold",
+        "reward": 0.0,
+        "steps": 2
+      },
+      "controls": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "failure_class": "",
+      "handoff_error_m": 0.0012368879878492508,
+      "name": "checkpoint_hold",
+      "new_collision": false,
+      "reason": "actual rollout satisfies handoff, attachment, and collision checks",
+      "restore": {
+        "actual_hash": "611572da829c51e58346b392aea09a62ae72645dd02313752328c42e5f7460a2",
+        "canonical_hash_quantization_decimals": 12,
+        "checkpoint_id": "libero-s0-t136-c2-debug-root",
+        "exact": true,
+        "expected_hash": "611572da829c51e58346b392aea09a62ae72645dd02313752328c42e5f7460a2",
+        "restored": true
+      },
+      "video": {
+        "bytes": 3442,
+        "frames": 2,
+        "path": "/home/lijingsu/cope_fsrpc_v2_execution_r2/preflight_r2/candidate_2.mp4"
+      }
+    }
+  ],
+  "candidate_gate_passed": true,
+  "final_settle": {
+    "consecutive_stable_steps": 10,
+    "final": {
+      "butter": {
+        "angular_speed_rad_s": 8.645922659340252e-15,
+        "linear_speed_m_s": 1.3206721920051296e-13,
+        "stable": true
+      },
+      "milk": {
+        "angular_speed_rad_s": 7.341149875872418e-14,
+        "linear_speed_m_s": 1.482118999509836e-13,
+        "stable": true
+      },
+      "yogurt": {
+        "angular_speed_rad_s": 7.457127989857571e-17,
+        "linear_speed_m_s": 1.0892344912793041e-14,
+        "stable": true
+      }
+    },
+    "max_steps": 200,
+    "required_consecutive_steps": 10,
+    "samples": [
+      {
+        "consecutive_stable": 1,
+        "objects": {
+          "butter": {
+            "angular_speed_rad_s": 9.739946531835193e-15,
+            "linear_speed_m_s": 1.3206620437980377e-13,
+            "stable": true
+          },
+          "milk": {
+            "angular_speed_rad_s": 7.336671846682938e-14,
+            "linear_speed_m_s": 1.482013692468098e-13,
+            "stable": true
+          },
+          "yogurt": {
+            "angular_speed_rad_s": 1.5603107291489067e-16,
+            "linear_speed_m_s": 1.0892344912793076e-14,
+            "stable": true
+          }
+        },
+        "step": 258
+      },
+      {
+        "consecutive_stable": 2,
+        "objects": {
+          "butter": {
+            "angular_speed_rad_s": 4.171730408187674e-15,
+            "linear_speed_m_s": 1.322864756098989e-13,
+            "stable": true
+          },
+          "milk": {
+            "angular_speed_rad_s": 7.338455489100097e-14,
+            "linear_speed_m_s": 1.4820859770379706e-13,
+            "stable": true
+          },
+          "yogurt": {
+            "angular_speed_rad_s": 1.0525164090220367e-16,
+            "linear_speed_m_s": 1.089234491279181e-14,
+            "stable": true
+          }
+        },
+        "step": 259
+      },
+      {
+        "consecutive_stable": 3,
+        "objects": {
+          "butter": {
+            "angular_speed_rad_s": 9.468069201023312e-15,
+            "linear_speed_m_s": 1.3206631541351304e-13,
+            "stable": true
+          },
+          "milk": {
+            "angular_speed_rad_s": 7.340768781299337e-14,
+            "linear_speed_m_s": 1.4821026047219892e-13,
+            "stable": true
+          },
+          "yogurt": {
+            "angular_speed_rad_s": 9.457406738435873e-17,
+            "linear_speed_m_s": 1.089010468396863e-14,
+            "stable": true
+          }
+        },
+        "step": 260
+      },
+      {
+        "consecutive_stable": 4,
+        "objects": {
+          "butter": {
+            "angular_speed_rad_s": 4.319176443288306e-15,
+            "linear_speed_m_s": 1.3228616383390673e-13,
+            "stable": true
+          },
+          "milk": {
+            "angular_speed_rad_s": 7.339659372586075e-14,
+            "linear_speed_m_s": 1.4821033928064185e-13,
+            "stable": true
+          },
+          "yogurt": {
+            "angular_speed_rad_s": 8.674129317872548e-17,
+            "linear_speed_m_s": 1.0892344912793772e-14,
+            "stable": true
+          }
+        },
+        "step": 261
+      },
+      {
+        "consecutive_stable": 5,
+        "objects": {
+          "butter": {
+            "angular_speed_rad_s": 8.70774598617991e-15,
+            "linear_speed_m_s": 1.3206642956681314e-13,
+            "stable": true
+          },
+          "milk": {
+            "angular_speed_rad_s": 7.341364666007666e-14,
+            "linear_speed_m_s": 1.4820226877272092e-13,
+            "stable": true
+          },
+          "yogurt": {
+            "angular_speed_rad_s": 5.13562941162417e-17,
+            "linear_speed_m_s": 1.0894585141615512e-14,
+            "stable": true
+          }
+        },
+        "step": 262
+      },
+      {
+        "consecutive_stable": 6,
+        "objects": {
+          "butter": {
+            "angular_speed_rad_s": 4.283956544773445e-15,
+            "linear_speed_m_s": 1.3228669021664522e-13,
+            "stable": true
+          },
+          "milk": {
+            "angular_speed_rad_s": 7.351227536016892e-14,
+            "linear_speed_m_s": 1.4821005775160046e-13,
+            "stable": true
+          },
+          "yogurt": {
+            "angular_speed_rad_s": 7.391287409543324e-17,
+            "linear_speed_m_s": 1.0892344912791408e-14,
+            "stable": true
+          }
+        },
+        "step": 263
+      },
+      {
+        "consecutive_stable": 7,
+        "objects": {
+          "butter": {
+            "angular_speed_rad_s": 8.624071268645109e-15,
+            "linear_speed_m_s": 1.3206674534684514e-13,
+            "stable": true
+          },
+          "milk": {
+            "angular_speed_rad_s": 7.336011577111604e-14,
+            "linear_speed_m_s": 1.4820208698666918e-13,
+            "stable": true
+          },
+          "yogurt": {
+            "angular_speed_rad_s": 1.517932353948898e-17,
+            "linear_speed_m_s": 1.089234491279442e-14,
+            "stable": true
+          }
+        },
+        "step": 264
+      },
+      {
+        "consecutive_stable": 8,
+        "objects": {
+          "butter": {
+            "angular_speed_rad_s": 7.800795897472064e-15,
+            "linear_speed_m_s": 1.3228685610649056e-13,
+            "stable": true
+          },
+          "milk": {
+            "angular_speed_rad_s": 7.337372021250458e-14,
+            "linear_speed_m_s": 1.4821089079344265e-13,
+            "stable": true
+          },
+          "yogurt": {
+            "angular_speed_rad_s": 9.054400877063961e-17,
+            "linear_speed_m_s": 1.0894585141617478e-14,
+            "stable": true
+          }
+        },
+        "step": 265
+      },
+      {
+        "consecutive_stable": 9,
+        "objects": {
+          "butter": {
+            "angular_speed_rad_s": 4.339847323515021e-15,
+            "linear_speed_m_s": 1.322871652721323e-13,
+            "stable": true
+          },
+          "milk": {
+            "angular_speed_rad_s": 7.336039232719056e-14,
+            "linear_speed_m_s": 1.4820215420445615e-13,
+            "stable": true
+          },
+          "yogurt": {
+            "angular_speed_rad_s": 1.1083805801617717e-16,
+            "linear_speed_m_s": 1.0894585141617439e-14,
+            "stable": true
+          }
+        },
+        "step": 266
+      },
+      {
+        "consecutive_stable": 10,
+        "objects": {
+          "butter": {
+            "angular_speed_rad_s": 8.645922659340252e-15,
+            "linear_speed_m_s": 1.3206721920051296e-13,
+            "stable": true
+          },
+          "milk": {
+            "angular_speed_rad_s": 7.341149875872418e-14,
+            "linear_speed_m_s": 1.482118999509836e-13,
+            "stable": true
+          },
+          "yogurt": {
+            "angular_speed_rad_s": 7.457127989857571e-17,
+            "linear_speed_m_s": 1.0892344912793041e-14,
+            "stable": true
+          }
+        },
+        "step": 267
+      }
+    ],
+    "stable": true,
+    "steps": 10,
+    "thresholds": {
+      "max_angular_speed_rad_s": 0.5,
+      "max_linear_speed_m_s": 0.02
+    }
+  },
+  "finish": {
+    "backend": "libero_mujoco",
+    "collision": false,
+    "contacts": 8791,
+    "frames": 268,
+    "seed": 0,
+    "state_hash": "e39d6b51e1ead3dc589d9c2bc90dc1a8f4b1dbb8dd43afcd7858df121f3ef843",
+    "steps": 267
+  },
+  "native_checkpoint_restore": {
+    "changed_hash": "f418e397d113a8b5f7e518952e8a8a8666beaf79253669e5105bddfde2d0ee07",
+    "checkpoint": {
+      "checkpoint_id": "libero-s0-t10-c1-pre-pick",
+      "metadata": {
+        "hash_quantization_decimals": 12,
+        "object": "milk",
+        "sim_state_size": 97,
+        "target": "basket_A"
+      },
+      "state_hash": "77d33858272974bb6996f307c9e53862504d614a4c46f51585714678ae142725",
+      "step": 10
+    },
+    "passed": true,
+    "restore": {
+      "actual_hash": "77d33858272974bb6996f307c9e53862504d614a4c46f51585714678ae142725",
+      "canonical_hash_quantization_decimals": 12,
+      "checkpoint_id": "libero-s0-t10-c1-pre-pick",
+      "exact": true,
+      "expected_hash": "77d33858272974bb6996f307c9e53862504d614a4c46f51585714678ae142725",
+      "restored": true
+    },
+    "world_edit": {
+      "after_qpos": [
+        0.2623657126753959,
+        0.24276372307022046,
+        0.4321920957259531,
+        0.7071047753027024,
+        -0.001694702411787118,
+        0.0016952900225259775,
+        0.7071047240116486
+      ],
+      "before_qpos": [
+        0.25236571267539587,
+        0.24276372307022046,
+        0.4321920957259531,
+        0.7071047753027024,
+        -0.001694702411787118,
+        0.0016952900225259775,
+        0.7071047240116486
+      ],
+      "delta_xyz": [
+        0.010000000000000009,
+        0.0,
+        0.0
+      ],
+      "target": "basket_C",
+      "world_changed": true
+    }
+  },
+  "pick": {
+    "captured_eef_position": [
+      -0.1671411815793678,
+      -0.19554569466580693,
+      0.7389847847738517
+    ],
+    "failure_reason": null,
+    "grasp_acquired": true,
+    "object_lift_m": 0.2032276832792662,
+    "object_name": "milk_1",
+    "object_start_position": [
+      -0.20073617715700687,
+      -0.19231753625556033,
+      0.5065098419215314
+    ],
+    "phases": [
+      {
+        "done": false,
+        "final_error_m": 0.0019375126308356402,
+        "phase": "approach_object",
+        "reward": 0.0,
+        "steps": 25
+      },
+      {
+        "done": false,
+        "final_error_m": 0.03694882897362788,
+        "phase": "descend_to_grasp",
+        "reward": 0.0,
+        "steps": 60
+      },
+      {
+        "done": false,
+        "final_error_m": null,
+        "phase": "close_gripper",
+        "reward": 0.0,
+        "steps": 20
+      },
+      {
+        "done": false,
+        "final_error_m": 0.0022698887256231504,
+        "phase": "lift_object",
+        "reward": 0.0,
+        "steps": 21
+      }
+    ],
+    "success": true,
+    "total_steps": 126
+  },
+  "placement": {
+    "failure_reason": null,
+    "grasp_acquired": true,
+    "object_lift_m": 0.2032276832792662,
+    "object_name": "milk_1",
+    "phases": [
+      {
+        "done": false,
+        "final_error_m": 0.0030170109922212983,
+        "phase": "transfer_above_target",
+        "reward": 0.0,
+        "steps": 38
+      },
+      {
+        "done": false,
+        "final_error_m": 0.00684182179431907,
+        "phase": "descend_to_release",
+        "reward": 0.0,
+        "steps": 16
+      },
+      {
+        "done": false,
+        "final_error_m": null,
+        "phase": "open_gripper",
+        "reward": 0.0,
+        "steps": 10
+      },
+      {
+        "done": false,
+        "final_error_m": 0.00427968943507162,
+        "phase": "retreat",
+        "reward": 0.0,
+        "steps": 17
+      },
+      {
+        "done": false,
+        "final_error_m": null,
+        "phase": "settle",
+        "reward": 0.0,
+        "steps": 40
+      }
+    ],
+    "released": true,
+    "success": true,
+    "target_predicate": true,
+    "target_region_name": "basket_1_contain_region",
+    "total_steps": 121
+  },
+  "preflight_passed": true,
+  "reset": {
+    "backend": "libero_mujoco",
+    "language": "place the milk and cream cheese in basket a and the butter in basket b",
+    "objects": [
+      "basket_1",
+      "basket_2",
+      "basket_3",
+      "butter_1",
+      "cream_cheese_1",
+      "milk_1"
+    ],
+    "regions": [
+      "basket_1_contain_region",
+      "basket_2_contain_region",
+      "basket_3_contain_region"
+    ],
+    "seed": 0,
+    "state_hash": "d5c396120ad33e2cccfe3484ae8a9df5724ffa8575d481a2421d638d4e4ffa75",
+    "warmup_steps": 10
+  },
+  "task_metrics": {
+    "all_objects_stable": true,
+    "cancellation_violation": false,
+    "cancelled_object_regions": {},
+    "collision": false,
+    "environment_steps": 267,
+    "expected_predicates": {
+      "milk": {
+        "predicate": true,
+        "target": "basket_A"
+      }
+    },
+    "no_task_object_attached": true,
+    "object_attachment": {
+      "butter": false,
+      "milk": false,
+      "yogurt": false
+    },
+    "object_positions": {
+      "butter": [
+        0.2038582090538935,
+        -0.19959559118585848,
+        0.44546993445868416
+      ],
+      "milk": [
+        -0.28684162702744304,
+        0.24288696050436953,
+        0.5235096051494931
+      ],
+      "yogurt": [
+        0.0013608912218786469,
+        -0.1814880672341468,
+        0.44569592152000004
+      ]
+    },
+    "object_stability": {
+      "butter": {
+        "angular_speed_rad_s": 8.645922659340252e-15,
+        "linear_speed_m_s": 1.3206721920051296e-13,
+        "stable": true
+      },
+      "milk": {
+        "angular_speed_rad_s": 7.341149875872418e-14,
+        "linear_speed_m_s": 1.482118999509836e-13,
+        "stable": true
+      },
+      "yogurt": {
+        "angular_speed_rad_s": 7.457127989857571e-17,
+        "linear_speed_m_s": 1.0892344912793041e-14,
+        "stable": true
+      }
+    },
+    "progress_completed": 1,
+    "progress_fraction": 1.0,
+    "progress_total": 1,
+    "redirected_goal_success": true,
+    "revised_task_success": true,
+    "stability_gate_passed": true,
+    "stability_thresholds": {
+      "max_angular_speed_rad_s": 0.5,
+      "max_linear_speed_m_s": 0.02
+    },
+    "stale_goal_by_object": {
+      "milk": false
+    },
+    "stale_goal_execution": false,
+    "task_time": 13.350000000000001,
+    "task_time_s": 13.350000000000001,
+    "unsafe_contact": false
+  },
+  "video": {
+    "bytes": 44695,
+    "fps": 20,
+    "frames": 268,
+    "path": "/home/lijingsu/cope_fsrpc_v2_execution_r2/preflight_r2/video.mp4",
+    "written": true
+  }
+}

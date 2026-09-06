@@ -1,0 +1,51 @@
+[run_project_env] Using project-isolated LIBERO/OpenVLA environment for this subprocess only.
+[run_project_env] LD_LIBRARY_PATH is unset here to avoid the broken system CUDA nvJitLink path.
+2026-07-24 18:58:52.008994: I tensorflow/core/util/port.cc:113] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-07-24 18:58:52.043809: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:9261] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+2026-07-24 18:58:52.043849: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:607] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2026-07-24 18:58:52.044718: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:1515] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2026-07-24 18:58:52.049804: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2026-07-24 18:58:52.684112: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+/home/lijingsu/vla/.venv/lib/python3.10/site-packages/transformers/utils/hub.py:124: FutureWarning: Using `TRANSFORMERS_CACHE` is deprecated and will be removed in v5 of Transformers. Use `HF_HOME` instead.
+  warnings.warn(
+2026-07-24 18:58:56.714636: W tensorflow/core/common_runtime/gpu/gpu_device.cc:2256] Cannot dlopen some GPU libraries. Please make sure the missing libraries mentioned above are installed properly if you would like to use GPU. Follow the guide at https://www.tensorflow.org/install/gpu for how to download and setup the required libraries for your platform.
+Skipping registering GPU devices...
+[*] Instantiating Pretrained VLA model
+[*] Loading in BF16 with SDPA Attention
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:00<00:01,  2.85it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:00<00:00,  2.63it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:00<00:00,  3.25it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:01<00:00,  3.83it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:01<00:00,  3.44it/s]
+[robosuite WARNING] No private macro file found! (macros.py:53)
+Loaded model: <class 'transformers_modules.openvla.openvla-7b.47a0ec7fc4ec123775a391911046cf33cf9ed83f.modeling_prismatic.OpenVLAForActionPrediction'>
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+07/24 [18:59:24] WARNING  | >> No private macro file found!         macros.py:53
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+                 WARNING  | >> It is recommended to use a private   macros.py:54
+                          macro file                                            
+[robosuite WARNING] To setup, run: python /home/lijingsu/vla/.venv/lib/python3.10/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+                 WARNING  | >> To setup, run: python                macros.py:55
+                          /home/lijingsu/vla/.venv/lib/python3.10/s             
+                          ite-packages/robosuite/scripts/setup_macr             
+                          os.py                                                 
+                 INFO     | >> No OpenGL_accelerate      acceleratesupport.py:24
+                          module loaded: No module named                        
+                          'OpenGL_accelerate'                                   
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+{"episode_id": "calibration__task04__state00__seed20260924", "physical_gpu": "2", "success": false, "termination_reason": "policy_step_budget_exhausted", "worker_id": 2}
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+{"episode_id": "calibration__task08__state03__seed20261027", "physical_gpu": "2", "success": false, "termination_reason": "policy_step_budget_exhausted", "worker_id": 2}
+{
+  "complete": true,
+  "model_load_count": 1,
+  "model_load_seconds": 32.923111975193024,
+  "physical_gpu": "2",
+  "processed_episode_ids": [
+    "calibration__task04__state00__seed20260924",
+    "calibration__task08__state03__seed20261027"
+  ],
+  "processor_loader": "local_upstream_prismatic_processor_v1",
+  "worker_id": 2
+}
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

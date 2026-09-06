@@ -1,0 +1,48 @@
+X18 TEST RECORD — 2026-08-03 Asia/Shanghai
+
+Initial focused structure test:
+  Result: 1 failed, 2 passed
+  Failure reason: preregistered dangerous_blind_spot gate was nonzero.
+  This exposed experimental outcome, not a harness crash.
+
+Classification-focused test after retaining the original gate in the run:
+  Result: 3 passed in 3.64s
+
+Post-repair focused suites:
+  tests/test_decomposed_validator.py
+  tests/test_decomposed_validator_experiment.py
+  tests/test_predicate_composition_stress.py
+  tests/test_structure_mutation_falsifier.py
+  Result: 15 passed in 4.04s
+
+V1 campaign:
+  changed/exact-rejected: 2352/2352
+  decomposed rejected: 2334/2352
+  order-only divergence: 14
+  dangerous blind spot: 4
+  crash/caller mutation: 0/0
+  decision: FAIL
+
+V2 identical-candidate replay:
+  changed/exact-rejected: 2352/2352
+  decomposed rejected: 2338/2352
+  order-only divergence: 14
+  dangerous blind spot: 0
+  crash/caller mutation: 0/0
+  decision: PASS
+
+Independent CSV-only audit:
+  checks: 14/14
+  v1/v2 candidate identity: PASS
+  decision: PASS
+
+Complete repository regression after repair:
+  432 passed in 51.25s
+  exit status: 0
+
+Resource/evidence boundary:
+  provider/LLM calls: 0
+  credentials used: false
+  GPU/robot/simulator used: false
+  reserved states 27--49 read: false
+

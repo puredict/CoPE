@@ -1,0 +1,41 @@
+{
+  "schema_version": "cope-lineage-patch-v1",
+  "event_id": "seed-0005/e03",
+  "base_revision": 2,
+  "ops": [
+    {
+      "op": "override_current",
+      "slot_id": "order-critical/root",
+      "new_slot": {
+        "grounding": "place_butter_in_basket_C_then_execute_receipt_v2",
+        "logical_id": "order-critical",
+        "payload": {
+          "audit_nonce": "3f2b1de4657339ca7401",
+          "continuation_key": "receipt-v2",
+          "object": "butter",
+          "order_id": "critical-0005",
+          "plan": [
+            {
+              "object": "butter",
+              "role": "primary_order",
+              "target": "basket_C"
+            },
+            {
+              "object": "milk",
+              "role": "receipt_token",
+              "target": "basket_A"
+            },
+            {
+              "object": "yogurt",
+              "role": "closure_token",
+              "target": "basket_C"
+            }
+          ],
+          "target": "basket_C"
+        },
+        "priority": "soft",
+        "slot_id": "order-critical/detour-01"
+      }
+    }
+  ]
+}

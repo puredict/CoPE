@@ -1,0 +1,8 @@
+COMMAND: mkdir -p /home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_test && bwrap --bind / / --bind /home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_test /home/lijingsu/vla/smoke_outputs bash -lc 'printf isolated > /home/lijingsu/vla/smoke_outputs/bwrap_test.txt && cat /home/lijingsu/vla/smoke_outputs/bwrap_test.txt' && test ! -e /home/lijingsu/vla/smoke_outputs/bwrap_test.txt && test -e /home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_test/bwrap_test.txt
+START: 2026-07-13T20:46:31+08:00
+END: 2026-07-13T20:46:31+08:00
+EXIT: 0
+
+STDOUT:
+isolated
+STDERR:

@@ -1,0 +1,14 @@
+# Logging / video -- REMOTE GPU SERVER ONLY
+logging:
+  level:                 INFO
+  per_episode_stdout:    "logs/seed_<N>.out"
+  per_episode_stderr:    "logs/seed_<N>.err"
+  failure_index:         "logs/FAILURES"
+  trace_json:            "traces/seed_<N>/trace.json"
+
+video:
+  milestone_1_2:         all          # record everything while debugging
+  sweeps:                every_20th   # plus every failure
+  always_record_failures: true
+  format:                mp4
+  # Never enable video on all 8 workers during a full sweep (risk R8).

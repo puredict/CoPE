@@ -1,0 +1,63 @@
+{
+  "accepted_full_state": null,
+  "action_schema_valid": true,
+  "artifacts": {
+    "episode": "/home/lijingsu/cope-integration-outputs-20260724/task5_target_substitution_canary_v1/state0_screen_20260731/front_from_reset/state00/front_from_reset/episode.json",
+    "trace": "/home/lijingsu/cope-integration-outputs-20260724/task5_target_substitution_canary_v1/state0_screen_20260731/front_from_reset/state00/front_from_reset/trace.jsonl"
+  },
+  "back_target_violation": true,
+  "checkpoint": {
+    "path": "/home/lijingsu/vla/models/openvla-7b-finetuned-libero-10",
+    "repository": "openvla/openvla-7b-finetuned-libero-10",
+    "resolved_unnorm_key": "libero_10",
+    "revision": "80970322773f81baa2e22fe495d0487b93a05cfa"
+  },
+  "complete": true,
+  "config_hash": "6cbc6c22065aa155a7d632fefe97788ec624dfd1aa07612e68ee4e56c11de49d",
+  "current_goal_success": false,
+  "event": null,
+  "event_reached": false,
+  "final_book_position": [
+    -0.43666952596027137,
+    -0.15369365327975812,
+    1.0311161260727706
+  ],
+  "final_predicates": {
+    "back": true,
+    "front": false
+  },
+  "final_prompt": "pick up the book and place it in the front compartment of the caddy",
+  "git": {
+    "clean": true,
+    "commit": "d772422a5c4b99b303dfdb864d1ed43858dc88a2",
+    "status": ""
+  },
+  "gpu": {
+    "allocated_bytes": 15138074624,
+    "cuda_available": true,
+    "device": "cuda:0",
+    "name": "NVIDIA GeForce RTX 3090",
+    "peak_allocated_bytes": 15480890368,
+    "peak_reserved_bytes": 15573450752,
+    "reserved_bytes": 15573450752,
+    "total_bytes": 25438126080
+  },
+  "initial_book_z": 0.882959843039991,
+  "initial_state_sha256": "407c3d5eb11fd5b33bd2a6dea73a37415a99d7e72f0cc291074de29b1c63c37c",
+  "manual_intervention": false,
+  "mode": "front_from_reset",
+  "original_prompt": "pick up the book and place it in the back compartment of the caddy",
+  "policy_step_budget": 520,
+  "policy_steps_consumed": 269,
+  "prefix_policy_steps_replayed": 0,
+  "reset_after_start": false,
+  "rollback": false,
+  "runtime_seconds": 162.4186710799113,
+  "schema_version": "task5-target-substitution-canary-v1",
+  "seed": 20270824,
+  "state_id": 0,
+  "task_id": 5,
+  "task_suite": "libero_10",
+  "termination_reason": "back_target_violation",
+  "warmup_steps_consumed": 10
+}

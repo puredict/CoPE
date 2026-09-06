@@ -1,0 +1,20 @@
+# Adapter keypoint mapping -- REMOTE GPU SERVER ONLY
+#
+# !! THESE ARE PLACEHOLDERS AND ARE CERTAIN TO BE WRONG FOR ANY REAL SCENE. !!
+# They MUST be set per task from ReKep's own keypoint metadata (risk R6).
+# Symptom of wrong indices: nonsensical clearance/goal values in the first trace.
+defaults:
+  ee_keypoint:              0
+  object_keypoint:          1
+  target_keypoint:          2
+  hazard_keypoint:          3
+  d_react:                  0.25    # m, anticipatory detection radius
+  d_safe:                   0.10    # m, collision radius
+  target_move_threshold:    0.05    # m, triggers target_relocated
+  sim_budget_steps:         15      # ReKep solver iterations per operator in
+                                    # simulate_candidate (tune if R5 bites)
+
+per_task:
+  upright_transport: {}             # override defaults here
+  pen_insertion:     {}
+  placement:         {}

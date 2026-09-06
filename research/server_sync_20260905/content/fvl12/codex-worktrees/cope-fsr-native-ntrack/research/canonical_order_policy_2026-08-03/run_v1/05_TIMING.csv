@@ -1,0 +1,13 @@
+case_id,warmups,recorded_repetitions,median_normalization_ns
+no_op,20,1000,99429
+replace_pending_target,20,1000,122348
+wrong_source_revoke,20,1000,100181
+continuity_invalid,20,1000,121130
+cancel_sibling,20,1000,89071
+activate_override,20,1000,113612
+release_override,20,1000,119178
+world_change_release,20,1000,122128
+stale_version,20,1000,101102
+idempotence,20,1000,100857
+irrelevant_sibling_change,20,1000,100637
+continuity_valid,20,1000,100624

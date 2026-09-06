@@ -1,0 +1,722 @@
+[
+  {
+    "task_id": 0,
+    "trial_id": 0,
+    "task_description": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+    "target_joint": "akita_black_bowl_1_joint0",
+    "disturbance": {
+      "joint": "akita_black_bowl_1_joint0",
+      "qpos_addr": 9,
+      "before_qpos": [
+        0.07051401944683737,
+        0.1957706591982865,
+        0.9500326696891234,
+        0.7940011602553645,
+        -0.028365340274924374,
+        0.05430432867527248,
+        0.6048211346103495
+      ],
+      "after_qpos": [
+        0.17051401944683736,
+        0.2457706591982865,
+        0.9500326696891234,
+        0.7940011602553647,
+        -0.02836534027492438,
+        0.0543043286752725,
+        0.6048211346103496
+      ],
+      "delta_xy": [
+        0.1,
+        0.05
+      ]
+    },
+    "clean_success": true,
+    "disturbed_success": false,
+    "clean_steps": 75,
+    "disturbed_steps": 220,
+    "oracle_verifier_only": {
+      "detects_invalid_continuation": true,
+      "decision": "stop_or_full_replan",
+      "can_identify_affected_object": false,
+      "can_identify_invalid_state": false,
+      "can_preserve_completed_subgoals": false,
+      "selective_recovery_action": null,
+      "recovery_type_correct": false,
+      "expected_task_outcome_without_extra_state": "safe_but_not_selectively_recovered"
+    },
+    "minimal_structured_recovery_state": {
+      "state": {
+        "phase": "disturbed_execution",
+        "task_id": 0,
+        "task_description": "pick up the black bowl between the plate and the ramekin and place it on the plate",
+        "affected_object": "akita black bowl 1",
+        "affected_joint": "akita_black_bowl_1_joint0",
+        "target_object_pose_valid": false,
+        "must_revalidate": [
+          "affected_object_pose",
+          "goal_region_pose",
+          "grasp_validity"
+        ],
+        "completed_subgoals": [],
+        "paused_goal": "complete_original_instruction",
+        "task_relevant_disturbance": true
+      },
+      "detects_invalid_continuation": true,
+      "decision": "relocalize_affected_object_then_continue",
+      "can_identify_affected_object": true,
+      "can_identify_invalid_state": true,
+      "can_preserve_completed_subgoals": true,
+      "selective_recovery_action": "relocalize_affected_object_then_continue",
+      "recovery_type_correct": true,
+      "expected_task_outcome_without_extra_state": "selective_recovery_possible_but_not_implemented"
+    }
+  },
+  {
+    "task_id": 1,
+    "trial_id": 0,
+    "task_description": "pick up the black bowl next to the ramekin and place it on the plate",
+    "target_joint": "akita_black_bowl_1_joint0",
+    "disturbance": {
+      "joint": "akita_black_bowl_1_joint0",
+      "qpos_addr": 9,
+      "before_qpos": [
+        -0.1903951251376666,
+        0.322923127435323,
+        0.9433364600518287,
+        0.7391050329266466,
+        -0.008756775558850136,
+        -0.09209221305657926,
+        0.6672076839175747
+      ],
+      "after_qpos": [
+        -0.0903951251376666,
+        0.37292312743532297,
+        0.9433364600518287,
+        0.7391050329266466,
+        -0.008756775558850136,
+        -0.09209221305657926,
+        0.6672076839175747
+      ],
+      "delta_xy": [
+        0.1,
+        0.05
+      ]
+    },
+    "clean_success": true,
+    "disturbed_success": false,
+    "clean_steps": 113,
+    "disturbed_steps": 220,
+    "oracle_verifier_only": {
+      "detects_invalid_continuation": true,
+      "decision": "stop_or_full_replan",
+      "can_identify_affected_object": false,
+      "can_identify_invalid_state": false,
+      "can_preserve_completed_subgoals": false,
+      "selective_recovery_action": null,
+      "recovery_type_correct": false,
+      "expected_task_outcome_without_extra_state": "safe_but_not_selectively_recovered"
+    },
+    "minimal_structured_recovery_state": {
+      "state": {
+        "phase": "disturbed_execution",
+        "task_id": 1,
+        "task_description": "pick up the black bowl next to the ramekin and place it on the plate",
+        "affected_object": "akita black bowl 1",
+        "affected_joint": "akita_black_bowl_1_joint0",
+        "target_object_pose_valid": false,
+        "must_revalidate": [
+          "affected_object_pose",
+          "goal_region_pose",
+          "grasp_validity"
+        ],
+        "completed_subgoals": [],
+        "paused_goal": "complete_original_instruction",
+        "task_relevant_disturbance": true
+      },
+      "detects_invalid_continuation": true,
+      "decision": "relocalize_affected_object_then_continue",
+      "can_identify_affected_object": true,
+      "can_identify_invalid_state": true,
+      "can_preserve_completed_subgoals": true,
+      "selective_recovery_action": "relocalize_affected_object_then_continue",
+      "recovery_type_correct": true,
+      "expected_task_outcome_without_extra_state": "selective_recovery_possible_but_not_implemented"
+    }
+  },
+  {
+    "task_id": 2,
+    "trial_id": 0,
+    "task_description": "pick up the black bowl from table center and place it on the plate",
+    "target_joint": "akita_black_bowl_1_joint0",
+    "disturbance": {
+      "joint": "akita_black_bowl_1_joint0",
+      "qpos_addr": 9,
+      "before_qpos": [
+        -0.0749915492483295,
+        0.014961109867339674,
+        0.898404150188853,
+        0.7071067829265476,
+        -2.7755353462610602e-05,
+        3.3351593355548767e-06,
+        0.7071067788939556
+      ],
+      "after_qpos": [
+        0.025008450751670505,
+        0.06496110986733968,
+        0.898404150188853,
+        0.7071067829265476,
+        -2.7755353462610602e-05,
+        3.3351593355548767e-06,
+        0.7071067788939556
+      ],
+      "delta_xy": [
+        0.1,
+        0.05
+      ]
+    },
+    "clean_success": false,
+    "disturbed_success": false,
+    "clean_steps": 220,
+    "disturbed_steps": 220,
+    "oracle_verifier_only": {
+      "detects_invalid_continuation": true,
+      "decision": "stop_or_full_replan",
+      "can_identify_affected_object": false,
+      "can_identify_invalid_state": false,
+      "can_preserve_completed_subgoals": false,
+      "selective_recovery_action": null,
+      "recovery_type_correct": false,
+      "expected_task_outcome_without_extra_state": "safe_but_not_selectively_recovered"
+    },
+    "minimal_structured_recovery_state": {
+      "state": {
+        "phase": "disturbed_execution",
+        "task_id": 2,
+        "task_description": "pick up the black bowl from table center and place it on the plate",
+        "affected_object": "akita black bowl 1",
+        "affected_joint": "akita_black_bowl_1_joint0",
+        "target_object_pose_valid": false,
+        "must_revalidate": [
+          "affected_object_pose",
+          "goal_region_pose",
+          "grasp_validity"
+        ],
+        "completed_subgoals": [],
+        "paused_goal": "complete_original_instruction",
+        "task_relevant_disturbance": true
+      },
+      "detects_invalid_continuation": true,
+      "decision": "relocalize_affected_object_then_continue",
+      "can_identify_affected_object": true,
+      "can_identify_invalid_state": true,
+      "can_preserve_completed_subgoals": true,
+      "selective_recovery_action": "relocalize_affected_object_then_continue",
+      "recovery_type_correct": true,
+      "expected_task_outcome_without_extra_state": "selective_recovery_possible_but_not_implemented"
+    }
+  },
+  {
+    "task_id": 3,
+    "trial_id": 0,
+    "task_description": "pick up the black bowl on the cookie box and place it on the plate",
+    "target_joint": "akita_black_bowl_1_joint0",
+    "disturbance": {
+      "joint": "akita_black_bowl_1_joint0",
+      "qpos_addr": 9,
+      "before_qpos": [
+        0.05154886045919169,
+        0.08357438350135898,
+        1.0477706784826781,
+        0.8145441331923291,
+        -0.0008326754071476853,
+        -0.05141365967086549,
+        0.577818135171329
+      ],
+      "after_qpos": [
+        0.1515488604591917,
+        0.13357438350135897,
+        1.0477706784826781,
+        0.8145441331923291,
+        -0.0008326754071476853,
+        -0.05141365967086549,
+        0.577818135171329
+      ],
+      "delta_xy": [
+        0.1,
+        0.05
+      ]
+    },
+    "clean_success": true,
+    "disturbed_success": false,
+    "clean_steps": 90,
+    "disturbed_steps": 220,
+    "oracle_verifier_only": {
+      "detects_invalid_continuation": true,
+      "decision": "stop_or_full_replan",
+      "can_identify_affected_object": false,
+      "can_identify_invalid_state": false,
+      "can_preserve_completed_subgoals": false,
+      "selective_recovery_action": null,
+      "recovery_type_correct": false,
+      "expected_task_outcome_without_extra_state": "safe_but_not_selectively_recovered"
+    },
+    "minimal_structured_recovery_state": {
+      "state": {
+        "phase": "disturbed_execution",
+        "task_id": 3,
+        "task_description": "pick up the black bowl on the cookie box and place it on the plate",
+        "affected_object": "akita black bowl 1",
+        "affected_joint": "akita_black_bowl_1_joint0",
+        "target_object_pose_valid": false,
+        "must_revalidate": [
+          "affected_object_pose",
+          "goal_region_pose",
+          "grasp_validity"
+        ],
+        "completed_subgoals": [],
+        "paused_goal": "complete_original_instruction",
+        "task_relevant_disturbance": true
+      },
+      "detects_invalid_continuation": true,
+      "decision": "relocalize_affected_object_then_continue",
+      "can_identify_affected_object": true,
+      "can_identify_invalid_state": true,
+      "can_preserve_completed_subgoals": true,
+      "selective_recovery_action": "relocalize_affected_object_then_continue",
+      "recovery_type_correct": true,
+      "expected_task_outcome_without_extra_state": "selective_recovery_possible_but_not_implemented"
+    }
+  },
+  {
+    "task_id": 4,
+    "trial_id": 0,
+    "task_description": "pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate",
+    "target_joint": "akita_black_bowl_1_joint0",
+    "disturbance": {
+      "joint": "akita_black_bowl_1_joint0",
+      "qpos_addr": 9,
+      "before_qpos": [
+        0.0775534619602797,
+        -0.14654831593711118,
+        1.0625599684128475,
+        0.7071076501443339,
+        -1.4281319910997905e-07,
+        -2.0599455873968425e-09,
+        0.707105912227679
+      ],
+      "after_qpos": [
+        0.1775534619602797,
+        -0.09654831593711118,
+        1.0625599684128475,
+        0.7071076501443339,
+        -1.4281319910997905e-07,
+        -2.0599455873968425e-09,
+        0.707105912227679
+      ],
+      "delta_xy": [
+        0.1,
+        0.05
+      ]
+    },
+    "clean_success": true,
+    "disturbed_success": false,
+    "clean_steps": 142,
+    "disturbed_steps": 220,
+    "oracle_verifier_only": {
+      "detects_invalid_continuation": true,
+      "decision": "stop_or_full_replan",
+      "can_identify_affected_object": false,
+      "can_identify_invalid_state": false,
+      "can_preserve_completed_subgoals": false,
+      "selective_recovery_action": null,
+      "recovery_type_correct": false,
+      "expected_task_outcome_without_extra_state": "safe_but_not_selectively_recovered"
+    },
+    "minimal_structured_recovery_state": {
+      "state": {
+        "phase": "disturbed_execution",
+        "task_id": 4,
+        "task_description": "pick up the black bowl in the top drawer of the wooden cabinet and place it on the plate",
+        "affected_object": "akita black bowl 1",
+        "affected_joint": "akita_black_bowl_1_joint0",
+        "target_object_pose_valid": false,
+        "must_revalidate": [
+          "affected_object_pose",
+          "goal_region_pose",
+          "grasp_validity"
+        ],
+        "completed_subgoals": [],
+        "paused_goal": "complete_original_instruction",
+        "task_relevant_disturbance": true
+      },
+      "detects_invalid_continuation": true,
+      "decision": "relocalize_affected_object_then_continue",
+      "can_identify_affected_object": true,
+      "can_identify_invalid_state": true,
+      "can_preserve_completed_subgoals": true,
+      "selective_recovery_action": "relocalize_affected_object_then_continue",
+      "recovery_type_correct": true,
+      "expected_task_outcome_without_extra_state": "selective_recovery_possible_but_not_implemented"
+    }
+  },
+  {
+    "task_id": 5,
+    "trial_id": 0,
+    "task_description": "pick up the black bowl on the ramekin and place it on the plate",
+    "target_joint": "akita_black_bowl_1_joint0",
+    "disturbance": {
+      "joint": "akita_black_bowl_1_joint0",
+      "qpos_addr": 9,
+      "before_qpos": [
+        -0.12077746738977567,
+        0.19072667180057237,
+        1.0178523502899999,
+        0.8306425109170593,
+        0.09128053796303022,
+        0.07334775540596525,
+        0.5443537353812219
+      ],
+      "after_qpos": [
+        -0.020777467389775664,
+        0.2407266718005724,
+        1.0178523502899999,
+        0.8306425109170595,
+        0.09128053796303023,
+        0.07334775540596526,
+        0.544353735381222
+      ],
+      "delta_xy": [
+        0.1,
+        0.05
+      ]
+    },
+    "clean_success": true,
+    "disturbed_success": false,
+    "clean_steps": 103,
+    "disturbed_steps": 220,
+    "oracle_verifier_only": {
+      "detects_invalid_continuation": true,
+      "decision": "stop_or_full_replan",
+      "can_identify_affected_object": false,
+      "can_identify_invalid_state": false,
+      "can_preserve_completed_subgoals": false,
+      "selective_recovery_action": null,
+      "recovery_type_correct": false,
+      "expected_task_outcome_without_extra_state": "safe_but_not_selectively_recovered"
+    },
+    "minimal_structured_recovery_state": {
+      "state": {
+        "phase": "disturbed_execution",
+        "task_id": 5,
+        "task_description": "pick up the black bowl on the ramekin and place it on the plate",
+        "affected_object": "akita black bowl 1",
+        "affected_joint": "akita_black_bowl_1_joint0",
+        "target_object_pose_valid": false,
+        "must_revalidate": [
+          "affected_object_pose",
+          "goal_region_pose",
+          "grasp_validity"
+        ],
+        "completed_subgoals": [],
+        "paused_goal": "complete_original_instruction",
+        "task_relevant_disturbance": true
+      },
+      "detects_invalid_continuation": true,
+      "decision": "relocalize_affected_object_then_continue",
+      "can_identify_affected_object": true,
+      "can_identify_invalid_state": true,
+      "can_preserve_completed_subgoals": true,
+      "selective_recovery_action": "relocalize_affected_object_then_continue",
+      "recovery_type_correct": true,
+      "expected_task_outcome_without_extra_state": "selective_recovery_possible_but_not_implemented"
+    }
+  },
+  {
+    "task_id": 6,
+    "trial_id": 0,
+    "task_description": "pick up the black bowl next to the cookie box and place it on the plate",
+    "target_joint": "akita_black_bowl_1_joint0",
+    "disturbance": {
+      "joint": "akita_black_bowl_1_joint0",
+      "qpos_addr": 9,
+      "before_qpos": [
+        0.13000780712256138,
+        -0.04945109680853553,
+        0.9671917727353276,
+        0.7881242146733289,
+        0.09157126782424027,
+        -0.04937722774672348,
+        0.6066603782468888
+      ],
+      "after_qpos": [
+        0.2300078071225614,
+        0.0005489031914644726,
+        0.9671917727353276,
+        0.7881242146733289,
+        0.09157126782424027,
+        -0.04937722774672348,
+        0.6066603782468888
+      ],
+      "delta_xy": [
+        0.1,
+        0.05
+      ]
+    },
+    "clean_success": true,
+    "disturbed_success": false,
+    "clean_steps": 107,
+    "disturbed_steps": 220,
+    "oracle_verifier_only": {
+      "detects_invalid_continuation": true,
+      "decision": "stop_or_full_replan",
+      "can_identify_affected_object": false,
+      "can_identify_invalid_state": false,
+      "can_preserve_completed_subgoals": false,
+      "selective_recovery_action": null,
+      "recovery_type_correct": false,
+      "expected_task_outcome_without_extra_state": "safe_but_not_selectively_recovered"
+    },
+    "minimal_structured_recovery_state": {
+      "state": {
+        "phase": "disturbed_execution",
+        "task_id": 6,
+        "task_description": "pick up the black bowl next to the cookie box and place it on the plate",
+        "affected_object": "akita black bowl 1",
+        "affected_joint": "akita_black_bowl_1_joint0",
+        "target_object_pose_valid": false,
+        "must_revalidate": [
+          "affected_object_pose",
+          "goal_region_pose",
+          "grasp_validity"
+        ],
+        "completed_subgoals": [],
+        "paused_goal": "complete_original_instruction",
+        "task_relevant_disturbance": true
+      },
+      "detects_invalid_continuation": true,
+      "decision": "relocalize_affected_object_then_continue",
+      "can_identify_affected_object": true,
+      "can_identify_invalid_state": true,
+      "can_preserve_completed_subgoals": true,
+      "selective_recovery_action": "relocalize_affected_object_then_continue",
+      "recovery_type_correct": true,
+      "expected_task_outcome_without_extra_state": "selective_recovery_possible_but_not_implemented"
+    }
+  },
+  {
+    "task_id": 7,
+    "trial_id": 0,
+    "task_description": "pick up the black bowl on the stove and place it on the plate",
+    "target_joint": "akita_black_bowl_1_joint0",
+    "disturbance": {
+      "joint": "akita_black_bowl_1_joint0",
+      "qpos_addr": 9,
+      "before_qpos": [
+        -0.22786847792568102,
+        -0.10105534072619665,
+        1.0000671700823518,
+        0.7014792187550309,
+        0.015779392981913956,
+        0.03153387848302605,
+        0.7118170628186512
+      ],
+      "after_qpos": [
+        -0.127868477925681,
+        -0.05105534072619665,
+        1.0000671700823518,
+        0.7014792187550309,
+        0.015779392981913956,
+        0.03153387848302605,
+        0.7118170628186512
+      ],
+      "delta_xy": [
+        0.1,
+        0.05
+      ]
+    },
+    "clean_success": true,
+    "disturbed_success": false,
+    "clean_steps": 124,
+    "disturbed_steps": 220,
+    "oracle_verifier_only": {
+      "detects_invalid_continuation": true,
+      "decision": "stop_or_full_replan",
+      "can_identify_affected_object": false,
+      "can_identify_invalid_state": false,
+      "can_preserve_completed_subgoals": false,
+      "selective_recovery_action": null,
+      "recovery_type_correct": false,
+      "expected_task_outcome_without_extra_state": "safe_but_not_selectively_recovered"
+    },
+    "minimal_structured_recovery_state": {
+      "state": {
+        "phase": "disturbed_execution",
+        "task_id": 7,
+        "task_description": "pick up the black bowl on the stove and place it on the plate",
+        "affected_object": "akita black bowl 1",
+        "affected_joint": "akita_black_bowl_1_joint0",
+        "target_object_pose_valid": false,
+        "must_revalidate": [
+          "affected_object_pose",
+          "goal_region_pose",
+          "grasp_validity"
+        ],
+        "completed_subgoals": [],
+        "paused_goal": "complete_original_instruction",
+        "task_relevant_disturbance": true
+      },
+      "detects_invalid_continuation": true,
+      "decision": "relocalize_affected_object_then_continue",
+      "can_identify_affected_object": true,
+      "can_identify_invalid_state": true,
+      "can_preserve_completed_subgoals": true,
+      "selective_recovery_action": "relocalize_affected_object_then_continue",
+      "recovery_type_correct": true,
+      "expected_task_outcome_without_extra_state": "selective_recovery_possible_but_not_implemented"
+    }
+  },
+  {
+    "task_id": 8,
+    "trial_id": 0,
+    "task_description": "pick up the black bowl next to the plate and place it on the plate",
+    "target_joint": "akita_black_bowl_1_joint0",
+    "disturbance": {
+      "joint": "akita_black_bowl_1_joint0",
+      "qpos_addr": 9,
+      "before_qpos": [
+        0.007137055784623922,
+        0.29824631860374645,
+        0.898404150188853,
+        0.7071067829265476,
+        -2.7755353462610476e-05,
+        3.335159335554835e-06,
+        0.7071067788939556
+      ],
+      "after_qpos": [
+        0.10713705578462393,
+        0.34824631860374644,
+        0.898404150188853,
+        0.7071067829265476,
+        -2.7755353462610476e-05,
+        3.335159335554835e-06,
+        0.7071067788939556
+      ],
+      "delta_xy": [
+        0.1,
+        0.05
+      ]
+    },
+    "clean_success": true,
+    "disturbed_success": false,
+    "clean_steps": 119,
+    "disturbed_steps": 220,
+    "oracle_verifier_only": {
+      "detects_invalid_continuation": true,
+      "decision": "stop_or_full_replan",
+      "can_identify_affected_object": false,
+      "can_identify_invalid_state": false,
+      "can_preserve_completed_subgoals": false,
+      "selective_recovery_action": null,
+      "recovery_type_correct": false,
+      "expected_task_outcome_without_extra_state": "safe_but_not_selectively_recovered"
+    },
+    "minimal_structured_recovery_state": {
+      "state": {
+        "phase": "disturbed_execution",
+        "task_id": 8,
+        "task_description": "pick up the black bowl next to the plate and place it on the plate",
+        "affected_object": "akita black bowl 1",
+        "affected_joint": "akita_black_bowl_1_joint0",
+        "target_object_pose_valid": false,
+        "must_revalidate": [
+          "affected_object_pose",
+          "goal_region_pose",
+          "grasp_validity"
+        ],
+        "completed_subgoals": [],
+        "paused_goal": "complete_original_instruction",
+        "task_relevant_disturbance": true
+      },
+      "detects_invalid_continuation": true,
+      "decision": "relocalize_affected_object_then_continue",
+      "can_identify_affected_object": true,
+      "can_identify_invalid_state": true,
+      "can_preserve_completed_subgoals": true,
+      "selective_recovery_action": "relocalize_affected_object_then_continue",
+      "recovery_type_correct": true,
+      "expected_task_outcome_without_extra_state": "selective_recovery_possible_but_not_implemented"
+    }
+  },
+  {
+    "task_id": 9,
+    "trial_id": 0,
+    "task_description": "pick up the black bowl on the wooden cabinet and place it on the plate",
+    "target_joint": "akita_black_bowl_1_joint0",
+    "disturbance": {
+      "joint": "akita_black_bowl_1_joint0",
+      "qpos_addr": 9,
+      "before_qpos": [
+        -0.003915204557636831,
+        -0.18764159315728204,
+        1.242594587442113,
+        0.8976577978445267,
+        0.05670566768245199,
+        -0.053788034430092266,
+        0.4337070354210885
+      ],
+      "after_qpos": [
+        0.09608479544236317,
+        -0.13764159315728203,
+        1.242594587442113,
+        0.8976577978445267,
+        0.05670566768245199,
+        -0.053788034430092266,
+        0.4337070354210885
+      ],
+      "delta_xy": [
+        0.1,
+        0.05
+      ]
+    },
+    "clean_success": true,
+    "disturbed_success": false,
+    "clean_steps": 121,
+    "disturbed_steps": 220,
+    "oracle_verifier_only": {
+      "detects_invalid_continuation": true,
+      "decision": "stop_or_full_replan",
+      "can_identify_affected_object": false,
+      "can_identify_invalid_state": false,
+      "can_preserve_completed_subgoals": false,
+      "selective_recovery_action": null,
+      "recovery_type_correct": false,
+      "expected_task_outcome_without_extra_state": "safe_but_not_selectively_recovered"
+    },
+    "minimal_structured_recovery_state": {
+      "state": {
+        "phase": "disturbed_execution",
+        "task_id": 9,
+        "task_description": "pick up the black bowl on the wooden cabinet and place it on the plate",
+        "affected_object": "akita black bowl 1",
+        "affected_joint": "akita_black_bowl_1_joint0",
+        "target_object_pose_valid": false,
+        "must_revalidate": [
+          "affected_object_pose",
+          "goal_region_pose",
+          "grasp_validity"
+        ],
+        "completed_subgoals": [],
+        "paused_goal": "complete_original_instruction",
+        "task_relevant_disturbance": true
+      },
+      "detects_invalid_continuation": true,
+      "decision": "relocalize_affected_object_then_continue",
+      "can_identify_affected_object": true,
+      "can_identify_invalid_state": true,
+      "can_preserve_completed_subgoals": true,
+      "selective_recovery_action": "relocalize_affected_object_then_continue",
+      "recovery_type_correct": true,
+      "expected_task_outcome_without_extra_state": "selective_recovery_possible_but_not_implemented"
+    }
+  }
+]

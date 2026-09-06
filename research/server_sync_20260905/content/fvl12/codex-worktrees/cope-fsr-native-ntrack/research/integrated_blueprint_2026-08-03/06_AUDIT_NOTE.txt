@@ -1,0 +1,10 @@
+X19 INTEGRITY AUDIT NOTE
+
+The first local audit completed 14/15 checks. Its only failure was a brittle
+literal-phrase assertion for the mandatory CoPE-G / Compact-TX / FSR-PC set;
+the structured baseline CSV and execution-priority document already contained
+the required set. No research number or decision changed.
+
+The v1 CSV/status are preserved. The corrected audit checks the structured
+baseline set plus the blueprint method line and passed 15/15. The calculated
+95% Wilson lower bound for 25/30 is 0.664356, above the frozen 0.65 gate.

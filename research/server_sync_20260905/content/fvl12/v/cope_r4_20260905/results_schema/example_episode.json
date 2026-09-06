@@ -1,0 +1,64 @@
+{
+  "episode_id": "basket_sorting|I1|0|CoPE",
+  "pairing_key": "basket_sorting|I1|0",
+  "condition": "I1",
+  "seed": 0,
+  "method": "CoPE",
+  "expected_final": {
+    "milk": "basket_A",
+    "butter": "basket_A"
+  },
+  "cancelled_expected": [
+    "g_yogurt"
+  ],
+  "adaptation_input_fingerprints": [
+    "f9a8fba91713a0590c16c65d5186e4bf35d7d7856528d7a6871e6a13fe3006b8"
+  ],
+  "executor_request_fingerprints": [
+    "934330f554ed55a8",
+    "934330f554ed55a8",
+    "08ee4a0b5c3e4141",
+    "a0d33dc175a7add6",
+    "a0d33dc175a7add6"
+  ],
+  "metrics": {
+    "method": "CoPE",
+    "condition": "I1",
+    "seed": 0,
+    "revised_task_success": true,
+    "collision": false,
+    "safe_fallback": false,
+    "invalid_action_count": 0,
+    "completion_steps": 120,
+    "completed_progress_preserved": true,
+    "completed_goals_repeated": 0,
+    "cancelled_goal_violations": 0,
+    "stale_goal_executions": 0,
+    "remaining_goal_correct": true,
+    "recovery_after_repeat": null,
+    "identity_preserved": true,
+    "lifecycle_transitions_legal": true,
+    "restore_preceded_by_revalidation": null,
+    "invalid_restore_count": 0,
+    "lineage_correct": true,
+    "history_monotonic": true,
+    "slots_edited": 4,
+    "slots_regenerated": 0,
+    "slots_touched_per_event": 4.0,
+    "ops_per_event": 3.0,
+    "normalized_edit_distance": 0.6667,
+    "state_churn": 1.0,
+    "planner_calls": 1,
+    "adaptation_latency_s": 0.000245,
+    "token_usage": null,
+    "audit_coverage": 1.0,
+    "audit_answerable": {
+      "Q1_which_goal_cancelled": true,
+      "Q2_which_completed_preserved": true,
+      "Q3_why_suspended": null,
+      "Q4_restore_condition": null,
+      "Q5_replacement_state": true
+    },
+    "notes": ""
+  }
+}

@@ -1,0 +1,42 @@
+# ============================================================================
+# GPU requirements -- REMOTE GPU SERVER ONLY (8x RTX 3090)
+# DO NOT install on the CPU/macOS development machine.
+#
+# STATUS: NOT EXECUTED. Version pins below are compiled from the upstream
+# projects' stated requirements and MUST be confirmed on the target machine by
+# `scripts/check_gpu_environment.py` before any experiment is run.
+# ============================================================================
+
+# --- core (CPU-side code is unchanged and must keep working) ---------------
+numpy>=1.26,<2.0          # OmniGibson/IsaacSim toolchains are still numpy<2
+scipy>=1.11
+matplotlib>=3.7
+pytest>=7.4
+
+# --- ReKep runtime ---------------------------------------------------------
+# ReKep (huangwl18/ReKep) is installed from source, not PyPI:
+#   git clone https://github.com/huangwl18/ReKep.git
+# Its own requirements.txt is authoritative; the entries below are the ones the
+# repair layer additionally relies on.
+open3d>=0.17
+opencv-python>=4.8
+transforms3d>=0.4
+scikit-learn>=1.3
+pyyaml>=6.0
+imageio[ffmpeg]>=2.31
+
+# --- torch: install FIRST, from the CUDA-matched index --------------------
+# REMOTE GPU SERVER ONLY:
+#   pip install torch==2.2.2 torchvision==0.17.2 \
+#       --index-url https://download.pytorch.org/whl/cu121
+# Do NOT let pip resolve torch from PyPI (that pulls a CPU or mismatched build).
+# torch==2.2.2
+# torchvision==0.17.2
+
+# --- constraint generation (optional; only if regenerating constraints) ----
+# The first milestone uses ReKep's CACHED queries and needs no VLM key.
+# openai>=1.30
+
+# --- NOT installed by pip -------------------------------------------------
+# OmniGibson + Isaac Sim: installed via OmniGibson's own installer, see
+# docs/GPU_SETUP.md. They bring their own pinned python environment.

@@ -1,0 +1,1 @@
+{"cell":{"arm":"cope","event_index":1,"sequence_id":"probe"},"failure_class":"probe:provider_http_503","gate":"INVALID_INFRASTRUCTURE_FAILURE","provider_calls_after_stop":0,"resume_forbidden":true,"schema":"formal-infrastructure-stop-v1"}

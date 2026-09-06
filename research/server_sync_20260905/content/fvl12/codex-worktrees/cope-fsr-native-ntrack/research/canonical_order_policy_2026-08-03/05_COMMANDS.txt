@@ -1,0 +1,22 @@
+X20 REPRODUCTION COMMANDS — paths are on 10.176.53.120:26575
+
+WORKTREE=/home/lijingsu/codex-worktrees/cope-fsr-native-ntrack
+PYTHON=/home/lijingsu/vla/.venv/bin/python
+
+Focused tests:
+  cd WORKTREE
+  scripts/run_project_env.sh PYTHON -m pytest -q tests/test_record_normalization.py tests/test_canonical_order_policy.py
+
+Policy campaign (requires a new output directory):
+  cd WORKTREE
+  scripts/run_project_env.sh PYTHON experiments/canonical_order_policy.py --case-manifest research/native_output_tritrack_2026-08-02/01_CASE_MANIFEST.csv --x18-results research/structure_mutation_falsifier_2026-08-03/run_v2/03_MUTATION_RESULTS.csv --fault-manifest research/canonical_order_policy_2026-08-03/01_FAULT_MANIFEST.csv --output-dir NEW_OUTPUT_DIRECTORY
+
+Independent audit:
+  cd WORKTREE
+  PYTHON research/canonical_order_policy_2026-08-03/02_INDEPENDENT_AUDIT_PROGRAM.txt
+
+Complete regression:
+  cd WORKTREE
+  scripts/run_project_env.sh PYTHON -m pytest -q
+
+Substitute absolute values for documentation labels and never overwrite run_v1.

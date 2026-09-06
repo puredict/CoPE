@@ -1,0 +1,94 @@
+{
+  "gate": {
+    "attempted": 10,
+    "passed": true,
+    "per_seed": [
+      {
+        "episode_dir": "/home/lijingsu/cope_outputs/nominal_gate_20260804_v3/no_adaptation/nominal/seed_00",
+        "seed": 0,
+        "steps": 649,
+        "success": true,
+        "valid": 1
+      },
+      {
+        "episode_dir": "/home/lijingsu/cope_outputs/nominal_gate_20260804_v3/no_adaptation/nominal/seed_01",
+        "seed": 1,
+        "steps": 650,
+        "success": true,
+        "valid": 1
+      },
+      {
+        "episode_dir": "/home/lijingsu/cope_outputs/nominal_gate_20260804_v3/no_adaptation/nominal/seed_02",
+        "seed": 2,
+        "steps": 652,
+        "success": true,
+        "valid": 1
+      },
+      {
+        "episode_dir": "/home/lijingsu/cope_outputs/nominal_gate_20260804_v3/no_adaptation/nominal/seed_03",
+        "seed": 3,
+        "steps": 657,
+        "success": true,
+        "valid": 1
+      },
+      {
+        "episode_dir": "/home/lijingsu/cope_outputs/nominal_gate_20260804_v3/no_adaptation/nominal/seed_04",
+        "seed": 4,
+        "steps": 660,
+        "success": true,
+        "valid": 1
+      },
+      {
+        "episode_dir": "/home/lijingsu/cope_outputs/nominal_gate_20260804_v3/no_adaptation/nominal/seed_05",
+        "seed": 5,
+        "steps": 650,
+        "success": true,
+        "valid": 1
+      },
+      {
+        "episode_dir": "/home/lijingsu/cope_outputs/nominal_gate_20260804_v3/no_adaptation/nominal/seed_06",
+        "seed": 6,
+        "steps": 652,
+        "success": true,
+        "valid": 1
+      },
+      {
+        "episode_dir": "/home/lijingsu/cope_outputs/nominal_gate_20260804_v3/no_adaptation/nominal/seed_07",
+        "seed": 7,
+        "steps": 649,
+        "success": true,
+        "valid": 1
+      },
+      {
+        "episode_dir": "/home/lijingsu/cope_outputs/nominal_gate_20260804_v3/no_adaptation/nominal/seed_08",
+        "seed": 8,
+        "steps": 651,
+        "success": true,
+        "valid": 1
+      },
+      {
+        "episode_dir": "/home/lijingsu/cope_outputs/nominal_gate_20260804_v3/no_adaptation/nominal/seed_09",
+        "seed": 9,
+        "steps": 656,
+        "success": true,
+        "valid": 1
+      }
+    ],
+    "successes": 10,
+    "threshold": 8,
+    "valid": 10
+  },
+  "meta": {
+    "backend": "libero_mujoco",
+    "backend_config": "/home/lijingsu/cope_fsrpc_\u4ea4\u63a5_v2/configs_gpu/task_assets.yaml",
+    "controller_privilege": "simulator_geometry_oracle",
+    "evidence_stratum": "mechanism",
+    "gate_seeds": 10,
+    "git_rev": "unknown",
+    "learned_policy_used": false,
+    "pilot_seeds": 5,
+    "platform": "Linux-5.19.0-50-generic-x86_64-with-glibc2.35",
+    "python": "3.10.12",
+    "utc": "2026-08-04T06:51:38.355005+00:00"
+  }
+}

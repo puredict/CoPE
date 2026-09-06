@@ -1,0 +1,5 @@
+method,combos,branches,graph_nodes,compile_expansions,sd_coverage
+offline_budget_1,1,1,5,6,1/7
+offline_atomic_3,3,6,32,31,5/7
+offline_exact_7,7,17,109,157,7/7
+online_synthesis,-,9 operators,0,0,7/7

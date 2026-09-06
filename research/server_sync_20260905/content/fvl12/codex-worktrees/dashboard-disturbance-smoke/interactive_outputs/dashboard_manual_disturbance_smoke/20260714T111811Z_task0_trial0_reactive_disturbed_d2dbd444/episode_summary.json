@@ -1,0 +1,108 @@
+{
+  "backend_snapshot": {
+    "backend": "real",
+    "device_summary": {
+      "cuda_available": false,
+      "device": "released"
+    },
+    "model_loaded": false
+  },
+  "completed_at": "2026-07-14T11:18:30.182148+00:00",
+  "config": {
+    "allow_multiple_disturbances": false,
+    "checkpoint": "/home/lijingsu/vla/models/openvla-7b-finetuned-libero-spatial",
+    "disturbance_step": 70,
+    "dx": 0.1,
+    "dy": 0.05,
+    "enable_auto_disturbance": false,
+    "max_steps": 220,
+    "mode": "reactive_disturbed",
+    "num_steps_wait": 10,
+    "out_dir": "interactive_outputs/dashboard_manual_disturbance_smoke",
+    "resolution": 256,
+    "seed": 7,
+    "target_joint": "akita_black_bowl_1_joint0",
+    "task_id": 0,
+    "task_suite": "libero_spatial",
+    "trial_id": 0,
+    "unnorm_key": null
+  },
+  "current_prompt": "",
+  "disturbance_count": 0,
+  "done": true,
+  "eligible_for_official_metrics": false,
+  "environment_step": 13,
+  "episode_status": {
+    "detail": {
+      "info_keys": []
+    },
+    "done": false,
+    "failure": true,
+    "max_steps": 220,
+    "policy_step": 3,
+    "reward": 0.0,
+    "simulator_error": false,
+    "source": "episode_ended_without_success_or_timeout",
+    "status": "failure",
+    "stopped": false,
+    "success": false,
+    "timeout": false
+  },
+  "error": null,
+  "event_count": 11,
+  "exclude_from_formal_success_summaries": true,
+  "formal_run": false,
+  "fresh_observation": null,
+  "human_intervention": true,
+  "interactive": true,
+  "last_disturbance": null,
+  "latest_action": {
+    "env_action": [
+      -0.0029850299042814,
+      0.1071428656578064,
+      -0.0026785731315612793,
+      -0.0007794112843625689,
+      4.201572315365443e-05,
+      0.00012604848426930881,
+      -1.0
+    ],
+    "raw_action": [
+      -0.0029850299042814,
+      0.1071428656578064,
+      -0.0026785731315612793,
+      -0.0007794112843625689,
+      4.201572315365443e-05,
+      0.00012604848426930881,
+      0.996078431372549
+    ]
+  },
+  "manual_intervention": true,
+  "original_prompt": "",
+  "paths": {
+    "actions_jsonl": "interactive_outputs/dashboard_manual_disturbance_smoke/20260714T111811Z_task0_trial0_reactive_disturbed_d2dbd444/actions.jsonl",
+    "annotated_video": "interactive_outputs/dashboard_manual_disturbance_smoke/20260714T111811Z_task0_trial0_reactive_disturbed_d2dbd444/annotated.mp4",
+    "episode_summary": "interactive_outputs/dashboard_manual_disturbance_smoke/20260714T111811Z_task0_trial0_reactive_disturbed_d2dbd444/episode_summary.json",
+    "events_jsonl": "interactive_outputs/dashboard_manual_disturbance_smoke/20260714T111811Z_task0_trial0_reactive_disturbed_d2dbd444/events.jsonl",
+    "raw_video": "interactive_outputs/dashboard_manual_disturbance_smoke/20260714T111811Z_task0_trial0_reactive_disturbed_d2dbd444/raw.mp4",
+    "run_config": "interactive_outputs/dashboard_manual_disturbance_smoke/20260714T111811Z_task0_trial0_reactive_disturbed_d2dbd444/run_config.json",
+    "run_dir": "interactive_outputs/dashboard_manual_disturbance_smoke/20260714T111811Z_task0_trial0_reactive_disturbed_d2dbd444",
+    "worker_log": "interactive_outputs/dashboard_manual_disturbance_smoke/20260714T111811Z_task0_trial0_reactive_disturbed_d2dbd444/worker_error.log"
+  },
+  "policy_budget_remaining": 217,
+  "policy_step": 3,
+  "recovery_state": {},
+  "reward": 0.0,
+  "run_id": "20260714T111811Z_task0_trial0_reactive_disturbed_d2dbd444",
+  "state": "FAILED",
+  "success": false,
+  "target_joint": "",
+  "target_position": null,
+  "termination_reason": "manual_stop",
+  "traceback_tail": "",
+  "video": {
+    "annotated_video_path": "interactive_outputs/dashboard_manual_disturbance_smoke/20260714T111811Z_task0_trial0_reactive_disturbed_d2dbd444/annotated.mp4",
+    "frame_count": 4,
+    "raw_video_path": "interactive_outputs/dashboard_manual_disturbance_smoke/20260714T111811Z_task0_trial0_reactive_disturbed_d2dbd444/raw.mp4",
+    "warnings": []
+  }
+}

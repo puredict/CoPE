@@ -1,0 +1,6 @@
+branch=codex/mock-dashboard
+feature_commit=d103f87e76501e19264ae511800dd228753b61b4
+baseline_snapshot_commit=76f345c65bed3c05f8029da189567114f07e0997
+commit_message=feat: add mock LIBERO experiment dashboard
+remote_worktree=/home/lijingsu/codex-worktrees/mock-dashboard
+remote_delivery=/home/lijingsu/codex-deliveries/mock-dashboard

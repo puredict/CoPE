@@ -1,0 +1,58 @@
+{
+  "delivery": {
+    "episodes": 75,
+    "short": 0
+  },
+  "audit_decomposition": {
+    "I1": [
+      1.0,
+      0.667,
+      0.667,
+      1.0
+    ],
+    "I2": [
+      1.0,
+      0.333,
+      0.333,
+      1.0
+    ],
+    "I3": [
+      1.0,
+      0.5,
+      0.5,
+      1.0
+    ],
+    "I4": [
+      1.0,
+      0.333,
+      0.333,
+      1.0
+    ],
+    "I5": [
+      1.0,
+      0.2,
+      0.2,
+      0.8
+    ]
+  },
+  "verifier": {
+    "CoPE_no_rollout_verification": {
+      "n_candidates": 4,
+      "n_rejected": 0,
+      "n_accepted": 4,
+      "selected": "Suspend+UpdateTargetContract+Stabilize+Retreat+WaitUntilClear+Realign+Resume",
+      "rejected_by_reason": {},
+      "verifier_discriminated": false,
+      "rollout_verification_enabled": false,
+      "lines": [
+        "CANDIDATE_SELECTED Suspend+UpdateTargetContract+Stabilize+Retreat+WaitUntilClear+Realign+Resume"
+      ],
+      "safe_fallback": false,
+      "probe": "verifier_probe|butter|basket_B|0"
+    },
+    "verifier_changed_the_decision": true,
+    "n_rejected_full": 4,
+    "n_rejected_ablated": 0
+  },
+  "fairness_identical": true
+}

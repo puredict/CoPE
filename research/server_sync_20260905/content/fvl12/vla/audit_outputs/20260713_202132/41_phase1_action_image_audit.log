@@ -1,0 +1,414 @@
+COMMAND: cd /home/lijingsu/vla && source .venv/bin/activate && unset LD_LIBRARY_PATH && python - <<'PY'
+import ast, json, math, re
+from pathlib import Path
+from PIL import Image, ImageDraw
+import numpy as np
+root = Path("/home/lijingsu/vla/audit_outputs/20260713_202132")
+outroot = root / "isolated_smoke_outputs_devbind"
+report = {"outroot": str(outroot), "json_files": {}, "png_files": {}, "openvla_local_diagnostic": {}, "disturbance_position_delta": None, "overall": {}}
+all_actions = []
+all_rewards_done_serializable = True
+for path in sorted(outroot.rglob("*.json")):
+    data = json.loads(path.read_text())
+    rows = data.get("rows", [])
+    lengths = []
+    finite = True
+    gripper_values = []
+    for row in rows:
+        action = row.get("action")
+        if action is not None:
+            lengths.append(len(action))
+            all_actions.append((str(path), row.get("t"), action))
+            finite = finite and all(isinstance(x, (int, float)) and math.isfinite(float(x)) for x in action)
+            if len(action) >= 7:
+                gripper_values.append(float(action[6]))
+        try:
+            json.dumps({"reward": row.get("reward"), "done": row.get("done")})
+        except Exception:
+            all_rewards_done_serializable = False
+    report["json_files"][str(path)] = {
+        "rows": len(rows),
+        "action_lengths": sorted(set(lengths)),
+        "all_actions_finite": finite,
+        "gripper_min": min(gripper_values) if gripper_values else None,
+        "gripper_max": max(gripper_values) if gripper_values else None,
+        "reward_done_json_serializable": all_rewards_done_serializable,
+    }
+    if path.name == "disturbance_smoke.json":
+        by_t = {row.get("t"): row for row in rows}
+        if 5 in by_t and 6 in by_t:
+            before = by_t[5].get("target_pos_before_action")
+            after = by_t[6].get("target_pos_before_action")
+            if before and after:
+                delta = [round(float(after[i]) - float(before[i]), 6) for i in range(min(3, len(before), len(after)))]
+                report["disturbance_position_delta"] = {"from_t": 5, "to_t": 6, "before": before, "after": after, "delta": delta, "event": by_t[6].get("event")}
+for path in sorted(outroot.rglob("*.png")):
+    im = Image.open(path)
+    arr = np.asarray(im)
+    report["png_files"][str(path)] = {"size": list(im.size), "mode": im.mode, "dtype": str(arr.dtype), "shape": list(arr.shape), "min": int(arr.min()), "max": int(arr.max())}
+# parse local openvla diagnostic action
+log = root / "40_openvla_smoke_local_model_diagnostic.log"
+text = log.read_text(errors="replace") if log.exists() else ""
+m = re.search(r"action:\s*\[(.*?)\]", text, re.S)
+if m:
+    vals = [float(x) for x in m.group(1).split()]
+    report["openvla_local_diagnostic"] = {"action": vals, "action_length": len(vals), "all_finite": all(math.isfinite(x) for x in vals), "gripper_value": vals[6] if len(vals) >= 7 else None, "log": str(log)}
+# contact sheets
+def sheet(paths, dest):
+    imgs = [Image.open(p).convert("RGB") for p in paths]
+    if not imgs:
+        return None
+    thumbs = []
+    for p, im in zip(paths, imgs):
+        im.thumbnail((220, 220))
+        canvas = Image.new("RGB", (220, 250), "white")
+        canvas.paste(im, ((220 - im.width)//2, 0))
+        d = ImageDraw.Draw(canvas)
+        d.text((4, 228), p.name[:28], fill=(0,0,0))
+        thumbs.append(canvas)
+    w = 220 * len(thumbs)
+    sheet_im = Image.new("RGB", (w, 250), "white")
+    for i, im in enumerate(thumbs):
+        sheet_im.paste(im, (i*220, 0))
+    sheet_im.save(dest)
+    return str(dest)
+base_paths = sorted(outroot.glob("frame_t*.png"))
+dist_paths = sorted((outroot / "disturbance").glob("frame_t*.png"))
+report["contact_sheets"] = {
+    "base": sheet(base_paths, root / "base_smoke_contact_sheet.png"),
+    "disturbance": sheet(dist_paths, root / "disturbance_smoke_contact_sheet.png"),
+}
+lengths = sorted(set(len(a) for _, _, a in all_actions))
+finite = all(all(math.isfinite(float(x)) for x in a) for _, _, a in all_actions)
+report["overall"] = {"action_lengths": lengths, "all_actions_finite": finite, "num_actions": len(all_actions), "reward_done_json_serializable": all_rewards_done_serializable}
+(root / "phase1_action_image_audit.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+print(json.dumps(report, indent=2))
+PY
+START: 2026-07-13T21:00:32+08:00
+END: 2026-07-13T21:00:32+08:00
+EXIT: 0
+
+STDOUT:
+{
+  "outroot": "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind",
+  "json_files": {
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/base_closed_loop_smoke.json": {
+      "rows": 10,
+      "action_lengths": [
+        7
+      ],
+      "all_actions_finite": true,
+      "gripper_min": -1.0,
+      "gripper_max": 1.0,
+      "reward_done_json_serializable": true
+    },
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/disturbance/disturbance_smoke.json": {
+      "rows": 12,
+      "action_lengths": [
+        7
+      ],
+      "all_actions_finite": true,
+      "gripper_min": -1.0,
+      "gripper_max": 1.0,
+      "reward_done_json_serializable": true
+    }
+  },
+  "png_files": {
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/disturbance/frame_t10.png": {
+      "size": [
+        224,
+        224
+      ],
+      "mode": "RGB",
+      "dtype": "uint8",
+      "shape": [
+        224,
+        224,
+        3
+      ],
+      "min": 0,
+      "max": 255
+    },
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/disturbance/frame_t11.png": {
+      "size": [
+        224,
+        224
+      ],
+      "mode": "RGB",
+      "dtype": "uint8",
+      "shape": [
+        224,
+        224,
+        3
+      ],
+      "min": 0,
+      "max": 255
+    },
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/disturbance/frame_t3.png": {
+      "size": [
+        224,
+        224
+      ],
+      "mode": "RGB",
+      "dtype": "uint8",
+      "shape": [
+        224,
+        224,
+        3
+      ],
+      "min": 0,
+      "max": 255
+    },
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/disturbance/frame_t4.png": {
+      "size": [
+        224,
+        224
+      ],
+      "mode": "RGB",
+      "dtype": "uint8",
+      "shape": [
+        224,
+        224,
+        3
+      ],
+      "min": 0,
+      "max": 255
+    },
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/disturbance/frame_t5.png": {
+      "size": [
+        224,
+        224
+      ],
+      "mode": "RGB",
+      "dtype": "uint8",
+      "shape": [
+        224,
+        224,
+        3
+      ],
+      "min": 0,
+      "max": 255
+    },
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/disturbance/frame_t6.png": {
+      "size": [
+        224,
+        224
+      ],
+      "mode": "RGB",
+      "dtype": "uint8",
+      "shape": [
+        224,
+        224,
+        3
+      ],
+      "min": 0,
+      "max": 255
+    },
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/disturbance/frame_t7.png": {
+      "size": [
+        224,
+        224
+      ],
+      "mode": "RGB",
+      "dtype": "uint8",
+      "shape": [
+        224,
+        224,
+        3
+      ],
+      "min": 0,
+      "max": 255
+    },
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/disturbance/frame_t8.png": {
+      "size": [
+        224,
+        224
+      ],
+      "mode": "RGB",
+      "dtype": "uint8",
+      "shape": [
+        224,
+        224,
+        3
+      ],
+      "min": 0,
+      "max": 255
+    },
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/disturbance/frame_t9.png": {
+      "size": [
+        224,
+        224
+      ],
+      "mode": "RGB",
+      "dtype": "uint8",
+      "shape": [
+        224,
+        224,
+        3
+      ],
+      "min": 0,
+      "max": 255
+    },
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/frame_t3.png": {
+      "size": [
+        224,
+        224
+      ],
+      "mode": "RGB",
+      "dtype": "uint8",
+      "shape": [
+        224,
+        224,
+        3
+      ],
+      "min": 0,
+      "max": 255
+    },
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/frame_t4.png": {
+      "size": [
+        224,
+        224
+      ],
+      "mode": "RGB",
+      "dtype": "uint8",
+      "shape": [
+        224,
+        224,
+        3
+      ],
+      "min": 0,
+      "max": 255
+    },
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/frame_t5.png": {
+      "size": [
+        224,
+        224
+      ],
+      "mode": "RGB",
+      "dtype": "uint8",
+      "shape": [
+        224,
+        224,
+        3
+      ],
+      "min": 0,
+      "max": 255
+    },
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/frame_t6.png": {
+      "size": [
+        224,
+        224
+      ],
+      "mode": "RGB",
+      "dtype": "uint8",
+      "shape": [
+        224,
+        224,
+        3
+      ],
+      "min": 0,
+      "max": 255
+    },
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/frame_t7.png": {
+      "size": [
+        224,
+        224
+      ],
+      "mode": "RGB",
+      "dtype": "uint8",
+      "shape": [
+        224,
+        224,
+        3
+      ],
+      "min": 0,
+      "max": 255
+    },
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/frame_t8.png": {
+      "size": [
+        224,
+        224
+      ],
+      "mode": "RGB",
+      "dtype": "uint8",
+      "shape": [
+        224,
+        224,
+        3
+      ],
+      "min": 0,
+      "max": 255
+    },
+    "/home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs_devbind/frame_t9.png": {
+      "size": [
+        224,
+        224
+      ],
+      "mode": "RGB",
+      "dtype": "uint8",
+      "shape": [
+        224,
+        224,
+        3
+      ],
+      "min": 0,
+      "max": 255
+    }
+  },
+  "openvla_local_diagnostic": {
+    "action": [
+      0.01164595,
+      0.00475603,
+      0.00469544,
+      -0.00397045,
+      0.03070304,
+      0.01443947,
+      0.99607843
+    ],
+    "action_length": 7,
+    "all_finite": true,
+    "gripper_value": 0.99607843,
+    "log": "/home/lijingsu/vla/audit_outputs/20260713_202132/40_openvla_smoke_local_model_diagnostic.log"
+  },
+  "disturbance_position_delta": {
+    "from_t": 5,
+    "to_t": 6,
+    "before": [
+      -0.117287,
+      0.055748,
+      0.475169
+    ],
+    "after": [
+      -0.017287,
+      0.105748,
+      0.475169
+    ],
+    "delta": [
+      0.1,
+      0.05,
+      0.0
+    ],
+    "event": {
+      "type": "target_displacement",
+      "joint": "tomato_sauce_1_joint0",
+      "delta_xy": [
+        0.1,
+        0.05
+      ]
+    }
+  },
+  "overall": {
+    "action_lengths": [
+      7
+    ],
+    "all_actions_finite": true,
+    "num_actions": 22,
+    "reward_done_json_serializable": true
+  },
+  "contact_sheets": {
+    "base": "/home/lijingsu/vla/audit_outputs/20260713_202132/base_smoke_contact_sheet.png",
+    "disturbance": "/home/lijingsu/vla/audit_outputs/20260713_202132/disturbance_smoke_contact_sheet.png"
+  }
+}
+
+STDERR:

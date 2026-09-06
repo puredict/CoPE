@@ -1,0 +1,223 @@
+{
+  "action_spec_source": "env.env.action_spec",
+  "action_validation": {
+    "action_high": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "action_low": [
+      -1.0,
+      -1.0,
+      -1.0,
+      -1.0,
+      -1.0,
+      -1.0,
+      -1.0
+    ],
+    "environment_action": [
+      0.0021271144642549533,
+      -0.0019695450277890103,
+      0.00034138186305165963,
+      -0.00046428395252602617,
+      -0.00031470433169719647,
+      -0.0006575529481850362,
+      -1.0
+    ],
+    "expected_dim": 7,
+    "gates": {
+      "action_spec_shape": true,
+      "environment_action_shape": true,
+      "environment_action_within_spec": true,
+      "environment_gripper_binarized": true,
+      "finite": true,
+      "gripper_normalize_binarize_invert": true,
+      "raw_action_shape": true,
+      "raw_gripper_in_unit_interval": true
+    },
+    "passed": true,
+    "raw_action": [
+      0.0021271144642549533,
+      -0.0019695450277890103,
+      0.00034138186305165963,
+      -0.00046428395252602617,
+      -0.00031470433169719647,
+      -0.0006575529481850362,
+      0.996078431372549
+    ]
+  },
+  "artifacts": {
+    "report": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_smoke_v2/smoke_report.json",
+    "reset_observation": "/home/lijingsu/cope-integration-outputs-20260724/openvla_libero10_smoke_v2/reset_observation.png"
+  },
+  "checkpoint": {
+    "action_dim": 7,
+    "action_mask": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      false
+    ],
+    "action_q01": [
+      -0.6348214149475098,
+      -0.7741071581840515,
+      -0.7633928656578064,
+      -0.09749999642372131,
+      -0.14819999992847435,
+      -0.2742857038974762,
+      0.0
+    ],
+    "action_q99": [
+      0.7714285850524902,
+      0.8464285731315613,
+      0.9375,
+      0.13928571343421936,
+      0.15964286029338837,
+      0.3246428668498993,
+      1.0
+    ],
+    "files_manifest_sha256": "58773a8ef85515f695c99402f692dc5afe0fb71efd7f3984ff44c1f117c4f034",
+    "model_index_sha256": "ca8b53fed8133ee2afcd2fc483de8febf7f5bb0f6bcb09f91189772e59e8f659",
+    "normalization_statistics_sha256": "54ca346948d5e62e9519a9ed93e45f0a069b9ec997ad1f48f1d8867d4d2d86d2",
+    "path": "/home/lijingsu/vla/models/openvla-7b-finetuned-libero-10",
+    "proprio_dim": 7,
+    "repository": "openvla/openvla-7b-finetuned-libero-10",
+    "revision": "80970322773f81baa2e22fe495d0487b93a05cfa",
+    "unnorm_key": "libero_10",
+    "weight_shards": [
+      {
+        "bytes": 4925122448,
+        "name": "model-00001-of-00004.safetensors",
+        "sha256": "72f7196d8768c104073d7e9104ad8023cb27727191de1a490612886428b18c51"
+      },
+      {
+        "bytes": 4947392496,
+        "name": "model-00002-of-00004.safetensors",
+        "sha256": "92a60a88c7dad2ba1fccc4acbebef98fc7a894891bc49f2e21cfbf1600daf413"
+      },
+      {
+        "bytes": 4947417456,
+        "name": "model-00003-of-00004.safetensors",
+        "sha256": "12b45ae85535565148907e379d6f35bcba83b9497006ff3b66658fa412ffac85"
+      },
+      {
+        "bytes": 262668432,
+        "name": "model-00004-of-00004.safetensors",
+        "sha256": "d3b8e759db56b86709c56f8d156952415dd64e101feccfd01e701487041dd8c1"
+      }
+    ]
+  },
+  "complete": true,
+  "config_hash": "4f5b7fd03c22ca7ce765afc8e9a7417d23d20be9f1e08aa40d7c1500d764a2e7",
+  "done_after_step": false,
+  "environment_step_seconds": 0.2206044578924775,
+  "gates": {
+    "action_validation": true,
+    "camera_frame_present": true,
+    "model_inference_latency_recorded": true,
+    "no_fake_scripted_or_noop_policy": true,
+    "one_environment_step_executed": true,
+    "proprio_dimension": false,
+    "proprio_finite": true,
+    "real_libero_reset_observation": true,
+    "resolved_unnorm_key": true
+  },
+  "gpu": {
+    "allocated_bytes": 15138074624,
+    "cuda_available": true,
+    "device": "cuda:0",
+    "name": "NVIDIA GeForce RTX 3090",
+    "peak_allocated_bytes": 15477679616,
+    "peak_reserved_bytes": 15573450752,
+    "reserved_bytes": 15573450752,
+    "total_bytes": 25438126080
+  },
+  "inference_seconds": 0.8904623398557305,
+  "info_after_step": {},
+  "initial_state_id": 0,
+  "observation": {
+    "frame_dtype": "uint8",
+    "frame_sha256": "259434fbde54b9b8ba13a4480033e27b785a2d215503de8804bcbb8c05f9e7ea",
+    "frame_shape": [
+      224,
+      224,
+      3
+    ],
+    "keys": [
+      "agentview_image",
+      "alphabet_soup_1_pos",
+      "alphabet_soup_1_quat",
+      "alphabet_soup_1_to_robot0_eef_pos",
+      "alphabet_soup_1_to_robot0_eef_quat",
+      "basket_1_pos",
+      "basket_1_quat",
+      "basket_1_to_robot0_eef_pos",
+      "basket_1_to_robot0_eef_quat",
+      "butter_1_pos",
+      "butter_1_quat",
+      "butter_1_to_robot0_eef_pos",
+      "butter_1_to_robot0_eef_quat",
+      "cream_cheese_1_pos",
+      "cream_cheese_1_quat",
+      "cream_cheese_1_to_robot0_eef_pos",
+      "cream_cheese_1_to_robot0_eef_quat",
+      "ketchup_1_pos",
+      "ketchup_1_quat",
+      "ketchup_1_to_robot0_eef_pos",
+      "ketchup_1_to_robot0_eef_quat",
+      "milk_1_pos",
+      "milk_1_quat",
+      "milk_1_to_robot0_eef_pos",
+      "milk_1_to_robot0_eef_quat",
+      "object-state",
+      "orange_juice_1_pos",
+      "orange_juice_1_quat",
+      "orange_juice_1_to_robot0_eef_pos",
+      "orange_juice_1_to_robot0_eef_quat",
+      "robot0_eef_pos",
+      "robot0_eef_quat",
+      "robot0_eye_in_hand_image",
+      "robot0_gripper_qpos",
+      "robot0_gripper_qvel",
+      "robot0_joint_pos",
+      "robot0_joint_pos_cos",
+      "robot0_joint_pos_sin",
+      "robot0_joint_vel",
+      "robot0_proprio-state",
+      "tomato_sauce_1_pos",
+      "tomato_sauce_1_quat",
+      "tomato_sauce_1_to_robot0_eef_pos",
+      "tomato_sauce_1_to_robot0_eef_quat"
+    ],
+    "proprio_finite": true,
+    "proprio_shape": [
+      8
+    ]
+  },
+  "passed": false,
+  "phase": "smoke",
+  "policy_proof": {
+    "checkpoint_path": "/home/lijingsu/vla/models/openvla-7b-finetuned-libero-10",
+    "checkpoint_revision": "80970322773f81baa2e22fe495d0487b93a05cfa",
+    "dummy_action_used": false,
+    "high_level_provider_used": false,
+    "inference_function": "libero_experiment_core.execute_policy_step",
+    "model_class": "transformers_modules.openvla.openvla-7b.47a0ec7fc4ec123775a391911046cf33cf9ed83f.modeling_prismatic.OpenVLAForActionPrediction",
+    "processor_class": "prismatic.extern.hf.processing_prismatic.PrismaticProcessor",
+    "processor_dynamic_load_error": "OSError: We couldn't connect to 'https://huggingface.co' to load this file, couldn't find it in the cached files and it looks like openvla/openvla-7b is not the path to a directory containing a file named processing_prismatic.py.\nCheckout your internet connection or see how to run the library in offline mode at 'https://huggingface.co/docs/transformers/installation#offline-mode'.",
+    "processor_loader": "local_upstream_prismatic_processor_v1"
+  },
+  "reward_after_step": 0.0,
+  "schema_version": "openvla-libero-smoke-v1",
+  "seed": 20260724,
+  "task_id": 0,
+  "task_prompt": "put both the alphabet soup and the tomato sauce in the basket",
+  "task_suite": "libero_10"
+}

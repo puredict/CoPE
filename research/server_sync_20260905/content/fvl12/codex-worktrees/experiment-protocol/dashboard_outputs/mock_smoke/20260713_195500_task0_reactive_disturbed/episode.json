@@ -1,0 +1,217 @@
+{
+  "config": {
+    "checkpoint": "/home/lijingsu/vla/models/openvla-7b-finetuned-libero-spatial",
+    "task_suite": "libero_spatial",
+    "unnorm_key": null,
+    "task_id": 0,
+    "trial_id": 0,
+    "mode": "reactive_disturbed",
+    "max_steps": 3,
+    "num_steps_wait": 1,
+    "disturbance_step": 1,
+    "target_joint": "auto",
+    "dx": 0.1,
+    "dy": 0.05,
+    "seed": 7,
+    "resolution": 256,
+    "out_dir": "/home/lijingsu/vla/dashboard_outputs/mock_smoke",
+    "enable_auto_disturbance": true,
+    "allow_multiple_disturbances": false
+  },
+  "task_description": "put the black bowl on the plate",
+  "original_prompt": "put the black bowl on the plate",
+  "current_prompt": "put the black bowl on the plate",
+  "target_joint": "akita_black_bowl_1_joint0",
+  "available_target_joints": [
+    {
+      "name": "akita_black_bowl_1_joint0",
+      "joint_id": 0,
+      "qpos_addr": 0,
+      "object_name": "akita_black_bowl_1",
+      "score": 2
+    },
+    {
+      "name": "plate_1_joint0",
+      "joint_id": 1,
+      "qpos_addr": 7,
+      "object_name": "plate_1",
+      "score": 1
+    }
+  ],
+  "success": true,
+  "done": true,
+  "stopped_by_verifier": false,
+  "final_reward": 1.0,
+  "num_policy_steps": 3,
+  "phase_policy_step": 3,
+  "reset_count": 0,
+  "extra_env_steps": 1,
+  "disturbances": [
+    {
+      "joint": "akita_black_bowl_1_joint0",
+      "joint_id": 0,
+      "qpos_addr": 0,
+      "before_qpos": [
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "after_qpos": [
+        0.1,
+        0.05,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "delta_xy": [
+        0.1,
+        0.05
+      ],
+      "applied_at": "2026-07-13T11:55:00.115857+00:00",
+      "refresh": {
+        "method": "mock_refresh",
+        "consumed_noop_env_step": false
+      },
+      "source": "auto_config",
+      "policy_step": 1,
+      "phase_policy_step": 1,
+      "requested_at": null,
+      "actual_joint": "akita_black_bowl_1_joint0"
+    }
+  ],
+  "last_disturbance": {
+    "joint": "akita_black_bowl_1_joint0",
+    "joint_id": 0,
+    "qpos_addr": 0,
+    "before_qpos": [
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "after_qpos": [
+      0.1,
+      0.05,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "delta_xy": [
+      0.1,
+      0.05
+    ],
+    "applied_at": "2026-07-13T11:55:00.115857+00:00",
+    "refresh": {
+      "method": "mock_refresh",
+      "consumed_noop_env_step": false
+    },
+    "source": "auto_config",
+    "policy_step": 1,
+    "phase_policy_step": 1,
+    "requested_at": null,
+    "actual_joint": "akita_black_bowl_1_joint0"
+  },
+  "recovery_state": null,
+  "actions": [
+    {
+      "t": 0,
+      "phase_policy_step": 0,
+      "task_prompt": "put the black bowl on the plate",
+      "raw_action": [
+        0.0,
+        0.1,
+        -0.1,
+        0.0,
+        0.2,
+        -0.2,
+        1.0
+      ],
+      "env_action": [
+        0.0,
+        0.1,
+        -0.1,
+        0.0,
+        0.2,
+        -0.2,
+        -1.0
+      ],
+      "reward": 0.3333333333333333,
+      "done": false,
+      "inference_seconds": 0.01,
+      "env_step_seconds": 0.001
+    },
+    {
+      "t": 1,
+      "phase_policy_step": 1,
+      "task_prompt": "put the black bowl on the plate",
+      "raw_action": [
+        1.0,
+        0.1,
+        -0.1,
+        0.0,
+        0.2,
+        -0.2,
+        1.0
+      ],
+      "env_action": [
+        1.0,
+        0.1,
+        -0.1,
+        0.0,
+        0.2,
+        -0.2,
+        -1.0
+      ],
+      "reward": 0.6666666666666666,
+      "done": false,
+      "inference_seconds": 0.01,
+      "env_step_seconds": 0.001
+    },
+    {
+      "t": 2,
+      "phase_policy_step": 2,
+      "task_prompt": "put the black bowl on the plate",
+      "raw_action": [
+        2.0,
+        0.1,
+        -0.1,
+        0.0,
+        0.2,
+        -0.2,
+        1.0
+      ],
+      "env_action": [
+        2.0,
+        0.1,
+        -0.1,
+        0.0,
+        0.2,
+        -0.2,
+        -1.0
+      ],
+      "reward": 1.0,
+      "done": true,
+      "inference_seconds": 0.01,
+      "env_step_seconds": 0.001
+    }
+  ],
+  "human_intervention": false,
+  "eligible_for_official_metrics": false,
+  "run_dir": "/home/lijingsu/vla/dashboard_outputs/mock_smoke/20260713_195500_task0_reactive_disturbed",
+  "raw_video_path": "/home/lijingsu/vla/dashboard_outputs/mock_smoke/20260713_195500_task0_reactive_disturbed/raw.mp4",
+  "annotated_video_path": "/home/lijingsu/vla/dashboard_outputs/mock_smoke/20260713_195500_task0_reactive_disturbed/annotated.mp4",
+  "events_jsonl_path": "/home/lijingsu/vla/dashboard_outputs/mock_smoke/20260713_195500_task0_reactive_disturbed/events.jsonl",
+  "episode_json_path": "/home/lijingsu/vla/dashboard_outputs/mock_smoke/20260713_195500_task0_reactive_disturbed/episode.json",
+  "error": null
+}

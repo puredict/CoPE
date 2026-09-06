@@ -1,0 +1,79 @@
+{
+  "meta": {
+    "utc": "2026-08-07T04:57:11.972988+00:00",
+    "git_rev": "ce79dc2db05a1ded03b08e243c9a77dd4089bb73",
+    "python": "3.12.2",
+    "platform": "macOS-26.2-arm64-arm-64bit",
+    "executor": "physical",
+    "p_success": 0.97,
+    "seeds": 5,
+    "gate_seeds": 10
+  },
+  "gate": {
+    "n_seeds": 10,
+    "episode_successes": 10,
+    "per_seed": [
+      {
+        "seed": 0,
+        "success": true
+      },
+      {
+        "seed": 1,
+        "success": true
+      },
+      {
+        "seed": 2,
+        "success": true
+      },
+      {
+        "seed": 3,
+        "success": true
+      },
+      {
+        "seed": 4,
+        "success": true
+      },
+      {
+        "seed": 5,
+        "success": true
+      },
+      {
+        "seed": 6,
+        "success": true
+      },
+      {
+        "seed": 7,
+        "success": true
+      },
+      {
+        "seed": 8,
+        "success": true
+      },
+      {
+        "seed": 9,
+        "success": true
+      }
+    ],
+    "per_object": {
+      "milk": {
+        "attempts": 10,
+        "grasped": 10,
+        "placed": 10
+      },
+      "yogurt": {
+        "attempts": 10,
+        "grasped": 10,
+        "placed": 10
+      },
+      "butter": {
+        "attempts": 10,
+        "grasped": 10,
+        "placed": 10
+      }
+    },
+    "weakest_object": "milk",
+    "weakest_grasp_rate": 1.0,
+    "passed": true,
+    "note": "Fix the asset pose, grasp waypoint or controller before comparing methods. Do not use method results to compensate for a poor nominal controller."
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "backend_snapshot": {
+    "backend": "real",
+    "device_summary": {
+      "cuda_available": false,
+      "device": "released"
+    },
+    "model_loaded": false
+  },
+  "completed_at": "2026-07-14T07:51:42.406903+00:00",
+  "config": {
+    "allow_multiple_disturbances": false,
+    "checkpoint": "/home/lijingsu/vla/models/openvla-7b-finetuned-libero-spatial",
+    "disturbance_step": 70,
+    "dx": 0.1,
+    "dy": 0.05,
+    "enable_auto_disturbance": false,
+    "max_steps": 20,
+    "mode": "reactive_disturbed",
+    "num_steps_wait": 10,
+    "out_dir": "/home/lijingsu/vla/interactive_outputs/dashboard_target_joint_fix",
+    "resolution": 256,
+    "seed": 7,
+    "target_joint": "akita_black_bowl_1_joint0",
+    "task_id": 0,
+    "task_suite": "libero_spatial",
+    "trial_id": 0,
+    "unnorm_key": null
+  },
+  "current_prompt": "",
+  "disturbance_count": 0,
+  "done": true,
+  "eligible_for_official_metrics": false,
+  "environment_step": 0,
+  "episode_status": null,
+  "error": null,
+  "event_count": 3,
+  "exclude_from_formal_success_summaries": true,
+  "formal_run": false,
+  "fresh_observation": null,
+  "human_intervention": true,
+  "interactive": true,
+  "last_disturbance": null,
+  "latest_action": {
+    "env_action": [],
+    "raw_action": []
+  },
+  "manual_intervention": true,
+  "original_prompt": "",
+  "paths": {
+    "actions_jsonl": "/home/lijingsu/vla/interactive_outputs/dashboard_target_joint_fix/20260714T075127Z_task0_trial0_reactive_disturbed_f9bd4cf5/actions.jsonl",
+    "annotated_video": "/home/lijingsu/vla/interactive_outputs/dashboard_target_joint_fix/20260714T075127Z_task0_trial0_reactive_disturbed_f9bd4cf5/annotated.mp4",
+    "episode_summary": "/home/lijingsu/vla/interactive_outputs/dashboard_target_joint_fix/20260714T075127Z_task0_trial0_reactive_disturbed_f9bd4cf5/episode_summary.json",
+    "events_jsonl": "/home/lijingsu/vla/interactive_outputs/dashboard_target_joint_fix/20260714T075127Z_task0_trial0_reactive_disturbed_f9bd4cf5/events.jsonl",
+    "raw_video": "/home/lijingsu/vla/interactive_outputs/dashboard_target_joint_fix/20260714T075127Z_task0_trial0_reactive_disturbed_f9bd4cf5/raw.mp4",
+    "run_config": "/home/lijingsu/vla/interactive_outputs/dashboard_target_joint_fix/20260714T075127Z_task0_trial0_reactive_disturbed_f9bd4cf5/run_config.json",
+    "run_dir": "/home/lijingsu/vla/interactive_outputs/dashboard_target_joint_fix/20260714T075127Z_task0_trial0_reactive_disturbed_f9bd4cf5",
+    "worker_log": "/home/lijingsu/vla/interactive_outputs/dashboard_target_joint_fix/20260714T075127Z_task0_trial0_reactive_disturbed_f9bd4cf5/worker_error.log"
+  },
+  "policy_budget_remaining": 20,
+  "policy_step": 0,
+  "recovery_state": {},
+  "reward": 0.0,
+  "run_id": "20260714T075127Z_task0_trial0_reactive_disturbed_f9bd4cf5",
+  "state": "FAILED",
+  "success": false,
+  "target_joint": "",
+  "target_position": null,
+  "termination_reason": "manual_stop",
+  "traceback_tail": "",
+  "video": {
+    "annotated_video_path": "/home/lijingsu/vla/interactive_outputs/dashboard_target_joint_fix/20260714T075127Z_task0_trial0_reactive_disturbed_f9bd4cf5/annotated.mp4",
+    "frame_count": 1,
+    "raw_video_path": "/home/lijingsu/vla/interactive_outputs/dashboard_target_joint_fix/20260714T075127Z_task0_trial0_reactive_disturbed_f9bd4cf5/raw.mp4",
+    "warnings": []
+  }
+}

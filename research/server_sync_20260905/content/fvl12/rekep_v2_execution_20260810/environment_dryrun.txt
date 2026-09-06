@@ -1,0 +1,13 @@
+MODE: --dry-run (configuration validation only; no GPU imports)
+
+  [PASS] python                        3.10
+  [PASS] os                            Linux-5.19.0-50-generic-x86_64-with-glibc2.35
+  [PASS] rekep_repair (repair layer)   v0.0.1
+  [PASS] numpy                         1.26.4
+  [PASS] scipy                         1.15.3
+  [PASS] matplotlib                    3.10.9
+  [SKIP] check_driver (GPU)            skipped in dry-run
+  [SKIP] check_torch (GPU)             skipped in dry-run
+  [SKIP] check_sim_stack (GPU)         skipped in dry-run
+
+Dry-run complete. GPU checks were SKIPPED and remain 'requires remote GPU verification'.

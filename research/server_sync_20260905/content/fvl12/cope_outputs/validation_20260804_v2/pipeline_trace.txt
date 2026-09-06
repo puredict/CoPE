@@ -1,0 +1,305 @@
+[run_project_env] Using project-isolated LIBERO/OpenVLA environment for this subprocess only.
+[run_project_env] LD_LIBRARY_PATH is unset here to avoid the broken system CUDA nvJitLink path.
+CoPE / FSR-PC end-to-end repair pipeline trace
+Both arms enter the SAME frozen repair engine after producing their state update.
+
+==============================================================================
+  condition=I1  seed=0
+==============================================================================
+
+-- CoPE --
+   interruption 1  [I1-u1]  COMPLETE
+        EVENT                    
+        PATCH                    
+        CONTINUATION_CAPTURED    captured before physical adaptation
+        REPAIR_GOAL_COMPILED     required_true=['aligned_to_current_target', 'restore_valid'] required_false=[]
+        CANDIDATES_GENERATED     n=3 planner_nodes=13 ['Suspend+UpdateTargetContract+Stabilize+Realign+Resume', 'Suspend+Stabilize+UpdateTargetContract+Realign+Resume', 'Suspend+Stabilize+Realign+UpdateTargetContract+Resume']
+        ROLLOUT_RESULTS          3 verified
+        CANDIDATE_SELECTED       Suspend+UpdateTargetContract+Stabilize+Realign+Resume score=2.350 rejected=0
+        GRAPH_SPLICED            ['suspend#0', 'updatetargetcontract#1', 'stabilize#2', 'realign#3', 'resume#4']  stages 1 -> 7
+        RESTORE_VALIDATED        validated=True handoff_error=0.0
+        STAGE_RESUMED            
+          rollout  Suspend+UpdateTargetContract+Stabilize+Realign+Resume: dur=9 clr=inf handoff=0.000 collision=False residual=[]
+          rollout  Suspend+Stabilize+UpdateTargetContract+Realign+Resume: dur=10 clr=inf handoff=0.000 collision=False residual=[]
+          rollout  Suspend+Stabilize+Realign+UpdateTargetContract+Resume: dur=10 clr=inf handoff=0.000 collision=False residual=[]
+        why (requirement -> source):
+          aligned_to_current_target    <- (world) [observed_predicates]
+          restore_valid                <- (world) [observed_predicates]
+          aligned_to_current_target    <- g_butter [active->overridden]
+          restore_valid                <- g_butter [active->overridden]
+          restore_valid                <- g_yogurt [active->expired]
+
+-- FSR-PC --
+   interruption 1  [I1-u1]  COMPLETE
+        EVENT                    
+        REGENERATION             
+        CONTINUATION_CAPTURED    captured before physical adaptation
+        REPAIR_GOAL_COMPILED     required_true=['aligned_to_current_target', 'restore_valid'] required_false=[]
+        CANDIDATES_GENERATED     n=3 planner_nodes=13 ['Suspend+UpdateTargetContract+Stabilize+Realign+Resume', 'Suspend+Stabilize+UpdateTargetContract+Realign+Resume', 'Suspend+Stabilize+Realign+UpdateTargetContract+Resume']
+        ROLLOUT_RESULTS          3 verified
+        CANDIDATE_SELECTED       Suspend+UpdateTargetContract+Stabilize+Realign+Resume score=2.350 rejected=0
+        GRAPH_SPLICED            ['suspend#0', 'updatetargetcontract#1', 'stabilize#2', 'realign#3', 'resume#4']  stages 1 -> 7
+        RESTORE_VALIDATED        validated=True handoff_error=0.0
+        STAGE_RESUMED            
+          rollout  Suspend+UpdateTargetContract+Stabilize+Realign+Resume: dur=9 clr=inf handoff=0.000 collision=False residual=[]
+          rollout  Suspend+Stabilize+UpdateTargetContract+Realign+Resume: dur=10 clr=inf handoff=0.000 collision=False residual=[]
+          rollout  Suspend+Stabilize+Realign+UpdateTargetContract+Resume: dur=10 clr=inf handoff=0.000 collision=False residual=[]
+        why (requirement -> source):
+          aligned_to_current_target    <- (world) [observed_predicates]
+          restore_valid                <- (world) [observed_predicates]
+          aligned_to_current_target    <- g_butter [active->overridden]
+          restore_valid                <- g_butter [active->overridden]
+          restore_valid                <- g_yogurt [active->expired]
+
+-- shared-stack checks --
+   identical adaptation inputs      : True
+   identical compiled repair goals  : True
+   same candidates generated        : True
+   same splices / resumes           : True
+   differ only in state semantics   : regenerated 0 vs 5; identity preserved True vs False
+
+==============================================================================
+  condition=I2  seed=0
+==============================================================================
+
+-- CoPE --
+   interruption 1  [I2-u1]  COMPLETE
+        EVENT                    
+        PATCH                    
+        CONTINUATION_CAPTURED    captured before physical adaptation
+        REPAIR_GOAL_COMPILED     required_true=['restore_valid'] required_false=[]
+        CANDIDATES_GENERATED     n=1 planner_nodes=5 ['Suspend+Stabilize+Realign+Resume']
+        ROLLOUT_RESULTS          1 verified
+        CANDIDATE_SELECTED       Suspend+Stabilize+Realign+Resume score=1.950 rejected=0
+        GRAPH_SPLICED            ['suspend#0', 'stabilize#1', 'realign#2', 'resume#3']  stages 1 -> 6
+        RESTORE_VALIDATED        validated=True handoff_error=0.0
+        STAGE_RESUMED            
+          rollout  Suspend+Stabilize+Realign+Resume: dur=9 clr=inf handoff=0.000 collision=False residual=[]
+        why (requirement -> source):
+          restore_valid                <- (world) [observed_predicates]
+          restore_valid                <- g_butter [active->suspended]
+   interruption 2  [I2-u2]  COMPLETE
+        EVENT                    
+        PATCH                    
+        CONTINUATION_CAPTURED    captured before physical adaptation
+        REPAIR_GOAL_COMPILED     required_true=['restore_valid'] required_false=[]
+        CANDIDATES_GENERATED     n=1 planner_nodes=5 ['Suspend+Stabilize+Realign+Resume']
+        ROLLOUT_RESULTS          1 verified
+        CANDIDATE_SELECTED       Suspend+Stabilize+Realign+Resume score=1.950 rejected=0
+        GRAPH_SPLICED            ['suspend#0', 'stabilize#1', 'realign#2', 'resume#3']  stages 1 -> 6
+        RESTORE_VALIDATED        validated=True handoff_error=0.0
+        STAGE_RESUMED            
+          rollout  Suspend+Stabilize+Realign+Resume: dur=9 clr=inf handoff=0.000 collision=False residual=[]
+        why (requirement -> source):
+          restore_valid                <- (world) [observed_predicates]
+          restore_valid                <- g_butter [suspended->active]
+
+-- FSR-PC --
+   interruption 1  [I2-u1]  COMPLETE
+        EVENT                    
+        REGENERATION             
+        CONTINUATION_CAPTURED    captured before physical adaptation
+        REPAIR_GOAL_COMPILED     required_true=['restore_valid'] required_false=[]
+        CANDIDATES_GENERATED     n=1 planner_nodes=5 ['Suspend+Stabilize+Realign+Resume']
+        ROLLOUT_RESULTS          1 verified
+        CANDIDATE_SELECTED       Suspend+Stabilize+Realign+Resume score=1.950 rejected=0
+        GRAPH_SPLICED            ['suspend#0', 'stabilize#1', 'realign#2', 'resume#3']  stages 1 -> 6
+        RESTORE_VALIDATED        validated=True handoff_error=0.0
+        STAGE_RESUMED            
+          rollout  Suspend+Stabilize+Realign+Resume: dur=9 clr=inf handoff=0.000 collision=False residual=[]
+        why (requirement -> source):
+          restore_valid                <- (world) [observed_predicates]
+          restore_valid                <- g_butter [active->suspended]
+   interruption 2  [I2-u2]  COMPLETE
+        EVENT                    
+        REGENERATION             
+        CONTINUATION_CAPTURED    captured before physical adaptation
+        REPAIR_GOAL_COMPILED     required_true=['restore_valid'] required_false=[]
+        CANDIDATES_GENERATED     n=1 planner_nodes=5 ['Suspend+Stabilize+Realign+Resume']
+        ROLLOUT_RESULTS          1 verified
+        CANDIDATE_SELECTED       Suspend+Stabilize+Realign+Resume score=1.950 rejected=0
+        GRAPH_SPLICED            ['suspend#0', 'stabilize#1', 'realign#2', 'resume#3']  stages 1 -> 6
+        RESTORE_VALIDATED        validated=True handoff_error=0.0
+        STAGE_RESUMED            
+          rollout  Suspend+Stabilize+Realign+Resume: dur=9 clr=inf handoff=0.000 collision=False residual=[]
+        why (requirement -> source):
+          restore_valid                <- (world) [observed_predicates]
+          restore_valid                <- g_butter [suspended->active]
+
+-- shared-stack checks --
+   identical adaptation inputs      : True
+   identical compiled repair goals  : True
+   same candidates generated        : True
+   same splices / resumes           : True
+   differ only in state semantics   : regenerated 0 vs 10; identity preserved True vs False
+
+==============================================================================
+  condition=I3  seed=0
+==============================================================================
+
+-- CoPE --
+   interruption 1  [I3-u1]  COMPLETE
+        EVENT                    
+        PATCH                    
+        CONTINUATION_CAPTURED    captured before physical adaptation
+        REPAIR_GOAL_COMPILED     required_true=['aligned_to_current_target', 'restore_valid'] required_false=[]
+        CANDIDATES_GENERATED     n=3 planner_nodes=13 ['Suspend+UpdateTargetContract+Stabilize+Realign+Resume', 'Suspend+Stabilize+UpdateTargetContract+Realign+Resume', 'Suspend+Stabilize+Realign+UpdateTargetContract+Resume']
+        ROLLOUT_RESULTS          3 verified
+        CANDIDATE_SELECTED       Suspend+UpdateTargetContract+Stabilize+Realign+Resume score=2.350 rejected=0
+        GRAPH_SPLICED            ['suspend#0', 'updatetargetcontract#1', 'stabilize#2', 'realign#3', 'resume#4']  stages 1 -> 7
+        RESTORE_VALIDATED        validated=True handoff_error=0.0
+        STAGE_RESUMED            
+          rollout  Suspend+UpdateTargetContract+Stabilize+Realign+Resume: dur=9 clr=inf handoff=0.000 collision=False residual=[]
+          rollout  Suspend+Stabilize+UpdateTargetContract+Realign+Resume: dur=10 clr=inf handoff=0.000 collision=False residual=[]
+          rollout  Suspend+Stabilize+Realign+UpdateTargetContract+Resume: dur=10 clr=inf handoff=0.000 collision=False residual=[]
+        why (requirement -> source):
+          aligned_to_current_target    <- (world) [observed_predicates]
+          restore_valid                <- (world) [observed_predicates]
+          aligned_to_current_target    <- g_butter [active->overridden]
+          restore_valid                <- g_butter [active->overridden]
+   interruption 2  [I3-u2]  COMPLETE
+        EVENT                    
+        PATCH                    
+        CONTINUATION_CAPTURED    captured before physical adaptation
+        REPAIR_GOAL_COMPILED     required_true=['aligned_to_current_target', 'restore_valid', 'safe_clearance'] required_false=['obstacle_present']
+        CANDIDATES_GENERATED     n=3 planner_nodes=13 ['Suspend+UpdateTargetContract+Stabilize+Realign+Resume', 'Suspend+Stabilize+UpdateTargetContract+Realign+Resume', 'Suspend+Stabilize+Realign+UpdateTargetContract+Resume']
+        ROLLOUT_RESULTS          3 verified
+        CANDIDATE_SELECTED       Suspend+UpdateTargetContract+Stabilize+Realign+Resume score=2.350 rejected=0
+        GRAPH_SPLICED            ['suspend#0', 'updatetargetcontract#1', 'stabilize#2', 'realign#3', 'resume#4']  stages 1 -> 7
+        RESTORE_VALIDATED        validated=True handoff_error=0.0
+        STAGE_RESUMED            
+          rollout  Suspend+UpdateTargetContract+Stabilize+Realign+Resume: dur=9 clr=inf handoff=0.000 collision=False residual=[]
+          rollout  Suspend+Stabilize+UpdateTargetContract+Realign+Resume: dur=10 clr=inf handoff=0.000 collision=False residual=[]
+          rollout  Suspend+Stabilize+Realign+UpdateTargetContract+Resume: dur=10 clr=inf handoff=0.000 collision=False residual=[]
+        why (requirement -> source):
+          aligned_to_current_target    <- (world) [observed_predicates]
+          restore_valid                <- (world) [observed_predicates]
+          aligned_to_current_target    <- g_butter [active->overridden]
+          restore_valid                <- g_butter [active->overridden]
+          safe_clearance               <- c_keep_upright [insert]
+
+-- FSR-PC --
+   interruption 1  [I3-u1]  COMPLETE
+        EVENT                    
+        REGENERATION             
+        CONTINUATION_CAPTURED    captured before physical adaptation
+        REPAIR_GOAL_COMPILED     required_true=['aligned_to_current_target', 'restore_valid'] required_false=[]
+        CANDIDATES_GENERATED     n=3 planner_nodes=13 ['Suspend+UpdateTargetContract+Stabilize+Realign+Resume', 'Suspend+Stabilize+UpdateTargetContract+Realign+Resume', 'Suspend+Stabilize+Realign+UpdateTargetContract+Resume']
+        ROLLOUT_RESULTS          3 verified
+        CANDIDATE_SELECTED       Suspend+UpdateTargetContract+Stabilize+Realign+Resume score=2.350 rejected=0
+        GRAPH_SPLICED            ['suspend#0', 'updatetargetcontract#1', 'stabilize#2', 'realign#3', 'resume#4']  stages 1 -> 7
+        RESTORE_VALIDATED        validated=True handoff_error=0.0
+        STAGE_RESUMED            
+          rollout  Suspend+UpdateTargetContract+Stabilize+Realign+Resume: dur=9 clr=inf handoff=0.000 collision=False residual=[]
+          rollout  Suspend+Stabilize+UpdateTargetContract+Realign+Resume: dur=10 clr=inf handoff=0.000 collision=False residual=[]
+          rollout  Suspend+Stabilize+Realign+UpdateTargetContract+Resume: dur=10 clr=inf handoff=0.000 collision=False residual=[]
+        why (requirement -> source):
+          aligned_to_current_target    <- (world) [observed_predicates]
+          restore_valid                <- (world) [observed_predicates]
+          aligned_to_current_target    <- g_butter [active->overridden]
+          restore_valid                <- g_butter [active->overridden]
+   interruption 2  [I3-u2]  COMPLETE
+        EVENT                    
+        REGENERATION             
+        CONTINUATION_CAPTURED    captured before physical adaptation
+        REPAIR_GOAL_COMPILED     required_true=['aligned_to_current_target', 'restore_valid', 'safe_clearance'] required_false=['obstacle_present']
+        CANDIDATES_GENERATED     n=3 planner_nodes=13 ['Suspend+UpdateTargetContract+Stabilize+Realign+Resume', 'Suspend+Stabilize+UpdateTargetContract+Realign+Resume', 'Suspend+Stabilize+Realign+UpdateTargetContract+Resume']
+        ROLLOUT_RESULTS          3 verified
+        CANDIDATE_SELECTED       Suspend+UpdateTargetContract+Stabilize+Realign+Resume score=2.350 rejected=0
+        GRAPH_SPLICED            ['suspend#0', 'updatetargetcontract#1', 'stabilize#2', 'realign#3', 'resume#4']  stages 1 -> 7
+        RESTORE_VALIDATED        validated=True handoff_error=0.0
+        STAGE_RESUMED            
+          rollout  Suspend+UpdateTargetContract+Stabilize+Realign+Resume: dur=9 clr=inf handoff=0.000 collision=False residual=[]
+          rollout  Suspend+Stabilize+UpdateTargetContract+Realign+Resume: dur=10 clr=inf handoff=0.000 collision=False residual=[]
+          rollout  Suspend+Stabilize+Realign+UpdateTargetContract+Resume: dur=10 clr=inf handoff=0.000 collision=False residual=[]
+        why (requirement -> source):
+          aligned_to_current_target    <- (world) [observed_predicates]
+          restore_valid                <- (world) [observed_predicates]
+          aligned_to_current_target    <- g_butter [active->overridden]
+          restore_valid                <- g_butter [active->overridden]
+          safe_clearance               <- c_keep_upright#r2 [insert]
+
+-- shared-stack checks --
+   identical adaptation inputs      : True
+   identical compiled repair goals  : True
+   same candidates generated        : True
+   same splices / resumes           : True
+   differ only in state semantics   : regenerated 0 vs 11; identity preserved True vs False
+
+==============================================================================
+  condition=I4  seed=0
+==============================================================================
+
+-- CoPE --
+   interruption 1  [I4-u1]  COMPLETE
+        EVENT                    
+        PATCH                    
+        CONTINUATION_CAPTURED    captured before physical adaptation
+        REPAIR_GOAL_COMPILED     required_true=['restore_valid'] required_false=[]
+        CANDIDATES_GENERATED     n=1 planner_nodes=5 ['Suspend+Stabilize+Realign+Resume']
+        ROLLOUT_RESULTS          1 verified
+        CANDIDATE_SELECTED       Suspend+Stabilize+Realign+Resume score=1.950 rejected=0
+        GRAPH_SPLICED            ['suspend#0', 'stabilize#1', 'realign#2', 'resume#3']  stages 1 -> 6
+        RESTORE_VALIDATED        validated=True handoff_error=0.0
+        STAGE_RESUMED            
+          rollout  Suspend+Stabilize+Realign+Resume: dur=9 clr=inf handoff=0.000 collision=False residual=[]
+        why (requirement -> source):
+          restore_valid                <- (world) [observed_predicates]
+          restore_valid                <- g_butter [active->suspended]
+   interruption 2  [I4-u2]  COMPLETE
+        EVENT                    
+        PATCH                    
+        CONTINUATION_CAPTURED    captured before physical adaptation
+        REPAIR_GOAL_COMPILED     required_true=['restore_valid'] required_false=[]
+        CANDIDATES_GENERATED     n=1 planner_nodes=5 ['Suspend+Stabilize+Realign+Resume']
+        ROLLOUT_RESULTS          1 verified
+        CANDIDATE_SELECTED       Suspend+Stabilize+Realign+Resume score=1.950 rejected=0
+        GRAPH_SPLICED            ['suspend#0', 'stabilize#1', 'realign#2', 'resume#3']  stages 1 -> 6
+        RESTORE_VALIDATED        validated=True handoff_error=0.0
+        STAGE_RESUMED            
+          rollout  Suspend+Stabilize+Realign+Resume: dur=9 clr=inf handoff=0.000 collision=False residual=[]
+        why (requirement -> source):
+          restore_valid                <- (world) [observed_predicates]
+          restore_valid                <- g_butter [suspended->active]
+
+-- FSR-PC --
+   interruption 1  [I4-u1]  COMPLETE
+        EVENT                    
+        REGENERATION             
+        CONTINUATION_CAPTURED    captured before physical adaptation
+        REPAIR_GOAL_COMPILED     required_true=['restore_valid'] required_false=[]
+        CANDIDATES_GENERATED     n=1 planner_nodes=5 ['Suspend+Stabilize+Realign+Resume']
+        ROLLOUT_RESULTS          1 verified
+        CANDIDATE_SELECTED       Suspend+Stabilize+Realign+Resume score=1.950 rejected=0
+        GRAPH_SPLICED            ['suspend#0', 'stabilize#1', 'realign#2', 'resume#3']  stages 1 -> 6
+        RESTORE_VALIDATED        validated=True handoff_error=0.0
+        STAGE_RESUMED            
+          rollout  Suspend+Stabilize+Realign+Resume: dur=9 clr=inf handoff=0.000 collision=False residual=[]
+        why (requirement -> source):
+          restore_valid                <- (world) [observed_predicates]
+          restore_valid                <- g_butter [active->suspended]
+   interruption 2  [I4-u2]  COMPLETE
+        EVENT                    
+        REGENERATION             
+        CONTINUATION_CAPTURED    captured before physical adaptation
+        REPAIR_GOAL_COMPILED     required_true=['restore_valid'] required_false=[]
+        CANDIDATES_GENERATED     n=1 planner_nodes=5 ['Suspend+Stabilize+Realign+Resume']
+        ROLLOUT_RESULTS          1 verified
+        CANDIDATE_SELECTED       Suspend+Stabilize+Realign+Resume score=1.950 rejected=0
+        GRAPH_SPLICED            ['suspend#0', 'stabilize#1', 'realign#2', 'resume#3']  stages 1 -> 6
+        RESTORE_VALIDATED        validated=True handoff_error=0.0
+        STAGE_RESUMED            
+          rollout  Suspend+Stabilize+Realign+Resume: dur=9 clr=inf handoff=0.000 collision=False residual=[]
+        why (requirement -> source):
+          restore_valid                <- (world) [observed_predicates]
+          restore_valid                <- g_butter [suspended->active]
+
+-- shared-stack checks --
+   identical adaptation inputs      : True
+   identical compiled repair goals  : True
+   same candidates generated        : True
+   same splices / resumes           : True
+   differ only in state semantics   : regenerated 0 vs 10; identity preserved True vs False
+
+==============================================================================
+PIPELINE GATE: PASS

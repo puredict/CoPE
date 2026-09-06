@@ -1,0 +1,141 @@
+{
+  "accepted_full_state": {
+    "commitments": [
+      {
+        "authority": 100,
+        "dependencies": [],
+        "grounding": [
+          "cream_cheese_1",
+          "basket_1_contain_region"
+        ],
+        "id": "goal:in:cream_cheese_1:basket_1_contain_region",
+        "lifecycle_status": "satisfied",
+        "override_links": [],
+        "owner": "task_owner",
+        "predicate": "in",
+        "source": "task_owner",
+        "supersession_links": [],
+        "support_links": [],
+        "type": "task_goal",
+        "valid_from": "semantic-cancel-v1:task01:state00:seed20270724",
+        "valid_until": "task_end"
+      },
+      {
+        "authority": 100,
+        "dependencies": [],
+        "grounding": [
+          "butter_1",
+          "basket_1_contain_region"
+        ],
+        "id": "goal:in:butter_1:basket_1_contain_region",
+        "lifecycle_status": "cancelled",
+        "override_links": [],
+        "owner": "task_owner",
+        "predicate": "in",
+        "source": "task_owner",
+        "supersession_links": [],
+        "support_links": [],
+        "type": "task_goal",
+        "valid_from": "semantic-cancel-v1:task01:state00:seed20270724",
+        "valid_until": "task_end"
+      }
+    ],
+    "controller_prompt": "diagnostic-only; no controller call is permitted",
+    "current_goal": {
+      "all": [
+        {
+          "arguments": [
+            "cream_cheese_1",
+            "basket_1_contain_region"
+          ],
+          "predicate": "in"
+        }
+      ]
+    },
+    "entities": [
+      {
+        "id": "cream_cheese_1",
+        "kind": "object"
+      },
+      {
+        "id": "butter_1",
+        "kind": "object"
+      },
+      {
+        "id": "basket_1_contain_region",
+        "kind": "region"
+      }
+    ],
+    "evidence_versions": {
+      "event_id": "semantic-cancel-v1:task01:state00:seed20270724",
+      "input_state_version": 0,
+      "world_version": 135
+    },
+    "execution_directive": "HALT",
+    "pending_restorations": [],
+    "plan": [],
+    "progress_ledger": [
+      {
+        "achieved": true,
+        "milestone_id": "goal:in:cream_cheese_1:basket_1_contain_region",
+        "physically_valid": true,
+        "still_goal_relevant": true
+      }
+    ],
+    "schema_version": "full-state-v2",
+    "state_version": 1
+  },
+  "action_schema_valid": true,
+  "artifacts": {
+    "episode": "/home/lijingsu/cope-integration-outputs-20260724/semantic_cancellation_canary_v1/five_state_20260731/worker0/state00/cope_cancel/episode.json",
+    "trace": "/home/lijingsu/cope-integration-outputs-20260724/semantic_cancellation_canary_v1/five_state_20260731/worker0/state00/cope_cancel/trace.jsonl"
+  },
+  "cancellation_success": true,
+  "cancelled_goal_violated": false,
+  "complete": true,
+  "config_hash": "6cbc6c22065aa155a7d632fefe97788ec624dfd1aa07612e68ee4e56c11de49d",
+  "event": {
+    "authority": 100,
+    "done_object": "cream_cheese_1",
+    "event_id": "semantic-cancel-v1:task01:state00:seed20270724",
+    "event_type": "cancel_pending_goal",
+    "issuer": "task_owner",
+    "operation": "cancel",
+    "pending_object": "butter_1",
+    "target_commitment_id": "goal:in:butter_1:basket_1_contain_region",
+    "valid_from_state_version": 0,
+    "world_version": 135
+  },
+  "event_reached": true,
+  "final_predicates": {
+    "alphabet_soup_1": false,
+    "butter_1": false,
+    "cream_cheese_1": true,
+    "ketchup_1": false,
+    "milk_1": false,
+    "orange_juice_1": false,
+    "tomato_sauce_1": false
+  },
+  "git": {
+    "clean": true,
+    "commit": "0b63fe011e061b89415cb991543a9ba82c37a530",
+    "status": ""
+  },
+  "initial_state_sha256": "5abdf8f466f490901dee9f931b32eb181b2928eaa17bb6379742f988581d564a",
+  "manual_intervention": false,
+  "mode": "cope_cancel",
+  "policy_steps_consumed": 136,
+  "post_event_policy_actions": 0,
+  "reset_after_start": false,
+  "rollback": false,
+  "runtime_seconds": 47.77714021038264,
+  "schema_version": "semantic-cancellation-canary-v1",
+  "seed": 20270724,
+  "state_id": 0,
+  "task_id": 1,
+  "task_suite": "libero_10",
+  "termination_reason": "halted_after_authorized_cancellation",
+  "valid_progress_retained": true,
+  "verification_hold_steps": 30,
+  "verification_steps_excluded_from_policy_budget": true
+}

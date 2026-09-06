@@ -1,0 +1,2 @@
+LD_LIBRARY_PATH=/share/apps/cuda/12.2/lib64:
+PATH=/home/lijingsu/vla/.venv/bin:/share/apps/cuda/12.2/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin

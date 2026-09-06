@@ -1,0 +1,23 @@
+Strong precompiled baseline: same predicates/binding/controllers/
+rollout-verifier/scoring as online.  Only difference: no runtime search.
+
+method               combos  branch  graph  compile     SD   CFR    TS
+----------------------------------------------------------------------------
+offline_budget(1)    1       1       5      6        1/7   1/7   1/7  
+offline_budget(3)    3       6       32     31       5/7   5/7   3/7  
+offline_atomic(3)    3       6       32     31       5/7   5/7   3/7  
+offline_exact(7)     7       17      109    157      7/7   7/7   3/7  
+online_synthesis     --      -- (ops) 0      0        7/7   7/7   3/7  
+
+SD  = safe delivery | CFR = collision-free recovery | TS = full task success
+
+Reading:
+ * REGIME 1 (exact): the strong offline baseline matches online on safe
+   delivery -- as it should. When the exact sequence is precompiled and it
+   can bind + verify at runtime, precompilation is NOT a handicap.
+ * REGIME 2 (atomic-only): the gap that remains is purely STRUCTURAL
+   coverage -- no compiled sequence exists for a compound combination.
+ * REGIME 3 (budget): coverage degrades gracefully with branch memory.
+ * TS is strictly lower than SD for every method: several scenes are not
+   fully solvable under the terminal orientation/spill constraints. TS and
+   SD must never be conflated.

@@ -1,0 +1,8 @@
+fault_id,collection,fault,rejected,error,caller_candidate_unchanged,pass
+K01,commitments,duplicate stable key,True,RecordNormalizationError:commitments contains duplicate stable keys,True,True
+K02,entities,duplicate stable key,True,RecordNormalizationError:entities contains duplicate stable keys,True,True
+K03,progress_ledger,duplicate stable key,True,RecordNormalizationError:progress_ledger contains duplicate stable keys,True,True
+K04,commitments,missing stable key,True,RecordNormalizationError:commitments record requires string id,True,True
+K05,entities,non-string stable key,True,RecordNormalizationError:entities record requires string id,True,True
+K06,progress_ledger,non-list collection,True,RecordNormalizationError:progress_ledger must be a list,True,True
+K07,commitments,non-mapping record,True,RecordNormalizationError:commitments record must be a mapping,True,True

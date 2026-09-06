@@ -1,0 +1,18 @@
+# Machine + path configuration -- REMOTE GPU SERVER ONLY
+# Replace every <PLACEHOLDER>. No local paths are baked in.
+paths:
+  rekep_root:            "<REKEP_ROOT>"              # clone of huangwl18/ReKep
+  omnigibson_root:       "<OMNIGIBSON_ROOT>"         # clone of StanfordVL/OmniGibson
+  omnigibson_assets:     "<OMNIGIBSON_ASSET_PATH>"   # downloaded BEHAVIOR assets
+  output_root:           "<OUTPUT_ROOT>"             # where runs/ are written
+  conda_env:             "rekep"
+
+hardware:
+  num_gpus:              8
+  gpu_name_contains:     "3090"
+  min_driver_version:    "525.60.13"
+
+runtime:
+  headless:              true      # gm.HEADLESS; keep true for sweeps
+  physics_hz:            60
+  max_episode_steps:     400

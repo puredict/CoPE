@@ -1,0 +1,177 @@
+{
+  "budget_freeze_policy": {
+    "one_global_budget_per_condition": true,
+    "output_margin_fraction": 0.15,
+    "output_round_to_tokens": 1024,
+    "per_test_example_budget_adjustment": false,
+    "reference_serialization": "max_of_pretty_and_compact",
+    "require_actual_tokenizer_chat_template": true,
+    "require_measured_throughput": true,
+    "timeout_margin_factor": 1.5,
+    "timeout_round_to_seconds": 30
+  },
+  "budgets": {
+    "adequate": {
+      "calls_per_event": 1,
+      "max_output_tokens": 23552,
+      "provenance": {
+        "capacity_report": "/mnt/data_new/lijingsu_cope_r4_20260905/capacity_guidance_frozen_20260905/capacity_report.json",
+        "development_seeds": [
+          1000,
+          1001
+        ],
+        "maximum_reference_output_tokens": 20021,
+        "output_margin_fraction": 0.15,
+        "output_round_to_tokens": 1024,
+        "server": {
+          "command": [
+            "/mnt/data_new/lijingsu_cope_r3_20260905_v2/conda_vllm/bin/python",
+            "-m",
+            "vllm.entrypoints.openai.api_server",
+            "--model",
+            "/mnt/data_new/lijingsu_cope_r3_20260905_v2/hf_cache/hub/models--Qwen--Qwen3-32B/snapshots/9216db5781bf21249d130ec9da846c4624c16137",
+            "--served-model-name",
+            "Qwen/Qwen3-32B",
+            "--host",
+            "127.0.0.1",
+            "--port",
+            "8000",
+            "--tensor-parallel-size",
+            "4",
+            "--dtype",
+            "bfloat16",
+            "--max-model-len",
+            "40960",
+            "--gpu-memory-utilization",
+            "0.88",
+            "--max-num-seqs",
+            "1",
+            "--guided-decoding-backend",
+            "guidance",
+            "--compilation-config",
+            "{\"cudagraph_capture_sizes\":[1]}"
+          ],
+          "concurrency": 1,
+          "dtype": "bfloat16",
+          "enforce_eager": false,
+          "gpu_before": "0, 13, 0\n1, 12, 0\n2, 12, 0\n3, 12, 0\n4, 12, 0\n5, 12, 0\n6, 12, 0\n",
+          "gpu_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "guided_decoding_backend": "guidance",
+          "max_model_len": 40960,
+          "model": "Qwen/Qwen3-32B",
+          "model_revision": "9216db5781bf21249d130ec9da846c4624c16137",
+          "pid": 278633,
+          "tensor_parallel_size": 4,
+          "utc": "2026-09-05T02:37:22.830665+00:00",
+          "vllm_version": "0.8.5"
+        },
+        "throughput_source_sha256": "61797605fa1755f2ed1fc73007063708265e69d1ad4d3977f9861396e319b9dc"
+      },
+      "status": "frozen",
+      "timeout_s": 1080.0
+    },
+    "fixed": {
+      "calls_per_event": 1,
+      "max_output_tokens": 4096,
+      "provenance": "R3 resource-limited reference condition, retained without tuning",
+      "status": "frozen",
+      "timeout_s": 90.0
+    }
+  },
+  "development_seeds": [
+    1000,
+    1001
+  ],
+  "difficult_profile_success_gate": null,
+  "experiment_name": "persistent_lineage_interface_and_capacity_repair",
+  "interface_gate": {
+    "complete_seven_event_trace_required": true,
+    "required_event_kinds": [
+      "suspend_current",
+      "restore_current",
+      "override_current",
+      "restore_root"
+    ],
+    "split": "development",
+    "state_executor_tests_required": true
+  },
+  "methods": [
+    "CoPE",
+    "FSR-PC"
+  ],
+  "model": {
+    "api_key_env": "COPE_LLM_API_KEY",
+    "base_url": "http://127.0.0.1:8000",
+    "enable_thinking": false,
+    "guided_decoding_backend": "guidance",
+    "max_context_tokens": 40960,
+    "name": "Qwen/Qwen3-32B",
+    "revision": "9216db5781bf21249d130ec9da846c4624c16137",
+    "seed": 20260904,
+    "temperature": 0.0,
+    "top_p": 1.0
+  },
+  "nominal_gate": {
+    "required_successes": 8,
+    "seeds": 10
+  },
+  "phase2_planned_not_implemented": [
+    "Generic Patch baseline with equivalent information and representational power",
+    "Restore-parent, restore-specific-occurrence, branch-withdrawal and stale-message scenarios",
+    "Causal variation of order identity, target binding and completed-action position",
+    "Independent history-size, lineage-depth and interruption-loop sweeps",
+    "Physical action-boundary interruption and continuation of unfinished actions"
+  ],
+  "physical_backend": {
+    "config": "configs_gpu/task_assets.yaml",
+    "controller": "OSC_POSE via privileged geometry oracle",
+    "execution_schedule": "after_all_model_events",
+    "learned_policy_used": false,
+    "name": "libero_mujoco",
+    "rendering": "CPU OSMesa"
+  },
+  "primary_profile": "long_lineage",
+  "profiles": {
+    "calibration": {
+      "initial_slots": 8,
+      "lineage_depth": 2
+    },
+    "lineage_valid": {
+      "initial_slots": 10,
+      "lineage_depth": 6
+    },
+    "long_lineage": {
+      "initial_slots": 48,
+      "lineage_depth": 6
+    }
+  },
+  "protocol_phase": "phase1_diagnostic",
+  "schema_version": "cope-fsrpc-r4-config-v1",
+  "test_seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19
+  ]
+}

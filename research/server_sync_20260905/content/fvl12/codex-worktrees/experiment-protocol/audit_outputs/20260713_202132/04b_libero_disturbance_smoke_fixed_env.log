@@ -1,0 +1,10 @@
+COMMAND: bwrap --bind / / --bind /home/lijingsu/vla/audit_outputs/20260713_202132/isolated_smoke_outputs /home/lijingsu/vla/smoke_outputs bash -lc 'cd /home/lijingsu/vla && source .venv/bin/activate && unset LD_LIBRARY_PATH && export PYTHONPATH=$HOME/vla/src/openvla:$HOME/vla/src/LIBERO:${PYTHONPATH:-} && export MUJOCO_GL=osmesa && export PYOPENGL_PLATFORM=osmesa && export HF_HOME=$HOME/vla/cache/huggingface && export TRANSFORMERS_CACHE=$HOME/vla/cache/transformers && export TOKENIZERS_PARALLELISM=false && python libero_disturbance_smoke.py'
+START: 2026-07-13T20:49:18+08:00
+END: 2026-07-13T20:49:18+08:00
+EXIT: 1
+
+STDOUT:
+
+STDERR:
+.venv/bin/activate: line 21: /dev/null: Permission denied
+.venv/bin/activate: line 68: /dev/null: Permission denied

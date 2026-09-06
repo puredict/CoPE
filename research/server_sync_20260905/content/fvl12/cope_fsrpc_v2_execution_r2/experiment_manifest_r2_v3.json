@@ -1,0 +1,107 @@
+{
+  "manifest_schema": "cope-fsrpc-real-experiment-r2-v1",
+  "frozen_at": "2026-08-07T19:48:18+08:00",
+  "package": {
+    "original_zip": "cope_fsrpc_交接_v2(1).zip",
+    "package_sha256": "4276d9ec8d87d9a7370109da00771fae4b241e518f70f00ee9c3b6d347a39be5",
+    "remote_zip": "/home/lijingsu/cope_fsrpc_r2_source_4276d9ec.zip",
+    "source_root": "/home/lijingsu/cope_fsrpc_交接_v2_r2",
+    "supplied_source_commit": "37bed33a396a49f0f198d51054852bc83794d331",
+    "execution_source_commit": "77637f357b090727d90cd2a6ddcc3c6332d7cede",
+    "execution_source_tree": "6f08f47543716805d63ee395e74f3451bd1c5542",
+    "branch": "codex/r2-real-execution",
+    "working_tree_clean": true,
+    "harness_only_fixes": [
+      "route controller_gate, regression_pilot, diagnostic_pilot, and verifier_probe on the real backend",
+      "physically move basket_B for I5-u3",
+      "finalize the interruption schedule before failure and denominator classification",
+      "classify nested LIBERO grasp evidence as controller failure",
+      "record pairwise fairness fingerprints and separate denominators",
+      "exclude method-specific pipeline markers from subsequent real-backend AdaptationInput history",
+      "keep semantic simulator audit hashes external to policy-visible event history while retaining them in all audit artifacts"
+    ],
+    "method_core_changed": false,
+    "supersedes_manifest_sha256": "6ca1765f3513b03439fb9fee9db5945f692f75c3d31875414de68ad3438791c3",
+    "preserved_failed_attempt": {
+      "path": "/home/lijingsu/cope_fsrpc_v2_execution_r2/stage_b_regression_pilot",
+      "completed_result_records": 17,
+      "partial_episode_directories": 1,
+      "reason": "I2 second-event adaptation_input_fingerprint differed because the prior PATCH/REGENERATION marker leaked into real event history",
+      "counted_in_final_denominators": false
+    },
+    "preserved_fairness_debug": {
+      "path": "/home/lijingsu/cope_fsrpc_v2_execution_r2/stage_b_fairness_debug_v2",
+      "completed_result_records": 2,
+      "reason": "I2 second-event input still contained LiberoMujocoBackend.state_hash, whose semantic component intentionally differs after FSR-PC remints goal IDs despite identical MuJoCo control trajectories",
+      "physical_trajectory_comparison": "identical event steps, target qpos changes, controller phase lengths, end-effector/object positions, placements, and task outcome; differing representation IDs only",
+      "counted_in_final_denominators": false
+    },
+    "validation": {
+      "standalone_tests": "234 passed",
+      "dryrun_episodes": 75,
+      "dryrun_events_delivered": "150/150",
+      "dryrun_fairness_all_conditions": true,
+      "dryrun_output": "/home/lijingsu/cope_fsrpc_v2_execution_r2/dryrun_post_fairness_fix"
+    }
+  },
+  "server": {
+    "hostname": "fvl12",
+    "os": "Ubuntu 22.04.5 LTS",
+    "kernel": "5.19.0-50-generic",
+    "gpu_model": "NVIDIA GeForce RTX 3090",
+    "gpu_count": 8,
+    "driver": "535.54.03",
+    "driver_cuda_compatibility": "12.2",
+    "gpu_compute_used": false,
+    "rendering_backend": "OSMesa CPU offscreen",
+    "python": "/home/lijingsu/vla/.venv/bin/python 3.10.12",
+    "environment_wrapper": "/home/lijingsu/vla/scripts/run_project_env.sh"
+  },
+  "simulator": {
+    "platform": "LIBERO/robosuite/MuJoCo",
+    "libero_distribution": "0.1.0",
+    "libero_source": "/home/lijingsu/vla/src/LIBERO",
+    "libero_commit": "570d78333ee977c8ae6de3d97120b23272c4c660",
+    "libero_working_tree_clean": false,
+    "libero_untracked_paths": ["libero_config/", "recovery_canary_outputs/"],
+    "robosuite": "1.4.1",
+    "mujoco": "2.3.7",
+    "robot": "OnTheGroundPanda",
+    "controller": "OSC_POSE via privileged simulator-geometry oracle",
+    "learned_policy_used": false
+  },
+  "task": {
+    "backend_config": "/home/lijingsu/cope_fsrpc_交接_v2_r2/configs_gpu/task_assets.yaml",
+    "backend_config_sha256": "58ce269b4bfcf09d82b77b3acf9c465613e25fe3b88440ae3773e2a3ef7bbf8f",
+    "bddl": "/home/lijingsu/cope_fsrpc_交接_v2_r2/configs_gpu/cope_basket_sorting.bddl",
+    "bddl_sha256": "f0c08a9c870f0a52cde6cc0900c6ab5bd8a1a88dcd1ab7a88bc76fe4df1b10a8",
+    "objects": {
+      "milk": "/home/lijingsu/vla/src/LIBERO/libero/libero/assets/stable_hope_objects/milk/milk.xml",
+      "yogurt_equivalent": "/home/lijingsu/vla/src/LIBERO/libero/libero/assets/stable_hope_objects/cream_cheese/cream_cheese.xml",
+      "butter": "/home/lijingsu/vla/src/LIBERO/libero/libero/assets/stable_hope_objects/butter/butter.xml",
+      "basket": "/home/lijingsu/vla/src/LIBERO/libero/libero/assets/stable_scanned_objects/basket/basket.xml"
+    }
+  },
+  "experiment": {
+    "execution_root": "/home/lijingsu/cope_fsrpc_v2_execution_r2",
+    "analysis_root": "/home/lijingsu/cope_fsrpc_v2_analysis_r2",
+    "gate_seeds": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "paired_seeds": [0, 1, 2, 3, 4],
+    "regression_methods": ["no_adaptation", "FSR-PC", "CoPE"],
+    "regression_conditions": ["I1", "I2", "I3", "I4"],
+    "diagnostic_methods": ["CoPE", "FSR-PC", "FSR-PC_stable_ids", "FSR-PC_provenance"],
+    "diagnostic_conditions": ["I3", "I4", "I5"],
+    "verifier_methods": ["CoPE_full", "CoPE_no_rollout_verification"],
+    "verifier_conditions": ["I3", "I4", "I5"],
+    "event_schedule_libero_steps": {
+      "I1": {"u1": 340},
+      "I2": {"u1": 110, "u2_delta_from_actual_u1": 450},
+      "I3": {"u1": 340, "u2_delta_from_actual_u1": 230},
+      "I4": {"u1": 110, "u2_delta_from_actual_u1": 450},
+      "I5": {"u1": 110, "u2_delta_from_actual_u1": 200, "u3_delta_from_actual_u1": 260}
+    },
+    "horizon_steps": 900,
+    "candidate_horizon_steps": 200,
+    "retry_policy": "shared backend oracle policy; no silent runner retry"
+  }
+}

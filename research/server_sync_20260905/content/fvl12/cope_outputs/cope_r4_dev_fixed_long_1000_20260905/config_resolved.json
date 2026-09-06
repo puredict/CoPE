@@ -1,0 +1,176 @@
+{
+  "schema_version": "cope-fsrpc-r4-config-v1",
+  "experiment_name": "persistent_lineage_interface_and_capacity_repair",
+  "protocol_phase": "phase1_diagnostic",
+  "primary_profile": "long_lineage",
+  "methods": [
+    "CoPE",
+    "FSR-PC"
+  ],
+  "development_seeds": [
+    1000,
+    1001
+  ],
+  "test_seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19
+  ],
+  "model": {
+    "name": "Qwen/Qwen3-32B",
+    "revision": "9216db5781bf21249d130ec9da846c4624c16137",
+    "base_url": "http://127.0.0.1:8000",
+    "api_key_env": "COPE_LLM_API_KEY",
+    "seed": 20260904,
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "enable_thinking": false,
+    "max_context_tokens": 40960
+  },
+  "budgets": {
+    "fixed": {
+      "status": "frozen",
+      "max_output_tokens": 4096,
+      "timeout_s": 90.0,
+      "calls_per_event": 1,
+      "provenance": "R3 resource-limited reference condition, retained without tuning"
+    },
+    "adequate": {
+      "status": "pending_development_capacity_and_throughput_audit",
+      "max_output_tokens": null,
+      "timeout_s": null,
+      "calls_per_event": 1,
+      "provenance": null
+    }
+  },
+  "budget_freeze_policy": {
+    "reference_serialization": "max_of_pretty_and_compact",
+    "output_margin_fraction": 0.15,
+    "output_round_to_tokens": 1024,
+    "timeout_margin_factor": 1.5,
+    "timeout_round_to_seconds": 30,
+    "one_global_budget_per_condition": true,
+    "per_test_example_budget_adjustment": false,
+    "require_actual_tokenizer_chat_template": true,
+    "require_measured_throughput": true
+  },
+  "profiles": {
+    "calibration": {
+      "initial_slots": 8,
+      "lineage_depth": 2
+    },
+    "lineage_valid": {
+      "initial_slots": 10,
+      "lineage_depth": 6
+    },
+    "long_lineage": {
+      "initial_slots": 48,
+      "lineage_depth": 6
+    }
+  },
+  "physical_backend": {
+    "name": "libero_mujoco",
+    "config": "configs_gpu/task_assets.yaml",
+    "controller": "OSC_POSE via privileged geometry oracle",
+    "learned_policy_used": false,
+    "rendering": "CPU OSMesa",
+    "execution_schedule": "after_all_model_events"
+  },
+  "nominal_gate": {
+    "seeds": 10,
+    "required_successes": 8
+  },
+  "interface_gate": {
+    "split": "development",
+    "required_event_kinds": [
+      "suspend_current",
+      "restore_current",
+      "override_current",
+      "restore_root"
+    ],
+    "complete_seven_event_trace_required": true,
+    "state_executor_tests_required": true
+  },
+  "difficult_profile_success_gate": null,
+  "phase2_planned_not_implemented": [
+    "Generic Patch baseline with equivalent information and representational power",
+    "Restore-parent, restore-specific-occurrence, branch-withdrawal and stale-message scenarios",
+    "Causal variation of order identity, target binding and completed-action position",
+    "Independent history-size, lineage-depth and interruption-loop sweeps",
+    "Physical action-boundary interruption and continuation of unfinished actions"
+  ],
+  "run": {
+    "utc": "2026-09-05T02:18:46.367054+00:00",
+    "budget": "fixed",
+    "mode": "free_running",
+    "split": "development",
+    "seeds": [
+      1000
+    ],
+    "profiles": [
+      "long_lineage"
+    ],
+    "methods": [
+      "CoPE",
+      "FSR-PC"
+    ],
+    "client": "openai",
+    "backend": "libero_mujoco",
+    "source_sha256": {
+      "code/cope/lineage_benchmark/__init__.py": "3844d4a0eef553b3e05d7d3f1dec011a6e5e25d1e5cbfc70259b2ffe2ccdc1c7",
+      "code/cope/lineage_benchmark/adapters.py": "4d64a424d78381119baa5696d002671140481e2727b435b4b43ccc6cb757b12b",
+      "code/cope/lineage_benchmark/analysis.py": "1aab69d26ffdce43c64c1f35893e7cd7d34d20cf1c31e54082dbfdbe513f7a31",
+      "code/cope/lineage_benchmark/client.py": "dbdd29611d68d1f6368886f0c8499eda97d97f8666aedc0b6e6cc8e3cb6b4767",
+      "code/cope/lineage_benchmark/models.py": "22b4ef3b760cefc3fc2d0e4d446ea2a3755961f45dd684bd1a4e98227ca98727",
+      "code/cope/lineage_benchmark/operations.py": "403b7ccac345c541bb97ac3e7432ff438dafd0830f39c614566fadb1b28f65c1",
+      "code/cope/lineage_benchmark/prompts.py": "bdb9549c42800da775018b066e43b54bdd45fd3f8229f77ca364c0726fdb3d6e",
+      "code/cope/lineage_benchmark/reference.py": "e99c0548866eec5cb5152e441e50efcde0228ae8cee2bc43f87c47d9e5bdea1e",
+      "code/cope/lineage_benchmark/runner.py": "ae782c351d3124ba31b9a30d4f55b307d7bd4021fb82657260b88cd4a25d4fd5",
+      "code/cope/lineage_benchmark/schemas.py": "482d760e8814d92bd0dad77c33bae09c0f5376415c7dc235bbbf87e723cf714f",
+      "code/cope/lineage_benchmark/state.py": "711de70edceae1e6aaab5453281f7dbaa9e1bb618644a195320c8cc065d6e514",
+      "code/cope/lineage_benchmark/task.py": "ab85a664c3437feafd4b92e021e70b64dcd7d4a95bac8b67171ee8b373c1481a",
+      "code/cope/lineage_benchmark/world.py": "ee94b940b7ce5fbb39c5048df19c5b0fd9aded4f9f671b3320b650e83ceedb74",
+      "scripts/audit_r4_capacity.py": "c637026e160a58762d1e2dbb08f5536599afbebcf6acc4730832cb35224e87d2",
+      "scripts/build_cope_handoff.py": "111eb34a18a08d2f7bc230900a3b5d0b7ceddfa278a32f62383c0f074f5dedc6",
+      "scripts/check_gpu_environment.py": "3d82870d50add77a789572c059b480020975db5f315682876a5eeb1846e69053",
+      "scripts/collect_r4_throughput.py": "407770bb63c4d32305e8a0d0d0eb536982ed0ffe7aea6c20231c4c92b2aa7423",
+      "scripts/cope_dry_run.py": "9c2050b854d5a9e3a3d63f1b1874539a3c3b62c356d25af6647aa8a03981ac9d",
+      "scripts/cope_pipeline_trace.py": "f53675d45be59467ccc7a96cfdc08a2abd33a74b537d0d92fe56cff444d82d41",
+      "scripts/cope_r2_dry_run.py": "10b68c0141415803e81bc617be50d0e6c5dd25710f896c1b1725e4068005c112",
+      "scripts/package_r3_handoff.py": "19fff416e737981a81d980a4d386b4386fd009750a9c934d52468996dd9b446e",
+      "scripts/preflight_r3.py": "83e9b4acf3a5e64b074a234d94bbc50b82fbbefe7a668290b0d2acb637dbaffe",
+      "scripts/refresh_handoff_integrity.py": "28b93fa0055f732ac77b62d9401fa0793c0e087e11d4e26a03158b9af2b9d5da",
+      "scripts/run_backend_preflight.py": "09f44ca087d81165f2890147d4b3e604f773649ef26e8e59240a7f7257288d0c",
+      "scripts/run_cope_pilot.py": "223c93b6393003ad5fb6e1dd0b101616710f61d9f8114d96db3914f9c0f70e60",
+      "scripts/run_paired_backend_debug.py": "58ce0c129e7684606a0a2b2f72f02c50315bb32f443a128471c5e7c83a2dc062",
+      "scripts/run_r3_causal_gate.py": "31fbb51c8cefe1acf00eebb72133a5c9e37f8948ac23939f064c0235163bd84a",
+      "scripts/run_r3_lineage.py": "abf772950c98865f4d6263485931a006a548ce0e22c254f3f06b817987bdd75b",
+      "scripts/run_r4_lineage.py": "3a3b72afb5a49a2a9ef899b3695d72494d425dab2b0157e5fac241efe7668fea",
+      "scripts/run_single_backend_episode.py": "767e20d05d21cba378008f23c96db0e40810404df3a51115ecfc51f4d7d0b6e6",
+      "scripts/serve_r4.py": "711fce23af8995c1a933ad0f0984f70734029a88a9248ee3e77bea4bb6462138",
+      "scripts/validate_r3_results.py": "b3998c8974cab8b779ab90dee89fb4967a3bd4b171994f86ec994337eb0cf40d",
+      "scripts/validate_real_experiment.py": "a45cd152e10a602b3280c68130321ec0a07697e9c923cd894a5b8529ce155cb3"
+    },
+    "test_metrics": false,
+    "generation_retries": 0,
+    "method_order": "reverse on odd seed",
+    "base_url": "http://127.0.0.1:18004"
+  }
+}

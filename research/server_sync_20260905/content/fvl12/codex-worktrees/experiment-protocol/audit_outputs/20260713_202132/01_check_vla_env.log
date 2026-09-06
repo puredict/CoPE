@@ -1,0 +1,14 @@
+COMMAND: cd /home/lijingsu/vla && source .venv/bin/activate && export PYTHONPATH=$HOME/vla/src/openvla:$HOME/vla/src/LIBERO:${PYTHONPATH:-} && export MUJOCO_GL=osmesa && export PYOPENGL_PLATFORM=osmesa && export HF_HOME=$HOME/vla/cache/huggingface && export TRANSFORMERS_CACHE=$HOME/vla/cache/transformers && export TOKENIZERS_PARALLELISM=false && python check_vla_env.py
+START: 2026-07-13T20:31:21+08:00
+END: 2026-07-13T20:31:21+08:00
+EXIT: 1
+
+STDOUT:
+
+STDERR:
+Traceback (most recent call last):
+  File "/home/lijingsu/vla/check_vla_env.py", line 1, in <module>
+    import torch
+  File "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/torch/__init__.py", line 367, in <module>
+    from torch._C import *  # noqa: F403
+ImportError: /share/apps/cuda/12.2/lib64/libnvJitLink.so.12: cannot read file data: Input/output error
