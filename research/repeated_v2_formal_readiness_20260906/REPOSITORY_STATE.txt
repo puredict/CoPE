@@ -14,8 +14,18 @@
     "7293f0a84521d81e58fc452b75a7cd0e7265ebe5 Merge pull request #1 from ljs0529/codex/cope-research-sync"
   ],
   "origin": "https://github.com/puredict/CoPE.git",
+  "readiness_evidence_commit": "4740805eaf9501d73711a87657d7b6282f4729d7",
+  "readiness_evidence_commit_subject": "Close repeated-v2 formal readiness evidence gaps",
+  "final_preflight_source_commit": "4740805eaf9501d73711a87657d7b6282f4729d7",
+  "final_preflight_status": "BLOCKED_TASK_CATALOG_GAPS",
+  "final_preflight_task_catalog_gap_count": 752,
+  "final_preflight_aggregate_error_count": 3,
+  "final_preflight_provider_calls": 0,
+  "final_preflight_vla_calls": 0,
+  "final_preflight_sha256": "bcc381eccbf6b7a1aff2c055da0f2148951b5ba9ffd76d6011c800d032eb6a9f",
   "push_action": "git push origin HEAD:refs/heads/codex/repeated-v2-phase4",
-  "verified_remote_branch": "refs/heads/codex/repeated-v2-phase4",
-  "verified_remote_sha": "688b7eb3a91fdf5229ea2cda87e9a33f85566fe6",
+  "remote_branch_before_final_push": "refs/heads/codex/repeated-v2-phase4",
+  "remote_sha_before_final_push": "688b7eb3a91fdf5229ea2cda87e9a33f85566fe6",
+  "final_remote_verification": "performed after the self-contained report commit; exact SHA reported to the user",
   "original_workspace_note": "/Users/lijingsu/Documents/cope has unborn main and user files; unchanged. Actual integrated git worktree used here."
 }

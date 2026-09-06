@@ -24,6 +24,8 @@ The baseline preflight has794 distinct task-catalog diagnostics plus three aggre
 
 Actual state-byte evidence closed18 diagnostics. The complete audited calibration closed24 more, including missing-grid and identity cascades without requiring a favorable outcome. Final reconciliation therefore has752 open diagnostics,120 root-cause packages and350 artifact units. It reports zero new gaps, zero unexplained disappearances and ten wording migrations that remain open. No semantic, event or success record was fabricated. [Summary](GAP_SUMMARY.md), [before/after table](GAP_COUNTS_BEFORE_AFTER.csv), [reconciliation](gap_reconciliation_final_01/GAP_RECONCILIATION.txt).
 
+The post-commit zero-provider preflight is anchored to evidence commit `4740805eaf9501d73711a87657d7b6282f4729d7`. It reports exactly752 task-catalog diagnostics plus the three expected aggregate failures (`catalog_complete`, minimum-eight admission and manifest integrity), zero eligible tasks, zero provider calls, zero VLA calls and `formal_execution_authorized=false`. [Final preflight](FINAL_PREFLIGHT.txt).
+
 ## Clean-policy calibration and failure diagnosis
 
 The frozen cohort is tasks0/1/4/8 × states0–4 × policy seeds101/131:40/40 terminal episodes. The seeds are disjoint from formal seeds11/29/47. Every episode used ten separate settling controls, up to260 learned-policy controls, zero events, zero oracle actions and current exact LIBERO goal scoring. The offline audit passed with all raw cells retained and exact source/checkpoint/protocol lineage. [Audit](clean_calibration_audit_01/CALIBRATION_AUDIT.txt), [calibration table](CALIBRATION_TABLE.csv).
