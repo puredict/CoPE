@@ -68,7 +68,6 @@ REQUIRED_ARTIFACTS = (
 IDENTITY_COMPONENTS = ("reasoner", "vla", "detector", "verifier", "compiler", "backend", "retriever")
 BAD_PROVIDER = re.compile(r"(?:^|[^a-z])(fake|mock|scripted|oracle|fixture|stub|dummy)(?:$|[^a-z])", re.I)
 HEX256 = re.compile(r"[0-9a-f]{64}\Z")
-_FILE_HASH_CACHE: dict[tuple[Any, ...], str] = {}
 
 
 class FreezeBlocked(ValueError):
@@ -119,21 +118,16 @@ def _sha_file(path: Path) -> str:
     before = path.stat()
     def signature(stat) -> tuple[int, ...]:
         return stat.st_dev, stat.st_ino, stat.st_size, stat.st_mtime_ns, stat.st_ctime_ns
-    key = (str(path.resolve(strict=True)), *signature(before))
-    value = _FILE_HASH_CACHE.get(key)
-    if value is None:
-        digest = hashlib.sha256()
-        with path.open("rb") as stream:
-            for block in iter(lambda: stream.read(1024 * 1024), b""):
-                digest.update(block)
-        value = digest.hexdigest()
+    # Filesystems can preserve even nanosecond ctime/mtime across rapid writes.
+    # Stat identity is therefore insufficient proof for reusing an old digest.
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(block)
+    value = digest.hexdigest()
     after = path.stat()
     _require(signature(before) == signature(after),
              f"artifact changed during hashing: {path}")
-    # Never trust supplied hashes or persist this cache. ctime detects same-size
-    # edits even if mtime is restored; inode detects atomic replacement. Link
-    # mapping is always inspected independently by _fingerprint.
-    _FILE_HASH_CACHE[key] = value
     return value
 
 

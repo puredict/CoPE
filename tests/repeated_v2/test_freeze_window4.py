@@ -619,26 +619,30 @@ def test_archived_bundle_rejects_dirty_source_and_tampered_binding(evidence):
         validate_archived_bundle(bundle)
 
 
-def test_file_hash_cache_reuses_bytes_but_detects_same_size_restored_mtime(tmp_path, monkeypatch):
+def test_file_hash_reads_bytes_even_when_all_stat_metadata_is_unchanged(tmp_path, monkeypatch):
     from cope_benchmark.repeated_v2.freeze import _sha_file
     path = tmp_path / "checkpoint.bin"
     path.write_bytes(b"first-checkpoint")
     original_stat = path.stat()
     original_open = Path.open
+    original_path_stat = Path.stat
     reads = []
     def counted_open(source, *args, **kwargs):
         if source == path and args and args[0] == "rb":
             reads.append(str(source))
         return original_open(source, *args, **kwargs)
     monkeypatch.setattr(Path, "open", counted_open)
+    # Deterministically model the server filesystem's coarse timestamp window.
+    monkeypatch.setattr(Path, "stat", lambda source, *args, **kwargs:
+        original_stat if source == path else original_path_stat(source, *args, **kwargs))
     original = _sha_file(path)
-    assert _sha_file(path) == original and len(reads) == 1
+    assert _sha_file(path) == original and len(reads) == 2
     path.write_bytes(b"other-checkpoint")
     os.utime(path, ns=(original_stat.st_atime_ns, original_stat.st_mtime_ns))
     assert path.stat().st_size == original_stat.st_size and path.stat().st_mtime_ns == original_stat.st_mtime_ns
     changed = _sha_file(path)
-    assert changed != original and len(reads) == 2
-    assert _sha_file(path) == changed and len(reads) == 2
+    assert changed != original and len(reads) == 3
+    assert _sha_file(path) == changed and len(reads) == 4
 
 
 @pytest.mark.parametrize("mutation", ["bytes", "link"])
