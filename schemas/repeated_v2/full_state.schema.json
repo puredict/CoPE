@@ -1,0 +1,214 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "cope-repeated-v2/full-state-1"
+    },
+    "base_revision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "slots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "family_key": {
+            "type": "string",
+            "minLength": 1
+          },
+          "role": {
+            "enum": [
+              "achievement_goal",
+              "maintenance_invariant",
+              "safety_requirement",
+              "user_preference",
+              "grounding_binding"
+            ]
+          },
+          "predicate": {
+            "type": "string",
+            "minLength": 1
+          },
+          "arguments": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "lifecycle": {
+            "enum": [
+              "active",
+              "suspended",
+              "overridden",
+              "expired"
+            ]
+          },
+          "grounding_validity": {
+            "enum": [
+              "valid",
+              "degraded",
+              "unknown",
+              "invalid"
+            ]
+          },
+          "priority": {
+            "type": "number",
+            "minimum": 0
+          },
+          "hardness": {
+            "enum": [
+              "hard",
+              "soft"
+            ]
+          },
+          "source": {
+            "enum": [
+              "planner",
+              "perception",
+              "task",
+              "user",
+              "safety",
+              "system"
+            ]
+          },
+          "authority": {
+            "enum": [
+              "planner",
+              "perception",
+              "task",
+              "user",
+              "safety",
+              "system"
+            ]
+          },
+          "restore_guard": {
+            "type": "object"
+          },
+          "dependency_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          },
+          "provenance": {
+            "type": "object"
+          },
+          "evidence_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          },
+          "occurrence_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "created_event_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "retired_event_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "family_key",
+          "role",
+          "predicate",
+          "arguments",
+          "lifecycle",
+          "grounding_validity",
+          "priority",
+          "hardness",
+          "source",
+          "authority",
+          "restore_guard",
+          "dependency_ids",
+          "provenance",
+          "evidence_ids",
+          "occurrence_id",
+          "created_event_id",
+          "retired_event_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "relations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "source_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "relation": {
+            "enum": [
+              "depends_on",
+              "precedes",
+              "overrides",
+              "conflicts_with",
+              "same_family",
+              "derived_from"
+            ]
+          },
+          "target_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "source_id",
+          "relation",
+          "target_id"
+        ],
+        "additionalProperties": false
+      },
+      "uniqueItems": true
+    },
+    "semantic_history": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "initial_facts": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "progress_certificates": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "continuation_assumptions": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "schema_version",
+    "base_revision",
+    "slots",
+    "relations",
+    "semantic_history",
+    "initial_facts",
+    "progress_certificates",
+    "continuation_assumptions"
+  ],
+  "additionalProperties": false
+}

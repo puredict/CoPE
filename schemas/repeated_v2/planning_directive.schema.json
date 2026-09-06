@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "cope-repeated-v2/directive-1"
+    },
+    "initial_facts": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "active_goal_occurrence_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "remaining_goals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "occurrence_id"
+        ],
+        "properties": {
+          "occurrence_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "hard_constraints": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "soft_preferences": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "forbidden_regressions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "grounding_bindings": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "restore_eligibility": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "progress_certificates": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "continuation_assumptions": {
+      "type": "object"
+    },
+    "ordered_macro_plan": {
+      "type": "array",
+      "items": {
+        "type": [
+          "string",
+          "object"
+        ]
+      }
+    },
+    "current_subgoal": {
+      "type": [
+        "string",
+        "object",
+        "null"
+      ]
+    },
+    "current_target_occurrence_hypothesis": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "initial_facts",
+    "active_goal_occurrence_ids",
+    "remaining_goals",
+    "hard_constraints",
+    "soft_preferences",
+    "forbidden_regressions",
+    "grounding_bindings",
+    "restore_eligibility",
+    "progress_certificates",
+    "continuation_assumptions",
+    "ordered_macro_plan"
+  ],
+  "additionalProperties": false
+}

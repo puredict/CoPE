@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "planning_directive": {
+      "additionalProperties": false,
+      "properties": {
+        "active_goal_occurrence_ids": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "continuation_assumptions": {
+          "type": "object"
+        },
+        "current_subgoal": {
+          "type": [
+            "string",
+            "object",
+            "null"
+          ]
+        },
+        "current_target_occurrence_hypothesis": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "forbidden_regressions": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "grounding_bindings": {
+          "items": {
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "hard_constraints": {
+          "items": {
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "initial_facts": {
+          "items": {
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "ordered_macro_plan": {
+          "items": {
+            "type": [
+              "string",
+              "object"
+            ]
+          },
+          "type": "array"
+        },
+        "progress_certificates": {
+          "items": {
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "remaining_goals": {
+          "items": {
+            "properties": {
+              "occurrence_id": {
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "occurrence_id"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "restore_eligibility": {
+          "items": {
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "cope-repeated-v2/directive-1"
+        },
+        "soft_preferences": {
+          "items": {
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "schema_version",
+        "initial_facts",
+        "active_goal_occurrence_ids",
+        "remaining_goals",
+        "hard_constraints",
+        "soft_preferences",
+        "forbidden_regressions",
+        "grounding_bindings",
+        "restore_eligibility",
+        "progress_certificates",
+        "continuation_assumptions",
+        "ordered_macro_plan"
+      ],
+      "type": "object"
+    },
+    "schema_version": {
+      "const": "cope-repeated-v2/summary-1"
+    },
+    "summary": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "summary",
+    "planning_directive"
+  ],
+  "type": "object"
+}

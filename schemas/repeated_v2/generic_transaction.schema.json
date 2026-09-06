@@ -1,0 +1,357 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "generic-persistent-v2/tx-1"
+    },
+    "episode_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "event_index": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "base_revision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "affected_scope": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "protected_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "protected_projection_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "evidence_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "assertions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "const": "validation"
+          },
+          "check_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "occurrence_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          },
+          "guard": {
+            "type": "object"
+          },
+          "result": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "kind",
+          "check_id",
+          "occurrence_id",
+          "evidence_ids",
+          "guard",
+          "result"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "creates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "slot": {
+            "type": "object",
+            "properties": {
+              "family_key": {
+                "type": "string",
+                "minLength": 1
+              },
+              "role": {
+                "enum": [
+                  "achievement_goal",
+                  "maintenance_invariant",
+                  "safety_requirement",
+                  "user_preference",
+                  "grounding_binding"
+                ]
+              },
+              "predicate": {
+                "type": "string",
+                "minLength": 1
+              },
+              "arguments": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "lifecycle": {
+                "const": "active"
+              },
+              "grounding_validity": {
+                "enum": [
+                  "valid",
+                  "degraded",
+                  "unknown",
+                  "invalid"
+                ]
+              },
+              "priority": {
+                "type": "number",
+                "minimum": 0
+              },
+              "hardness": {
+                "enum": [
+                  "hard",
+                  "soft"
+                ]
+              },
+              "source": {
+                "enum": [
+                  "planner",
+                  "perception",
+                  "task",
+                  "user",
+                  "safety",
+                  "system"
+                ]
+              },
+              "authority": {
+                "enum": [
+                  "planner",
+                  "perception",
+                  "task",
+                  "user",
+                  "safety",
+                  "system"
+                ]
+              },
+              "restore_guard": {
+                "type": "object"
+              },
+              "dependency_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "uniqueItems": true
+              },
+              "provenance": {
+                "type": "object"
+              },
+              "evidence_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "uniqueItems": true
+              }
+            },
+            "required": [
+              "family_key",
+              "role",
+              "predicate",
+              "arguments",
+              "lifecycle",
+              "grounding_validity",
+              "priority",
+              "hardness",
+              "source",
+              "authority",
+              "restore_guard",
+              "dependency_ids",
+              "provenance",
+              "evidence_ids"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "request_id",
+          "slot"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "writes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "occurrence_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "path": {
+            "enum": [
+              "/lifecycle",
+              "/priority",
+              "/grounding_validity",
+              "/restore_guard",
+              "/dependency_ids"
+            ]
+          },
+          "value": {},
+          "assertion_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "occurrence_id",
+          "path",
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "relation_additions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "source_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "relation": {
+            "enum": [
+              "depends_on",
+              "precedes",
+              "overrides",
+              "conflicts_with",
+              "same_family",
+              "derived_from"
+            ]
+          },
+          "target_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "source_id",
+          "relation",
+          "target_id"
+        ],
+        "additionalProperties": false
+      },
+      "uniqueItems": true
+    },
+    "relation_removals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "source_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "relation": {
+            "enum": [
+              "depends_on",
+              "precedes",
+              "overrides",
+              "conflicts_with",
+              "same_family",
+              "derived_from"
+            ]
+          },
+          "target_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "source_id",
+          "relation",
+          "target_id"
+        ],
+        "additionalProperties": false
+      },
+      "uniqueItems": true
+    },
+    "evidence_links": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "occurrence_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "occurrence_id",
+          "evidence_ids"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "episode_id",
+    "event_index",
+    "base_revision",
+    "affected_scope",
+    "protected_ids",
+    "protected_projection_sha256",
+    "evidence_ids",
+    "assertions",
+    "creates",
+    "writes",
+    "relation_additions",
+    "relation_removals",
+    "evidence_links"
+  ],
+  "additionalProperties": false
+}

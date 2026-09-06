@@ -1,0 +1,30 @@
+{
+  "matched": true,
+  "sha256": {
+    "cope_benchmark/repeated_v2/adapters/__init__.py": "f449f856945ffca927c745faa38d65771f6627467e8f62b9dabacafe72ef5a83",
+    "cope_benchmark/repeated_v2/adapters/methods.py": "fad2d78488b60696c017973068abba2882ca14c1b6ee8c9e3041ea474efc68c5",
+    "cope_benchmark/repeated_v2/compiler.py": "a8a56f303907eeedf7fc46506e22834ae4ecb7254823a4fbcd3979b39865b2cc",
+    "cope_benchmark/repeated_v2/generic_contract.py": "79a145b8e99f34c4f4625189c84b06f7cf60512a005627b2275df62583f614a9",
+    "cope_benchmark/repeated_v2/generic_engine.py": "15e788fe37fb75f730ecf5244fb5ab7e8ed902df410d81f861fd2ac013542d7b",
+    "cope_benchmark/repeated_v2/history.py": "e3f939e449521e23fc28584cc0e5db5d7651bd83e43ed9c0aaf7453b9d97f864",
+    "cope_benchmark/repeated_v2/oracle_fixtures.py": "b18d5de15e4f979e3d74c6509c3f19913f79a4f22c8bf8f0a5e781508b0bc60b",
+    "cope_benchmark/repeated_v2/parsers.py": "7a2208c3851a1b8c63a7b1f515fe8fbc290802605792b5d87c84119fcdc38bb9",
+    "cope_benchmark/repeated_v2/patch_contract.py": "1aeea0c4730aadf7831fe8bb9e7659b2118a0a5cd5198c4bf5bbd8e2951a41a5",
+    "cope_benchmark/repeated_v2/planner_backend.py": "96c937641768179e9c181eb6a574d03009ed2d7908f9aad0ec8cfbf55402974e",
+    "cope_benchmark/repeated_v2/prompts.py": "3093203d42080e84e34d5976b0bee8b4fad1a00b87870c1e50ed8f1df42dd0d5",
+    "cope_benchmark/repeated_v2/provider.py": "2185003f7b900edd38326272d9ba2a9f080d47d2114d93a4b7330f95e7238eb7",
+    "cope_benchmark/repeated_v2/smoke.py": "b90326ee51c485ab645d04609da83574cfea7356a94b3aba09ea5dda8304f637",
+    "cope_benchmark/repeated_v2/state_engine.py": "7add475d22f01a57449c07801fb095af4b1a81390578faa0d01207d6f9b8745a",
+    "schemas/repeated_v2/cope_patch.schema.json": "6db57ec47d527fa7325a9ed384046a164d33b89e7eab274e50af86984d8251e0",
+    "schemas/repeated_v2/full_state.schema.json": "8b0632a3136b1558c04157ab3802de5c2fa75b269a9d818430f69757cd50ecdd",
+    "schemas/repeated_v2/generic_transaction.schema.json": "61a081911873f1162122b08a88ef4cfc749bc0b8aee3224074fcfbdf2f567c63",
+    "schemas/repeated_v2/planning_directive.schema.json": "ab13a02d92f59caf181a5fd55b434342af8e761e2bf0e30343db0eccc28be547",
+    "schemas/repeated_v2/summary_memory.schema.json": "93fd077f66ddc3825688f53726b2500a15f1f2e8bc01098f1ed5ee885bc84158",
+    "tests/repeated_v2/test_phase2_adapters.py": "a14fc9b44fb75c825165b44cee6560a94d1ba20f3e2759de761d06388ec5dc2b",
+    "tests/repeated_v2/test_phase2_compiler.py": "937a149b5ee88badd49fb742d6eb3b706c51a02c5c3d4fbf9afaa941bcb8b3f7",
+    "tests/repeated_v2/test_phase2_integration.py": "0b9a2e47f3587fc56bc2d2a338987c47327cc7cea949830bf577fc285dd00821",
+    "tests/repeated_v2/test_phase2_transactions.py": "b6fb819b6e7b12cb4e821d52a71ffc395164e1fd1c2583c3ab5e32686c7c1eed",
+    "tools/smoke_repeated_v2_methods.py": "267987f06bdfa7ec49338151469f0705a9bcc3d3b107c4e30bf62f66abd7093f"
+  },
+  "source_files": 24
+}
