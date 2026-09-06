@@ -250,9 +250,35 @@ def _task_gaps(task: TaskRecord, *, allow_synthetic: bool) -> tuple[str, ...]:
     for state_id in range(5):
         if not _SHA256.fullmatch(task.initial_state_digests.get(str(state_id), "")):
             errors.append(f"missing initial state digest {state_id}")
-    if set(task.supported_event_families) != set(EVENT_FAMILIES) or len(task.supported_event_families) != len(EVENT_FAMILIES):
-        errors.append("all ten event families require explicit support/feasibility")
-    for family in EVENT_FAMILIES:
+    supported = set(task.supported_event_families)
+    unknown = supported - set(EVENT_FAMILIES)
+    duplicate_support = len(supported) != len(task.supported_event_families)
+    unresolved_support = not supported or "supported_event_families" in task.unresolved_fields
+    if unresolved_support:
+        # Keep the inventory gap and audit all families until
+        # task-local scope is resolved. Empty scope cannot erase missing data.
+        if supported != set(EVENT_FAMILIES) or duplicate_support:
+            errors.append("task-specific event family support is unresolved; auditing all ten candidates")
+    if unknown:
+        errors.append(f"unknown supported event families: {sorted(unknown)}")
+    if duplicate_support:
+        errors.append("duplicate supported event families")
+    if unresolved_support or unknown or duplicate_support:
+        audited_families = EVENT_FAMILIES
+    else:
+        audited_families = tuple(family for family in EVENT_FAMILIES if family in supported)
+        categories = {
+            "grounding shift": bool(supported & set(EVENT_FAMILIES[:2])),
+            "temporary lifecycle": any(set(pair) <= supported for pair in (
+                EVENT_FAMILIES[2:4], EVENT_FAMILIES[5:7])),
+            "persistent preference": EVENT_FAMILIES[4] in supported,
+            "goal retirement": bool(supported & set(EVENT_FAMILIES[7:9])),
+            "fresh goal reissue": EVENT_FAMILIES[9] in supported,
+        }
+        for category, covered in categories.items():
+            if not covered:
+                errors.append(f"supported event families lack scientific category: {category}")
+    for family in audited_families:
         check = task.event_feasibility.get(family, {})
         if type(check.get("passed")) is not bool or not check.get("evidence_refs") or tuple(check.get("covered_state_ids", ())) != tuple(range(5)):
             errors.append(f"unverified event feasibility {family}")
@@ -301,7 +327,7 @@ def select_eligible_tasks(catalog: TaskCatalog, *, allow_synthetic: bool = False
         raise CatalogBlockedError(gaps)
     selected = tuple(task for task in catalog.tasks
                      if all(task.structural_checks[key]["passed"] for key in STRUCTURAL_CHECKS)
-                     and all(task.event_feasibility[family]["passed"] for family in EVENT_FAMILIES)
+                     and all(task.event_feasibility[family]["passed"] for family in task.supported_event_families)
                      and summarize_calibration(task.task_id, task.calibration_records,
                                                initial_state_digests=task.initial_state_digests,
                                                allow_synthetic=allow_synthetic).eligible_success_rate)

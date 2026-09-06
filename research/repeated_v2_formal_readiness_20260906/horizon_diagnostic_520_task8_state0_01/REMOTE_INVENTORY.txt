@@ -1,0 +1,79 @@
+{
+  "base": "/home/lijingsu/vla/outputs/repeated_v2_readiness_20260906/horizon520_task8_state0_01",
+  "files": [
+    {
+      "bytes": 1743,
+      "relative_path": "DIAGNOSTIC_CONFIG.yaml",
+      "sha256": "7167beaeb198b103446949bc365816a7ba3c438d4c103646a267220a3485700e"
+    },
+    {
+      "bytes": 755,
+      "relative_path": "DIAGNOSTIC_PROTOCOL.txt",
+      "sha256": "97cb8f18227fd72b2c6906837b94ca8de57b8df5facd0be56d8f586c80f9fe33"
+    },
+    {
+      "bytes": 7640,
+      "relative_path": "RUN_CONSOLE.txt",
+      "sha256": "bb70d870922a8ce18e1f9010c5e8e59a4c890bb3138ae620eee742e3ef2e478a"
+    },
+    {
+      "bytes": 1168,
+      "relative_path": "RUN_LAUNCHER.txt",
+      "sha256": "d130a764d29a506450f041f355b4a0d56b35695722e823dea9442107f9a77a79"
+    },
+    {
+      "bytes": 3006,
+      "relative_path": "run/calibration_summary.json",
+      "sha256": "6b2cb487a0ef03070abd350ccac08a646629bbf6d25eb3608f522e0f9aba28f4"
+    },
+    {
+      "bytes": 3006,
+      "relative_path": "run/calibration_summary.partial.json",
+      "sha256": "6b2cb487a0ef03070abd350ccac08a646629bbf6d25eb3608f522e0f9aba28f4"
+    },
+    {
+      "bytes": 666022,
+      "relative_path": "run/episodes/calibration__task08__state00__seed929600/attempt-001.jsonl",
+      "sha256": "f340cac45e5abe830b48b328c32dfdae0a7414870ffa81ae00faf988f0b86a8f"
+    },
+    {
+      "bytes": 3074,
+      "relative_path": "run/episodes/calibration__task08__state00__seed929600/episode.json",
+      "sha256": "adfc2d8153d975edc25745f0ce3098ad6b7f02dea688bb0665bd4671b2b6464b"
+    },
+    {
+      "bytes": 473,
+      "relative_path": "run/model_load.json",
+      "sha256": "1ec3d17b11eeea0f98b97d9c1a37c43934c31fcc3ee3a327fd65aea19fb3f2b2"
+    },
+    {
+      "bytes": 3282,
+      "relative_path": "run/run_manifest.json",
+      "sha256": "d4f86c64cdc346ee841dc6c3009b61544bff65fc218b67b5096575b9ae1beb1d"
+    },
+    {
+      "bytes": 473,
+      "relative_path": "smoke/model_load.json",
+      "sha256": "ed0d5b57ed911adbab4e7d3f7689858f04f0da08d08da65d6e03c189bd9b17c7"
+    },
+    {
+      "bytes": 55158,
+      "relative_path": "smoke/reset_observation.png",
+      "sha256": "a6c62b80ace0ef8bebdf02d7a49368333b4e8435154f5b9667cd2269ac361a3c"
+    },
+    {
+      "bytes": 3276,
+      "relative_path": "smoke/run_manifest.json",
+      "sha256": "9e143018d007e7ee3a24ae1f9b931d66c92da39281724020dd85bdefba75bdb4"
+    },
+    {
+      "bytes": 6267,
+      "relative_path": "smoke/smoke_report.json",
+      "sha256": "9ccde468dd00361be3d1d4d5cfcd929b280dbd29b528160b713eb53e71eed6ae"
+    }
+  ],
+  "inventory_excludes": [
+    "HORIZON_DIAGNOSTIC_AUDIT.txt",
+    "REMOTE_INVENTORY.txt"
+  ]
+}

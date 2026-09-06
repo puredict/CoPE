@@ -1,0 +1,568 @@
+#!/usr/bin/env python3
+"""Prepared one-off clean OpenVLA calibration; not a formal evaluation runner.
+
+Do not execute until the separate real-VLA rendered-observation/finite-action
+gate has passed. --execute is an explicit launch choice; gate evidence bytes
+and their independently supplied SHA256 are retained, not treated as a guessed
+certification flag. This driver cannot repair an unavailable native adapter.
+
+Example AFTER gate validation, from the remote phase-4 project root:
+  LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libnvidia-ml.so.535.54.03:/usr/lib/x86_64-linux-gnu/libcuda.so.535.54.03 \
+    MUJOCO_GL=osmesa \
+    PYOPENGL_PLATFORM=osmesa LIBERO_CONFIG_PATH=/home/lijingsu/.libero \
+    scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python \
+    research/repeated_v2_formal_readiness_20260906/CALIBRATION_DRIVER.txt \
+    --execute --gpu 7 --output-root /absolute/new/unique/calibration-directory \
+    --gate-evidence /absolute/VLA_GATE.txt --gate-evidence-sha256 ACTUAL_SHA256
+
+The native factory must run before Torch/LIBERO imports and checks physical GPU
+idleness itself. The existing environment helper seeds the simulator with 0;
+the policy/global seed is 101 or 131. Ten recorded settling controls precede at
+most 260 learned-policy controls (at most 270 env.step calls). No injections,
+oracle actions, model-based success guesses, or hidden refresh steps occur.
+Simulator reset/state assignment/forward operations are setup, recorded in the
+protocol separately from explicit environment control calls.
+
+Each output root and episode claim is exclusive. A crash leaves its trace and
+intent records intact. There is deliberately no re-inference/resume option:
+audit unfinished episodes before authorizing any new run; do not selectively
+retry or silently discard them. Terminal evidence is atomically published only
+after the trace is fsynced and sealed. Only completed physical episodes receive
+the existing CalibrationEpisode schema. Infrastructure failures remain gaps.
+
+--self-check validates schema/grid/evidence helpers with synthetic in-memory
+fixtures only; it does not load Torch, a model, LIBERO, or a GPU, or write files.
+"""
+
+from __future__ import annotations
+
+import argparse
+import base64
+import hashlib
+import json
+import math
+import os
+from pathlib import Path
+import sys
+import time
+import traceback
+import uuid
+
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+CHECKPOINT_SHA256 = "d36eaa2a334cd52f4a3a94558cf90d82584743ea772fabf76f9e4372e7076076"
+TASK_IDS = (0, 1, 4, 8)
+POLICY_STEPS = 260
+SETTLING_STEPS = 10
+HF_HUB_CACHE = "/home/lijingsu/.cache/cope-readiness-20260906/huggingface/hub"
+HF_MODULES_CACHE = "/home/lijingsu/.cache/cope-readiness-20260906/huggingface/modules"
+HF_CODE_REVISION = "47a0ec7fc4ec123775a391911046cf33cf9ed83f"
+HF_CODE_SHA256 = {
+    "configuration_prismatic.py": "68cc5ae34f1b46af3168d8d479cb81bb776965653453fd904aa8eefb6c8f9f68",
+    "modeling_prismatic.py": "9ce241c5ca09a4bed73654d0ca509baaff0fc5887d0bdd62e360ca8254f7794a",
+    "processing_prismatic.py": "06563586bbc73d36501a14a231a3174904ede830d33174d0c625ece8e931ef1e",
+}
+
+
+def encoded(value):
+    return (json.dumps(value, sort_keys=True, ensure_ascii=False,
+                       separators=(",", ":"), allow_nan=False) + "\n").encode("utf-8")
+
+
+def file_sha(path):
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as handle:
+        for block in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def fsync_directory(path):
+    descriptor = os.open(str(path), os.O_RDONLY | os.O_DIRECTORY)
+    try:
+        os.fsync(descriptor)
+    finally:
+        os.close(descriptor)
+
+
+def publish_bytes(path, data):
+    """Atomic no-replace publication on the same filesystem, then read-only."""
+    path = Path(path)
+    temporary = path.with_name("." + path.name + "." + uuid.uuid4().hex)
+    with temporary.open("xb") as handle:
+        handle.write(data)
+        handle.flush()
+        os.fsync(handle.fileno())
+    os.chmod(temporary, 0o444)
+    os.link(temporary, path)  # fails if a terminal/artifact already exists
+    temporary.unlink()
+    fsync_directory(path.parent)
+    return {"path": str(path.resolve()), "sha256": file_sha(path), "bytes": path.stat().st_size}
+
+
+def publish(path, value):
+    return publish_bytes(path, encoded(value))
+
+
+def trace_append(handle, value):
+    handle.write(encoded(value))
+    handle.flush()
+    os.fsync(handle.fileno())
+
+
+def validate_gate(value):
+    required = {"schema_version": "repeated_v2_actual_action_probe_v1",
+                "stage": "action_validation", "status": "ACTUAL_ACTION_PROBE_PASSED",
+                "evidence_admissibility": "production_adapter_smoke_only",
+                "passed": True, "fixture": False, "learned_policy": True,
+                "uses_privileged_state": False, "learned_policy_verified": True,
+                "uses_privileged_state_verified": True, "finite_action_chunks_verified": True,
+                "real_rendered_observation_verified": True,
+                "action_chunk_horizon": 1, "action_dimension": 7}
+    if not isinstance(value, dict):
+        raise ValueError("gate must be an actual probe JSON object")
+    for key, expected in required.items():
+        if type(value.get(key)) is not type(expected) or value[key] != expected:
+            raise ValueError("real action probe gate field differs: " + key)
+    if value["identity"]["checkpoint_sha256"] != CHECKPOINT_SHA256:
+        raise ValueError("probe did not use the pinned production checkpoint")
+    for key in ("raw_action", "environment_action"):
+        if (not isinstance(value.get(key), list) or len(value[key]) != 7
+                or any(type(v) not in (float, int) or not math.isfinite(v) for v in value[key])):
+            raise ValueError("probe action is not a finite seven-coordinate vector")
+    counts = value["counts"]
+    for key, expected in {"policy_act_attempts": 1, "policy_act_returns": 1,
+                          "factory_attempts": 1, "live_adapters": 1,
+                          "provider_calls": 0, "calibration_episodes": 0,
+                          "formal_episodes": 0}.items():
+        if type(counts.get(key)) is not int or counts[key] != expected:
+            raise ValueError("probe call accounting differs: " + key)
+    return value
+
+
+def check_gate_file(path, expected):
+    data = Path(path).resolve().read_bytes()
+    if len(expected) != 64 or hashlib.sha256(data).hexdigest() != expected:
+        raise ValueError("gate evidence bytes differ from supplied SHA256")
+    gate = validate_gate(json.loads(data))
+    artifacts = [gate["audit_artifact"], gate["rendered_input_artifact"], gate["policy_snapshot_artifact"],
+                 gate["loaded_model_class"], gate["loaded_processor_class"],
+                 *gate["loaded_source_bytes"]]
+    for artifact in artifacts:
+        artifact_path = artifact.get("resolved_path", artifact["path"])
+        if file_sha(artifact_path) != artifact["sha256"]:
+            raise ValueError("probe referenced artifact/source bytes changed: " + artifact_path)
+    rendered = json.loads(Path(gate["rendered_input_artifact"]["path"]).read_bytes())
+    raw_rgb = base64.b64decode(rendered["rgb_bytes_base64"], validate=True)
+    if (rendered["shape"] != [224, 224, 3] or rendered["dtype"] != "uint8"
+            or len(raw_rgb) != 224 * 224 * 3
+            or hashlib.sha256(raw_rgb).hexdigest() != rendered["rgb_bytes_sha256"]
+            or rendered["rgb_bytes_sha256"] != gate["rendered_input_sha256"]):
+        raise ValueError("probe rendered RGB payload/hash linkage differs")
+    return data, gate
+
+
+def record_for_terminal(cell, terminal, evidence):
+    from cope_benchmark.repeated_v2.task_calibration import CalibrationEpisode, CALIBRATION_SCHEMA_VERSION
+    return CalibrationEpisode.from_dict({
+        "schema_version": CALIBRATION_SCHEMA_VERSION, **cell,
+        "success": terminal["success"], "status": terminal["status"],
+        "learned_policy": terminal["learned_policy"],
+        "privileged_policy_state": terminal["privileged_policy_state"],
+        "clean_episode": terminal["clean_episode"],
+        "policy_id": terminal["policy_identity"]["policy_model_id"],
+        "checkpoint_sha256": terminal["policy_identity"]["checkpoint_sha256"],
+        "protocol_sha256": terminal["protocol_sha256"],
+        "initial_state_sha256": terminal["initial_state_sha256"],
+        "evidence_ref": evidence["path"], "evidence_sha256": evidence["sha256"],
+        "provenance_kind": "measured", "max_policy_steps": POLICY_STEPS,
+    }).to_dict()
+
+
+def self_check():
+    from cope_benchmark.repeated_v2.task_calibration import (
+        CalibrationBlockedError, CalibrationEpisode, CALIBRATION_SCHEMA_VERSION,
+        calibration_grid, summarize_calibration,
+    )
+    grid = calibration_grid(TASK_IDS)
+    assert len(grid) == 40 and len({tuple(cell.values()) for cell in grid}) == 40
+    for task_id in TASK_IDS:
+        records = []
+        for index, cell in enumerate(c for c in grid if c["task_id"] == task_id):
+            records.append(CalibrationEpisode.from_dict({
+                "schema_version": CALIBRATION_SCHEMA_VERSION, **cell,
+                "success": index < 4, "status": "completed" if index < 4 else "timeout",
+                "learned_policy": True, "privileged_policy_state": False,
+                "clean_episode": True, "policy_id": "synthetic_fixture",
+                "checkpoint_sha256": "a" * 64, "protocol_sha256": "b" * 64,
+                "initial_state_sha256": str(cell["initial_state_id"]) * 64,
+                "evidence_ref": f"synthetic-only/{task_id}/{index}",
+                "evidence_sha256": "d" * 64, "provenance_kind": "synthetic_test_fixture",
+                "max_policy_steps": POLICY_STEPS,
+            }).to_dict())
+        summary = summarize_calibration(task_id, records, allow_synthetic=True)
+        assert summary.total == 10 and summary.successes == 4 and summary.clean_success_rate == 0.4
+        for bad in (records[:-1], records + records[:1]):
+            try:
+                summarize_calibration(task_id, bad, allow_synthetic=True)
+            except CalibrationBlockedError:
+                pass
+            else:
+                raise AssertionError("missing/duplicate cells must fail closed")
+        try:
+            summarize_calibration(task_id, records)
+        except CalibrationBlockedError:
+            pass
+        else:
+            raise AssertionError("synthetic fixtures must not pass measured calibration")
+    assert "torch" not in sys.modules and "libero.libero" not in sys.modules
+    for invalid_gate in ({}, {"passed": True}, {"status": "ACTUAL_ACTION_PROBE_PASSED"}):
+        try:
+            validate_gate(invalid_gate)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("unqualified/partial gate must fail closed")
+    print("PASS: synthetic-only schema/grid checks; no model, simulator, GPU, or output files")
+
+
+def run(args):
+    gate_data, gate = check_gate_file(args.gate_evidence, args.gate_evidence_sha256)
+    output = Path(args.output_root).expanduser().resolve()
+    output.mkdir(exist_ok=False)  # parent must already exist; no un-fsynced ancestor creation
+    fsync_directory(output.parent)
+    gate_artifact = publish_bytes(output / "VLA_GATE_EVIDENCE.txt", gate_data)
+    launch = {"created_unix_seconds": time.time(), "argv": sys.argv,
+              "output_root": str(output), "gate_evidence": gate_artifact,
+              "gpu_physical_index": args.gpu,
+              "scope": "four-task clean calibration subset; no formal catalog admission",
+              "recovery_policy": "no automatic resume or selective retry"}
+    publish(output / "LAUNCH.txt", launch)
+    adapter = None
+    active_cell = None
+    try:
+        # Keep this before core, LIBERO, numpy, and upstream runtime imports.
+        from cope_benchmark.repeated_v2.vla_adapter import (
+            create_native_openvla, require_vla_adapter, public_observation,
+            to_environment_action, validate_action_chunk,
+        )
+        adapter = create_native_openvla({
+            "checkpoint_path": args.checkpoint_path, "checkpoint_sha256": CHECKPOINT_SHA256,
+            "runtime_path": args.runtime_path, "gpu": args.gpu,
+            "task_suite": "libero_10", "unnorm_key": "libero_10",
+            "policy_model_id": "openvla-7b-finetuned-libero-10",
+        })
+        identity = dict(require_vla_adapter(adapter, formal=True, verify_checkpoint=True))
+        if identity != gate["identity"]:
+            raise ValueError("current native adapter identity differs from the real action probe")
+        if identity["action_dim"] != 7 or identity["max_chunk_horizon"] != 1:
+            raise ValueError("this one-off driver requires the existing native single-action client")
+        import numpy as np
+        from cope.calibration import validate_openvla_action
+        from cope_benchmark.repeated_v2.task_calibration import calibration_grid, summarize_calibration
+        from cope_benchmark.task_progress import get_task_definition, ProgressTracker, LiberoStateView
+        from libero_experiment_core import (
+            ExperimentConfig, create_libero_env, frame_from_obs, get_benchmark_suite,
+            get_dummy_action, get_image_resize_size, make_model_cfg, set_seed,
+        )
+        from experiments.robot.libero import libero_utils
+        from libero.libero import get_libero_path
+
+        catalog = json.loads((ROOT / "task_catalogs/repeated_v2.json").read_text())
+        catalog_entries = {entry["task_id"]: entry for entry in catalog["tasks"]}
+        suite = get_benchmark_suite("libero_10")
+        states = {}
+        task_records = {}
+        for task_id in TASK_IDS:
+            task = suite.get_task(task_id)
+            definition = get_task_definition("libero_10", task_id)
+            entry = catalog_entries[task_id]
+            if (task.name != definition.task_name or task.language != definition.language
+                    or task.name != entry["task_name"]
+                    or task.language != entry["original_instruction"]):
+                raise ValueError(f"runtime task identity differs for task {task_id}")
+            bddl = Path(get_libero_path("bddl_files")) / str(task.problem_folder) / str(task.bddl_file)
+            bddl_artifact = publish_bytes(output / f"TASK_{task_id}_BDDL.txt", bddl.read_bytes())
+            initial_states = suite.get_task_init_states(task_id)
+            state_records = {}
+            for state_id in range(5):
+                state = np.asarray(initial_states[state_id]).copy()
+                if not np.isfinite(state).all():
+                    raise ValueError("non-finite initial state")
+                digest = hashlib.sha256(state.tobytes()).hexdigest()
+                known = entry["initial_state_digests"].get(str(state_id))
+                if known is not None and known != digest:
+                    raise ValueError(f"catalog initial state digest differs: {task_id}/{state_id}")
+                states[task_id, state_id] = state
+                state_records[str(state_id)] = {
+                    "sha256": digest, "dtype": str(state.dtype), "shape": list(state.shape),
+                    "artifact": publish(output / f"TASK_{task_id}_STATE_{state_id}.txt", {
+                        "dtype": str(state.dtype), "shape": list(state.shape),
+                        "raw_bytes_sha256": digest, "values": state.tolist(),
+                    }),
+                }
+            task_records[str(task_id)] = {
+                "task_name": task.name, "language": task.language,
+                "bddl_source": str(bddl.resolve()), "bddl": bddl_artifact,
+                "progress_definition": definition.to_dict(), "initial_states": state_records,
+            }
+
+        source_paths = [Path(__file__).resolve(),
+                        ROOT / "libero_experiment_core.py",
+                        ROOT / "cope_benchmark/task_progress.py",
+                        ROOT / "cope_benchmark/repeated_v2/vla_adapter.py",
+                        ROOT / "cope_benchmark/repeated_v2/task_calibration.py",
+                        ROOT / "docs/repeated_v2/specification/02_CONFIG_TEMPLATE.yaml",
+                        Path(libero_utils.__file__).resolve()]
+        protocol = {
+            "version": "repeated_v2_four_task_clean_native_calibration_preparation_v1",
+            "task_suite": "libero_10", "task_ids": TASK_IDS,
+            "initial_state_ids": list(range(5)), "policy_seeds": [101, 131],
+            "environment_seed": 0, "environment_seed_owner": "existing get_libero_env helper",
+            "seed_order": "set_seed(policy_seed), create_libero_env, reset, set_init_state, settling, adapter.reset",
+            "max_policy_steps": POLICY_STEPS, "settling_controls": SETTLING_STEPS,
+            "max_environment_controls": POLICY_STEPS + SETTLING_STEPS,
+            "budget_unit": "explicit env.step control calls; simulator setup is separate",
+            "simulator_setup": ["create_libero_env", "env.reset", "env.set_init_state"],
+            "initial_state_setup_operations": "state assignment, sim.forward, success/observable refresh; no control step",
+            "extra_refresh_controls": 0, "interruptions": 0,
+            "resolution": 256, "policy_image_preprocessor": "core.frame_from_obs -> production get_libero_image",
+            "public_policy_fields": ["full_image", "state"],
+            "proprio_format": "eef_position + axis_angle(eef_quaternion) + gripper_qpos",
+            "success_rule": "current exact LIBERO _check_success after settling or a policy action",
+            "stop_rule": "exact goal true, environment done, or 260 policy controls",
+            "milestones": "existing ProgressTracker with scorer-only LiberoStateView; no qualification flags",
+            "policy_identity": identity,
+            "action_probe_evidence": gate_artifact,
+            "hf_hub_cache": os.environ["HF_HUB_CACHE"],
+            "hf_modules_cache": os.environ["HF_MODULES_CACHE"],
+            "transformers_cache": os.environ["TRANSFORMERS_CACHE"],
+            "hf_code_repository": "openvla/openvla-7b", "hf_code_revision": HF_CODE_REVISION,
+            "hf_pinned_code_sha256": {
+                path.name: file_sha(path)
+                for path in sorted((Path(HF_HUB_CACHE) / "models--openvla--openvla-7b" /
+                                    "snapshots" / HF_CODE_REVISION).glob("*.py"))
+            },
+            "loaded_probe_source_bytes": gate["loaded_source_bytes"],
+            "task_records": task_records,
+            "source_sha256": {str(path): file_sha(path) for path in source_paths},
+            "mujoCo_gl": os.environ.get("MUJOCO_GL"),
+            "pyopengl_platform": os.environ.get("PYOPENGL_PLATFORM"),
+            "libero_config_path": os.environ.get("LIBERO_CONFIG_PATH"),
+        }
+        protocol_sha = hashlib.sha256(encoded(protocol)).hexdigest()
+        publish(output / "PROTOCOL.txt", protocol)
+        records = []
+
+        def public_input(obs, resize_size):
+            state = np.concatenate((obs["robot0_eef_pos"],
+                                    libero_utils.quat2axisangle(obs["robot0_eef_quat"]),
+                                    obs["robot0_gripper_qpos"]))
+            return public_observation({"full_image": frame_from_obs(obs, resize_size), "state": state})
+
+        def observation_evidence(public, include_pixels=False):
+            frame = np.asarray(public["full_image"], dtype=np.uint8)
+            value = {"policy_fields": sorted(public), "frame_dtype": str(frame.dtype),
+                     "frame_shape": list(frame.shape), "frame_sha256": hashlib.sha256(frame.tobytes()).hexdigest(),
+                     "public_proprio": np.asarray(public["state"]).tolist()}
+            if include_pixels:
+                value["frame_raw_uint8_base64"] = base64.b64encode(frame.tobytes()).decode("ascii")
+            return value
+
+        def action_spec(env):
+            for label, candidate in (("env", env), ("env.env", getattr(env, "env", None))):
+                if candidate is not None and hasattr(candidate, "action_spec"):
+                    spec = candidate.action_spec
+                    low, high = spec() if callable(spec) else spec
+                    low, high = np.asarray(low, dtype=float).reshape(-1), np.asarray(high, dtype=float).reshape(-1)
+                    if len(low) != 7 or len(high) != 7 or not np.isfinite(low).all() or not np.isfinite(high).all():
+                        raise ValueError("invalid live environment action specification")
+                    return low.tolist(), high.tolist(), label + ".action_spec"
+            raise ValueError("live environment action specification is unavailable")
+
+        for cell in calibration_grid(TASK_IDS):
+            active_cell = cell
+            task_id, state_id, seed = cell["task_id"], cell["initial_state_id"], cell["policy_seed"]
+            episode = output / f"task_{task_id}_state_{state_id}_seed_{seed}"
+            episode.mkdir(exist_ok=False)
+            fsync_directory(output)
+            publish(episode / "CLAIM.txt", {**cell, "protocol_sha256": protocol_sha,
+                                           "claimed_unix_seconds": time.time(), "attempt": 1})
+            env = None
+            policy_count = 0
+            warmup_count = 0
+            started = time.monotonic()
+            trace_path = episode / "ACTION_TRACE.txt"
+            try:
+                cfg = ExperimentConfig(checkpoint=args.checkpoint_path, task_suite="libero_10",
+                                       unnorm_key="libero_10", task_id=task_id, trial_id=state_id,
+                                       mode="clean", max_steps=POLICY_STEPS, num_steps_wait=SETTLING_STEPS,
+                                       seed=seed, resolution=256, enable_auto_disturbance=False)
+                set_seed(seed)
+                env, prompt = create_libero_env(suite.get_task(task_id), cfg)
+                if prompt != task_records[str(task_id)]["language"]:
+                    raise ValueError("environment instruction changed")
+                env.reset()
+                obs = env.set_init_state(states[task_id, state_id].copy())
+                resize_size = get_image_resize_size(make_model_cfg(cfg))
+                low, high, spec_source = action_spec(env)
+                tracker = ProgressTracker(get_task_definition("libero_10", task_id))
+                scorer = LiberoStateView(env)
+                public = public_input(obs, resize_size)
+                initial_observation = publish(episode / "INITIAL_OBSERVATION.txt", observation_evidence(public, True))
+                with trace_path.open("xb") as trace:
+                    fsync_directory(episode)
+                    sample = tracker.sample(scorer, 0).to_dict()
+                    trace_append(trace, {"record_type": "initial", "environment_control": 0,
+                                         "policy_step": 0, "progress": sample,
+                                         "observation": observation_evidence(public)})
+                    for warmup in range(1, SETTLING_STEPS + 1):
+                        dummy = np.asarray(get_dummy_action("openvla"), dtype=float).tolist()
+                        trace_append(trace, {"record_type": "settling_intent", "settling_control": warmup,
+                                             "environment_action": dummy, "policy_inference": False})
+                        obs, reward, done, info = env.step(dummy)
+                        warmup_count += 1
+                        sample = tracker.sample(scorer, 0).to_dict()
+                        trace_append(trace, {"record_type": "settling_result", "settling_control": warmup,
+                                             "environment_control": warmup_count, "policy_step": 0,
+                                             "reward": float(reward), "done": bool(done), "progress": sample})
+                    public = public_input(obs, resize_size)
+                    adapter.reset(task={"language": prompt}, seed=seed, initial_observation=public)
+                    success = sample["current"]["final_goal_currently_satisfied"]
+                    terminal_reason = "exact_libero_goal" if success else ("environment_done" if done else "policy_budget_exhausted")
+                    while not success and not done and policy_count < POLICY_STEPS:
+                        step = policy_count + 1
+                        trace_append(trace, {"record_type": "inference_intent", "policy_step": step,
+                                             "observation": observation_evidence(public)})
+                        inference_started = time.monotonic()
+                        chunk = validate_action_chunk(adapter.act(public), action_dim=7, max_horizon=1)
+                        inference_seconds = time.monotonic() - inference_started
+                        raw = list(chunk.values[0])
+                        action = list(to_environment_action(adapter, raw))
+                        validation = validate_openvla_action(raw, action, expected_dim=7,
+                                                            action_low=low, action_high=high)
+                        trace_append(trace, {"record_type": "inference_response", "policy_step": step,
+                                             "raw_action": raw, "environment_action": action,
+                                             "action_space": identity["action_space"],
+                                             "action_validation": validation,
+                                             "inference_seconds": inference_seconds})
+                        if not validation["passed"]:
+                            raise ValueError("production action failed existing calibration action gates")
+                        trace_append(trace, {"record_type": "environment_intent", "policy_step": step,
+                                             "environment_control": warmup_count + step, "environment_action": action})
+                        env_started = time.monotonic()
+                        obs, reward, done, info = env.step(action)
+                        environment_seconds = time.monotonic() - env_started
+                        policy_count = step
+                        sample = tracker.sample(scorer, step).to_dict()
+                        public = public_input(obs, resize_size)
+                        success = sample["current"]["final_goal_currently_satisfied"]
+                        trace_append(trace, {"record_type": "environment_result", "policy_step": step,
+                                             "environment_control": warmup_count + step,
+                                             "reward": float(reward), "done": bool(done),
+                                             "environment_seconds": environment_seconds,
+                                             "progress": sample, "post_observation": observation_evidence(public)})
+                        if success or done:
+                            terminal_reason = "exact_libero_goal" if success else "environment_done"
+                os.chmod(trace_path, 0o444)
+                fsync_directory(episode)
+                terminal_observation = publish(episode / "TERMINAL_OBSERVATION.txt", observation_evidence(public, True))
+                terminal = {
+                    "schema_version": "repeated_v2_native_clean_terminal_evidence_v1", **cell,
+                    "status": "completed" if success or done else "timeout",
+                    "success": bool(success), "terminal_reason": terminal_reason,
+                    "policy_identity": identity, "protocol_sha256": protocol_sha,
+                    "learned_policy": adapter.learned_policy,
+                    "privileged_policy_state": adapter.uses_privileged_state,
+                    "clean_episode": True, "interruption_count": 0,
+                    "initial_state_sha256": task_records[str(task_id)]["initial_states"][str(state_id)]["sha256"],
+                    "policy_steps_consumed": policy_count, "settling_controls_consumed": warmup_count,
+                    "environment_controls_consumed": policy_count + warmup_count,
+                    "extra_refresh_controls": 0, "max_policy_steps": POLICY_STEPS,
+                    "wall_seconds": time.monotonic() - started,
+                    "reward": float(reward), "environment_done": bool(done),
+                    "progress": sample, "action_spec_source": spec_source,
+                    "action_low": low, "action_high": high,
+                    "action_trace": {"path": str(trace_path), "sha256": file_sha(trace_path),
+                                     "bytes": trace_path.stat().st_size},
+                    "initial_observation": initial_observation, "terminal_observation": terminal_observation,
+                    "qualification": "measured clean episode; catalog semantics/feasibility remain separate",
+                }
+                evidence = publish(episode / "TERMINAL.txt", terminal)
+                record = record_for_terminal(cell, terminal, evidence)
+                publish(episode / "CALIBRATION_RECORD.txt", record)
+                records.append(record)
+                print(json.dumps({"cell": cell, "success": success, "status": terminal["status"],
+                                  "policy_steps": policy_count, "evidence": evidence}), flush=True)
+            finally:
+                if env is not None:
+                    env.close()
+            active_cell = None
+
+        summaries = []
+        for task_id in TASK_IDS:
+            selected = [record for record in records if record["task_id"] == task_id]
+            expected = {state_id: row["sha256"] for state_id, row in task_records[str(task_id)]["initial_states"].items()}
+            summary = summarize_calibration(task_id, selected, initial_state_digests=expected).to_dict()
+            summaries.append(summary)
+            publish(output / f"TASK_{task_id}_CALIBRATION_SUMMARY.txt", summary)
+        publish(output / "CALIBRATION_RECORDS.txt", records)
+        publish(output / "COMPLETED_SUBSET.txt", {
+            "task_ids": TASK_IDS, "episode_count": len(records), "summaries": summaries,
+            "protocol_sha256": protocol_sha,
+            "scope": "four-task measured clean subset; does not satisfy or modify the formal minimum-eight-task rule",
+            "catalog_semantic_or_feasibility_claims": [],
+        })
+    except BaseException as exc:
+        publish(output / "INFRASTRUCTURE_STOP.txt", {
+            "exception_type": type(exc).__name__, "message": str(exc),
+            "status": getattr(exc, "status", "INFRASTRUCTURE_STOP"),
+            "active_cell": active_cell, "traceback": traceback.format_exc(),
+            "calibration_outcome_for_interrupted_cell": None,
+            "note": "unfinished cells are gaps, not failures; no automatic replay/re-inference",
+        })
+        raise
+    finally:
+        if adapter is not None:
+            adapter.close()
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument("--self-check", action="store_true")
+    mode.add_argument("--execute", action="store_true")
+    parser.add_argument("--gpu")
+    parser.add_argument("--output-root")
+    parser.add_argument("--gate-evidence")
+    parser.add_argument("--gate-evidence-sha256")
+    parser.add_argument("--checkpoint-path", default="/home/lijingsu/vla/models/openvla-7b-finetuned-libero-10")
+    parser.add_argument("--runtime-path", default="/home/lijingsu/vla/src/openvla")
+    args = parser.parse_args()
+    if args.self_check:
+        self_check()
+        return
+    for name in ("gpu", "output_root", "gate_evidence", "gate_evidence_sha256"):
+        if not getattr(args, name):
+            parser.error("--execute requires --" + name.replace("_", "-"))
+    if not args.gpu.isdecimal():
+        parser.error("--gpu must be a physical GPU index")
+    if os.environ.get("MUJOCO_GL") != "osmesa" or os.environ.get("PYOPENGL_PLATFORM") != "osmesa":
+        parser.error("launch through scripts/run_project_env.sh with OSMesa settings")
+    for key, required in (("HF_HUB_CACHE", HF_HUB_CACHE), ("HF_MODULES_CACHE", HF_MODULES_CACHE)):
+        if os.environ.get(key, required) != required:
+            parser.error(key + " differs from the isolated readiness cache")
+        os.environ[key] = required
+    # Transformers may prefer its deprecated cache variable over HF_HUB_CACHE.
+    # Override run_project_env.sh's generic default for this isolated worker.
+    os.environ["TRANSFORMERS_CACHE"] = HF_HUB_CACHE
+    code_directory = Path(HF_HUB_CACHE) / "models--openvla--openvla-7b" / "snapshots" / HF_CODE_REVISION
+    for name, expected in HF_CODE_SHA256.items():
+        path = code_directory / name
+        if not path.is_file() or file_sha(path) != expected:
+            parser.error("pinned offline HF code is unavailable or differs: " + name)
+    run(args)
+
+
+if __name__ == "__main__":
+    main()

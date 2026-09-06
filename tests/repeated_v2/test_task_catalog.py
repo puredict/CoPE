@@ -1,4 +1,6 @@
 import copy
+import csv
+import hashlib
 import json
 
 import pytest
@@ -17,11 +19,29 @@ def test_real_catalog_enumerates_all_ten_and_cannot_be_selected():
     assert catalog.provenance_kind == "source_backed"
     assert len(catalog.tasks[5].initial_achievement_goals) == 1
     assert catalog.tasks[6].initial_achievement_goals[1]["arguments"][1] == "living_room_table_plate_right_region"
-    assert {task.task_id for task in catalog.tasks if task.initial_state_digests} == {1, 5, 7}
-    assert all(not task.calibration_records for task in catalog.tasks)
+    assert {task.task_id for task in catalog.tasks if task.initial_state_digests} == {0, 1, 4, 5, 7, 8}
+    assert {task.task_id for task in catalog.tasks if task.calibration_records} <= {0, 1, 4, 8}
     assert task_catalog_gaps(catalog) == task_catalog_gaps(load_task_catalog())
     with pytest.raises(CatalogBlockedError, match="BLOCKED_TASK_CATALOG_GAPS"):
         select_eligible_tasks(catalog)
+
+
+def test_pilot_state_hashes_match_retained_installed_asset_receipts():
+    catalog = load_task_catalog()
+    receipt_path = DEFAULT_CATALOG_PATH.parents[1] / "research/repeated_v2_formal_readiness_20260906/STATE_HASHES.csv"
+    digest = hashlib.sha256(receipt_path.read_bytes()).hexdigest()
+    with receipt_path.open() as handle:
+        rows = list(csv.DictReader(handle))
+    assert {(int(row["task_id"]), int(row["initial_state_id"])) for row in rows} == {
+        (task_id, state_id) for task_id in (0, 1, 4, 8) for state_id in range(5)
+    }
+    assert len(rows) == 20
+    for row in rows:
+        task = catalog.tasks[int(row["task_id"])]
+        assert task.task_name == row["task_name"]
+        assert row["finite"] == "true"
+        assert task.initial_state_digests[row["initial_state_id"]] == row["state_sha256"]
+        assert any(source["sha256"] == digest for source in task.source_refs)
 
 
 @pytest.mark.parametrize("count", [8, 9, 10])

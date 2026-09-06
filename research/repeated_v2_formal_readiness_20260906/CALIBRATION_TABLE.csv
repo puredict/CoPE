@@ -1,0 +1,5 @@
+task_id,initial_states,calibration_policy_seeds,formal_policy_seeds,seeds_disjoint,required_cells,completed_raw_cells,audited_cells,successes,clean_success_rate,rate_eligible,catalog_eligible,status,evidence
+0,0;1;2;3;4,101;131,11;29;47,True,10,10,10,0,0.0,False,False,AUDIT_PASS_RATE_INELIGIBLE,clean_calibration_audit_01/CALIBRATION_AUDIT.txt
+1,0;1;2;3;4,101;131,11;29;47,True,10,10,10,4,0.4,True,False,AUDIT_PASS_RATE_ELIGIBLE_CATALOG_BLOCKED,clean_calibration_audit_01/CALIBRATION_AUDIT.txt
+4,0;1;2;3;4,101;131,11;29;47,True,10,10,10,4,0.4,True,False,AUDIT_PASS_RATE_ELIGIBLE_CATALOG_BLOCKED,clean_calibration_audit_01/CALIBRATION_AUDIT.txt
+8,0;1;2;3;4,101;131,11;29;47,True,10,10,10,0,0.0,False,False,AUDIT_PASS_RATE_INELIGIBLE,clean_calibration_audit_01/CALIBRATION_AUDIT.txt

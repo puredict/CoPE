@@ -1,0 +1,41 @@
+{
+  "status": "PASS",
+  "extractor_sha256": "608e2b209fe71e61fd1bc99e304dc8ac6cd08670c699ee54e256e12b0ca4c5fe",
+  "in_memory_interval_cases": 8,
+  "source_reader_bindings_checked": [
+    {
+      "path": "cope_benchmark/task_progress.py",
+      "qualified_name": "ProgressTracker.sample",
+      "source_sha256": "48366a77d05a538c75656d7dcf5b231e68154d875d8904d10c51fc601fbe14b0",
+      "first_line": 287,
+      "last_line": 304,
+      "exact_source_block_sha256": "05c140a618643a9c95c3d416c271b62d7ec7bacb0f499aef93f8aba92bf9ee2e"
+    },
+    {
+      "path": "cope_benchmark/task_progress.py",
+      "qualified_name": "evaluate_predicate",
+      "source_sha256": "48366a77d05a538c75656d7dcf5b231e68154d875d8904d10c51fc601fbe14b0",
+      "first_line": 250,
+      "last_line": 266,
+      "exact_source_block_sha256": "ec17fd84d763f3c6cea281ca7b1eff4aad9bcffb4b9d52c432c9416470091dca"
+    },
+    {
+      "path": "cope_benchmark/task_progress.py",
+      "qualified_name": "LiberoStateView.libero_predicate",
+      "source_sha256": "48366a77d05a538c75656d7dcf5b231e68154d875d8904d10c51fc601fbe14b0",
+      "first_line": 314,
+      "last_line": 316,
+      "exact_source_block_sha256": "1cba5bf0111563a24cf529b8b3d721a54ed168299157369abbe866e5d39cab0e"
+    }
+  ],
+  "additional_negative_checks": [
+    "artifact hash mismatch",
+    "non-Boolean predicate",
+    "failed audit rejected before offline auditor import"
+  ],
+  "full_completed_calibration_branch_exercised": false,
+  "model_calls": 0,
+  "provider_calls": 0,
+  "simulator_calls": 0,
+  "raw_calibration_data_used": false
+}

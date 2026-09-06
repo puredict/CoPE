@@ -1,0 +1,29 @@
+{
+  "before_catalog_sha256": "e2406a00c8b39b497f3a8af7ffa39d7ed117394a9f64085f2c6e69914f763f2f",
+  "after_catalog_sha256": "c37992af494d7922d5bc0f4b4218944f637a32cd0f0ff582a1f3d50dd65a1edd",
+  "raw_gaps_before": 794,
+  "raw_gaps_after": 776,
+  "closed": [
+    "task 0: missing initial state digest 0",
+    "task 0: missing initial state digest 1",
+    "task 0: missing initial state digest 2",
+    "task 0: missing initial state digest 3",
+    "task 0: missing initial state digest 4",
+    "task 0: unresolved initial_state_digests",
+    "task 4: missing initial state digest 0",
+    "task 4: missing initial state digest 1",
+    "task 4: missing initial state digest 2",
+    "task 4: missing initial state digest 3",
+    "task 4: missing initial state digest 4",
+    "task 4: unresolved initial_state_digests",
+    "task 8: missing initial state digest 0",
+    "task 8: missing initial state digest 1",
+    "task 8: missing initial state digest 2",
+    "task 8: missing initial state digest 3",
+    "task 8: missing initial state digest 4",
+    "task 8: unresolved initial_state_digests"
+  ],
+  "added": [],
+  "new_task_entries": 0,
+  "qualification_flags_added": 0
+}

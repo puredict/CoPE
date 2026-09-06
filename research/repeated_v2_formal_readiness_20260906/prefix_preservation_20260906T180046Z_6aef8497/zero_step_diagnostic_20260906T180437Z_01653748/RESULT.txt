@@ -1,0 +1,128 @@
+{
+  "cuda_initialized": false,
+  "env_step_attempts": 0,
+  "event_injections": 0,
+  "interpretation": "compare cached returned prefix observation with recomputed sealed-state geometry; no recovery or new stability claim",
+  "physical_prefix_replays": 0,
+  "prefix_seal_sha256": "edcddba7d6a16d8d786ad9bec10d82652e393c3bf8baae62c7afdf162677242c",
+  "provider_calls": 0,
+  "samples": [
+    {
+      "authoritative_eef_site": [
+        -0.006330989605892373,
+        0.2669001959732694,
+        0.7518681996225567
+      ],
+      "commitments": {
+        "alphabet_soup_in_basket": true,
+        "tomato_sauce_in_basket": false
+      },
+      "contact_count": 30,
+      "label": "set_init_state_returned",
+      "observed_eef": [
+        -0.006330989605892373,
+        0.2669001959732694,
+        0.7518681996225567
+      ],
+      "snapshot_exact": true,
+      "snapshot_sha256": "edcddba7d6a16d8d786ad9bec10d82652e393c3bf8baae62c7afdf162677242c",
+      "time": 9.849999999999959
+    },
+    {
+      "authoritative_eef_site": [
+        -0.006330989605892373,
+        0.2669001959732694,
+        0.7518681996225567
+      ],
+      "commitments": {
+        "alphabet_soup_in_basket": true,
+        "tomato_sauce_in_basket": false
+      },
+      "contact_count": 30,
+      "label": "ordinary_getter",
+      "observed_eef": [
+        -0.006330989605892373,
+        0.2669001959732694,
+        0.7518681996225567
+      ],
+      "snapshot_exact": true,
+      "snapshot_sha256": "edcddba7d6a16d8d786ad9bec10d82652e393c3bf8baae62c7afdf162677242c",
+      "time": 9.849999999999959
+    },
+    {
+      "authoritative_eef_site": [
+        -0.006330989605892373,
+        0.2669001959732694,
+        0.7518681996225567
+      ],
+      "commitments": {
+        "alphabet_soup_in_basket": true,
+        "tomato_sauce_in_basket": false
+      },
+      "contact_count": 30,
+      "label": "forced_getter",
+      "observed_eef": [
+        -0.006330989605892373,
+        0.2669001959732694,
+        0.7518681996225567
+      ],
+      "snapshot_exact": true,
+      "snapshot_sha256": "edcddba7d6a16d8d786ad9bec10d82652e393c3bf8baae62c7afdf162677242c",
+      "time": 9.849999999999959
+    },
+    {
+      "authoritative_eef_site": [
+        -0.006330989605892373,
+        0.2669001959732694,
+        0.7518681996225567
+      ],
+      "commitments": {
+        "alphabet_soup_in_basket": true,
+        "tomato_sauce_in_basket": false
+      },
+      "contact_count": 30,
+      "label": "sim_forward_then_forced",
+      "observed_eef": [
+        -0.006330989605892373,
+        0.2669001959732694,
+        0.7518681996225567
+      ],
+      "snapshot_exact": true,
+      "snapshot_sha256": "edcddba7d6a16d8d786ad9bec10d82652e393c3bf8baae62c7afdf162677242c",
+      "time": 9.849999999999959
+    },
+    {
+      "authoritative_eef_site": [
+        -0.006330989605892373,
+        0.2669001959732694,
+        0.7518681996225567
+      ],
+      "commitments": {
+        "alphabet_soup_in_basket": true,
+        "tomato_sauce_in_basket": false
+      },
+      "contact_count": 30,
+      "label": "second_restore_same_seal",
+      "observed_eef": [
+        -0.006330989605892373,
+        0.2669001959732694,
+        0.7518681996225567
+      ],
+      "snapshot_exact": true,
+      "snapshot_sha256": "edcddba7d6a16d8d786ad9bec10d82652e393c3bf8baae62c7afdf162677242c",
+      "time": 9.849999999999959
+    }
+  ],
+  "saved_prefix_observed_eef": [
+    -0.006331377125139881,
+    0.26690066765294657,
+    0.75186804473812
+  ],
+  "saved_restore_observed_eef": [
+    -0.006330989605892373,
+    0.2669001959732694,
+    0.7518681996225567
+  ],
+  "status": "ZERO_CONTROL_DIAGNOSTIC_COMPLETED",
+  "vla_calls": 0
+}

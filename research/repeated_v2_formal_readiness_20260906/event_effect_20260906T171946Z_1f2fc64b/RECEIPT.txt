@@ -1,0 +1,227 @@
+{
+  "case_results_artifact": {
+    "bytes": 446264,
+    "path": "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/research/repeated_v2_formal_readiness_20260906/event_effect_20260906T171946Z_1f2fc64b/CASE_RESTORATIONS.txt",
+    "sha256": "7a5785d9fcc81103448a46e9301ab78fb1b41346e8957f94c74da9e9acdd922a"
+  },
+  "driver_sha256": "7dec80897e62a3953817681a8f1a01aece9e52c0ed27e96b0f165000e28eaf08",
+  "environment_control_attempts": 0,
+  "event_applications": 135,
+  "event_results_artifact": {
+    "bytes": 2422230,
+    "path": "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/research/repeated_v2_formal_readiness_20260906/event_effect_20260906T171946Z_1f2fc64b/EVENT_RESULTS.txt",
+    "sha256": "ebca6836491803d447915e243cdcc25911b85d24bdcf0540ca75157cc1ebc260"
+  },
+  "evidence_admissibility": "actual_cpu_injection_effect_and_refresh_only",
+  "expected_event_applications": 135,
+  "failed": 0,
+  "gpu_calls": 0,
+  "isolated_cases": 95,
+  "log_artifact": {
+    "bytes": 2820,
+    "path": "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/research/repeated_v2_formal_readiness_20260906/event_effect_20260906T171946Z_1f2fc64b/STDOUT_STDERR.txt",
+    "sha256": "d135f284b9d883def5c56a9c44a0b16a0fad13305ba9d67b7bd9991964947f42"
+  },
+  "not_run": 0,
+  "output_directory": "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/research/repeated_v2_formal_readiness_20260906/event_effect_20260906T171946Z_1f2fc64b",
+  "passed": 135,
+  "per_task_family": [
+    {
+      "attempts": 5,
+      "family": "goal_receptacle_moved",
+      "passed": 5,
+      "task_id": 0
+    },
+    {
+      "attempts": 5,
+      "family": "target_object_moved",
+      "passed": 5,
+      "task_id": 0
+    },
+    {
+      "attempts": 5,
+      "family": "temporary_no_go_zone_appears",
+      "passed": 5,
+      "task_id": 0
+    },
+    {
+      "attempts": 5,
+      "family": "temporary_no_go_zone_disappears",
+      "passed": 5,
+      "task_id": 0
+    },
+    {
+      "attempts": 5,
+      "family": "tool_becomes_available_again",
+      "passed": 5,
+      "task_id": 0
+    },
+    {
+      "attempts": 5,
+      "family": "tool_temporarily_unavailable",
+      "passed": 5,
+      "task_id": 0
+    },
+    {
+      "attempts": 5,
+      "family": "user_adds_gentle_preference",
+      "passed": 5,
+      "task_id": 0
+    },
+    {
+      "attempts": 5,
+      "family": "goal_receptacle_moved",
+      "passed": 5,
+      "task_id": 1
+    },
+    {
+      "attempts": 5,
+      "family": "target_object_moved",
+      "passed": 5,
+      "task_id": 1
+    },
+    {
+      "attempts": 5,
+      "family": "temporary_no_go_zone_appears",
+      "passed": 5,
+      "task_id": 1
+    },
+    {
+      "attempts": 5,
+      "family": "temporary_no_go_zone_disappears",
+      "passed": 5,
+      "task_id": 1
+    },
+    {
+      "attempts": 5,
+      "family": "tool_becomes_available_again",
+      "passed": 5,
+      "task_id": 1
+    },
+    {
+      "attempts": 5,
+      "family": "tool_temporarily_unavailable",
+      "passed": 5,
+      "task_id": 1
+    },
+    {
+      "attempts": 5,
+      "family": "user_adds_gentle_preference",
+      "passed": 5,
+      "task_id": 1
+    },
+    {
+      "attempts": 5,
+      "family": "goal_receptacle_moved",
+      "passed": 5,
+      "task_id": 4
+    },
+    {
+      "attempts": 5,
+      "family": "target_object_moved",
+      "passed": 5,
+      "task_id": 4
+    },
+    {
+      "attempts": 5,
+      "family": "temporary_no_go_zone_appears",
+      "passed": 5,
+      "task_id": 4
+    },
+    {
+      "attempts": 5,
+      "family": "temporary_no_go_zone_disappears",
+      "passed": 5,
+      "task_id": 4
+    },
+    {
+      "attempts": 5,
+      "family": "tool_becomes_available_again",
+      "passed": 5,
+      "task_id": 4
+    },
+    {
+      "attempts": 5,
+      "family": "tool_temporarily_unavailable",
+      "passed": 5,
+      "task_id": 4
+    },
+    {
+      "attempts": 5,
+      "family": "user_adds_gentle_preference",
+      "passed": 5,
+      "task_id": 4
+    },
+    {
+      "attempts": 5,
+      "family": "target_object_moved",
+      "passed": 5,
+      "task_id": 8
+    },
+    {
+      "attempts": 5,
+      "family": "temporary_no_go_zone_appears",
+      "passed": 5,
+      "task_id": 8
+    },
+    {
+      "attempts": 5,
+      "family": "temporary_no_go_zone_disappears",
+      "passed": 5,
+      "task_id": 8
+    },
+    {
+      "attempts": 5,
+      "family": "tool_becomes_available_again",
+      "passed": 5,
+      "task_id": 8
+    },
+    {
+      "attempts": 5,
+      "family": "tool_temporarily_unavailable",
+      "passed": 5,
+      "task_id": 8
+    },
+    {
+      "attempts": 5,
+      "family": "user_adds_gentle_preference",
+      "passed": 5,
+      "task_id": 8
+    }
+  ],
+  "provider_calls": 0,
+  "restoration_failures": 0,
+  "restored_cases": 95,
+  "restrictions": [
+    "not semantic-trigger or min-spacing execution",
+    "not safe-position/stability/reachability certification",
+    "snapshot restoration is isolated audit cleanup, not recovery behavior",
+    "cameras disabled; fresh non-image observations do not certify production RGB perception"
+  ],
+  "safe_event_certificates": 0,
+  "schema_version": "repeated_v2_isolated_event_effect_request_v1",
+  "semantic_trigger_certificates": 0,
+  "source_files": {
+    "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/cope_benchmark/interruptions.py": "0aa257a533b3535acf7d38b8ca7cd6849a1d717725e7998dd26381246216bcf3",
+    "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/cope_benchmark/task_progress.py": "48366a77d05a538c75656d7dcf5b231e68154d875d8904d10c51fc601fbe14b0",
+    "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/libero_experiment_core.py": "27f98452fa2dde1cec73d59214af63ae53eebe480a113083a01f9d6b5a9769c8"
+  },
+  "source_manifest": {
+    "bytes": 1293896,
+    "path": "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/manifests/repeated_interruptions_v1.jsonl",
+    "sha256": "5dbf41a98fbaa33ee0200254ee4f575fcf15b8ac165b917e1134b3ed6617c06c"
+  },
+  "status": "COMPLETED_MECHANICAL_WITNESS_SWEEP",
+  "time_utc": "2026-09-06T17:19:46.754605+00:00",
+  "torch_cuda_initialized": false,
+  "unsupported": [
+    {
+      "family": "GOAL_RECEPTACLE_OR_GROUNDING_CHANGED",
+      "other_variants": "unqualified; not inferred",
+      "status": "UNSUPPORTED_THIS_PRIMITIVE",
+      "task_id": 8,
+      "variant": "free_joint_stove_relocation"
+    }
+  ],
+  "vla_calls": 0
+}

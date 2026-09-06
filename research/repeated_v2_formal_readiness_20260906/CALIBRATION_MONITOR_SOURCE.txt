@@ -1,0 +1,27 @@
+# Read-only monitor of the already-launched calibration; never starts/replays work.
+from pathlib import Path
+import json, time
+root=Path("/home/lijingsu/vla/outputs/repeated_v2_readiness_20260906/clean_calibration_01")
+pid=491166
+while True:
+    records=[json.loads(path.read_text()) for path in root.glob("task_*/CALIBRATION_RECORD.txt")]
+    summaries={str(task): {"completed":sum(r["task_id"]==task for r in records),"successes_observed":sum(r["task_id"]==task and r["success"] for r in records)} for task in (0,1,4,8)}
+    active=None; step=0
+    traces=list(root.glob("task_*/ACTION_TRACE.txt"))
+    if traces:
+        latest=max(traces,key=lambda path:path.stat().st_mtime)
+        active=latest.parent.name
+        with latest.open("rb") as handle:
+            handle.seek(max(0,latest.stat().st_size-24000)); tail=handle.read()
+        for line in tail.split(b"\n")[:-1]:
+            try: row=json.loads(line)
+            except (ValueError,UnicodeDecodeError): continue
+            if row.get("record_type")=="environment_result": step=row["policy_step"]
+    proc=Path(f"/proc/{pid}")
+    command=(proc/"cmdline").read_bytes() if (proc/"cmdline").exists() else b""
+    worker_alive=b"CALIBRATION_DRIVER.txt" in command
+    stop=root/"INFRASTRUCTURE_STOP.txt"
+    snapshot={"observed_utc":time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime()),"completed":len(records),"required":40,"tasks":summaries,"active":active,"last_completed_policy_step":step,"worker_alive":worker_alive,"infrastructure_stop":json.loads(stop.read_text()) if stop.exists() else None,"subset_completion_artifact":(root/"COMPLETED_SUBSET.txt").exists()}
+    print(json.dumps(snapshot,sort_keys=True),flush=True)
+    if len(records)==40 or stop.exists() or not worker_alive: break
+    time.sleep(60)

@@ -1,0 +1,263 @@
+#!/usr/bin/env python3
+"""One real rendered-observation/native-action probe; never calibration or formal evidence.
+
+Run only after the operator has checked GPUs. The unchanged native factory
+independently checks GPU 6 immediately before model loading. No downloads are
+performed here. Required small official HF Python files must already be cached.
+
+Example (an existing audited remote checkout; choose a NEW output directory):
+  env -u LD_LIBRARY_PATH \
+    LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libnvidia-ml.so.535.54.03:/usr/lib/x86_64-linux-gnu/libcuda.so.535.54.03 \
+    MUJOCO_GL=osmesa PYOPENGL_PLATFORM=osmesa \
+    LIBERO_CONFIG_PATH=/home/lijingsu/.libero \
+    PYTHONPATH=/home/lijingsu/vla/src/openvla:/home/lijingsu/vla/src/LIBERO \
+    HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 TOKENIZERS_PARALLELISM=false \
+    /home/lijingsu/vla/.venv/bin/python ACTUAL_ACTION_PROBE.txt \
+    --output-dir /home/lijingsu/vla/outputs/repeated_v2_action_probe_NEW \
+    --gate-path /home/lijingsu/vla/outputs/repeated_v2_action_probe_NEW/VLA_GATE.txt
+
+Keep the parent's already configured HF_HOME/HF_HUB_CACHE/HF_MODULES_CACHE.
+Optional --step-once executes exactly the one validated learned action. The
+default obtains one action without stepping. No warmup/no-op actions occur.
+"""
+from pathlib import Path
+import argparse
+import base64
+import datetime
+import hashlib
+import inspect
+import json
+import os
+import subprocess
+import sys
+import time
+
+
+CHECKPOINT = '/home/lijingsu/vla/models/openvla-7b-finetuned-libero-10'
+CHECKPOINT_SHA256 = 'd36eaa2a334cd52f4a3a94558cf90d82584743ea772fabf76f9e4372e7076076'
+RUNTIME = '/home/lijingsu/vla/src/openvla'
+FACTORY = 'cope_benchmark.repeated_v2.vla_adapter:create_native_openvla'
+EXPECTED_SOURCE = {
+    'cope_benchmark/repeated_v2/vla_adapter.py': '86b6eec20c29a6bec670311702235b2d33e1e35826cea57cc07902a9d66863cd',
+    'libero_experiment_core.py': '27f98452fa2dde1cec73d59214af63ae53eebe480a113083a01f9d6b5a9769c8',
+}
+
+
+def encoded(value):
+    return (json.dumps(value, sort_keys=True, separators=(',', ':'), allow_nan=False) + '\n').encode()
+
+
+def sha256(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def file_identity(path):
+    path = Path(path)
+    data = path.read_bytes()
+    return {'path': str(path), 'resolved_path': str(path.resolve()),
+            'sha256': sha256(data), 'bytes': len(data)}
+
+
+def class_identity(value):
+    kind = type(value)
+    source = inspect.getsourcefile(kind)
+    if source is None or not Path(source).is_file():
+        raise RuntimeError('loaded class has no verifiable Python source: ' + kind.__module__)
+    return {'class': kind.__qualname__, 'module': kind.__module__, **file_identity(source)}
+
+
+def loaded_sources():
+    records = []
+    selected = {'libero_experiment_core', 'cope_benchmark.repeated_v2.vla_adapter',
+                'experiments.robot.robot_utils', 'experiments.robot.openvla_utils',
+                'experiments.robot.libero.libero_utils', 'libero.libero.envs.env_wrapper'}
+    for name, module in sorted(list(sys.modules.items())):
+        if name not in selected and not name.startswith(('transformers_modules.', 'prismatic.extern.hf.')):
+            continue
+        source = getattr(module, '__file__', None)
+        if source and Path(source).is_file():
+            records.append({'module': name, **file_identity(source)})
+    return records
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--repo-root', type=Path,
+                        default=Path('/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4'))
+    parser.add_argument('--output-dir', type=Path, required=True)
+    parser.add_argument('--gate-path', type=Path)
+    parser.add_argument('--step-once', action='store_true')
+    args = parser.parse_args()
+    out = args.output_dir.resolve()
+    gate_path = (args.gate_path or out / 'VLA_GATE.txt').resolve()
+    if gate_path.parent != out or gate_path.suffix != '.txt':
+        parser.error('--gate-path must be a .txt file directly inside --output-dir')
+    out.mkdir(parents=True, exist_ok=False)
+    audit = (out / 'AUDIT.txt').open('xb')
+    def event(stage, **values):
+        entry = {'stage': stage, 'time_utc': datetime.datetime.now(datetime.timezone.utc).isoformat(), **values}
+        data = encoded(entry)
+        audit.write(data)
+        audit.flush()
+        os.fsync(audit.fileno())
+        print(data.decode().rstrip(), flush=True)
+    def artifact(name, value):
+        target = out / name
+        with target.open('xb') as handle:
+            handle.write(encoded(value))
+            handle.flush()
+            os.fsync(handle.fileno())
+        return file_identity(target)
+
+    adapter = env = None
+    stage = 'environment'
+    counts = {'factory_attempts': 0, 'live_adapters': 0, 'policy_act_attempts': 0,
+              'policy_act_returns': 0, 'environment_reset_calls': 0,
+              'initial_state_set_calls': 0, 'environment_step_attempts': 0,
+              'environment_steps_returned': 0, 'warmup_actions': 0,
+              'provider_calls': 0, 'calibration_episodes': 0, 'formal_episodes': 0}
+    gate = {'schema_version': 'repeated_v2_actual_action_probe_v1',
+            'stage': 'action_validation', 'status': 'ACTION_PROBE_INCOMPLETE',
+            'passed': False, 'fixture': False, 'learned_policy_verified': None,
+            'uses_privileged_state_verified': None, 'finite_action_chunks_verified': None,
+            'learned_policy': None, 'uses_privileged_state': None,
+            'real_rendered_observation_verified': False, 'task_suite': 'libero_10',
+            'task_id': 1, 'initial_state_id': 0, 'policy_seed': 101,
+            'environment_seed': 0, 'counts': counts,
+            'evidence_admissibility': 'production_adapter_smoke_only',
+            'supports_calibration_success_claim': False,
+            'supports_formal_runtime_readiness_claim': False}
+    try:
+        if 'torch' in sys.modules:
+            raise RuntimeError('native factory requires a fresh worker before Torch import')
+        for name, required in {'MUJOCO_GL': 'osmesa', 'PYOPENGL_PLATFORM': 'osmesa',
+                               'HF_HUB_OFFLINE': '1', 'TRANSFORMERS_OFFLINE': '1'}.items():
+            if os.environ.get(name) != required:
+                raise RuntimeError('required isolated environment setting: ' + name + '=' + required)
+        repo = args.repo_root.resolve()
+        sys.path.insert(0, str(repo))
+        event('environment', repo=str(repo), python=sys.version,
+              git_sha=subprocess.check_output(['git', '-C', str(repo), 'rev-parse', 'HEAD'], text=True).strip(),
+              source_file=file_identity(__file__),
+              environment={key: os.environ.get(key) for key in (
+                  'LD_PRELOAD', 'MUJOCO_GL', 'PYOPENGL_PLATFORM', 'LIBERO_CONFIG_PATH',
+                  'HF_HOME', 'HF_HUB_CACHE', 'HF_MODULES_CACHE', 'TRANSFORMERS_CACHE',
+                  'HF_HUB_OFFLINE', 'TRANSFORMERS_OFFLINE')})
+        for relative, expected in EXPECTED_SOURCE.items():
+            observed = file_identity(repo / relative)
+            if observed['sha256'] != expected:
+                raise RuntimeError('audited source mismatch: ' + relative)
+            event('source_match', **observed)
+        stage = 'factory'
+        from cope_benchmark.repeated_v2.vla_adapter import (
+            load_vla_adapter, snapshot_adapter, to_environment_action, validate_action_chunk,
+        )
+        config = {'checkpoint_path': CHECKPOINT, 'checkpoint_sha256': CHECKPOINT_SHA256,
+                  'runtime_path': RUNTIME, 'gpu': '6', 'task_suite': 'libero_10',
+                  'unnorm_key': 'libero_10', 'policy_model_id': 'openvla-7b-finetuned-libero-10'}
+        event('factory_request', factory=FACTORY, config=config, torch_imported='torch' in sys.modules)
+        counts['factory_attempts'] += 1
+        adapter = load_vla_adapter(FACTORY, config=config, formal=True)
+        counts['live_adapters'] += 1
+        gate.update(identity=dict(adapter.identity),
+                    learned_policy=adapter.learned_policy,
+                    uses_privileged_state=adapter.uses_privileged_state,
+                    learned_policy_verified=adapter.learned_policy is True,
+                    uses_privileged_state_verified=adapter.uses_privileged_state is False,
+                    loaded_model_class=class_identity(adapter._model),
+                    loaded_processor_class=class_identity(adapter._processor))
+        event('factory_bound', identity=gate['identity'],
+              loaded_model_class=gate['loaded_model_class'],
+              loaded_processor_class=gate['loaded_processor_class'])
+
+        stage = 'real_observation'
+        import numpy as np
+        from libero_experiment_core import ExperimentConfig, create_libero_env, frame_from_obs, get_benchmark_suite
+        suite = get_benchmark_suite('libero_10')
+        task = suite.get_task(1)
+        initial_state = suite.get_task_init_states(1)[0]
+        cfg = ExperimentConfig(checkpoint=CHECKPOINT, task_suite='libero_10', unnorm_key='libero_10',
+                               task_id=1, trial_id=0, mode='clean', resolution=256, seed=101,
+                               max_steps=260, num_steps_wait=10)
+        env, prompt = create_libero_env(task, cfg)
+        counts['environment_reset_calls'] += 1
+        env.reset()
+        counts['initial_state_set_calls'] += 1
+        observation = env.set_init_state(initial_state)
+        frame = np.ascontiguousarray(frame_from_obs(observation, 224), dtype=np.uint8)
+        if frame.shape != (224, 224, 3):
+            raise RuntimeError('unexpected real camera observation shape')
+        raw = frame.tobytes(order='C')
+        observation_ref = 'real-libero-rgb:' + sha256(raw)
+        rendered = {'source': 'actual_libero_reset_and_set_init_state', 'task_name': task.name,
+                    'task_prompt': prompt, 'task_id': 1, 'initial_state_id': 0,
+                    'initial_state_sha256': sha256(np.asarray(initial_state).tobytes()),
+                    'raw_agentview_sha256': sha256(np.asarray(observation['agentview_image']).tobytes()),
+                    'shape': list(frame.shape), 'dtype': str(frame.dtype), 'order': 'C',
+                    'rgb_bytes_sha256': sha256(raw), 'rgb_bytes_base64': base64.b64encode(raw).decode(),
+                    'observation_ref': observation_ref,
+                    'preprocessing': 'existing_get_libero_image_180deg_jpeg_lanczos3_224'}
+        gate['rendered_input_artifact'] = artifact('REAL_RENDERED_INPUT.txt', rendered)
+        gate['rendered_input_sha256'] = sha256(raw)
+        gate['real_rendered_observation_verified'] = True
+        public = {'full_image': frame, 'observation_ref': observation_ref, 'observation_step': 0}
+        adapter.reset(task={'instruction': prompt}, seed=101, initial_observation=public)
+        adapter.begin_subgoal({'instruction': prompt})
+        event('real_observation', artifact=gate['rendered_input_artifact'],
+              rgb_bytes_sha256=sha256(raw), shape=list(frame.shape), public_policy_keys=sorted(public))
+
+        stage = 'policy_action'
+        counts['policy_act_attempts'] += 1
+        started = time.monotonic()
+        result = adapter.act(public)
+        counts['policy_act_returns'] += 1
+        chunk = validate_action_chunk(result, action_dim=7, max_horizon=1)
+        raw_action = list(chunk.values[0])
+        environment_action = list(to_environment_action(adapter, raw_action))
+        gate.update(raw_action=raw_action, environment_action=environment_action,
+                    action_chunk_horizon=len(chunk.values), action_dimension=len(raw_action),
+                    inference_seconds=time.monotonic() - started,
+                    finite_action_chunks_verified=True,
+                    policy_snapshot_artifact=artifact('POLICY_SNAPSHOT.txt', snapshot_adapter(adapter)))
+        event('actual_action', raw_action=raw_action, environment_action=environment_action,
+              inference_seconds=gate['inference_seconds'])
+        if args.step_once:
+            stage = 'environment_step'
+            counts['environment_step_attempts'] += 1
+            next_observation, reward, done, info = env.step(environment_action)
+            counts['environment_steps_returned'] += 1
+            gate['one_step_result'] = {'reward': float(reward), 'done': bool(done),
+                                      'observation_returned': isinstance(next_observation, dict)}
+            event('one_environment_step', **gate['one_step_result'])
+        gate.update(status='ACTUAL_ACTION_PROBE_PASSED', passed=True)
+    except Exception as error:
+        gate.update(status=getattr(error, 'status', 'BLOCKED_ACTUAL_ACTION_PROBE'),
+                    failure_stage=stage, exception_type=type(error).__name__, detail=str(error))
+        event('probe_error', status=gate['status'], failure_stage=stage,
+              exception_type=type(error).__name__, detail=str(error))
+    finally:
+        try:
+            gate['loaded_source_bytes'] = loaded_sources()
+        except Exception as error:
+            gate.update(passed=False, status='BLOCKED_SOURCE_IDENTITY_UNAVAILABLE',
+                        source_identity_error={'exception_type': type(error).__name__, 'detail': str(error)})
+        cleanup_errors = []
+        for component in (env, adapter):
+            if component is not None:
+                try:
+                    component.close()
+                except Exception as error:
+                    cleanup_errors.append({'exception_type': type(error).__name__, 'detail': str(error)})
+        if cleanup_errors:
+            gate.update(passed=False, status='BLOCKED_ACTION_PROBE_CLEANUP', cleanup_errors=cleanup_errors)
+        audit.close()
+    gate['audit_artifact'] = file_identity(out / 'AUDIT.txt')
+    gate_artifact = artifact(gate_path.name, gate)
+    # The final stdout line is machine-readable gate evidence, including the
+    # hash of its immutable artifact for the subsequent calibration dependency.
+    print(encoded({**gate, 'gate_path': str(gate_path), 'gate_sha256': gate_artifact['sha256']}).decode().rstrip(), flush=True)
+    return 0 if gate['passed'] else 2
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

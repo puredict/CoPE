@@ -1,0 +1,42 @@
+{
+  "actual_reset_gate": {
+    "all_declared_free_joints_exist": true,
+    "all_have_at_least_two_commitment_predicates": true,
+    "all_have_five_audited_states": true,
+    "no_go_excludes_all_reset_eef_positions": true
+  },
+  "bound_runtime_sources_match_local_integrated_head": true,
+  "copies": [
+    {
+      "bytes": 5976,
+      "local": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/repeated_v2_formal_readiness_20260906/reset_feasibility_20260906T171329Z_618e9be2/RECEIPT.txt",
+      "sha256": "d096c432d8a20c1fe0cc222bd7f99ac84b760f1e17fed556594fab6d981a3190",
+      "source": "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/research/repeated_v2_formal_readiness_20260906/reset_feasibility_20260906T171329Z_618e9be2/RECEIPT.txt",
+      "verified": true
+    },
+    {
+      "bytes": 37781,
+      "local": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/repeated_v2_formal_readiness_20260906/reset_feasibility_20260906T171329Z_618e9be2/RESET_PROBE_RAW.txt",
+      "sha256": "4ba6533cc965d6ecad7b368134c078e287e9d7792f524cf5501a902310aaf667",
+      "source": "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/research/repeated_v2_formal_readiness_20260906/reset_feasibility_20260906T171329Z_618e9be2/RESET_PROBE_RAW.txt",
+      "verified": true
+    },
+    {
+      "bytes": 2057,
+      "local": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/repeated_v2_formal_readiness_20260906/reset_feasibility_20260906T171329Z_618e9be2/STDOUT_STDERR.txt",
+      "sha256": "808922f1da31505cddc5f946fb6a9b7ecd7ab8b12d1ef6f8e101358fc1f06746",
+      "source": "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/research/repeated_v2_formal_readiness_20260906/reset_feasibility_20260906T171329Z_618e9be2/STDOUT_STDERR.txt",
+      "verified": true
+    }
+  ],
+  "event_injections": 0,
+  "historical_clean_calibration_ignored": {
+    "reason": "OpenVLA checkpoint is not configured locally",
+    "required_success_rate": 0.6,
+    "status": "not_run"
+  },
+  "restriction": "reset-only evidence; no event safety, public perception or learned recovery certificate",
+  "safe_event_certificates": 0,
+  "schema_version": "static_reset_copy_verification_v1",
+  "twenty_hashes_match_prior_static_receipts": true
+}

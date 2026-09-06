@@ -1,0 +1,31 @@
+
+from pathlib import Path
+import sys,json,subprocess,hashlib,time,datetime,os
+repo=Path('/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4')
+expected={'cope_benchmark/repeated_v2/vla_adapter.py': '86b6eec20c29a6bec670311702235b2d33e1e35826cea57cc07902a9d66863cd', 'libero_experiment_core.py': '27f98452fa2dde1cec73d59214af63ae53eebe480a113083a01f9d6b5a9769c8'}
+sys.path.insert(0,str(repo))
+print(json.dumps({'stage':'environment','time_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'hostname':subprocess.check_output(['hostname'],text=True).strip(),'repo':str(repo),'git_sha':subprocess.check_output(['git','-C',str(repo),'rev-parse','HEAD'],text=True).strip(),'python':sys.version,'code_expected_from_integrated_sha':'688b7eb3a91fdf5229ea2cda87e9a33f85566fe6'}),flush=True)
+for p,want in expected.items():
+ actual=hashlib.sha256((repo/p).read_bytes()).hexdigest()
+ assert actual==want,(p,actual,want)
+ print(json.dumps({'stage':'source_match','path':p,'sha256':actual,'matched':True}),flush=True)
+check=subprocess.run(['nvidia-smi','--query-gpu=index,uuid,name,memory.used,memory.total,utilization.gpu','--format=csv,noheader'],capture_output=True,text=True)
+print(json.dumps({'stage':'gpu_gate','returncode':check.returncode,'stdout':check.stdout,'stderr':check.stderr}),flush=True)
+from cope_benchmark.repeated_v2.vla_adapter import checkpoint_sha256,load_vla_adapter,NativeOpenVLAAdapter
+ck=Path('/home/lijingsu/vla/models/openvla-7b-finetuned-libero-10')
+runtime=Path('/home/lijingsu/vla/src/openvla')
+t=time.monotonic()
+model_hash=checkpoint_sha256(ck)
+print(json.dumps({'stage':'checkpoint_hash','path':str(ck),'sha256':model_hash,'elapsed_seconds':time.monotonic()-t,'file_count':len([p for p in ck.rglob('*') if p.is_file()]),'bytes':sum(p.stat().st_size for p in ck.rglob('*') if p.is_file())}),flush=True)
+for p in ['experiments/robot/robot_utils.py','experiments/robot/openvla_utils.py']:
+ print(json.dumps({'stage':'runtime_hash','path':str(runtime/p),'sha256':checkpoint_sha256(runtime/p)}),flush=True)
+config={'checkpoint_path':str(ck),'checkpoint_sha256':model_hash,'runtime_path':str(runtime),'gpu':'6','task_suite':'libero_10','unnorm_key':'libero_10','policy_model_id':'openvla-7b-finetuned-libero-10'}
+print(json.dumps({'stage':'factory_request','factory':'cope_benchmark.repeated_v2.vla_adapter:create_native_openvla','formal_admission':True,'config':config,'torch_imported': 'torch' in sys.modules,'class_learned_policy':NativeOpenVLAAdapter.learned_policy,'class_uses_privileged_state':NativeOpenVLAAdapter.uses_privileged_state}),flush=True)
+try:
+ adapter=load_vla_adapter('cope_benchmark.repeated_v2.vla_adapter:create_native_openvla',config=config,formal=True)
+except Exception as exc:
+ print(json.dumps({'stage':'factory_result','status':getattr(exc,'status','BLOCKED_VLA_ADAPTER_UNAVAILABLE'),'exception_type':type(exc).__name__,'detail':str(exc),'torch_imported':'torch' in sys.modules,'live_adapter_created':False,'learned_policy_verified':None,'uses_privileged_state_verified':None,'finite_action_chunks_verified':None,'policy_act_calls':0,'provider_calls':0,'calibration_episodes':0}),flush=True)
+ raise SystemExit(2)
+else:
+ print(json.dumps({'stage':'factory_result','status':'BOUND_REQUIRES_REAL_OBSERVATION_ACTION_CHECK','identity':dict(adapter.identity),'live_adapter_created':True,'learned_policy_verified':adapter.learned_policy is True,'uses_privileged_state_verified':adapter.uses_privileged_state is False,'finite_action_chunks_verified':None,'policy_act_calls':0,'provider_calls':0,'calibration_episodes':0}),flush=True)
+ adapter.close()

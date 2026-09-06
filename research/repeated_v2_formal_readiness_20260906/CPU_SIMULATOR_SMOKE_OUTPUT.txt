@@ -1,0 +1,33 @@
+F
+=================================== FAILURES ===================================
+_ SimulatorSmokeTests.test_real_libero_reset_step_restore_and_fresh_observation _
+
+self = <tests.repeated_v2.test_phase3_simulator_smoke.SimulatorSmokeTests testMethod=test_real_libero_reset_step_restore_and_fresh_observation>
+
+    def test_real_libero_reset_step_restore_and_fresh_observation(self):
+        missing = [name for name in ("libero", "robosuite", "mujoco", "torch", "numpy")
+                   if importlib.util.find_spec(name) is None]
+        if missing:
+            self.skipTest("BLOCKED_SIMULATOR_DEPENDENCIES_UNAVAILABLE: " + ", ".join(missing))
+        environment = dict(os.environ)
+        environment.update(PYTHONDONTWRITEBYTECODE="1", HF_HUB_OFFLINE="1",
+                           TRANSFORMERS_OFFLINE="1", CUDA_VISIBLE_DEVICES="")
+        result = subprocess.run([sys.executable, "-c", SMOKE_PROGRAM], env=environment,
+                                capture_output=True, text=True, timeout=90)
+        print(result.stdout, end="")
+>       self.assertEqual(result.returncode, 0, result.stdout + "\n" + result.stderr)
+E       AssertionError: 1 != 0 : 
+E       Traceback (most recent call last):
+E         File "<string>", line 4, in <module>
+E         File "/usr/lib/python3.10/pathlib.py", line 960, in __new__
+E           self = cls._from_parts(args)
+E         File "/usr/lib/python3.10/pathlib.py", line 594, in _from_parts
+E           drv, root, parts = self._parse_args(args)
+E         File "/usr/lib/python3.10/pathlib.py", line 578, in _parse_args
+E           a = os.fspath(a)
+E       TypeError: expected str, bytes or os.PathLike object, not NoneType
+
+tests/repeated_v2/test_phase3_simulator_smoke.py:76: AssertionError
+=========================== short test summary info ============================
+FAILED tests/repeated_v2/test_phase3_simulator_smoke.py::SimulatorSmokeTests::test_real_libero_reset_step_restore_and_fresh_observation
+1 failed in 0.06s

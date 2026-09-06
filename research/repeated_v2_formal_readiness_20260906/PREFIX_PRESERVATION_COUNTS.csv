@@ -1,0 +1,6 @@
+stage,status,distinct_prefix_cells_newly_attempted,stable_released_prefix_results,new_environment_controls_returned,target_event_applications,paired_setup_applications,event_rows,immediate_first_goal_preserved,five_fresh_post_event_preservations,remaining_unattempted_cells,physical_prefix_replays
+original,STOPPED_BEFORE_EVENT_RESTORE_CHECK,1,1,197,0,0,0,0,0,19,0
+continuation_v2,STOPPED_SCHEMA_REPRESENTATION_MISMATCH,0,0,0,0,0,0,0,0,19,0
+continuation_v3,STOPPED_FRESH_BOUNDARY_SIM_FORWARD_ROUNDOFF,2,1,400,14,4,14,12,4,17,0
+continuation_v4,STOPPED_EXACT_RESTORE_SIM_FORWARD_ROUNDOFF,1,1,200,0,0,0,0,0,16,0
+all_stages,PARTIAL_SUB_EVIDENCE,4,3,797,14,4,14,12,4,16,0

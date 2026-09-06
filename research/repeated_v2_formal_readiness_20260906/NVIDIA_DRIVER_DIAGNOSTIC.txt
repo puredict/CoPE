@@ -1,0 +1,15 @@
+NVRM version: NVIDIA UNIX x86_64 Kernel Module  535.54.03  Tue Jun  6 22:20:39 UTC 2023
+GCC version:  gcc version 11.3.0 (Ubuntu 11.3.0-1ubuntu1~22.04.1) 
+/usr/bin/nvidia-smi
+	libnvidia-ml.so.1 (libc6,x86-64) => /lib/x86_64-linux-gnu/libnvidia-ml.so.1
+	libnvidia-ml.so (libc6,x86-64) => /lib/x86_64-linux-gnu/libnvidia-ml.so
+	libcuda.so.1 (libc6,x86-64) => /lib/x86_64-linux-gnu/libcuda.so.1
+	libcuda.so (libc6,x86-64) => /lib/x86_64-linux-gnu/libcuda.so
+lrwxrwxrwx 1 root root       12 Jun 29 13:30 /usr/lib/x86_64-linux-gnu/libcuda.so -> libcuda.so.1
+lrwxrwxrwx 1 root root       21 Jun 29 13:30 /usr/lib/x86_64-linux-gnu/libcuda.so.1 -> libcuda.so.580.173.02
+-rwxr-xr-x 1 root root 29048936 Jul 15  2023 /usr/lib/x86_64-linux-gnu/libcuda.so.535.54.03
+-rw-r--r-- 1 root root 96284520 Jun 29 13:30 /usr/lib/x86_64-linux-gnu/libcuda.so.580.173.02
+lrwxrwxrwx 1 root root       17 Jun 29 13:30 /usr/lib/x86_64-linux-gnu/libnvidia-ml.so -> libnvidia-ml.so.1
+lrwxrwxrwx 1 root root       26 Jun 29 13:30 /usr/lib/x86_64-linux-gnu/libnvidia-ml.so.1 -> libnvidia-ml.so.580.173.02
+-rwxr-xr-x 1 root root  1951008 Jul 15  2023 /usr/lib/x86_64-linux-gnu/libnvidia-ml.so.535.54.03
+-rw-r--r-- 1 root root  2291896 Jun 29 13:30 /usr/lib/x86_64-linux-gnu/libnvidia-ml.so.580.173.02

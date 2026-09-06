@@ -8,18 +8,41 @@ establish VLA feasibility or repeated-interruption benchmark performance.
 
 import importlib.util
 import os
+from pathlib import Path
 import subprocess
 import sys
+import tempfile
+from types import SimpleNamespace
 import unittest
 
 
-SMOKE_PROGRAM = r'''
-import importlib.util,json,os,tempfile
+ASSET_ROOT_PROGRAM = r'''
 from pathlib import Path
-root=Path(importlib.util.find_spec("libero").origin).parent/"libero"
-for required in ("assets", "bddl_files", "init_files"):
-    if not (root/required).is_dir():
-        raise RuntimeError("BLOCKED_SIMULATOR_ASSETS_UNAVAILABLE: " + required)
+
+def find_libero_asset_root(spec):
+    if spec is None:
+        raise RuntimeError("BLOCKED_SIMULATOR_DEPENDENCIES_UNAVAILABLE: libero")
+    locations = list(spec.submodule_search_locations or ())
+    if spec.origin:
+        locations.append(str(Path(spec.origin).parent))
+    candidates = []
+    for location in locations:
+        for candidate in (Path(location) / "libero", Path(location)):
+            if candidate not in candidates:
+                candidates.append(candidate)
+    required = ("assets", "bddl_files", "init_files")
+    for candidate in candidates:
+        if all((candidate / name).is_dir() for name in required):
+            return candidate
+    raise RuntimeError("BLOCKED_SIMULATOR_ASSETS_UNAVAILABLE: "
+                       "assets, bddl_files, init_files; searched "
+                       + ", ".join(str(candidate) for candidate in candidates))
+'''
+
+
+SMOKE_PROGRAM = ASSET_ROOT_PROGRAM + r'''
+import importlib.util,json,os,tempfile
+root=find_libero_asset_root(importlib.util.find_spec("libero"))
 with tempfile.TemporaryDirectory(prefix="cope-libero-smoke-") as config_dir:
     config={"benchmark_root":str(root),"bddl_files":str(root/"bddl_files"),
             "init_states":str(root/"init_files"),"assets":str(root/"assets"),
@@ -57,6 +80,45 @@ with tempfile.TemporaryDirectory(prefix="cope-libero-smoke-") as config_dir:
     finally:
         env.close()
 '''
+
+
+class SimulatorAssetDiscoveryTests(unittest.TestCase):
+    def setUp(self):
+        namespace = {}
+        exec(ASSET_ROOT_PROGRAM, namespace)
+        self.discover = namespace["find_libero_asset_root"]
+
+    def test_regular_package_origin_finds_existing_assets(self):
+        with tempfile.TemporaryDirectory() as directory:
+            package = Path(directory) / "libero"
+            root = package / "libero"
+            for name in ("assets", "bddl_files", "init_files"):
+                (root / name).mkdir(parents=True)
+            spec = SimpleNamespace(origin=str(package / "__init__.py"),
+                                   submodule_search_locations=None)
+            self.assertEqual(self.discover(spec), root)
+
+    def test_namespace_search_locations_skip_incomplete_candidate(self):
+        with tempfile.TemporaryDirectory() as directory:
+            incomplete = Path(directory) / "first"
+            (incomplete / "libero" / "assets").mkdir(parents=True)
+            complete = Path(directory) / "second"
+            root = complete / "libero"
+            for name in ("assets", "bddl_files", "init_files"):
+                (root / name).mkdir(parents=True)
+            spec = SimpleNamespace(origin=None,
+                                   submodule_search_locations=[str(incomplete), str(complete)])
+            self.assertEqual(self.discover(spec), root)
+
+    def test_missing_asset_directory_fails_without_creating_it(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "assets").mkdir()
+            (root / "bddl_files").mkdir()
+            spec = SimpleNamespace(origin=None, submodule_search_locations=[str(root)])
+            with self.assertRaisesRegex(RuntimeError, "BLOCKED_SIMULATOR_ASSETS_UNAVAILABLE"):
+                self.discover(spec)
+            self.assertFalse((root / "init_files").exists())
 
 
 @unittest.skipUnless(os.environ.get("COPE_RUN_LIBERO_SMOKE") == "1",

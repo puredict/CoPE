@@ -1,0 +1,2405 @@
+STATIC TASK SOURCE AUDIT — LIBERO-10 tasks 0, 1, 4, 8
+
+Status: SOURCE_DERIVED_UNQUALIFIED. This is a source/byte-identity receipt, not a structural, milestone-preservation, event-feasibility, safe-injection, clean-calibration or formal-admission certificate.
+
+Observed 2026-09-06T17:09:41.090632+00:00 on fvl12 via SSH alias fudan-26575. No simulator/environment was constructed; no policy, provider or GPU call was made. Torch 2.5.1+cu121 loaded only existing .pruned_init files onto CPU with CUDA_VISIBLE_DEVICES='' and remained CUDA-uninitialized. No assets were downloaded.
+
+Twenty state receipts cover each requested task's state IDs 0..4 exactly once. All five task1 digests agree with both the remote catalog and current integrated local catalog. Fifteen receipts for tasks 0,4,8 were not present in that catalog. These files do not insert those receipts or clear any existing diagnostic.
+
+Source checkout HEAD: c0308c1fc13036ef34983dd07397744f659cb417. Local integrated HEAD: 688b7eb3a91fdf5229ea2cda87e9a33f85566fe6. They are different commits; task_progress.py, cope/calibration_v2.py and task_catalogs/repeated_v2.json were independently checked byte-identical. No claim of whole-tree identity is made. Actual LIBERO checkout HEAD: 570d78333ee977c8ae6de3d97120b23272c4c660.
+
+Hash algorithm: hashlib.sha256(np.asarray(suite.get_task_init_states(task_id))[state_id].tobytes()).hexdigest(), matching cope/calibration_v2.py:257,275. Default C serialization, no dtype conversion; dtype/shape are recorded separately and NOT hashed into the digest. Direct torch.load(map_location='cpu', weights_only=False) used the exact paths specified by the actual task map and identity task order. Whole-array and individual-state np.asarray byte serializations were checked equal.
+
+State serialization table:
+task | whole array | individual shape | dtype/byte order | bytes/state | BDDL SHA256 | init-file SHA256
+0 | [50, 123] | [123] | float64 <f8 | 984 | 2e661058917f683a25bce480015197f0a2c1911bcbc2b9dd9d947199069c9618 | 1899fe54c51e24a41d5f9e32254730d6777f4894ab68e0e873f1fa7ae2062030
+1 | [50, 123] | [123] | float64 <f8 | 984 | 3f552805c7ab34c44debcf38a48b8131d6fee3011dd86c039650b84e0f77d058 | f8ac06ea8f43bb328d40cba1e6a9767da2f8f5386fd7ff3f845c64a96bf6d2ce
+4 | [50, 84] | [84] | float64 <f8 | 672 | 0c6749b920bff1e1efe47ffb0e0b801a3e6959a650e710f376dd2b812c74e865 | b6f20784b381c75d715f4fdaadda1fb460cbe24adcbad76f381a009419b8474e
+8 | [50, 47] | [47] | float64 <f8 | 376 | ae1299a707d3e810096ad648948c517de40474bcdacca93a15e17d191e34454a | 44f992e911c84a1340589510ecdaf947a4872966f7678c8364d8bb5d13dc4dac
+
+All four source files contain 50 states; only the preregistered first five were hashed as state receipts. All examined values are finite; state stride is 8 bytes and states are C-contiguous.
+
+Task clauses and candidate goal families (source-derived only):
+Task 0: put both the alphabet soup and the tomato sauce in the basket
+  goal:in:alphabet_soup_1:basket_1_contain_region ; predicate=in arguments=["alphabet_soup_1", "basket_1_contain_region"]
+  goal:in:tomato_sauce_1:basket_1_contain_region ; predicate=in arguments=["tomato_sauce_1", "basket_1_contain_region"]
+  Source objects/type aliases: {"alphabet_soup_1": "alphabet_soup", "basket_1": "basket", "butter_1": "butter", "cream_cheese_1": "cream_cheese", "ketchup_1": "ketchup", "milk_1": "milk", "orange_juice_1": "orange_juice", "tomato_sauce_1": "tomato_sauce"}
+  Fixture/type aliases: {"living_room_table": "living_room_table"}
+  Existing progress commitment names: alphabet_soup_in_basket, tomato_sauce_in_basket
+Task 1: put both the cream cheese box and the butter in the basket
+  goal:in:cream_cheese_1:basket_1_contain_region ; predicate=in arguments=["cream_cheese_1", "basket_1_contain_region"]
+  goal:in:butter_1:basket_1_contain_region ; predicate=in arguments=["butter_1", "basket_1_contain_region"]
+  Source objects/type aliases: {"alphabet_soup_1": "alphabet_soup", "basket_1": "basket", "butter_1": "butter", "cream_cheese_1": "cream_cheese", "ketchup_1": "ketchup", "milk_1": "milk", "orange_juice_1": "orange_juice", "tomato_sauce_1": "tomato_sauce"}
+  Fixture/type aliases: {"living_room_table": "living_room_table"}
+  Existing progress commitment names: cream_cheese_in_basket, butter_in_basket
+Task 4: put the white mug on the left plate and put the yellow and white mug on the right plate
+  goal:on:porcelain_mug_1:plate_1 ; predicate=on arguments=["porcelain_mug_1", "plate_1"]
+  goal:on:white_yellow_mug_1:plate_2 ; predicate=on arguments=["white_yellow_mug_1", "plate_2"]
+  Source objects/type aliases: {"plate_1": "plate", "plate_2": "plate", "porcelain_mug_1": "porcelain_mug", "red_coffee_mug_1": "red_coffee_mug", "white_yellow_mug_1": "white_yellow_mug"}
+  Fixture/type aliases: {"living_room_table": "living_room_table"}
+  Existing progress commitment names: white_mug_on_left_plate, yellow_white_mug_on_right_plate
+Task 8: put both moka pots on the stove
+  goal:on:moka_pot_1:flat_stove_1_cook_region ; predicate=on arguments=["moka_pot_1", "flat_stove_1_cook_region"]
+  goal:on:moka_pot_2:flat_stove_1_cook_region ; predicate=on arguments=["moka_pot_2", "flat_stove_1_cook_region"]
+  goal:turnon:flat_stove_1 ; predicate=turnon arguments=["flat_stove_1"]
+  Source objects/type aliases: {"moka_pot_1": "moka_pot", "moka_pot_2": "moka_pot"}
+  Fixture/type aliases: {"flat_stove_1": "flat_stove", "kitchen_table": "kitchen_table"}
+  Existing progress commitment names: right_moka_pot_on_stove, left_moka_pot_on_stove, stove_remains_on
+
+Nine original BDDL goal clauses are represented. Task8 has two placement clauses and the pre-existing Turnon(flat_stove_1) clause, which also appears in its BDDL initial state. That third clause is an operational requirement; its mere presence does not establish an independently achieved new milestone. Existing task_progress labels/descriptions are reproduced as source declarations, not adopted as new empirical certificates.
+
+Task8 stove restriction:
+The BDDL declares flat_stove_1 as a fixture. The actual kitchen scene fixture constructor passes joints=None (libero_kitchen_tabletop_manipulation.py:44-53); FlatStove forwards that argument (articulated_objects.py:224-232). Its XML declares only a button hinge and no freejoint, and task_progress gives receptacle_joints=[]. Therefore a free-joint-XY stove relocation must not be assumed or scheduled from these static sources. This is static evidence about the source construction path, not an instantiated simulator joint inventory or a safe alternative-grounding certificate.
+Stove XML SHA256: 046748f5543cdfc1500d74f8ca60a992ad6633717396a2d4f505eb79aa102cb1
+
+No alternative valid goals, safe injection coordinates, supported-event certificates, semantic trigger qualifications or success results were invented. BDDL placement ranges are copied source initialization definitions, not certified interruption poses. Candidate family keys use the existing catalog naming convention, agree with the current original goal clauses, and allocate no occurrence IDs. Whether a family can be interrupted safely remains unqualified.
+
+STATE_HASHES.csv SHA256: 362ec0a9abd8d9237bfe8b52e589fd3cde7646e93fe1fd018f2ac9366c3926a3
+
+Reproduction command (read-only remote CPU extraction; exact source used):
+ssh -o BatchMode=yes -o ConnectTimeout=10 fudan-26575 "env -u LD_LIBRARY_PATH CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 /home/lijingsu/vla/.venv/bin/python -" <<'COPE_STATIC_AUDIT'
+import os,sys,json,hashlib,datetime,subprocess,ast,importlib.util,re
+from pathlib import Path
+assert os.environ["CUDA_VISIBLE_DEVICES"]==""
+repo=Path("/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4")
+libero=Path("/home/lijingsu/vla/src/LIBERO")
+base=libero/"libero/libero"
+def sha(p): return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+def artifact(p): return {"path":str(p),"resolved_path":str(Path(p).resolve()),"sha256":sha(p),"bytes":Path(p).stat().st_size}
+def assignment(path,name):
+ for node in ast.parse(Path(path).read_text()).body:
+  if isinstance(node,ast.Assign) and any(isinstance(t,ast.Name) and t.id==name for t in node.targets): return ast.literal_eval(node.value)
+ raise ValueError(name)
+def sexpr(text):
+ text=re.sub(r";[^\n]*","",text)
+ tokens=re.findall(r'\(|\)|[^\s()]+',text); stack=[]; roots=[]
+ for token in tokens:
+  if token=="(":
+   entry=[]
+   (stack[-1] if stack else roots).append(entry);stack.append(entry)
+  elif token==")": stack.pop()
+  else: stack[-1].append(token)
+ assert not stack and len(roots)==1
+ return roots[0]
+def typed(tokens):
+ result={};pending=[]
+ for token in tokens:
+  if token=="-": continue
+  if pending and tokens[tokens.index(token)-1]=="-": pass
+ i=0
+ while i<len(tokens):
+  if tokens[i]=="-":
+   kind=tokens[i+1]
+   for name in pending: result[name]=kind
+   pending=[];i+=2
+  else: pending.append(tokens[i]);i+=1
+ assert not pending
+ return result
+bench=base/"benchmark/__init__.py";taskmap=base/"benchmark/libero_suite_task_map.py"
+mapping=assignment(taskmap,"libero_task_map")
+assert assignment(bench,"task_orders")[0]==list(range(10))
+spec=importlib.util.spec_from_file_location("static_task_progress_audit",repo/"cope_benchmark/task_progress.py")
+progress=importlib.util.module_from_spec(spec);sys.modules[spec.name]=progress;spec.loader.exec_module(progress)
+catalog=json.loads((repo/"task_catalogs/repeated_v2.json").read_text())
+entries={row["task_id"]:row for row in catalog["tasks"]}
+import torch,numpy as np
+assert not torch.cuda.is_initialized()
+records=[]
+for task_id in (0,1,4,8):
+ name=mapping["libero_10"][task_id];definition=progress.get_task_definition("libero_10",task_id)
+ assert definition.task_name==name==entries[task_id]["task_name"]
+ bddl=base/"bddl_files/libero_10"/(name+".bddl");init=base/"init_files/libero_10"/(name+".pruned_init")
+ source=bddl.read_text();tree=sexpr(source);sections={p[0]:p[1:] for p in tree[1:] if isinstance(p,list) and p}
+ goals=sections[":goal"][0];assert goals[0].lower()=="and"
+ language=" ".join(sections[":language"])
+ assert language==definition.language==entries[task_id]["original_instruction"]
+ loaded=torch.load(init,map_location="cpu",weights_only=False)
+ arrays=np.asarray(loaded)
+ states=[]
+ for state_id in range(5):
+  state=np.asarray(loaded[state_id]);row=arrays[state_id]
+  assert state.dtype==row.dtype and state.shape==row.shape and state.tobytes()==row.tobytes()
+  assert np.isfinite(state).all()
+  digest=hashlib.sha256(row.tobytes()).hexdigest();known=entries[task_id]["initial_state_digests"].get(str(state_id))
+  if known is not None: assert digest==known,(task_id,state_id,digest,known)
+  states.append({"initial_state_id":state_id,"sha256":digest,"dtype":str(state.dtype),"dtype_str":state.dtype.str,"shape":list(state.shape),"strides":list(state.strides),"c_contiguous":bool(state.flags.c_contiguous),"f_contiguous":bool(state.flags.f_contiguous),"serialized_order":"C","serialized_bytes":len(state.tobytes()),"finite":True,"catalog_expected_sha256":known,"catalog_match":True if known is not None else None})
+ objects=typed(sections.get(":objects",[]));fixtures=typed(sections.get(":fixtures",[]))
+ records.append({"task_id":task_id,"task_name":name,"language":language,"bddl":artifact(bddl),"bddl_text":source,"goal_predicates":goals[1:],"object_type_aliases":objects,"fixture_type_aliases":fixtures,"objects_of_interest":sections.get(":obj_of_interest",[]),"region_source_definitions":sections.get(":regions",[]),"init_state_file":artifact(init),"loaded_container_type":type(loaded).__module__+"."+type(loaded).__qualname__,"initial_state_array_shape":list(arrays.shape),"initial_state_array_dtype":str(arrays.dtype),"states":states,"task_progress_definition":definition.to_dict(),"catalog_object_aliases_source_only":entries[task_id]["object_aliases"],"catalog_receptacle_region_aliases_source_only":entries[task_id]["receptacle_region_aliases"],"catalog_initial_goal_families_source_only":entries[task_id]["initial_achievement_goals"],"evidence_status":"SOURCE_DERIVED_UNQUALIFIED"})
+assert all(s["catalog_match"] is True for r in records if r["task_id"]==1 for s in r["states"])
+sources=[bench,taskmap,repo/"cope_benchmark/task_progress.py",repo/"cope/calibration_v2.py",repo/"task_catalogs/repeated_v2.json",base/"envs/problems/libero_kitchen_tabletop_manipulation.py",base/"envs/objects/articulated_objects.py",Path("/home/lijingsu/.libero/config.yaml")]
+assert not torch.cuda.is_initialized()
+print(json.dumps({"schema_version":"repeated_v2_static_task_source_audit_v1","evidence_status":"SOURCE_DERIVED_UNQUALIFIED","time_utc":datetime.datetime.now(datetime.timezone.utc).isoformat(),"hostname":subprocess.check_output(["hostname"],text=True).strip(),"repository":str(repo),"repository_head":subprocess.check_output(["git","-C",str(repo),"rev-parse","HEAD"],text=True).strip(),"libero_source_root":str(libero),"libero_source_head":subprocess.check_output(["git","-C",str(libero),"rev-parse","HEAD"],text=True).strip(),"python":sys.version,"numpy":np.__version__,"torch":torch.__version__,"cuda_visible_devices":os.environ["CUDA_VISIBLE_DEVICES"],"torch_cuda_initialized":torch.cuda.is_initialized(),"simulator_constructed":False,"policy_calls":0,"provider_calls":0,"hash_algorithm":"hashlib.sha256(np.asarray(suite.get_task_init_states(task_id))[state_id].tobytes()).hexdigest(); no dtype coercion; default C order; dtype/shape NOT included in digest","load_equivalence":"read exact benchmark path; torch.load(map_location='cpu',weights_only=False); whole-array and individual np.asarray serialization equality checked","task1_five_catalog_digests_verified":True,"sources":[artifact(p) for p in sources],"records":records},ensure_ascii=False,sort_keys=True))
+
+COPE_STATIC_AUDIT
+
+Supplemental stove-source extraction command:
+ssh -o BatchMode=yes -o ConnectTimeout=10 fudan-26575 "env CUDA_VISIBLE_DEVICES='' PYTHONDONTWRITEBYTECODE=1 /home/lijingsu/vla/.venv/bin/python -" <<'COPE_STOVE_SOURCE'
+from pathlib import Path
+import json,hashlib,xml.etree.ElementTree as ET
+base=Path('/home/lijingsu/vla/src/LIBERO/libero/libero')
+p=base/'assets/articulated_objects/flat_stove.xml'
+print(json.dumps({'path':str(p),'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'bytes':p.stat().st_size,'declared_joints':[dict(e.attrib) for e in ET.fromstring(p.read_text()).iter('joint')],'freejoint_count':len(list(ET.fromstring(p.read_text()).iter('freejoint'))),'scene_fixture_constructor_source':{'path':str(base/'envs/problems/libero_kitchen_tabletop_manipulation.py'),'line_start':44,'line_end':53,'text':'\n'.join((base/'envs/problems/libero_kitchen_tabletop_manipulation.py').read_text().splitlines()[43:53])},'flat_stove_constructor_source':{'path':str(base/'envs/objects/articulated_objects.py'),'line_start':224,'line_end':232,'text':'\n'.join((base/'envs/objects/articulated_objects.py').read_text().splitlines()[223:232])}}))
+COPE_STOVE_SOURCE
+
+Full machine-readable receipt (includes complete BDDL source bytes represented as UTF-8 text, per-state hashes, source hashes, progress declarations and static restrictions):
+{
+  "cuda_visible_devices": "",
+  "evidence_status": "SOURCE_DERIVED_UNQUALIFIED",
+  "hash_algorithm": "hashlib.sha256(np.asarray(suite.get_task_init_states(task_id))[state_id].tobytes()).hexdigest(); no dtype coercion; default C order; dtype/shape NOT included in digest",
+  "hostname": "fvl12",
+  "libero_source_head": "570d78333ee977c8ae6de3d97120b23272c4c660",
+  "libero_source_root": "/home/lijingsu/vla/src/LIBERO",
+  "load_equivalence": "read exact benchmark path; torch.load(map_location='cpu',weights_only=False); whole-array and individual np.asarray serialization equality checked",
+  "local_integrated_head": "688b7eb3a91fdf5229ea2cda87e9a33f85566fe6",
+  "local_remote_bound_source_byte_matches": {
+    "cope/calibration_v2.py": "bddd39ee7c37e68e2fa628dcf1311e7c7b8e9f6ab3478478864108c7ae1e8dc6",
+    "cope_benchmark/task_progress.py": "48366a77d05a538c75656d7dcf5b231e68154d875d8904d10c51fc601fbe14b0",
+    "task_catalogs/repeated_v2.json": "e2406a00c8b39b497f3a8af7ffa39d7ed117394a9f64085f2c6e69914f763f2f"
+  },
+  "numpy": "1.26.4",
+  "policy_calls": 0,
+  "provider_calls": 0,
+  "python": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
+  "records": [
+    {
+      "bddl": {
+        "bytes": 3284,
+        "path": "/home/lijingsu/vla/src/LIBERO/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket.bddl",
+        "resolved_path": "/home/lijingsu/vla/src/LIBERO/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket.bddl",
+        "sha256": "2e661058917f683a25bce480015197f0a2c1911bcbc2b9dd9d947199069c9618"
+      },
+      "bddl_text": "(define (problem LIBERO_Living_Room_Tabletop_Manipulation)\n  (:domain robosuite)\n  (:language put both the alphabet soup and the tomato sauce in the basket)\n    (:regions\n      (basket_init_region\n          (:target living_room_table)\n          (:ranges (\n              (-0.01 0.25 0.01 0.27)\n            )\n          )\n          (:yaw_rotation (\n              (0.0 0.0)\n            )\n          )\n      )\n      (milk_init_region\n          (:target living_room_table)\n          (:ranges (\n              (0.025 -0.125 0.07500000000000001 -0.07500000000000001)\n            )\n          )\n          (:yaw_rotation (\n              (0.0 0.0)\n            )\n          )\n      )\n      (cream_cheese_init_region\n          (:target living_room_table)\n          (:ranges (\n              (0.07500000000000001 -0.225 0.125 -0.17500000000000002)\n            )\n          )\n          (:yaw_rotation (\n              (0.0 0.0)\n            )\n          )\n      )\n      (orange_juice_init_region\n          (:target living_room_table)\n          (:ranges (\n              (-0.025 -0.275 0.025 -0.225)\n            )\n          )\n          (:yaw_rotation (\n              (0.0 0.0)\n            )\n          )\n      )\n      (tomato_sauce_init_region\n          (:target living_room_table)\n          (:ranges (\n              (-0.125 0.025 -0.07500000000000001 0.07500000000000001)\n            )\n          )\n          (:yaw_rotation (\n              (0.0 0.0)\n            )\n          )\n      )\n      (alphabet_soup_init_region\n          (:target living_room_table)\n          (:ranges (\n              (-0.125 -0.175 -0.07500000000000001 -0.125)\n            )\n          )\n          (:yaw_rotation (\n              (0.0 0.0)\n            )\n          )\n      )\n      (butter_init_region\n          (:target living_room_table)\n          (:ranges (\n              (0.025 0.025 0.07500000000000001 0.07500000000000001)\n            )\n          )\n          (:yaw_rotation (\n              (0.0 0.0)\n            )\n          )\n      )\n      (ketchup_init_region\n          (:target living_room_table)\n          (:ranges (\n              (-0.275 -0.175 -0.225 -0.125)\n            )\n          )\n          (:yaw_rotation (\n              (0.0 0.0)\n            )\n          )\n      )\n      (contain_region\n          (:target basket_1)\n      )\n    )\n\n  (:fixtures\n    living_room_table - living_room_table\n  )\n\n  (:objects\n    alphabet_soup_1 - alphabet_soup\n    cream_cheese_1 - cream_cheese\n    tomato_sauce_1 - tomato_sauce\n    ketchup_1 - ketchup\n    orange_juice_1 - orange_juice\n    milk_1 - milk\n    butter_1 - butter\n    basket_1 - basket\n  )\n\n  (:obj_of_interest\n    alphabet_soup_1\n    tomato_sauce_1\n    basket_1\n  )\n\n  (:init\n    (On alphabet_soup_1 living_room_table_alphabet_soup_init_region)\n    (On cream_cheese_1 living_room_table_cream_cheese_init_region)\n    (On tomato_sauce_1 living_room_table_tomato_sauce_init_region)\n    (On ketchup_1 living_room_table_ketchup_init_region)\n    (On milk_1 living_room_table_milk_init_region)\n    (On orange_juice_1 living_room_table_orange_juice_init_region)\n    (On butter_1 living_room_table_butter_init_region)\n    (On basket_1 living_room_table_basket_init_region)\n  )\n\n  (:goal\n    (And (In alphabet_soup_1 basket_1_contain_region) (In tomato_sauce_1 basket_1_contain_region))\n  )\n\n)\n",
+      "catalog_initial_goal_families_source_only": [
+        {
+          "arguments": [
+            "alphabet_soup_1",
+            "basket_1_contain_region"
+          ],
+          "family_key": "goal:in:alphabet_soup_1:basket_1_contain_region",
+          "predicate": "in",
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket.bddl#:goal"
+        },
+        {
+          "arguments": [
+            "tomato_sauce_1",
+            "basket_1_contain_region"
+          ],
+          "family_key": "goal:in:tomato_sauce_1:basket_1_contain_region",
+          "predicate": "in",
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket.bddl#:goal"
+        }
+      ],
+      "catalog_object_aliases_source_only": {
+        "alphabet_soup_1": "alphabet_soup_1",
+        "basket_1": "basket_1",
+        "butter_1": "butter_1",
+        "cream_cheese_1": "cream_cheese_1",
+        "ketchup_1": "ketchup_1",
+        "milk_1": "milk_1",
+        "orange_juice_1": "orange_juice_1",
+        "tomato_sauce_1": "tomato_sauce_1"
+      },
+      "catalog_receptacle_region_aliases_source_only": {
+        "basket_1_contain_region": "basket_1_contain_region",
+        "living_room_table": "living_room_table",
+        "living_room_table_alphabet_soup_init_region": "living_room_table_alphabet_soup_init_region",
+        "living_room_table_basket_init_region": "living_room_table_basket_init_region",
+        "living_room_table_butter_init_region": "living_room_table_butter_init_region",
+        "living_room_table_cream_cheese_init_region": "living_room_table_cream_cheese_init_region",
+        "living_room_table_ketchup_init_region": "living_room_table_ketchup_init_region",
+        "living_room_table_milk_init_region": "living_room_table_milk_init_region",
+        "living_room_table_orange_juice_init_region": "living_room_table_orange_juice_init_region",
+        "living_room_table_tomato_sauce_init_region": "living_room_table_tomato_sauce_init_region"
+      },
+      "evidence_status": "SOURCE_DERIVED_UNQUALIFIED",
+      "fixture_type_aliases": {
+        "living_room_table": "living_room_table"
+      },
+      "goal_predicates": [
+        [
+          "In",
+          "alphabet_soup_1",
+          "basket_1_contain_region"
+        ],
+        [
+          "In",
+          "tomato_sauce_1",
+          "basket_1_contain_region"
+        ]
+      ],
+      "init_state_file": {
+        "bytes": 58927,
+        "path": "/home/lijingsu/vla/src/LIBERO/libero/libero/init_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket.pruned_init",
+        "resolved_path": "/home/lijingsu/vla/src/LIBERO/libero/libero/init_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket.pruned_init",
+        "sha256": "1899fe54c51e24a41d5f9e32254730d6777f4894ab68e0e873f1fa7ae2062030"
+      },
+      "initial_state_array_dtype": "float64",
+      "initial_state_array_shape": [
+        50,
+        123
+      ],
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "loaded_container_type": "numpy.ndarray",
+      "object_identity_aliases": {
+        "alphabet_soup_1": "alphabet_soup_1",
+        "basket_1": "basket_1",
+        "butter_1": "butter_1",
+        "cream_cheese_1": "cream_cheese_1",
+        "ketchup_1": "ketchup_1",
+        "milk_1": "milk_1",
+        "orange_juice_1": "orange_juice_1",
+        "tomato_sauce_1": "tomato_sauce_1"
+      },
+      "object_type_aliases": {
+        "alphabet_soup_1": "alphabet_soup",
+        "basket_1": "basket",
+        "butter_1": "butter",
+        "cream_cheese_1": "cream_cheese",
+        "ketchup_1": "ketchup",
+        "milk_1": "milk",
+        "orange_juice_1": "orange_juice",
+        "tomato_sauce_1": "tomato_sauce"
+      },
+      "objects_of_interest": [
+        "alphabet_soup_1",
+        "tomato_sauce_1",
+        "basket_1"
+      ],
+      "region_source_definitions": [
+        [
+          "basket_init_region",
+          [
+            ":target",
+            "living_room_table"
+          ],
+          [
+            ":ranges",
+            [
+              [
+                "-0.01",
+                "0.25",
+                "0.01",
+                "0.27"
+              ]
+            ]
+          ],
+          [
+            ":yaw_rotation",
+            [
+              [
+                "0.0",
+                "0.0"
+              ]
+            ]
+          ]
+        ],
+        [
+          "milk_init_region",
+          [
+            ":target",
+            "living_room_table"
+          ],
+          [
+            ":ranges",
+            [
+              [
+                "0.025",
+                "-0.125",
+                "0.07500000000000001",
+                "-0.07500000000000001"
+              ]
+            ]
+          ],
+          [
+            ":yaw_rotation",
+            [
+              [
+                "0.0",
+                "0.0"
+              ]
+            ]
+          ]
+        ],
+        [
+          "cream_cheese_init_region",
+          [
+            ":target",
+            "living_room_table"
+          ],
+          [
+            ":ranges",
+            [
+              [
+                "0.07500000000000001",
+                "-0.225",
+                "0.125",
+                "-0.17500000000000002"
+              ]
+            ]
+          ],
+          [
+            ":yaw_rotation",
+            [
+              [
+                "0.0",
+                "0.0"
+              ]
+            ]
+          ]
+        ],
+        [
+          "orange_juice_init_region",
+          [
+            ":target",
+            "living_room_table"
+          ],
+          [
+            ":ranges",
+            [
+              [
+                "-0.025",
+                "-0.275",
+                "0.025",
+                "-0.225"
+              ]
+            ]
+          ],
+          [
+            ":yaw_rotation",
+            [
+              [
+                "0.0",
+                "0.0"
+              ]
+            ]
+          ]
+        ],
+        [
+          "tomato_sauce_init_region",
+          [
+            ":target",
+            "living_room_table"
+          ],
+          [
+            ":ranges",
+            [
+              [
+                "-0.125",
+                "0.025",
+                "-0.07500000000000001",
+                "0.07500000000000001"
+              ]
+            ]
+          ],
+          [
+            ":yaw_rotation",
+            [
+              [
+                "0.0",
+                "0.0"
+              ]
+            ]
+          ]
+        ],
+        [
+          "alphabet_soup_init_region",
+          [
+            ":target",
+            "living_room_table"
+          ],
+          [
+            ":ranges",
+            [
+              [
+                "-0.125",
+                "-0.175",
+                "-0.07500000000000001",
+                "-0.125"
+              ]
+            ]
+          ],
+          [
+            ":yaw_rotation",
+            [
+              [
+                "0.0",
+                "0.0"
+              ]
+            ]
+          ]
+        ],
+        [
+          "butter_init_region",
+          [
+            ":target",
+            "living_room_table"
+          ],
+          [
+            ":ranges",
+            [
+              [
+                "0.025",
+                "0.025",
+                "0.07500000000000001",
+                "0.07500000000000001"
+              ]
+            ]
+          ],
+          [
+            ":yaw_rotation",
+            [
+              [
+                "0.0",
+                "0.0"
+              ]
+            ]
+          ]
+        ],
+        [
+          "ketchup_init_region",
+          [
+            ":target",
+            "living_room_table"
+          ],
+          [
+            ":ranges",
+            [
+              [
+                "-0.275",
+                "-0.175",
+                "-0.225",
+                "-0.125"
+              ]
+            ]
+          ],
+          [
+            ":yaw_rotation",
+            [
+              [
+                "0.0",
+                "0.0"
+              ]
+            ]
+          ]
+        ],
+        [
+          "contain_region",
+          [
+            ":target",
+            "basket_1"
+          ]
+        ]
+      ],
+      "source_derived_candidate_goal_families": [
+        {
+          "arguments": [
+            "alphabet_soup_1",
+            "basket_1_contain_region"
+          ],
+          "family_key": "goal:in:alphabet_soup_1:basket_1_contain_region",
+          "occurrence_id": null,
+          "predicate": "in",
+          "status": "SOURCE_DERIVED_UNQUALIFIED"
+        },
+        {
+          "arguments": [
+            "tomato_sauce_1",
+            "basket_1_contain_region"
+          ],
+          "family_key": "goal:in:tomato_sauce_1:basket_1_contain_region",
+          "occurrence_id": null,
+          "predicate": "in",
+          "status": "SOURCE_DERIVED_UNQUALIFIED"
+        }
+      ],
+      "source_derived_region_bindings": {
+        "basket_1_contain_region": {
+          "region_suffix": "contain_region",
+          "status": "SOURCE_DERIVED_UNQUALIFIED",
+          "target": "basket_1"
+        },
+        "living_room_table_alphabet_soup_init_region": {
+          "region_suffix": "alphabet_soup_init_region",
+          "status": "SOURCE_DERIVED_UNQUALIFIED",
+          "target": "living_room_table"
+        },
+        "living_room_table_basket_init_region": {
+          "region_suffix": "basket_init_region",
+          "status": "SOURCE_DERIVED_UNQUALIFIED",
+          "target": "living_room_table"
+        },
+        "living_room_table_butter_init_region": {
+          "region_suffix": "butter_init_region",
+          "status": "SOURCE_DERIVED_UNQUALIFIED",
+          "target": "living_room_table"
+        },
+        "living_room_table_cream_cheese_init_region": {
+          "region_suffix": "cream_cheese_init_region",
+          "status": "SOURCE_DERIVED_UNQUALIFIED",
+          "target": "living_room_table"
+        },
+        "living_room_table_ketchup_init_region": {
+          "region_suffix": "ketchup_init_region",
+          "status": "SOURCE_DERIVED_UNQUALIFIED",
+          "target": "living_room_table"
+        },
+        "living_room_table_milk_init_region": {
+          "region_suffix": "milk_init_region",
+          "status": "SOURCE_DERIVED_UNQUALIFIED",
+          "target": "living_room_table"
+        },
+        "living_room_table_orange_juice_init_region": {
+          "region_suffix": "orange_juice_init_region",
+          "status": "SOURCE_DERIVED_UNQUALIFIED",
+          "target": "living_room_table"
+        },
+        "living_room_table_tomato_sauce_init_region": {
+          "region_suffix": "tomato_sauce_init_region",
+          "status": "SOURCE_DERIVED_UNQUALIFIED",
+          "target": "living_room_table"
+        }
+      },
+      "states": [
+        {
+          "c_contiguous": true,
+          "catalog_expected_sha256": null,
+          "catalog_match": null,
+          "dtype": "float64",
+          "dtype_str": "<f8",
+          "f_contiguous": true,
+          "finite": true,
+          "initial_state_id": 0,
+          "serialized_bytes": 984,
+          "serialized_order": "C",
+          "sha256": "747b653b2ca1feeae8f3bd994880ce743730993ea5ce4bd003623e877f26b3bd",
+          "shape": [
+            123
+          ],
+          "strides": [
+            8
+          ]
+        },
+        {
+          "c_contiguous": true,
+          "catalog_expected_sha256": null,
+          "catalog_match": null,
+          "dtype": "float64",
+          "dtype_str": "<f8",
+          "f_contiguous": true,
+          "finite": true,
+          "initial_state_id": 1,
+          "serialized_bytes": 984,
+          "serialized_order": "C",
+          "sha256": "cf85ed132ae09bfad8798a3126b14879071228e0e2e7bd17c3e9d20e519cdb5a",
+          "shape": [
+            123
+          ],
+          "strides": [
+            8
+          ]
+        },
+        {
+          "c_contiguous": true,
+          "catalog_expected_sha256": null,
+          "catalog_match": null,
+          "dtype": "float64",
+          "dtype_str": "<f8",
+          "f_contiguous": true,
+          "finite": true,
+          "initial_state_id": 2,
+          "serialized_bytes": 984,
+          "serialized_order": "C",
+          "sha256": "be0c23f82748baf99eea1ecc4ff28eb82163945bc0bfffb509eeef0decced138",
+          "shape": [
+            123
+          ],
+          "strides": [
+            8
+          ]
+        },
+        {
+          "c_contiguous": true,
+          "catalog_expected_sha256": null,
+          "catalog_match": null,
+          "dtype": "float64",
+          "dtype_str": "<f8",
+          "f_contiguous": true,
+          "finite": true,
+          "initial_state_id": 3,
+          "serialized_bytes": 984,
+          "serialized_order": "C",
+          "sha256": "6929d3090ef9a3431c21b84539c99c3b481b09042bc6f3cf07ea0cc44fb65a70",
+          "shape": [
+            123
+          ],
+          "strides": [
+            8
+          ]
+        },
+        {
+          "c_contiguous": true,
+          "catalog_expected_sha256": null,
+          "catalog_match": null,
+          "dtype": "float64",
+          "dtype_str": "<f8",
+          "f_contiguous": true,
+          "finite": true,
+          "initial_state_id": 4,
+          "serialized_bytes": 984,
+          "serialized_order": "C",
+          "sha256": "376f48b75f50d4e1eff9e3f49f307de0bcfc44d2a081f5cb9c124cf985330c41",
+          "shape": [
+            123
+          ],
+          "strides": [
+            8
+          ]
+        }
+      ],
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "task_progress_definition": {
+        "language": "put both the alphabet soup and the tomato sauce in the basket",
+        "predicates": [
+          {
+            "arguments": [
+              "alphabet_soup_1",
+              0.51
+            ],
+            "commitment": false,
+            "description": "alphabet_soup_1 center is at or above world z=0.51",
+            "kind": "object_z_at_least",
+            "name": "alphabet_soup_lifted",
+            "reversible": true,
+            "weight": 0
+          },
+          {
+            "arguments": [
+              "in",
+              "alphabet_soup_1",
+              "basket_1_contain_region"
+            ],
+            "commitment": true,
+            "description": "first independently measurable placement commitment",
+            "kind": "libero_predicate",
+            "name": "alphabet_soup_in_basket",
+            "reversible": true,
+            "weight": 1
+          },
+          {
+            "arguments": [
+              "tomato_sauce_1",
+              0.53
+            ],
+            "commitment": false,
+            "description": "tomato_sauce_1 center is at or above world z=0.53",
+            "kind": "object_z_at_least",
+            "name": "tomato_sauce_lifted",
+            "reversible": true,
+            "weight": 0
+          },
+          {
+            "arguments": [
+              "in",
+              "tomato_sauce_1",
+              "basket_1_contain_region"
+            ],
+            "commitment": true,
+            "description": "second independently measurable placement commitment",
+            "kind": "libero_predicate",
+            "name": "tomato_sauce_in_basket",
+            "reversible": true,
+            "weight": 1
+          },
+          {
+            "arguments": [
+              "basket_1",
+              [
+                -0.35,
+                0.35
+              ],
+              [
+                -0.36,
+                0.36
+              ]
+            ],
+            "commitment": false,
+            "description": "basket_1 is inside the preregistered accessible workspace",
+            "kind": "object_within_xy_bounds",
+            "name": "basket_reachable",
+            "reversible": true,
+            "weight": 0
+          },
+          {
+            "arguments": [],
+            "commitment": false,
+            "description": "exact LIBERO goal conjunction is currently satisfied",
+            "kind": "final_success",
+            "name": "final_goal_currently_satisfied",
+            "reversible": true,
+            "weight": 0
+          }
+        ],
+        "receptacle_joints": [
+          "basket_1_joint0"
+        ],
+        "target_joints": [
+          "alphabet_soup_1_joint0",
+          "tomato_sauce_1_joint0"
+        ],
+        "task_id": 0,
+        "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+        "task_suite": "libero_10",
+        "tool_joints": [
+          "alphabet_soup_1_joint0",
+          "tomato_sauce_1_joint0"
+        ],
+        "workspace_xy_bounds": [
+          [
+            -0.35,
+            0.35
+          ],
+          [
+            -0.36,
+            0.36
+          ]
+        ]
+      }
+    },
+    {
+      "bddl": {
+        "bytes": 3267,
+        "path": "/home/lijingsu/vla/src/LIBERO/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket.bddl",
+        "resolved_path": "/home/lijingsu/vla/src/LIBERO/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket.bddl",
+        "sha256": "3f552805c7ab34c44debcf38a48b8131d6fee3011dd86c039650b84e0f77d058"
+      },
+      "bddl_text": "(define (problem LIBERO_Living_Room_Tabletop_Manipulation)\n  (:domain robosuite)\n  (:language put both the cream cheese box and the butter in the basket)\n    (:regions\n      (basket_init_region\n          (:target living_room_table)\n          (:ranges (\n              (-0.01 0.25 0.01 0.27)\n            )\n          )\n          (:yaw_rotation (\n              (0.0 0.0)\n            )\n          )\n      )\n      (milk_init_region\n          (:target living_room_table)\n          (:ranges (\n              (0.025 -0.125 0.07500000000000001 -0.07500000000000001)\n            )\n          )\n          (:yaw_rotation (\n              (0.0 0.0)\n            )\n          )\n      )\n      (cream_cheese_init_region\n          (:target living_room_table)\n          (:ranges (\n              (0.07500000000000001 -0.225 0.125 -0.17500000000000002)\n            )\n          )\n          (:yaw_rotation (\n              (0.0 0.0)\n            )\n          )\n      )\n      (orange_juice_init_region\n          (:target living_room_table)\n          (:ranges (\n              (-0.025 -0.275 0.025 -0.225)\n            )\n          )\n          (:yaw_rotation (\n              (0.0 0.0)\n            )\n          )\n      )\n      (tomato_sauce_init_region\n          (:target living_room_table)\n          (:ranges (\n              (-0.125 0.025 -0.07500000000000001 0.07500000000000001)\n            )\n          )\n          (:yaw_rotation (\n              (0.0 0.0)\n            )\n          )\n      )\n      (alphabet_soup_init_region\n          (:target living_room_table)\n          (:ranges (\n              (-0.125 -0.175 -0.07500000000000001 -0.125)\n            )\n          )\n          (:yaw_rotation (\n              (0.0 0.0)\n            )\n          )\n      )\n      (butter_init_region\n          (:target living_room_table)\n          (:ranges (\n              (0.025 0.025 0.07500000000000001 0.07500000000000001)\n            )\n          )\n          (:yaw_rotation (\n              (0.0 0.0)\n            )\n          )\n      )\n      (ketchup_init_region\n          (:target living_room_table)\n          (:ranges (\n              (-0.275 -0.175 -0.225 -0.125)\n            )\n          )\n          (:yaw_rotation (\n              (0.0 0.0)\n            )\n          )\n      )\n      (contain_region\n          (:target basket_1)\n      )\n    )\n\n  (:fixtures\n    living_room_table - living_room_table\n  )\n\n  (:objects\n    alphabet_soup_1 - alphabet_soup\n    cream_cheese_1 - cream_cheese\n    tomato_sauce_1 - tomato_sauce\n    ketchup_1 - ketchup\n    orange_juice_1 - orange_juice\n    milk_1 - milk\n    butter_1 - butter\n    basket_1 - basket\n  )\n\n  (:obj_of_interest\n    cream_cheese_1\n    butter_1\n    basket_1\n  )\n\n  (:init\n    (On alphabet_soup_1 living_room_table_alphabet_soup_init_region)\n    (On cream_cheese_1 living_room_table_cream_cheese_init_region)\n    (On tomato_sauce_1 living_room_table_tomato_sauce_init_region)\n    (On ketchup_1 living_room_table_ketchup_init_region)\n    (On milk_1 living_room_table_milk_init_region)\n    (On orange_juice_1 living_room_table_orange_juice_init_region)\n    (On butter_1 living_room_table_butter_init_region)\n    (On basket_1 living_room_table_basket_init_region)\n  )\n\n  (:goal\n    (And (In cream_cheese_1 basket_1_contain_region) (In butter_1 basket_1_contain_region))\n  )\n\n)\n",
+      "catalog_initial_goal_families_source_only": [
+        {
+          "arguments": [
+            "cream_cheese_1",
+            "basket_1_contain_region"
+          ],
+          "family_key": "goal:in:cream_cheese_1:basket_1_contain_region",
+          "predicate": "in",
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket.bddl#:goal"
+        },
+        {
+          "arguments": [
+            "butter_1",
+            "basket_1_contain_region"
+          ],
+          "family_key": "goal:in:butter_1:basket_1_contain_region",
+          "predicate": "in",
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket.bddl#:goal"
+        }
+      ],
+      "catalog_object_aliases_source_only": {
+        "alphabet_soup_1": "alphabet_soup_1",
+        "basket_1": "basket_1",
+        "butter_1": "butter_1",
+        "cream_cheese_1": "cream_cheese_1",
+        "ketchup_1": "ketchup_1",
+        "milk_1": "milk_1",
+        "orange_juice_1": "orange_juice_1",
+        "tomato_sauce_1": "tomato_sauce_1"
+      },
+      "catalog_receptacle_region_aliases_source_only": {
+        "basket_1_contain_region": "basket_1_contain_region",
+        "living_room_table": "living_room_table",
+        "living_room_table_alphabet_soup_init_region": "living_room_table_alphabet_soup_init_region",
+        "living_room_table_basket_init_region": "living_room_table_basket_init_region",
+        "living_room_table_butter_init_region": "living_room_table_butter_init_region",
+        "living_room_table_cream_cheese_init_region": "living_room_table_cream_cheese_init_region",
+        "living_room_table_ketchup_init_region": "living_room_table_ketchup_init_region",
+        "living_room_table_milk_init_region": "living_room_table_milk_init_region",
+        "living_room_table_orange_juice_init_region": "living_room_table_orange_juice_init_region",
+        "living_room_table_tomato_sauce_init_region": "living_room_table_tomato_sauce_init_region"
+      },
+      "evidence_status": "SOURCE_DERIVED_UNQUALIFIED",
+      "fixture_type_aliases": {
+        "living_room_table": "living_room_table"
+      },
+      "goal_predicates": [
+        [
+          "In",
+          "cream_cheese_1",
+          "basket_1_contain_region"
+        ],
+        [
+          "In",
+          "butter_1",
+          "basket_1_contain_region"
+        ]
+      ],
+      "init_state_file": {
+        "bytes": 58991,
+        "path": "/home/lijingsu/vla/src/LIBERO/libero/libero/init_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket.pruned_init",
+        "resolved_path": "/home/lijingsu/vla/src/LIBERO/libero/libero/init_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket.pruned_init",
+        "sha256": "f8ac06ea8f43bb328d40cba1e6a9767da2f8f5386fd7ff3f845c64a96bf6d2ce"
+      },
+      "initial_state_array_dtype": "float64",
+      "initial_state_array_shape": [
+        50,
+        123
+      ],
+      "language": "put both the cream cheese box and the butter in the basket",
+      "loaded_container_type": "numpy.ndarray",
+      "object_identity_aliases": {
+        "alphabet_soup_1": "alphabet_soup_1",
+        "basket_1": "basket_1",
+        "butter_1": "butter_1",
+        "cream_cheese_1": "cream_cheese_1",
+        "ketchup_1": "ketchup_1",
+        "milk_1": "milk_1",
+        "orange_juice_1": "orange_juice_1",
+        "tomato_sauce_1": "tomato_sauce_1"
+      },
+      "object_type_aliases": {
+        "alphabet_soup_1": "alphabet_soup",
+        "basket_1": "basket",
+        "butter_1": "butter",
+        "cream_cheese_1": "cream_cheese",
+        "ketchup_1": "ketchup",
+        "milk_1": "milk",
+        "orange_juice_1": "orange_juice",
+        "tomato_sauce_1": "tomato_sauce"
+      },
+      "objects_of_interest": [
+        "cream_cheese_1",
+        "butter_1",
+        "basket_1"
+      ],
+      "region_source_definitions": [
+        [
+          "basket_init_region",
+          [
+            ":target",
+            "living_room_table"
+          ],
+          [
+            ":ranges",
+            [
+              [
+                "-0.01",
+                "0.25",
+                "0.01",
+                "0.27"
+              ]
+            ]
+          ],
+          [
+            ":yaw_rotation",
+            [
+              [
+                "0.0",
+                "0.0"
+              ]
+            ]
+          ]
+        ],
+        [
+          "milk_init_region",
+          [
+            ":target",
+            "living_room_table"
+          ],
+          [
+            ":ranges",
+            [
+              [
+                "0.025",
+                "-0.125",
+                "0.07500000000000001",
+                "-0.07500000000000001"
+              ]
+            ]
+          ],
+          [
+            ":yaw_rotation",
+            [
+              [
+                "0.0",
+                "0.0"
+              ]
+            ]
+          ]
+        ],
+        [
+          "cream_cheese_init_region",
+          [
+            ":target",
+            "living_room_table"
+          ],
+          [
+            ":ranges",
+            [
+              [
+                "0.07500000000000001",
+                "-0.225",
+                "0.125",
+                "-0.17500000000000002"
+              ]
+            ]
+          ],
+          [
+            ":yaw_rotation",
+            [
+              [
+                "0.0",
+                "0.0"
+              ]
+            ]
+          ]
+        ],
+        [
+          "orange_juice_init_region",
+          [
+            ":target",
+            "living_room_table"
+          ],
+          [
+            ":ranges",
+            [
+              [
+                "-0.025",
+                "-0.275",
+                "0.025",
+                "-0.225"
+              ]
+            ]
+          ],
+          [
+            ":yaw_rotation",
+            [
+              [
+                "0.0",
+                "0.0"
+              ]
+            ]
+          ]
+        ],
+        [
+          "tomato_sauce_init_region",
+          [
+            ":target",
+            "living_room_table"
+          ],
+          [
+            ":ranges",
+            [
+              [
+                "-0.125",
+                "0.025",
+                "-0.07500000000000001",
+                "0.07500000000000001"
+              ]
+            ]
+          ],
+          [
+            ":yaw_rotation",
+            [
+              [
+                "0.0",
+                "0.0"
+              ]
+            ]
+          ]
+        ],
+        [
+          "alphabet_soup_init_region",
+          [
+            ":target",
+            "living_room_table"
+          ],
+          [
+            ":ranges",
+            [
+              [
+                "-0.125",
+                "-0.175",
+                "-0.07500000000000001",
+                "-0.125"
+              ]
+            ]
+          ],
+          [
+            ":yaw_rotation",
+            [
+              [
+                "0.0",
+                "0.0"
+              ]
+            ]
+          ]
+        ],
+        [
+          "butter_init_region",
+          [
+            ":target",
+            "living_room_table"
+          ],
+          [
+            ":ranges",
+            [
+              [
+                "0.025",
+                "0.025",
+                "0.07500000000000001",
+                "0.07500000000000001"
+              ]
+            ]
+          ],
+          [
+            ":yaw_rotation",
+            [
+              [
+                "0.0",
+                "0.0"
+              ]
+            ]
+          ]
+        ],
+        [
+          "ketchup_init_region",
+          [
+            ":target",
+            "living_room_table"
+          ],
+          [
+            ":ranges",
+            [
+              [
+                "-0.275",
+                "-0.175",
+                "-0.225",
+                "-0.125"
+              ]
+            ]
+          ],
+          [
+            ":yaw_rotation",
+            [
+              [
+                "0.0",
+                "0.0"
+              ]
+            ]
+          ]
+        ],
+        [
+          "contain_region",
+          [
+            ":target",
+            "basket_1"
+          ]
+        ]
+      ],
+      "source_derived_candidate_goal_families": [
+        {
+          "arguments": [
+            "cream_cheese_1",
+            "basket_1_contain_region"
+          ],
+          "family_key": "goal:in:cream_cheese_1:basket_1_contain_region",
+          "occurrence_id": null,
+          "predicate": "in",
+          "status": "SOURCE_DERIVED_UNQUALIFIED"
+        },
+        {
+          "arguments": [
+            "butter_1",
+            "basket_1_contain_region"
+          ],
+          "family_key": "goal:in:butter_1:basket_1_contain_region",
+          "occurrence_id": null,
+          "predicate": "in",
+          "status": "SOURCE_DERIVED_UNQUALIFIED"
+        }
+      ],
+      "source_derived_region_bindings": {
+        "basket_1_contain_region": {
+          "region_suffix": "contain_region",
+          "status": "SOURCE_DERIVED_UNQUALIFIED",
+          "target": "basket_1"
+        },
+        "living_room_table_alphabet_soup_init_region": {
+          "region_suffix": "alphabet_soup_init_region",
+          "status": "SOURCE_DERIVED_UNQUALIFIED",
+          "target": "living_room_table"
+        },
+        "living_room_table_basket_init_region": {
+          "region_suffix": "basket_init_region",
+          "status": "SOURCE_DERIVED_UNQUALIFIED",
+          "target": "living_room_table"
+        },
+        "living_room_table_butter_init_region": {
+          "region_suffix": "butter_init_region",
+          "status": "SOURCE_DERIVED_UNQUALIFIED",
+          "target": "living_room_table"
+        },
+        "living_room_table_cream_cheese_init_region": {
+          "region_suffix": "cream_cheese_init_region",
+          "status": "SOURCE_DERIVED_UNQUALIFIED",
+          "target": "living_room_table"
+        },
+        "living_room_table_ketchup_init_region": {
+          "region_suffix": "ketchup_init_region",
+          "status": "SOURCE_DERIVED_UNQUALIFIED",
+          "target": "living_room_table"
+        },
+        "living_room_table_milk_init_region": {
+          "region_suffix": "milk_init_region",
+          "status": "SOURCE_DERIVED_UNQUALIFIED",
+          "target": "living_room_table"
+        },
+        "living_room_table_orange_juice_init_region": {
+          "region_suffix": "orange_juice_init_region",
+          "status": "SOURCE_DERIVED_UNQUALIFIED",
+          "target": "living_room_table"
+        },
+        "living_room_table_tomato_sauce_init_region": {
+          "region_suffix": "tomato_sauce_init_region",
+          "status": "SOURCE_DERIVED_UNQUALIFIED",
+          "target": "living_room_table"
+        }
+      },
+      "states": [
+        {
+          "c_contiguous": true,
+          "catalog_expected_sha256": "5abdf8f466f490901dee9f931b32eb181b2928eaa17bb6379742f988581d564a",
+          "catalog_match": true,
+          "dtype": "float64",
+          "dtype_str": "<f8",
+          "f_contiguous": true,
+          "finite": true,
+          "initial_state_id": 0,
+          "serialized_bytes": 984,
+          "serialized_order": "C",
+          "sha256": "5abdf8f466f490901dee9f931b32eb181b2928eaa17bb6379742f988581d564a",
+          "shape": [
+            123
+          ],
+          "strides": [
+            8
+          ]
+        },
+        {
+          "c_contiguous": true,
+          "catalog_expected_sha256": "cd3e7f86ef217ee7b7d26cc505b3f56ea8f49664ef10f6749270dfcd39dd17a6",
+          "catalog_match": true,
+          "dtype": "float64",
+          "dtype_str": "<f8",
+          "f_contiguous": true,
+          "finite": true,
+          "initial_state_id": 1,
+          "serialized_bytes": 984,
+          "serialized_order": "C",
+          "sha256": "cd3e7f86ef217ee7b7d26cc505b3f56ea8f49664ef10f6749270dfcd39dd17a6",
+          "shape": [
+            123
+          ],
+          "strides": [
+            8
+          ]
+        },
+        {
+          "c_contiguous": true,
+          "catalog_expected_sha256": "ab6bf2ca98e96f1692d8ec7a5b7ec25eee1ea61c57d45c2816ac3dcc938ea3ee",
+          "catalog_match": true,
+          "dtype": "float64",
+          "dtype_str": "<f8",
+          "f_contiguous": true,
+          "finite": true,
+          "initial_state_id": 2,
+          "serialized_bytes": 984,
+          "serialized_order": "C",
+          "sha256": "ab6bf2ca98e96f1692d8ec7a5b7ec25eee1ea61c57d45c2816ac3dcc938ea3ee",
+          "shape": [
+            123
+          ],
+          "strides": [
+            8
+          ]
+        },
+        {
+          "c_contiguous": true,
+          "catalog_expected_sha256": "3e0d23df2cf22ae6e897e15a1739d5bf25474b4e33196644890b8485f0e880f5",
+          "catalog_match": true,
+          "dtype": "float64",
+          "dtype_str": "<f8",
+          "f_contiguous": true,
+          "finite": true,
+          "initial_state_id": 3,
+          "serialized_bytes": 984,
+          "serialized_order": "C",
+          "sha256": "3e0d23df2cf22ae6e897e15a1739d5bf25474b4e33196644890b8485f0e880f5",
+          "shape": [
+            123
+          ],
+          "strides": [
+            8
+          ]
+        },
+        {
+          "c_contiguous": true,
+          "catalog_expected_sha256": "d2cecde6c34039556fadf729cf7eb15d628b42094f6f0c092d9969c9cf659856",
+          "catalog_match": true,
+          "dtype": "float64",
+          "dtype_str": "<f8",
+          "f_contiguous": true,
+          "finite": true,
+          "initial_state_id": 4,
+          "serialized_bytes": 984,
+          "serialized_order": "C",
+          "sha256": "d2cecde6c34039556fadf729cf7eb15d628b42094f6f0c092d9969c9cf659856",
+          "shape": [
+            123
+          ],
+          "strides": [
+            8
+          ]
+        }
+      ],
+      "task_id": 1,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket",
+      "task_progress_definition": {
+        "language": "put both the cream cheese box and the butter in the basket",
+        "predicates": [
+          {
+            "arguments": [
+              "cream_cheese_1",
+              0.5
+            ],
+            "commitment": false,
+            "description": "cream_cheese_1 center is at or above world z=0.5",
+            "kind": "object_z_at_least",
+            "name": "cream_cheese_lifted",
+            "reversible": true,
+            "weight": 0
+          },
+          {
+            "arguments": [
+              "in",
+              "cream_cheese_1",
+              "basket_1_contain_region"
+            ],
+            "commitment": true,
+            "description": "first independently measurable placement commitment",
+            "kind": "libero_predicate",
+            "name": "cream_cheese_in_basket",
+            "reversible": true,
+            "weight": 1
+          },
+          {
+            "arguments": [
+              "butter_1",
+              0.49
+            ],
+            "commitment": false,
+            "description": "butter_1 center is at or above world z=0.49",
+            "kind": "object_z_at_least",
+            "name": "butter_lifted",
+            "reversible": true,
+            "weight": 0
+          },
+          {
+            "arguments": [
+              "in",
+              "butter_1",
+              "basket_1_contain_region"
+            ],
+            "commitment": true,
+            "description": "second independently measurable placement commitment",
+            "kind": "libero_predicate",
+            "name": "butter_in_basket",
+            "reversible": true,
+            "weight": 1
+          },
+          {
+            "arguments": [
+              "basket_1",
+              [
+                -0.35,
+                0.35
+              ],
+              [
+                -0.36,
+                0.36
+              ]
+            ],
+            "commitment": false,
+            "description": "basket_1 is inside the preregistered accessible workspace",
+            "kind": "object_within_xy_bounds",
+            "name": "basket_reachable",
+            "reversible": true,
+            "weight": 0
+          },
+          {
+            "arguments": [],
+            "commitment": false,
+            "description": "exact LIBERO goal conjunction is currently satisfied",
+            "kind": "final_success",
+            "name": "final_goal_currently_satisfied",
+            "reversible": true,
+            "weight": 0
+          }
+        ],
+        "receptacle_joints": [
+          "basket_1_joint0"
+        ],
+        "target_joints": [
+          "cream_cheese_1_joint0",
+          "butter_1_joint0"
+        ],
+        "task_id": 1,
+        "task_name": "LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket",
+        "task_suite": "libero_10",
+        "tool_joints": [
+          "cream_cheese_1_joint0",
+          "butter_1_joint0"
+        ],
+        "workspace_xy_bounds": [
+          [
+            -0.35,
+            0.35
+          ],
+          [
+            -0.36,
+            0.36
+          ]
+        ]
+      }
+    },
+    {
+      "bddl": {
+        "bytes": 2241,
+        "path": "/home/lijingsu/vla/src/LIBERO/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_and_put_the_yellow_and_white_mug_on_the_right_plate.bddl",
+        "resolved_path": "/home/lijingsu/vla/src/LIBERO/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_and_put_the_yellow_and_white_mug_on_the_right_plate.bddl",
+        "sha256": "0c6749b920bff1e1efe47ffb0e0b801a3e6959a650e710f376dd2b812c74e865"
+      },
+      "bddl_text": "(define (problem LIBERO_Living_Room_Tabletop_Manipulation)\n  (:domain robosuite)\n  (:language put the white mug on the left plate and put the yellow and white mug on the right plate)\n    (:regions\n      (plate_left_region\n          (:target living_room_table)\n          (:ranges (\n              (-0.025 -0.325 0.025 -0.27499999999999997)\n            )\n          )\n          (:yaw_rotation (\n              (0.0 0.0)\n            )\n          )\n      )\n      (plate_right_region\n          (:target living_room_table)\n          (:ranges (\n              (-0.025 0.27499999999999997 0.025 0.325)\n            )\n          )\n          (:yaw_rotation (\n              (0.0 0.0)\n            )\n          )\n      )\n      (porcelain_mug_init_region\n          (:target living_room_table)\n          (:ranges (\n              (-0.125 -0.175 -0.07500000000000001 -0.125)\n            )\n          )\n          (:yaw_rotation (\n              (0.0 0.0)\n            )\n          )\n      )\n      (white_yellow_mug_init_region\n          (:target living_room_table)\n          (:ranges (\n              (-0.07500000000000001 0.07500000000000001 -0.025 0.125)\n            )\n          )\n          (:yaw_rotation (\n              (0.0 0.0)\n            )\n          )\n      )\n      (red_coffee_mug_init_region\n          (:target living_room_table)\n          (:ranges (\n              (-0.225 -0.025 -0.17500000000000002 0.025)\n            )\n          )\n          (:yaw_rotation (\n              (0.0 0.0)\n            )\n          )\n      )\n    )\n\n  (:fixtures\n    living_room_table - living_room_table\n  )\n\n  (:objects\n    porcelain_mug_1 - porcelain_mug\n    red_coffee_mug_1 - red_coffee_mug\n    white_yellow_mug_1 - white_yellow_mug\n    plate_1 plate_2 - plate\n  )\n\n  (:obj_of_interest\n    plate_1\n    plate_2\n    white_yellow_mug_1\n    porcelain_mug_1\n  )\n\n  (:init\n    (On plate_1 living_room_table_plate_left_region)\n    (On plate_2 living_room_table_plate_right_region)\n    (On red_coffee_mug_1 living_room_table_red_coffee_mug_init_region)\n    (On white_yellow_mug_1 living_room_table_white_yellow_mug_init_region)\n    (On porcelain_mug_1 living_room_table_porcelain_mug_init_region)\n  )\n\n  (:goal\n    (And (On porcelain_mug_1 plate_1) (On white_yellow_mug_1 plate_2))\n  )\n\n)\n",
+      "catalog_initial_goal_families_source_only": [
+        {
+          "arguments": [
+            "porcelain_mug_1",
+            "plate_1"
+          ],
+          "family_key": "goal:on:porcelain_mug_1:plate_1",
+          "predicate": "on",
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_and_put_the_yellow_and_white_mug_on_the_right_plate.bddl#:goal"
+        },
+        {
+          "arguments": [
+            "white_yellow_mug_1",
+            "plate_2"
+          ],
+          "family_key": "goal:on:white_yellow_mug_1:plate_2",
+          "predicate": "on",
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_and_put_the_yellow_and_white_mug_on_the_right_plate.bddl#:goal"
+        }
+      ],
+      "catalog_object_aliases_source_only": {
+        "plate_1": "plate_1",
+        "plate_2": "plate_2",
+        "porcelain_mug_1": "porcelain_mug_1",
+        "red_coffee_mug_1": "red_coffee_mug_1",
+        "white_yellow_mug_1": "white_yellow_mug_1"
+      },
+      "catalog_receptacle_region_aliases_source_only": {
+        "living_room_table": "living_room_table",
+        "living_room_table_plate_left_region": "living_room_table_plate_left_region",
+        "living_room_table_plate_right_region": "living_room_table_plate_right_region",
+        "living_room_table_porcelain_mug_init_region": "living_room_table_porcelain_mug_init_region",
+        "living_room_table_red_coffee_mug_init_region": "living_room_table_red_coffee_mug_init_region",
+        "living_room_table_white_yellow_mug_init_region": "living_room_table_white_yellow_mug_init_region",
+        "plate_1": "plate_1",
+        "plate_2": "plate_2"
+      },
+      "evidence_status": "SOURCE_DERIVED_UNQUALIFIED",
+      "fixture_type_aliases": {
+        "living_room_table": "living_room_table"
+      },
+      "goal_predicates": [
+        [
+          "On",
+          "porcelain_mug_1",
+          "plate_1"
+        ],
+        [
+          "On",
+          "white_yellow_mug_1",
+          "plate_2"
+        ]
+      ],
+      "init_state_file": {
+        "bytes": 41775,
+        "path": "/home/lijingsu/vla/src/LIBERO/libero/libero/init_files/libero_10/LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_and_put_the_yellow_and_white_mug_on_the_right_plate.pruned_init",
+        "resolved_path": "/home/lijingsu/vla/src/LIBERO/libero/libero/init_files/libero_10/LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_and_put_the_yellow_and_white_mug_on_the_right_plate.pruned_init",
+        "sha256": "b6f20784b381c75d715f4fdaadda1fb460cbe24adcbad76f381a009419b8474e"
+      },
+      "initial_state_array_dtype": "float64",
+      "initial_state_array_shape": [
+        50,
+        84
+      ],
+      "language": "put the white mug on the left plate and put the yellow and white mug on the right plate",
+      "loaded_container_type": "numpy.ndarray",
+      "object_identity_aliases": {
+        "plate_1": "plate_1",
+        "plate_2": "plate_2",
+        "porcelain_mug_1": "porcelain_mug_1",
+        "red_coffee_mug_1": "red_coffee_mug_1",
+        "white_yellow_mug_1": "white_yellow_mug_1"
+      },
+      "object_type_aliases": {
+        "plate_1": "plate",
+        "plate_2": "plate",
+        "porcelain_mug_1": "porcelain_mug",
+        "red_coffee_mug_1": "red_coffee_mug",
+        "white_yellow_mug_1": "white_yellow_mug"
+      },
+      "objects_of_interest": [
+        "plate_1",
+        "plate_2",
+        "white_yellow_mug_1",
+        "porcelain_mug_1"
+      ],
+      "region_source_definitions": [
+        [
+          "plate_left_region",
+          [
+            ":target",
+            "living_room_table"
+          ],
+          [
+            ":ranges",
+            [
+              [
+                "-0.025",
+                "-0.325",
+                "0.025",
+                "-0.27499999999999997"
+              ]
+            ]
+          ],
+          [
+            ":yaw_rotation",
+            [
+              [
+                "0.0",
+                "0.0"
+              ]
+            ]
+          ]
+        ],
+        [
+          "plate_right_region",
+          [
+            ":target",
+            "living_room_table"
+          ],
+          [
+            ":ranges",
+            [
+              [
+                "-0.025",
+                "0.27499999999999997",
+                "0.025",
+                "0.325"
+              ]
+            ]
+          ],
+          [
+            ":yaw_rotation",
+            [
+              [
+                "0.0",
+                "0.0"
+              ]
+            ]
+          ]
+        ],
+        [
+          "porcelain_mug_init_region",
+          [
+            ":target",
+            "living_room_table"
+          ],
+          [
+            ":ranges",
+            [
+              [
+                "-0.125",
+                "-0.175",
+                "-0.07500000000000001",
+                "-0.125"
+              ]
+            ]
+          ],
+          [
+            ":yaw_rotation",
+            [
+              [
+                "0.0",
+                "0.0"
+              ]
+            ]
+          ]
+        ],
+        [
+          "white_yellow_mug_init_region",
+          [
+            ":target",
+            "living_room_table"
+          ],
+          [
+            ":ranges",
+            [
+              [
+                "-0.07500000000000001",
+                "0.07500000000000001",
+                "-0.025",
+                "0.125"
+              ]
+            ]
+          ],
+          [
+            ":yaw_rotation",
+            [
+              [
+                "0.0",
+                "0.0"
+              ]
+            ]
+          ]
+        ],
+        [
+          "red_coffee_mug_init_region",
+          [
+            ":target",
+            "living_room_table"
+          ],
+          [
+            ":ranges",
+            [
+              [
+                "-0.225",
+                "-0.025",
+                "-0.17500000000000002",
+                "0.025"
+              ]
+            ]
+          ],
+          [
+            ":yaw_rotation",
+            [
+              [
+                "0.0",
+                "0.0"
+              ]
+            ]
+          ]
+        ]
+      ],
+      "source_derived_candidate_goal_families": [
+        {
+          "arguments": [
+            "porcelain_mug_1",
+            "plate_1"
+          ],
+          "family_key": "goal:on:porcelain_mug_1:plate_1",
+          "occurrence_id": null,
+          "predicate": "on",
+          "status": "SOURCE_DERIVED_UNQUALIFIED"
+        },
+        {
+          "arguments": [
+            "white_yellow_mug_1",
+            "plate_2"
+          ],
+          "family_key": "goal:on:white_yellow_mug_1:plate_2",
+          "occurrence_id": null,
+          "predicate": "on",
+          "status": "SOURCE_DERIVED_UNQUALIFIED"
+        }
+      ],
+      "source_derived_region_bindings": {
+        "living_room_table_plate_left_region": {
+          "region_suffix": "plate_left_region",
+          "status": "SOURCE_DERIVED_UNQUALIFIED",
+          "target": "living_room_table"
+        },
+        "living_room_table_plate_right_region": {
+          "region_suffix": "plate_right_region",
+          "status": "SOURCE_DERIVED_UNQUALIFIED",
+          "target": "living_room_table"
+        },
+        "living_room_table_porcelain_mug_init_region": {
+          "region_suffix": "porcelain_mug_init_region",
+          "status": "SOURCE_DERIVED_UNQUALIFIED",
+          "target": "living_room_table"
+        },
+        "living_room_table_red_coffee_mug_init_region": {
+          "region_suffix": "red_coffee_mug_init_region",
+          "status": "SOURCE_DERIVED_UNQUALIFIED",
+          "target": "living_room_table"
+        },
+        "living_room_table_white_yellow_mug_init_region": {
+          "region_suffix": "white_yellow_mug_init_region",
+          "status": "SOURCE_DERIVED_UNQUALIFIED",
+          "target": "living_room_table"
+        }
+      },
+      "states": [
+        {
+          "c_contiguous": true,
+          "catalog_expected_sha256": null,
+          "catalog_match": null,
+          "dtype": "float64",
+          "dtype_str": "<f8",
+          "f_contiguous": true,
+          "finite": true,
+          "initial_state_id": 0,
+          "serialized_bytes": 672,
+          "serialized_order": "C",
+          "sha256": "4365b3c5a82da7f8818c11ef5fd494c4890c17c4c3e27948dc290a9ac2f08131",
+          "shape": [
+            84
+          ],
+          "strides": [
+            8
+          ]
+        },
+        {
+          "c_contiguous": true,
+          "catalog_expected_sha256": null,
+          "catalog_match": null,
+          "dtype": "float64",
+          "dtype_str": "<f8",
+          "f_contiguous": true,
+          "finite": true,
+          "initial_state_id": 1,
+          "serialized_bytes": 672,
+          "serialized_order": "C",
+          "sha256": "b55dd89278457f3c00d7b4d871dc8d64e84534e5a119dd35a53e5a152c831d6a",
+          "shape": [
+            84
+          ],
+          "strides": [
+            8
+          ]
+        },
+        {
+          "c_contiguous": true,
+          "catalog_expected_sha256": null,
+          "catalog_match": null,
+          "dtype": "float64",
+          "dtype_str": "<f8",
+          "f_contiguous": true,
+          "finite": true,
+          "initial_state_id": 2,
+          "serialized_bytes": 672,
+          "serialized_order": "C",
+          "sha256": "1d2fdd615bb32a097ad2781dd5e9203104555e54521dd9bce6eacbb5bf718e33",
+          "shape": [
+            84
+          ],
+          "strides": [
+            8
+          ]
+        },
+        {
+          "c_contiguous": true,
+          "catalog_expected_sha256": null,
+          "catalog_match": null,
+          "dtype": "float64",
+          "dtype_str": "<f8",
+          "f_contiguous": true,
+          "finite": true,
+          "initial_state_id": 3,
+          "serialized_bytes": 672,
+          "serialized_order": "C",
+          "sha256": "79a2ec18a6067d027a62de697a1931bf818dffc4dd7572c39c4426e122bd35d0",
+          "shape": [
+            84
+          ],
+          "strides": [
+            8
+          ]
+        },
+        {
+          "c_contiguous": true,
+          "catalog_expected_sha256": null,
+          "catalog_match": null,
+          "dtype": "float64",
+          "dtype_str": "<f8",
+          "f_contiguous": true,
+          "finite": true,
+          "initial_state_id": 4,
+          "serialized_bytes": 672,
+          "serialized_order": "C",
+          "sha256": "4da1e19512111404fa9dc3c87088cf26dce60996e1e9cf5b43ca04c73465a4e6",
+          "shape": [
+            84
+          ],
+          "strides": [
+            8
+          ]
+        }
+      ],
+      "task_id": 4,
+      "task_name": "LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_and_put_the_yellow_and_white_mug_on_the_right_plate",
+      "task_progress_definition": {
+        "language": "put the white mug on the left plate and put the yellow and white mug on the right plate",
+        "predicates": [
+          {
+            "arguments": [
+              "porcelain_mug_1",
+              0.54
+            ],
+            "commitment": false,
+            "description": "porcelain_mug_1 center is at or above world z=0.54",
+            "kind": "object_z_at_least",
+            "name": "white_mug_lifted",
+            "reversible": true,
+            "weight": 0
+          },
+          {
+            "arguments": [
+              "on",
+              "porcelain_mug_1",
+              "plate_1"
+            ],
+            "commitment": true,
+            "description": "left-plate placement commitment",
+            "kind": "libero_predicate",
+            "name": "white_mug_on_left_plate",
+            "reversible": true,
+            "weight": 1
+          },
+          {
+            "arguments": [
+              "white_yellow_mug_1",
+              0.54
+            ],
+            "commitment": false,
+            "description": "white_yellow_mug_1 center is at or above world z=0.54",
+            "kind": "object_z_at_least",
+            "name": "yellow_white_mug_lifted",
+            "reversible": true,
+            "weight": 0
+          },
+          {
+            "arguments": [
+              "on",
+              "white_yellow_mug_1",
+              "plate_2"
+            ],
+            "commitment": true,
+            "description": "right-plate placement commitment",
+            "kind": "libero_predicate",
+            "name": "yellow_white_mug_on_right_plate",
+            "reversible": true,
+            "weight": 1
+          },
+          {
+            "arguments": [
+              "plate_1",
+              [
+                -0.35,
+                0.35
+              ],
+              [
+                -0.36,
+                0.36
+              ]
+            ],
+            "commitment": false,
+            "description": "plate_1 is inside the preregistered accessible workspace",
+            "kind": "object_within_xy_bounds",
+            "name": "left_plate_reachable",
+            "reversible": true,
+            "weight": 0
+          },
+          {
+            "arguments": [
+              "plate_2",
+              [
+                -0.35,
+                0.35
+              ],
+              [
+                -0.36,
+                0.36
+              ]
+            ],
+            "commitment": false,
+            "description": "plate_2 is inside the preregistered accessible workspace",
+            "kind": "object_within_xy_bounds",
+            "name": "right_plate_reachable",
+            "reversible": true,
+            "weight": 0
+          },
+          {
+            "arguments": [],
+            "commitment": false,
+            "description": "exact LIBERO goal conjunction is currently satisfied",
+            "kind": "final_success",
+            "name": "final_goal_currently_satisfied",
+            "reversible": true,
+            "weight": 0
+          }
+        ],
+        "receptacle_joints": [
+          "plate_1_joint0",
+          "plate_2_joint0"
+        ],
+        "target_joints": [
+          "porcelain_mug_1_joint0",
+          "white_yellow_mug_1_joint0"
+        ],
+        "task_id": 4,
+        "task_name": "LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_and_put_the_yellow_and_white_mug_on_the_right_plate",
+        "task_suite": "libero_10",
+        "tool_joints": [
+          "porcelain_mug_1_joint0",
+          "white_yellow_mug_1_joint0"
+        ],
+        "workspace_xy_bounds": [
+          [
+            -0.35,
+            0.35
+          ],
+          [
+            -0.36,
+            0.36
+          ]
+        ]
+      }
+    },
+    {
+      "bddl": {
+        "bytes": 1551,
+        "path": "/home/lijingsu/vla/src/LIBERO/libero/libero/bddl_files/libero_10/KITCHEN_SCENE8_put_both_moka_pots_on_the_stove.bddl",
+        "resolved_path": "/home/lijingsu/vla/src/LIBERO/libero/libero/bddl_files/libero_10/KITCHEN_SCENE8_put_both_moka_pots_on_the_stove.bddl",
+        "sha256": "ae1299a707d3e810096ad648948c517de40474bcdacca93a15e17d191e34454a"
+      },
+      "bddl_text": "(define (problem LIBERO_Kitchen_Tabletop_Manipulation)\n  (:domain robosuite)\n  (:language put both moka pots on the stove)\n    (:regions\n      (flat_stove_init_region\n          (:target kitchen_table)\n          (:ranges (\n              (-0.21000000000000002 -0.21000000000000002 -0.19 -0.19)\n            )\n          )\n          (:yaw_rotation (\n              (0.0 0.0)\n            )\n          )\n      )\n      (moka_pot_right_init_region\n          (:target kitchen_table)\n          (:ranges (\n              (-0.07500000000000001 0.225 -0.025 0.275)\n            )\n          )\n          (:yaw_rotation (\n              (0.0 0.0)\n            )\n          )\n      )\n      (moka_pot_left_init_region\n          (:target kitchen_table)\n          (:ranges (\n              (0.025 0.025 0.07500000000000001 0.07500000000000001)\n            )\n          )\n          (:yaw_rotation (\n              (0.0 0.0)\n            )\n          )\n      )\n      (cook_region\n          (:target flat_stove_1)\n      )\n    )\n\n  (:fixtures\n    kitchen_table - kitchen_table\n    flat_stove_1 - flat_stove\n  )\n\n  (:objects\n    moka_pot_1 moka_pot_2 - moka_pot\n  )\n\n  (:obj_of_interest\n    moka_pot_1\n    moka_pot_2\n    flat_stove_1\n  )\n\n  (:init\n    (On flat_stove_1 kitchen_table_flat_stove_init_region)\n    (On moka_pot_1 kitchen_table_moka_pot_right_init_region)\n    (On moka_pot_2 kitchen_table_moka_pot_left_init_region)\n    (Turnon flat_stove_1)\n  )\n\n  (:goal\n    (And (On moka_pot_1 flat_stove_1_cook_region) (On moka_pot_2 flat_stove_1_cook_region) (Turnon flat_stove_1))\n  )\n\n)\n",
+      "catalog_initial_goal_families_source_only": [
+        {
+          "arguments": [
+            "moka_pot_1",
+            "flat_stove_1_cook_region"
+          ],
+          "family_key": "goal:on:moka_pot_1:flat_stove_1_cook_region",
+          "predicate": "on",
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE8_put_both_moka_pots_on_the_stove.bddl#:goal"
+        },
+        {
+          "arguments": [
+            "moka_pot_2",
+            "flat_stove_1_cook_region"
+          ],
+          "family_key": "goal:on:moka_pot_2:flat_stove_1_cook_region",
+          "predicate": "on",
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE8_put_both_moka_pots_on_the_stove.bddl#:goal"
+        },
+        {
+          "arguments": [
+            "flat_stove_1"
+          ],
+          "family_key": "goal:turnon:flat_stove_1",
+          "predicate": "turnon",
+          "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE8_put_both_moka_pots_on_the_stove.bddl#:goal"
+        }
+      ],
+      "catalog_object_aliases_source_only": {
+        "moka_pot_1": "moka_pot_1",
+        "moka_pot_2": "moka_pot_2"
+      },
+      "catalog_receptacle_region_aliases_source_only": {
+        "flat_stove_1": "flat_stove_1",
+        "flat_stove_1_cook_region": "flat_stove_1_cook_region",
+        "kitchen_table": "kitchen_table",
+        "kitchen_table_flat_stove_init_region": "kitchen_table_flat_stove_init_region",
+        "kitchen_table_moka_pot_left_init_region": "kitchen_table_moka_pot_left_init_region",
+        "kitchen_table_moka_pot_right_init_region": "kitchen_table_moka_pot_right_init_region"
+      },
+      "evidence_status": "SOURCE_DERIVED_UNQUALIFIED",
+      "fixture_type_aliases": {
+        "flat_stove_1": "flat_stove",
+        "kitchen_table": "kitchen_table"
+      },
+      "goal_predicates": [
+        [
+          "On",
+          "moka_pot_1",
+          "flat_stove_1_cook_region"
+        ],
+        [
+          "On",
+          "moka_pot_2",
+          "flat_stove_1_cook_region"
+        ],
+        [
+          "Turnon",
+          "flat_stove_1"
+        ]
+      ],
+      "init_state_file": {
+        "bytes": 22831,
+        "path": "/home/lijingsu/vla/src/LIBERO/libero/libero/init_files/libero_10/KITCHEN_SCENE8_put_both_moka_pots_on_the_stove.pruned_init",
+        "resolved_path": "/home/lijingsu/vla/src/LIBERO/libero/libero/init_files/libero_10/KITCHEN_SCENE8_put_both_moka_pots_on_the_stove.pruned_init",
+        "sha256": "44f992e911c84a1340589510ecdaf947a4872966f7678c8364d8bb5d13dc4dac"
+      },
+      "initial_state_array_dtype": "float64",
+      "initial_state_array_shape": [
+        50,
+        47
+      ],
+      "language": "put both moka pots on the stove",
+      "loaded_container_type": "numpy.ndarray",
+      "object_identity_aliases": {
+        "moka_pot_1": "moka_pot_1",
+        "moka_pot_2": "moka_pot_2"
+      },
+      "object_type_aliases": {
+        "moka_pot_1": "moka_pot",
+        "moka_pot_2": "moka_pot"
+      },
+      "objects_of_interest": [
+        "moka_pot_1",
+        "moka_pot_2",
+        "flat_stove_1"
+      ],
+      "region_source_definitions": [
+        [
+          "flat_stove_init_region",
+          [
+            ":target",
+            "kitchen_table"
+          ],
+          [
+            ":ranges",
+            [
+              [
+                "-0.21000000000000002",
+                "-0.21000000000000002",
+                "-0.19",
+                "-0.19"
+              ]
+            ]
+          ],
+          [
+            ":yaw_rotation",
+            [
+              [
+                "0.0",
+                "0.0"
+              ]
+            ]
+          ]
+        ],
+        [
+          "moka_pot_right_init_region",
+          [
+            ":target",
+            "kitchen_table"
+          ],
+          [
+            ":ranges",
+            [
+              [
+                "-0.07500000000000001",
+                "0.225",
+                "-0.025",
+                "0.275"
+              ]
+            ]
+          ],
+          [
+            ":yaw_rotation",
+            [
+              [
+                "0.0",
+                "0.0"
+              ]
+            ]
+          ]
+        ],
+        [
+          "moka_pot_left_init_region",
+          [
+            ":target",
+            "kitchen_table"
+          ],
+          [
+            ":ranges",
+            [
+              [
+                "0.025",
+                "0.025",
+                "0.07500000000000001",
+                "0.07500000000000001"
+              ]
+            ]
+          ],
+          [
+            ":yaw_rotation",
+            [
+              [
+                "0.0",
+                "0.0"
+              ]
+            ]
+          ]
+        ],
+        [
+          "cook_region",
+          [
+            ":target",
+            "flat_stove_1"
+          ]
+        ]
+      ],
+      "source_derived_candidate_goal_families": [
+        {
+          "arguments": [
+            "moka_pot_1",
+            "flat_stove_1_cook_region"
+          ],
+          "family_key": "goal:on:moka_pot_1:flat_stove_1_cook_region",
+          "occurrence_id": null,
+          "predicate": "on",
+          "status": "SOURCE_DERIVED_UNQUALIFIED"
+        },
+        {
+          "arguments": [
+            "moka_pot_2",
+            "flat_stove_1_cook_region"
+          ],
+          "family_key": "goal:on:moka_pot_2:flat_stove_1_cook_region",
+          "occurrence_id": null,
+          "predicate": "on",
+          "status": "SOURCE_DERIVED_UNQUALIFIED"
+        },
+        {
+          "arguments": [
+            "flat_stove_1"
+          ],
+          "family_key": "goal:turnon:flat_stove_1",
+          "occurrence_id": null,
+          "predicate": "turnon",
+          "status": "SOURCE_DERIVED_UNQUALIFIED"
+        }
+      ],
+      "source_derived_region_bindings": {
+        "flat_stove_1_cook_region": {
+          "region_suffix": "cook_region",
+          "status": "SOURCE_DERIVED_UNQUALIFIED",
+          "target": "flat_stove_1"
+        },
+        "kitchen_table_flat_stove_init_region": {
+          "region_suffix": "flat_stove_init_region",
+          "status": "SOURCE_DERIVED_UNQUALIFIED",
+          "target": "kitchen_table"
+        },
+        "kitchen_table_moka_pot_left_init_region": {
+          "region_suffix": "moka_pot_left_init_region",
+          "status": "SOURCE_DERIVED_UNQUALIFIED",
+          "target": "kitchen_table"
+        },
+        "kitchen_table_moka_pot_right_init_region": {
+          "region_suffix": "moka_pot_right_init_region",
+          "status": "SOURCE_DERIVED_UNQUALIFIED",
+          "target": "kitchen_table"
+        }
+      },
+      "states": [
+        {
+          "c_contiguous": true,
+          "catalog_expected_sha256": null,
+          "catalog_match": null,
+          "dtype": "float64",
+          "dtype_str": "<f8",
+          "f_contiguous": true,
+          "finite": true,
+          "initial_state_id": 0,
+          "serialized_bytes": 376,
+          "serialized_order": "C",
+          "sha256": "61a34575b44313156895ce73996cf18dd243c396572fd0e1cd476e0e9fbe70af",
+          "shape": [
+            47
+          ],
+          "strides": [
+            8
+          ]
+        },
+        {
+          "c_contiguous": true,
+          "catalog_expected_sha256": null,
+          "catalog_match": null,
+          "dtype": "float64",
+          "dtype_str": "<f8",
+          "f_contiguous": true,
+          "finite": true,
+          "initial_state_id": 1,
+          "serialized_bytes": 376,
+          "serialized_order": "C",
+          "sha256": "cf1b859b0688c3c3ea64fba0ab5bd29b88ff7f28dc5893df4cb7564ac4db8cce",
+          "shape": [
+            47
+          ],
+          "strides": [
+            8
+          ]
+        },
+        {
+          "c_contiguous": true,
+          "catalog_expected_sha256": null,
+          "catalog_match": null,
+          "dtype": "float64",
+          "dtype_str": "<f8",
+          "f_contiguous": true,
+          "finite": true,
+          "initial_state_id": 2,
+          "serialized_bytes": 376,
+          "serialized_order": "C",
+          "sha256": "9f3bbe14f940c66de58d1dbecf0b5a2af12b48cbb93deec15c094fe4a9f5323a",
+          "shape": [
+            47
+          ],
+          "strides": [
+            8
+          ]
+        },
+        {
+          "c_contiguous": true,
+          "catalog_expected_sha256": null,
+          "catalog_match": null,
+          "dtype": "float64",
+          "dtype_str": "<f8",
+          "f_contiguous": true,
+          "finite": true,
+          "initial_state_id": 3,
+          "serialized_bytes": 376,
+          "serialized_order": "C",
+          "sha256": "f53dd32b70bd23ffa2dd5b1e41267ba1c59e88e245857be8b71d5f9b93865763",
+          "shape": [
+            47
+          ],
+          "strides": [
+            8
+          ]
+        },
+        {
+          "c_contiguous": true,
+          "catalog_expected_sha256": null,
+          "catalog_match": null,
+          "dtype": "float64",
+          "dtype_str": "<f8",
+          "f_contiguous": true,
+          "finite": true,
+          "initial_state_id": 4,
+          "serialized_bytes": 376,
+          "serialized_order": "C",
+          "sha256": "02b2b6ed14553a05557e097c0a838ce6f5d5aa05c839844aef81678752dace65",
+          "shape": [
+            47
+          ],
+          "strides": [
+            8
+          ]
+        }
+      ],
+      "task_id": 8,
+      "task_name": "KITCHEN_SCENE8_put_both_moka_pots_on_the_stove",
+      "task_progress_definition": {
+        "language": "put both moka pots on the stove",
+        "predicates": [
+          {
+            "arguments": [
+              "moka_pot_1",
+              1.03
+            ],
+            "commitment": false,
+            "description": "moka_pot_1 center is at or above world z=1.03",
+            "kind": "object_z_at_least",
+            "name": "right_moka_pot_lifted",
+            "reversible": true,
+            "weight": 0
+          },
+          {
+            "arguments": [
+              "on",
+              "moka_pot_1",
+              "flat_stove_1_cook_region"
+            ],
+            "commitment": true,
+            "description": "first moka-pot placement commitment",
+            "kind": "libero_predicate",
+            "name": "right_moka_pot_on_stove",
+            "reversible": true,
+            "weight": 1
+          },
+          {
+            "arguments": [
+              "moka_pot_2",
+              1.03
+            ],
+            "commitment": false,
+            "description": "moka_pot_2 center is at or above world z=1.03",
+            "kind": "object_z_at_least",
+            "name": "left_moka_pot_lifted",
+            "reversible": true,
+            "weight": 0
+          },
+          {
+            "arguments": [
+              "on",
+              "moka_pot_2",
+              "flat_stove_1_cook_region"
+            ],
+            "commitment": true,
+            "description": "second moka-pot placement commitment",
+            "kind": "libero_predicate",
+            "name": "left_moka_pot_on_stove",
+            "reversible": true,
+            "weight": 1
+          },
+          {
+            "arguments": [
+              "turnon",
+              "flat_stove_1"
+            ],
+            "commitment": true,
+            "description": "unaffected safety/operational commitment",
+            "kind": "libero_predicate",
+            "name": "stove_remains_on",
+            "reversible": true,
+            "weight": 1
+          },
+          {
+            "arguments": [],
+            "commitment": false,
+            "description": "exact LIBERO goal conjunction is currently satisfied",
+            "kind": "final_success",
+            "name": "final_goal_currently_satisfied",
+            "reversible": true,
+            "weight": 0
+          }
+        ],
+        "receptacle_joints": [],
+        "target_joints": [
+          "moka_pot_1_joint0",
+          "moka_pot_2_joint0"
+        ],
+        "task_id": 8,
+        "task_name": "KITCHEN_SCENE8_put_both_moka_pots_on_the_stove",
+        "task_suite": "libero_10",
+        "tool_joints": [
+          "moka_pot_1_joint0",
+          "moka_pot_2_joint0"
+        ],
+        "workspace_xy_bounds": [
+          [
+            -0.35,
+            0.35
+          ],
+          [
+            -0.36,
+            0.36
+          ]
+        ]
+      }
+    }
+  ],
+  "repository": "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4",
+  "repository_head": "c0308c1fc13036ef34983dd07397744f659cb417",
+  "schema_version": "repeated_v2_static_task_source_audit_v1",
+  "simulator_constructed": false,
+  "sources": [
+    {
+      "bytes": 6108,
+      "path": "/home/lijingsu/vla/src/LIBERO/libero/libero/benchmark/__init__.py",
+      "resolved_path": "/home/lijingsu/vla/src/LIBERO/libero/libero/benchmark/__init__.py",
+      "sha256": "4ce6edbb00b3280692f2e2b2e8a14bf6e2d5878965b0484a386c0355a867ecc5"
+    },
+    {
+      "bytes": 9775,
+      "path": "/home/lijingsu/vla/src/LIBERO/libero/libero/benchmark/libero_suite_task_map.py",
+      "resolved_path": "/home/lijingsu/vla/src/LIBERO/libero/libero/benchmark/libero_suite_task_map.py",
+      "sha256": "0c950df0a785aa55de968bb38ccd865d2017f71ddbe6f48cfd05ac0742b6d62d"
+    },
+    {
+      "bytes": 11707,
+      "path": "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/cope_benchmark/task_progress.py",
+      "resolved_path": "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/cope_benchmark/task_progress.py",
+      "sha256": "48366a77d05a538c75656d7dcf5b231e68154d875d8904d10c51fc601fbe14b0"
+    },
+    {
+      "bytes": 22013,
+      "path": "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/cope/calibration_v2.py",
+      "resolved_path": "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/cope/calibration_v2.py",
+      "sha256": "bddd39ee7c37e68e2fa628dcf1311e7c7b8e9f6ab3478478864108c7ae1e8dc6"
+    },
+    {
+      "bytes": 66212,
+      "path": "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/task_catalogs/repeated_v2.json",
+      "resolved_path": "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/task_catalogs/repeated_v2.json",
+      "sha256": "e2406a00c8b39b497f3a8af7ffa39d7ed117394a9f64085f2c6e69914f763f2f"
+    },
+    {
+      "bytes": 9278,
+      "path": "/home/lijingsu/vla/src/LIBERO/libero/libero/envs/problems/libero_kitchen_tabletop_manipulation.py",
+      "resolved_path": "/home/lijingsu/vla/src/LIBERO/libero/libero/envs/problems/libero_kitchen_tabletop_manipulation.py",
+      "sha256": "e5ea541118d19aa120d08ffec655da0f65d2e2a21c2045cd49e7e0a73f695cd3"
+    },
+    {
+      "bytes": 8126,
+      "path": "/home/lijingsu/vla/src/LIBERO/libero/libero/envs/objects/articulated_objects.py",
+      "resolved_path": "/home/lijingsu/vla/src/LIBERO/libero/libero/envs/objects/articulated_objects.py",
+      "sha256": "f5187b0381d69a2a8736c1dcb646e5fa7c138a42950f92e30c21c2efaed52faa"
+    },
+    {
+      "bytes": 304,
+      "path": "/home/lijingsu/.libero/config.yaml",
+      "resolved_path": "/home/lijingsu/.libero/config.yaml",
+      "sha256": "01a30a0ca594795b9b8e63b9568ed6d41c7c9e08153fc524d86c5f63e251afc7"
+    }
+  ],
+  "stove_static_source_audit": {
+    "bytes": 7180,
+    "declared_joints": [
+      {
+        "axis": "0 0 1",
+        "damping": "1",
+        "limited": "true",
+        "name": "button",
+        "pos": "0 0 0",
+        "range": "-0.005 2.1",
+        "type": "hinge"
+      }
+    ],
+    "flat_stove_constructor_source": {
+      "line_end": 232,
+      "line_start": 224,
+      "path": "/home/lijingsu/vla/src/LIBERO/libero/libero/envs/objects/articulated_objects.py",
+      "text": "class FlatStove(ArticulatedObject):\n    def __init__(\n        self,\n        name=\"flat_stove\",\n        obj_name=\"flat_stove\",\n        joints=[dict(type=\"free\", damping=\"0.0005\")],\n    ):\n        super().__init__(name, obj_name, joints)\n        self.rotation = (0, 0)"
+    },
+    "freejoint_count": 0,
+    "path": "/home/lijingsu/vla/src/LIBERO/libero/libero/assets/articulated_objects/flat_stove.xml",
+    "scene_fixture_constructor_source": {
+      "line_end": 53,
+      "line_start": 44,
+      "path": "/home/lijingsu/vla/src/LIBERO/libero/libero/envs/problems/libero_kitchen_tabletop_manipulation.py",
+      "text": "    def _load_fixtures_in_arena(self, mujoco_arena):\n        \"\"\"Nothing extra to load in this simple problem.\"\"\"\n        for fixture_category in list(self.parsed_problem[\"fixtures\"].keys()):\n            if fixture_category == \"kitchen_table\":\n                continue\n            for fixture_instance in self.parsed_problem[\"fixtures\"][fixture_category]:\n                self.fixtures_dict[fixture_instance] = get_object_fn(fixture_category)(\n                    name=fixture_instance,\n                    joints=None,\n                )"
+    },
+    "sha256": "046748f5543cdfc1500d74f8ca60a992ad6633717396a2d4f505eb79aa102cb1"
+  },
+  "task1_five_catalog_digests_verified": true,
+  "time_utc": "2026-09-06T17:09:41.090632+00:00",
+  "torch": "2.5.1+cu121",
+  "torch_cuda_initialized": false
+}

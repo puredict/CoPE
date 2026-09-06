@@ -1,0 +1,46 @@
+{
+  "status": "PASS_PREPARATION_VALIDATION",
+  "driver_sha256": "7e072dad02a8cb92ba52c7ee8ecb534912f4b5e6e116eb6b97103e70da38573a",
+  "protocol_sha256": "e9abf5d9f49c7401a71ca510b4133360b9c038c6b78d064c6ba3f7bf9e7cce93",
+  "authenticated_control_pairs": 197,
+  "authenticated_stability_samples": 5,
+  "new_unattempted_prefix_cells": 19,
+  "negative_lineage_tests": [
+    "changedtraceSHA",
+    "wronginitialstateSHA"
+  ],
+  "original_directory_output_rejections": 2,
+  "mock_only_boundary_cases": [
+    {
+      "case": "valid_stale_cache",
+      "outcome": "PASS"
+    },
+    {
+      "case": "qpos_mutation",
+      "outcome": "REJECTED"
+    },
+    {
+      "case": "getter_error",
+      "outcome": "REJECTED"
+    },
+    {
+      "case": "bad_fresh_eef",
+      "outcome": "REJECTED"
+    },
+    {
+      "case": "publication_error",
+      "outcome": "REJECTED"
+    },
+    {
+      "case": "swallowed_outer_attempt",
+      "outcome": "REJECTED"
+    },
+    {
+      "case": "swallowed_inner_attempt",
+      "outcome": "REJECTED"
+    }
+  ],
+  "real_simulator_execution": false,
+  "real_controller_or_provider_calls": 0,
+  "python": "3.12.13 | packaged by conda-forge | (main, Mar  5 2026, 17:06:14) [Clang 19.1.7 ]"
+}

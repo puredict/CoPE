@@ -1,0 +1,16 @@
+
+import os,json,hashlib,datetime
+from pathlib import Path
+os.environ['HF_HUB_OFFLINE']='0'
+os.environ['TRANSFORMERS_OFFLINE']='0'
+from huggingface_hub import snapshot_download
+checkpoint=Path('/home/lijingsu/vla/models/openvla-7b-finetuned-libero-10/config.json')
+config=json.loads(checkpoint.read_text())
+print(json.dumps({'stage':'checkpoint_code_references','auto_map':config.get('auto_map'),'time_utc':datetime.datetime.now(datetime.timezone.utc).isoformat()}),flush=True)
+try:
+ snapshot=Path(snapshot_download(repo_id='openvla/openvla-7b',revision='main',allow_patterns=['*.py'],token=False,max_workers=1,etag_timeout=15))
+except Exception as exc:
+ print(json.dumps({'stage':'source_code_download','status':'BLOCKED_SOURCE_FETCH','type':type(exc).__name__,'detail':str(exc)}),flush=True)
+ raise SystemExit(2)
+records=[{'path':str(p),'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'bytes':p.stat().st_size} for p in sorted(snapshot.glob('*.py'))]
+print(json.dumps({'stage':'source_code_download','status':'CACHED_OFFICIAL_PYTHON_SOURCE','repo_id':'openvla/openvla-7b','resolved_revision':snapshot.name,'snapshot':str(snapshot),'files':records,'model_weights_downloaded':False}),flush=True)

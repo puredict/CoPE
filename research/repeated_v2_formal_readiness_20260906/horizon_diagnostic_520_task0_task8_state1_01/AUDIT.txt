@@ -1,0 +1,146 @@
+{
+  "base": "/home/lijingsu/vla/outputs/repeated_v2_readiness_20260906/horizon520_task0_task8_state1_01",
+  "cells": [
+    {
+      "action_schema_valid": true,
+      "all_diagnostic_step_validations_pass": true,
+      "compared_actions": 260,
+      "diagnostic_seed": 909602,
+      "diagnostic_trace_sha256": "e79f6bfb4e892484e6a52d277655ab7dc66f513ab273f58d13ea28c4806af829",
+      "exception": null,
+      "first_260_raw_and_environment_actions_exact": true,
+      "frozen_terminal_unchanged_sha256": "2a8cb9246a51094c808f48ddabbdac31872bb70824a3a4ee25a8550beed64426",
+      "frozen_trace_sha256": "3883596c9bb1ea8edf0928a0976f58043d27ecfe67dbd10af0883517880ec1e6",
+      "initial_frame_exact": true,
+      "initial_state_id": 1,
+      "manual_intervention": false,
+      "policy_steps_consumed": 264,
+      "success": true,
+      "task_id": 0,
+      "termination_reason": "libero_done"
+    },
+    {
+      "action_schema_valid": true,
+      "all_diagnostic_step_validations_pass": true,
+      "compared_actions": 260,
+      "diagnostic_seed": 909702,
+      "diagnostic_trace_sha256": "dc2c487701a63e217b80da26e0f127cbdbef42c92a8bd77de171ca793aeea041",
+      "exception": null,
+      "first_260_raw_and_environment_actions_exact": true,
+      "frozen_terminal_unchanged_sha256": "44b4830023f4eca59d24fa2ec18fa11acc3adb5f10fa547c7324058f65f5c01f",
+      "frozen_trace_sha256": "1884c0fb26392c58f6bcce1646b00d9aa17ea65b6db53e9cdba847b363ef11f4",
+      "initial_frame_exact": true,
+      "initial_state_id": 1,
+      "manual_intervention": false,
+      "policy_steps_consumed": 520,
+      "success": false,
+      "task_id": 8,
+      "termination_reason": "policy_step_budget_exhausted"
+    }
+  ],
+  "checkpoint_files_manifest_sha256": "58773a8ef85515f695c99402f692dc5afe0fb71efd7f3984ff44c1f117c4f034",
+  "checkpoint_path": "/home/lijingsu/vla/models/openvla-7b-finetuned-libero-10",
+  "checkpoint_revision": "80970322773f81baa2e22fe495d0487b93a05cfa",
+  "config_sha256": "8b14dfa70863e61cb7b6d7f47a9600deab97bae190bf78296affdba77b67aa4e",
+  "episode_count": 2,
+  "evidence_admissibility": "failure_diagnosis_only_not_calibration_catalog_pilot_or_formal_evidence",
+  "expected_episode_count": 2,
+  "files": [
+    {
+      "bytes": 1753,
+      "relative_path": "DIAGNOSTIC_CONFIG.yaml",
+      "sha256": "8b14dfa70863e61cb7b6d7f47a9600deab97bae190bf78296affdba77b67aa4e"
+    },
+    {
+      "bytes": 644,
+      "relative_path": "DIAGNOSTIC_PROTOCOL.txt",
+      "sha256": "bf37f941cc41176666a7ba3c98cea7821f2bbc8ed50570e4157e43f350399f4b"
+    },
+    {
+      "bytes": 8274,
+      "relative_path": "RUN_CONSOLE.txt",
+      "sha256": "d2a89160c048881cd7a9eca6173441148978ab166bef97f679c141e3310013c9"
+    },
+    {
+      "bytes": 1191,
+      "relative_path": "RUN_LAUNCHER.txt",
+      "sha256": "c0ec796452768faa34e3e60298225c27e67d8f9fa8281a1b64ba02f5c3659da5"
+    },
+    {
+      "bytes": 3440,
+      "relative_path": "run/calibration_summary.json",
+      "sha256": "7f9c86317303bae0f8518f81577603c265c279867d5a7402386e8ea1b2d8fa39"
+    },
+    {
+      "bytes": 3440,
+      "relative_path": "run/calibration_summary.partial.json",
+      "sha256": "7f9c86317303bae0f8518f81577603c265c279867d5a7402386e8ea1b2d8fa39"
+    },
+    {
+      "bytes": 336751,
+      "relative_path": "run/episodes/calibration__task00__state01__seed909602/attempt-001.jsonl",
+      "sha256": "e79f6bfb4e892484e6a52d277655ab7dc66f513ab273f58d13ea28c4806af829"
+    },
+    {
+      "bytes": 3884,
+      "relative_path": "run/episodes/calibration__task00__state01__seed909602/episode.json",
+      "sha256": "dd915ade52fdafae4502425733577725573649da9a3e5b17fcefb048e52f0f0e"
+    },
+    {
+      "bytes": 666578,
+      "relative_path": "run/episodes/calibration__task08__state01__seed909702/attempt-001.jsonl",
+      "sha256": "dc2c487701a63e217b80da26e0f127cbdbef42c92a8bd77de171ca793aeea041"
+    },
+    {
+      "bytes": 3085,
+      "relative_path": "run/episodes/calibration__task08__state01__seed909702/episode.json",
+      "sha256": "5661dc990cf7bc78d0a803aa2644dc55ac3b9424f3fbb19e6b7e877b32c16b25"
+    },
+    {
+      "bytes": 473,
+      "relative_path": "run/model_load.json",
+      "sha256": "b47735d9760dbdc48f608a28b490ed2823342f56679a3b7922e8ac1b425b0616"
+    },
+    {
+      "bytes": 3435,
+      "relative_path": "run/run_manifest.json",
+      "sha256": "ea1b3495d78a070df5bd37cbeccd92f2d3b605fcbe6c8e8d01fc443430f5d03c"
+    },
+    {
+      "bytes": 472,
+      "relative_path": "smoke/model_load.json",
+      "sha256": "10c7c5782cce1256439b39f3747c689ca416b08aef833164ad55f6ecb2af920c"
+    },
+    {
+      "bytes": 62444,
+      "relative_path": "smoke/reset_observation.png",
+      "sha256": "bace41c4c0e002357290eacd627c567672fdd9daa0d9516d7bfedbcce4043d45"
+    },
+    {
+      "bytes": 3282,
+      "relative_path": "smoke/run_manifest.json",
+      "sha256": "8e58d8c3cc69f92c548f6bc3b60c0e706ee376fdffb4038932a22ec0b21d3774"
+    },
+    {
+      "bytes": 7094,
+      "relative_path": "smoke/smoke_report.json",
+      "sha256": "1a2b9003f78b7af9827b2980dc93b9844006717c6732adb24a6685ff63ca3b57"
+    }
+  ],
+  "formal_experiment_started": false,
+  "formal_provider_calls": 0,
+  "frozen_260_results_rewritten": false,
+  "interpretation": {
+    "task0_state1": "same first260 actions as frozen timeout; succeeds at264, so four additional controls resolve this cell",
+    "task8_state1": "same first260 actions as frozen timeout; still fails at520, so the260 cutoff alone is insufficient for this cell"
+  },
+  "oracle_actions": 0,
+  "protocol_sha256": "bf37f941cc41176666a7ba3c98cea7821f2bbc8ed50570e4157e43f350399f4b",
+  "schema_version": "repeated_v2_posthoc_horizon_diagnostic_audit_v1",
+  "scientific_threshold_changed": false,
+  "smoke_all_gates_pass": true,
+  "smoke_passed": true,
+  "source_commit": "c0308c1fc13036ef34983dd07397744f659cb417",
+  "status": "COMPLETE_MIXED_OUTCOMES",
+  "summary_complete": true
+}

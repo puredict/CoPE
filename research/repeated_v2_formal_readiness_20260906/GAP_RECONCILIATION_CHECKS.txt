@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "tested_catalog_sha256": "c37992af494d7922d5bc0f4b4218944f637a32cd0f0ff582a1f3d50dd65a1edd",
+  "script_sha256": "ce6a550f9e6b85b491fd58f71e2b155a440aff5f5a15ebf5e2442f71d958765f",
+  "baseline_rows": 794,
+  "open_rows": 776,
+  "closures": 18,
+  "wording_migrations": 10,
+  "checks": [
+    "immutable baseline cells preserved",
+    "independent literal set reconciliation",
+    "unknown deletion retained open",
+    "speculative whole-category disappearance retained open",
+    "new diagnostics explicit",
+    "duplicate rejected",
+    "coexisting old/new aliases rejected",
+    "unattached evidence cannot close present diagnostic"
+  ],
+  "production_calls": 0,
+  "calibration_data_exercised": false
+}

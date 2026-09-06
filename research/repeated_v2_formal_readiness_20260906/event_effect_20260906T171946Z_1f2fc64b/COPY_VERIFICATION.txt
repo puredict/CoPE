@@ -1,0 +1,48 @@
+{
+  "actual_apply_interruption_attempts": 135,
+  "actual_returned_applications": 135,
+  "actual_successful_witnesses": 135,
+  "bound_runtime_sources_match_local_integrated_source": true,
+  "copies": [
+    {
+      "bytes": 6352,
+      "local": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/repeated_v2_formal_readiness_20260906/event_effect_20260906T171946Z_1f2fc64b/RECEIPT.txt",
+      "sha256": "1da58c27e802ab49ce896366eaf449a5f8a546073eed9a4a47366e3b59516b9b",
+      "source": "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/research/repeated_v2_formal_readiness_20260906/event_effect_20260906T171946Z_1f2fc64b/RECEIPT.txt",
+      "verified": true
+    },
+    {
+      "bytes": 2422230,
+      "local": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/repeated_v2_formal_readiness_20260906/event_effect_20260906T171946Z_1f2fc64b/EVENT_RESULTS.txt",
+      "sha256": "ebca6836491803d447915e243cdcc25911b85d24bdcf0540ca75157cc1ebc260",
+      "source": "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/research/repeated_v2_formal_readiness_20260906/event_effect_20260906T171946Z_1f2fc64b/EVENT_RESULTS.txt",
+      "verified": true
+    },
+    {
+      "bytes": 446264,
+      "local": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/repeated_v2_formal_readiness_20260906/event_effect_20260906T171946Z_1f2fc64b/CASE_RESTORATIONS.txt",
+      "sha256": "7a5785d9fcc81103448a46e9301ab78fb1b41346e8957f94c74da9e9acdd922a",
+      "source": "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/research/repeated_v2_formal_readiness_20260906/event_effect_20260906T171946Z_1f2fc64b/CASE_RESTORATIONS.txt",
+      "verified": true
+    },
+    {
+      "bytes": 2820,
+      "local": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/repeated_v2_formal_readiness_20260906/event_effect_20260906T171946Z_1f2fc64b/STDOUT_STDERR.txt",
+      "sha256": "d135f284b9d883def5c56a9c44a0b16a0fad13305ba9d67b7bd9991964947f42",
+      "source": "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/research/repeated_v2_formal_readiness_20260906/event_effect_20260906T171946Z_1f2fc64b/STDOUT_STDERR.txt",
+      "verified": true
+    }
+  ],
+  "counting_review": "Executed driver labels len(events_out) as event_applications and len(group_rows) as attempts; those would include skipped rows on failure. Independent audit found every one of135 rows has a returned EventApplication and all checks passed, with zero skipped rows, so scheduled=attempted=returned=passed for this realized run. Future reuse must distinguish these counters in code; do not replay or overwrite this evidence.",
+  "driver_bytes_match_executed_identity": true,
+  "environment_control_attempts": 0,
+  "failed": 0,
+  "restored_cases": 95,
+  "restriction": "Actual CPU primitive witnesses only. No causal task-safety, stable reachability, semantic-trigger, public RGB perception, preserved completed milestone, or learned recovery certificate.",
+  "safe_event_certificates": 0,
+  "scheduled_rows": 135,
+  "schema_version": "repeated_v2_actual_event_effect_copy_audit_v1",
+  "semantic_trigger_certificates": 0,
+  "skipped": 0,
+  "state_hashes_match_prior_static_receipts": true
+}

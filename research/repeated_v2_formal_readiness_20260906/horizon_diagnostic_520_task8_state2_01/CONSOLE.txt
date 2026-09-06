@@ -1,0 +1,132 @@
+2026-09-07 04:13:00.185785: I tensorflow/core/util/port.cc:113] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-09-07 04:13:00.219802: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:9261] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+2026-09-07 04:13:00.219846: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:607] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2026-09-07 04:13:00.220702: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:1515] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2026-09-07 04:13:00.225737: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2026-09-07 04:13:00.903960: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+/home/lijingsu/vla/.venv/lib/python3.10/site-packages/transformers/utils/hub.py:124: FutureWarning: Using `TRANSFORMERS_CACHE` is deprecated and will be removed in v5 of Transformers. Use `HF_HOME` instead.
+  warnings.warn(
+2026-09-07 04:13:03.428461: W tensorflow/core/common_runtime/gpu/gpu_device.cc:2256] Cannot dlopen some GPU libraries. Please make sure the missing libraries mentioned above are installed properly if you would like to use GPU. Follow the guide at https://www.tensorflow.org/install/gpu for how to download and setup the required libraries for your platform.
+Skipping registering GPU devices...
+[*] Instantiating Pretrained VLA model
+[*] Loading in BF16 with SDPA Attention
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:00<00:00,  3.63it/s]Loading checkpoint shards:  50%|█████     | 2/4 [00:00<00:00,  4.50it/s]Loading checkpoint shards:  75%|███████▌  | 3/4 [00:00<00:00,  4.87it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:00<00:00,  5.15it/s]Loading checkpoint shards: 100%|██████████| 4/4 [00:00<00:00,  4.86it/s]
+Loaded model: <class 'transformers_modules.openvla.openvla-7b.47a0ec7fc4ec123775a391911046cf33cf9ed83f.modeling_prismatic.OpenVLAForActionPrediction'>
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[robosuite WARNING] No private macro file found! (macros.py:53)
+09/07 [04:13:18] WARNING  | >> No private macro file found!         macros.py:53
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+                 WARNING  | >> It is recommended to use a private   macros.py:54
+                          macro file                                            
+[robosuite WARNING] To setup, run: python /home/lijingsu/vla/.venv/lib/python3.10/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+                 WARNING  | >> To setup, run: python                macros.py:55
+                          /home/lijingsu/vla/.venv/lib/python3.10/s             
+                          ite-packages/robosuite/scripts/setup_macr             
+                          os.py                                                 
+                 INFO     | >> No OpenGL_accelerate      acceleratesupport.py:24
+                          module loaded: No module named                        
+                          'OpenGL_accelerate'                                   
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+{"completed": 1, "episode_id": "calibration__task08__state02__seed919602", "expected": 1, "success": true, "termination_reason": "libero_done"}
+{
+  "calibration_excluded_from_evaluation": true,
+  "checkpoint": {
+    "action_dim": 7,
+    "action_mask": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      false
+    ],
+    "action_q01": [
+      -0.6348214149475098,
+      -0.7741071581840515,
+      -0.7633928656578064,
+      -0.09749999642372131,
+      -0.14819999992847435,
+      -0.2742857038974762,
+      0.0
+    ],
+    "action_q99": [
+      0.7714285850524902,
+      0.8464285731315613,
+      0.9375,
+      0.13928571343421936,
+      0.15964286029338837,
+      0.3246428668498993,
+      1.0
+    ],
+    "adapter_state_dim": 8,
+    "checkpoint_proprio_statistics_all_zero": true,
+    "checkpoint_proprio_statistics_dim": 7,
+    "files_manifest_sha256": "58773a8ef85515f695c99402f692dc5afe0fb71efd7f3984ff44c1f117c4f034",
+    "model_consumes_proprio": false,
+    "model_index_sha256": "ca8b53fed8133ee2afcd2fc483de8febf7f5bb0f6bcb09f91189772e59e8f659",
+    "normalization_statistics_sha256": "54ca346948d5e62e9519a9ed93e45f0a069b9ec997ad1f48f1d8867d4d2d86d2",
+    "path": "/home/lijingsu/vla/models/openvla-7b-finetuned-libero-10",
+    "repository": "openvla/openvla-7b-finetuned-libero-10",
+    "revision": "80970322773f81baa2e22fe495d0487b93a05cfa",
+    "unnorm_key": "libero_10",
+    "weight_shards": [
+      {
+        "bytes": 4925122448,
+        "name": "model-00001-of-00004.safetensors",
+        "sha256": "72f7196d8768c104073d7e9104ad8023cb27727191de1a490612886428b18c51"
+      },
+      {
+        "bytes": 4947392496,
+        "name": "model-00002-of-00004.safetensors",
+        "sha256": "92a60a88c7dad2ba1fccc4acbebef98fc7a894891bc49f2e21cfbf1600daf413"
+      },
+      {
+        "bytes": 4947417456,
+        "name": "model-00003-of-00004.safetensors",
+        "sha256": "12b45ae85535565148907e379d6f35bcba83b9497006ff3b66658fa412ffac85"
+      },
+      {
+        "bytes": 262668432,
+        "name": "model-00004-of-00004.safetensors",
+        "sha256": "d3b8e759db56b86709c56f8d156952415dd64e101feccfd01e701487041dd8c1"
+      }
+    ]
+  },
+  "complete": true,
+  "config_hash": "cb08ea45c9d7947c459d0b1797acf28c0e398859345fb65d7a2d48ea95684cb5",
+  "episode_count": 1,
+  "episodes": [
+    "/home/lijingsu/vla/outputs/repeated_v2_readiness_20260906/horizon520_task8_state2_01/run/episodes/calibration__task08__state02__seed919602/episode.json"
+  ],
+  "excluded_tasks": [],
+  "expected_episode_count": 1,
+  "minimum_clean_success_rate": 0.4,
+  "no_selective_reruns": true,
+  "phase": "calibration",
+  "pilot_authorized_by_calibration": true,
+  "schema_version": "openvla-libero-clean-calibration-summary-v1",
+  "selected_task_ids": [
+    8
+  ],
+  "tasks": {
+    "8": {
+      "mean_policy_steps": 378.0,
+      "n": 1,
+      "success_rate": 1.0,
+      "successes": 1,
+      "termination_breakdown": {
+        "libero_done": 1
+      },
+      "wilson_95_ci": [
+        0.20654931437723745,
+        1.0
+      ]
+    }
+  }
+}
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

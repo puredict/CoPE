@@ -221,20 +221,36 @@ def build_master_schedule(
     """
     _integer(seed, "seed")
     _integer(schedule_index, "schedule_index")
-    supported = {EventFamily(f) for f in (supported_event_families if supported_event_families is not None else semantic_triggers)}
-    # The frozen family library spans all ten; absent semantics are never filled
-    # using another task's fields or inferred from names.
-    missing = set(EventFamily) - supported
+    declared = tuple(supported_event_families if supported_event_families is not None else semantic_triggers)
+    try:
+        normalized = tuple(EventFamily(f) for f in declared)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("BLOCKED_TASK_CATALOG_GAP: unknown supported event family") from exc
+    supported = set(normalized)
+    if not supported or len(supported) != len(normalized):
+        raise ValueError("BLOCKED_TASK_CATALOG_GAP: nonempty unique supported event families required")
+    # Preserve the existing eight-distinct-event template, including both
+    # temporary pairs. Only its grounding/retirement alternatives vary by task.
+    required = set(_PAIR_PREDECESSORS) | set(_PAIR_PREDECESSORS.values()) | {
+        EventFamily.USER_ADDS_PERSISTENT_PREFERENCE, EventFamily.USER_REISSUES_RETIRED_GOAL,
+    }
+    missing = required - supported
     if missing:
-        raise ValueError(f"BLOCKED_TASK_CATALOG_GAP: unsupported event families {sorted(f.value for f in missing)}")
+        raise ValueError(f"BLOCKED_TASK_CATALOG_GAP: unsupported eight-event template families {sorted(f.value for f in missing)}")
+    grounding_options = tuple(family for family in _GROUNDING if family in supported)
+    retirement_options = tuple(family for family in _RETIREMENT if family in supported)
+    if not grounding_options or not retirement_options:
+        raise ValueError("BLOCKED_TASK_CATALOG_GAP: supported grounding and retirement required")
     triggers = {}
     for family in EventFamily:
+        if family not in supported:
+            continue
         if family.value not in semantic_triggers:
             raise ValueError(f"BLOCKED_TASK_CATALOG_GAP: missing trigger for {family.value}")
         raw = semantic_triggers[family.value]
         triggers[family] = raw if isinstance(raw, SemanticTrigger) else SemanticTrigger.from_dict(raw)
-    grounding = _GROUNDING[(schedule_index + seed) % 2]
-    retirement = _RETIREMENT[(schedule_index // 2 + seed) % 2]
+    grounding = grounding_options[(schedule_index + seed) % len(grounding_options)]
+    retirement = retirement_options[(schedule_index // 2 + seed) % len(retirement_options)]
     candidates = _topological_shuffles(grounding, retirement)
     rng = random.Random(int(canonical_sha256({"seed": seed, "master_episode_id": master_episode_id, "schedule_index": schedule_index}), 16))
     counts = position_counts or {}

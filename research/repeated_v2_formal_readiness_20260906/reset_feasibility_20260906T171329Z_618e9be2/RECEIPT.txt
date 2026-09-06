@@ -1,0 +1,150 @@
+{
+  "candidate_gate": {
+    "all_declared_free_joints_exist": true,
+    "all_have_at_least_two_commitment_predicates": true,
+    "all_have_five_audited_states": true,
+    "no_go_excludes_all_reset_eef_positions": true
+  },
+  "command_api": "tools.audit_repeated_feasibility.audit(Path('manifests/repeated_interruptions_v1.jsonl'))",
+  "cuda_visible_devices": "",
+  "event_injections": 0,
+  "evidence_admissibility": "actual_cpu_reset_probe_only_not_event_safety",
+  "gpu_calls": 0,
+  "historical_clean_calibration_block": "Ignored: this old helper's 0.60 threshold/missing-checkpoint message is historical metadata, not current v2 status.",
+  "host": "fvl12",
+  "initial_state_ids": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "log_artifact": {
+    "bytes": 2057,
+    "path": "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/research/repeated_v2_formal_readiness_20260906/reset_feasibility_20260906T171329Z_618e9be2/STDOUT_STDERR.txt",
+    "sha256": "808922f1da31505cddc5f946fb6a9b7ecd7ab8b12d1ef6f8e101358fc1f06746"
+  },
+  "milestone_preservation_certificates": 0,
+  "output_directory": "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/research/repeated_v2_formal_readiness_20260906/reset_feasibility_20260906T171329Z_618e9be2",
+  "per_task": [
+    {
+      "all_declared_free_joints_exist": true,
+      "commitment_predicate_count": 2,
+      "free_joints": [
+        "alphabet_soup_1_joint0",
+        "basket_1_joint0",
+        "butter_1_joint0",
+        "cream_cheese_1_joint0",
+        "ketchup_1_joint0",
+        "milk_1_joint0",
+        "orange_juice_1_joint0",
+        "tomato_sauce_1_joint0"
+      ],
+      "initial_goal_successes": 0,
+      "initial_state_digests": {
+        "0": "747b653b2ca1feeae8f3bd994880ce743730993ea5ce4bd003623e877f26b3bd",
+        "1": "cf85ed132ae09bfad8798a3126b14879071228e0e2e7bd17c3e9d20e519cdb5a",
+        "2": "be0c23f82748baf99eea1ecc4ff28eb82163945bc0bfffb509eeef0decced138",
+        "3": "6929d3090ef9a3431c21b84539c99c3b481b09042bc6f3cf07ea0cc44fb65a70",
+        "4": "376f48b75f50d4e1eff9e3f49f307de0bcfc44d2a081f5cb9c124cf985330c41"
+      },
+      "no_go_contains_reset_eef_count": 0,
+      "task_id": 0
+    },
+    {
+      "all_declared_free_joints_exist": true,
+      "commitment_predicate_count": 2,
+      "free_joints": [
+        "alphabet_soup_1_joint0",
+        "basket_1_joint0",
+        "butter_1_joint0",
+        "cream_cheese_1_joint0",
+        "ketchup_1_joint0",
+        "milk_1_joint0",
+        "orange_juice_1_joint0",
+        "tomato_sauce_1_joint0"
+      ],
+      "initial_goal_successes": 0,
+      "initial_state_digests": {
+        "0": "5abdf8f466f490901dee9f931b32eb181b2928eaa17bb6379742f988581d564a",
+        "1": "cd3e7f86ef217ee7b7d26cc505b3f56ea8f49664ef10f6749270dfcd39dd17a6",
+        "2": "ab6bf2ca98e96f1692d8ec7a5b7ec25eee1ea61c57d45c2816ac3dcc938ea3ee",
+        "3": "3e0d23df2cf22ae6e897e15a1739d5bf25474b4e33196644890b8485f0e880f5",
+        "4": "d2cecde6c34039556fadf729cf7eb15d628b42094f6f0c092d9969c9cf659856"
+      },
+      "no_go_contains_reset_eef_count": 0,
+      "task_id": 1
+    },
+    {
+      "all_declared_free_joints_exist": true,
+      "commitment_predicate_count": 2,
+      "free_joints": [
+        "plate_1_joint0",
+        "plate_2_joint0",
+        "porcelain_mug_1_joint0",
+        "red_coffee_mug_1_joint0",
+        "white_yellow_mug_1_joint0"
+      ],
+      "initial_goal_successes": 0,
+      "initial_state_digests": {
+        "0": "4365b3c5a82da7f8818c11ef5fd494c4890c17c4c3e27948dc290a9ac2f08131",
+        "1": "b55dd89278457f3c00d7b4d871dc8d64e84534e5a119dd35a53e5a152c831d6a",
+        "2": "1d2fdd615bb32a097ad2781dd5e9203104555e54521dd9bce6eacbb5bf718e33",
+        "3": "79a2ec18a6067d027a62de697a1931bf818dffc4dd7572c39c4426e122bd35d0",
+        "4": "4da1e19512111404fa9dc3c87088cf26dce60996e1e9cf5b43ca04c73465a4e6"
+      },
+      "no_go_contains_reset_eef_count": 0,
+      "task_id": 4
+    },
+    {
+      "all_declared_free_joints_exist": true,
+      "commitment_predicate_count": 3,
+      "free_joints": [
+        "moka_pot_1_joint0",
+        "moka_pot_2_joint0"
+      ],
+      "initial_goal_successes": 0,
+      "initial_state_digests": {
+        "0": "61a34575b44313156895ce73996cf18dd243c396572fd0e1cd476e0e9fbe70af",
+        "1": "cf1b859b0688c3c3ea64fba0ab5bd29b88ff7f28dc5893df4cb7564ac4db8cce",
+        "2": "9f3bbe14f940c66de58d1dbecf0b5a2af12b48cbb93deec15c094fe4a9f5323a",
+        "3": "f53dd32b70bd23ffa2dd5b1e41267ba1c59e88e245857be8b71d5f9b93865763",
+        "4": "02b2b6ed14553a05557e097c0a838ce6f5d5aa05c839844aef81678752dace65"
+      },
+      "no_go_contains_reset_eef_count": 0,
+      "task_id": 8
+    }
+  ],
+  "policy_calls": 0,
+  "provider_calls": 0,
+  "raw_artifact": {
+    "bytes": 37781,
+    "path": "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/research/repeated_v2_formal_readiness_20260906/reset_feasibility_20260906T171329Z_618e9be2/RESET_PROBE_RAW.txt",
+    "sha256": "4ba6533cc965d6ecad7b368134c078e287e9d7792f524cf5501a902310aaf667"
+  },
+  "renderer_configuration": {
+    "camera_names": [],
+    "has_offscreen_renderer": false,
+    "has_renderer": false,
+    "use_camera_obs": false
+  },
+  "repo_head": "c0308c1fc13036ef34983dd07397744f659cb417",
+  "safe_event_certificates": 0,
+  "schema_version": "repeated_v2_source_reset_feasibility_execution_v1",
+  "source_files": {
+    "cope_benchmark/interruptions.py": "0aa257a533b3535acf7d38b8ca7cd6849a1d717725e7998dd26381246216bcf3",
+    "cope_benchmark/task_progress.py": "48366a77d05a538c75656d7dcf5b231e68154d875d8904d10c51fc601fbe14b0",
+    "manifests/repeated_interruptions_v1.jsonl": "5dbf41a98fbaa33ee0200254ee4f575fcf15b8ac165b917e1134b3ed6617c06c",
+    "tools/audit_repeated_feasibility.py": "428209088aa3809ac936c5be68a9c85f7db3c0d420fafc8a47980340e3abbf7c"
+  },
+  "status": "RESET_PROBE_COMPLETED",
+  "task_ids": [
+    0,
+    1,
+    4,
+    8
+  ],
+  "task_state_pairs": 20,
+  "time_utc": "2026-09-06T17:13:29.684512+00:00",
+  "torch_cuda_initialized": false
+}

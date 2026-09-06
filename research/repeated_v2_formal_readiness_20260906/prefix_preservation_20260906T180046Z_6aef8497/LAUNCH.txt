@@ -1,0 +1,28 @@
+{
+  "command": [
+    "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/scripts/run_project_env.sh",
+    "/home/lijingsu/vla/.venv/bin/python",
+    "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/research/repeated_v2_formal_readiness_20260906/PREFIX_PRESERVATION_DRIVER.txt",
+    "--execute",
+    "--expected-driver-sha256",
+    "5a079ae2fe4dd4883c1b65b49223d2d2f644582aab836ade89c2ec7c0f7e469d",
+    "--output-dir",
+    "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/research/repeated_v2_formal_readiness_20260906/prefix_preservation_20260906T180046Z_6aef8497/raw"
+  ],
+  "cwd": "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4",
+  "directory": "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/research/repeated_v2_formal_readiness_20260906/prefix_preservation_20260906T180046Z_6aef8497",
+  "driver_sha256": "5a079ae2fe4dd4883c1b65b49223d2d2f644582aab836ade89c2ec7c0f7e469d",
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "",
+    "LIBERO_CONFIG_PATH": "/home/lijingsu/.libero",
+    "MUJOCO_GL": "osmesa",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "PYOPENGL_PLATFORM": "osmesa",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "provider_credentials_removed": true,
+  "retry_allowed": false,
+  "schema_version": "cpu_prefix_preservation_exclusive_launch_v1",
+  "time_utc": "2026-09-06T18:00:46.828509+00:00"
+}

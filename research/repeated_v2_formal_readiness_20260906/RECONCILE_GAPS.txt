@@ -1,0 +1,460 @@
+#!/usr/bin/env python3
+"""Report-only reconciliation against the immutable 794-row readiness baseline.
+
+Run from any directory using this checkout's Python:
+  python RECONCILE_GAPS.txt --output-root /absolute/NEW/report_directory
+
+Optional, AFTER an unchanged 40-cell audit passes and its exact derived records
+have actually been attached to the catalog:
+  --calibration-audit /absolute/audit/CALIBRATION_AUDIT.txt
+  --calibration-audit-sha256 <custodian-verified exact report SHA256>
+  --calibration-input-root /absolute/unchanged/copied/raw_output
+
+The last option remaps remote raw references in memory. It changes no evidence.
+Only the ten documented support-wording aliases, pinned state receipts, and
+optional byte-verified 40-cell calibration attachment are recognized. Other
+disappearances remain OPEN and make the report REVIEW_REQUIRED. New diagnostics
+are listed explicitly without inventing a root-cause classification. No model,
+provider, simulator, network, catalog mutation, or formal admission is performed.
+Outputs are new CSV/MD/TXT files only. An existing output directory is refused.
+"""
+from __future__ import annotations
+
+import argparse
+from collections import Counter, defaultdict
+import csv
+import hashlib
+import io
+import json
+from pathlib import Path
+import re
+import sys
+
+sys.dont_write_bytecode = True
+ROOT = Path(__file__).resolve().parents[2]
+HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(ROOT))
+from cope_benchmark.repeated_v2.task_catalog import load_task_catalog, task_catalog_gaps
+from cope_benchmark.repeated_v2.task_calibration import CalibrationEpisode, summarize_calibration
+
+PINS = {
+    "GAP_MATRIX.csv": "8817fa51118730f67a871003bb7c7bd20658461eeefa3fce87f75963d0d5610c",
+    "GAP_SUMMARY.md": "0188e8e9e8e5b643c5eca28a5fa13d6fe7d7b7e998481080881b30850bd28399",
+    "STATE_HASHES.csv": "362ec0a9abd8d9237bfe8b52e589fd3cde7646e93fe1fd018f2ac9366c3926a3",
+    "STATIC_TASK_EVIDENCE.txt": "def712a609bfbdb4e32721c03a6d30451aeebdf68e13ba51aa51d64b48001a02",
+    "STATE_HASH_CATALOG_ATTACHMENT.txt": "285be11f39ac436b9548cf977458b0a0e46d24bec440f7a32b5d11238178922d",
+}
+AUDITOR_SHA = "57d5219a82e7db9cdd8cd50a69e11e8bd992f89d2b714781b96f697031c479b5"
+DRIVER_SHA = "c7e5ba2b1de42e06306eb3d4d04cfabebb420030220ef24e52953ac65cc8c206"
+CHECKPOINT_SHA = "d36eaa2a334cd52f4a3a94558cf90d82584743ea772fabf76f9e4372e7076076"
+TASKS = (0, 1, 4, 8)
+HEX = re.compile(r"^[0-9a-f]{64}$")
+MIGRATIONS = {
+    f"task {task}: all ten event families require explicit support/feasibility":
+    f"task {task}: task-specific event family support is unresolved; auditing all ten candidates"
+    for task in range(10)
+}
+
+
+def require(condition, reason):
+    if not condition:
+        raise ValueError(reason)
+
+
+def encoded(value):
+    return (json.dumps(value, sort_keys=True, ensure_ascii=False, separators=(",", ":"), allow_nan=False) + "\n").encode()
+
+
+def sha(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def strict_json(data):
+    def pairs(items):
+        result = {}
+        for key, value in items:
+            require(key not in result, "duplicate JSON key: " + key)
+            result[key] = value
+        return result
+    def invalid(value):
+        raise ValueError("non-finite JSON constant: " + value)
+    return json.loads(data, object_pairs_hook=pairs, parse_constant=invalid)
+
+
+class Inputs:
+    def __init__(self):
+        self.records = {}
+
+    def read(self, path, expected=None):
+        path = Path(path).resolve()
+        require(path.is_file(), "missing evidence file: " + str(path))
+        data = path.read_bytes()
+        digest = sha(data)
+        require(expected is None or digest == expected, "input hash mismatch: " + str(path))
+        receipt = {"path": str(path), "sha256": digest, "bytes": len(data)}
+        require(str(path) not in self.records or self.records[str(path)] == receipt, "input changed during reconciliation")
+        self.records[str(path)] = receipt
+        return data
+
+    def reference(self, path, selector=""):
+        receipt = self.records[str(Path(path).resolve())]
+        return dict(receipt, selector=selector)
+
+    def unchanged(self):
+        for receipt in list(self.records.values()):
+            self.read(receipt["path"], receipt["sha256"])
+
+
+def read_csv(data):
+    return list(csv.DictReader(io.StringIO(data.decode(), newline="")))
+
+
+def catalog_reference(task, digest, filename):
+    return any(record.get("sha256") == digest and Path(record.get("uri", "")).name == filename
+               for record in task["source_refs"])
+
+
+def state_closures(inputs, tasks, baseline):
+    """Recognize only the existing authenticated static byte receipts, not flags."""
+    paths = {name: HERE / name for name in PINS}
+    for name, digest in PINS.items():
+        inputs.read(paths[name], digest)
+    rows = read_csv(inputs.read(paths["STATE_HASHES.csv"]))
+    indexed = {(int(row["task_id"]), int(row["initial_state_id"])): row for row in rows}
+    require(len(rows) == len(indexed) == 20 and set(indexed) == {(t, s) for t in TASKS for s in range(5)},
+            "static receipt grid differs from 20 audited source states")
+    attachment = strict_json(inputs.read(paths["STATE_HASH_CATALOG_ATTACHMENT.txt"]))
+    require(attachment["raw_gaps_before"] == 794 and attachment["raw_gaps_after"] == 776,
+            "state attachment baseline differs")
+    exact = {f"task {t}: missing initial state digest {s}" for t in (0, 4, 8) for s in range(5)}
+    exact |= {f"task {t}: unresolved initial_state_digests" for t in (0, 4, 8)}
+    require(set(attachment["closed"]) == exact and len(attachment["closed"]) == 18,
+            "state receipt closure set differs")
+    supported = {}
+    for task_id in (0, 4, 8):
+        task = tasks[task_id]
+        verified = all(task["initial_state_digests"].get(str(state_id)) == indexed[task_id, state_id]["state_sha256"]
+                       and indexed[task_id, state_id]["finite"] == "true" for state_id in range(5))
+        verified &= catalog_reference(task, PINS["STATE_HASHES.csv"], "STATE_HASHES.csv")
+        verified &= "initial_state_digests" not in task["unresolved_fields"]
+        if not verified:
+            continue
+        for row in baseline:
+            if row["raw_gap"] in exact and int(row["task_id"]) == task_id:
+                selector = f"task_id={task_id};initial_state_id=" + (row["initial_state_id"] or "0..4")
+                supported[row["raw_gap"]] = ("VERIFIED_STATE_DIGEST_ATTACHMENT", [
+                    inputs.reference(paths["STATE_HASHES.csv"], selector),
+                    inputs.reference(paths["STATIC_TASK_EVIDENCE.txt"], "source extraction and digest convention"),
+                    inputs.reference(paths["STATE_HASH_CATALOG_ATTACHMENT.txt"], row["raw_gap"]),
+                ])
+    return supported
+
+
+def safe_relative(value):
+    path = Path(value)
+    require(not path.is_absolute() and ".." not in path.parts and str(path) != ".", "unsafe artifact-relative path")
+    return path
+
+
+def cell(record):
+    return record["task_id"], record["initial_state_id"], record["policy_seed"]
+
+
+def index_grid(records):
+    require(type(records) is list, "expected record list")
+    result = {}
+    for record in records:
+        key = cell(record)
+        require(key not in result, "duplicate calibration cell")
+        result[key] = record
+    require(set(result) == {(t, s, seed) for t in TASKS for s in range(5) for seed in (101, 131)},
+            "calibration evidence is not the full four-task 40-cell cohort")
+    return result
+
+
+def calibration_closures(inputs, args, tasks, baseline):
+    """Verify a caller-pinned custody audit, exact bytes, alias map, and attachment.
+
+    This does not repeat physical rollout verification or elevate milestone
+    sub-evidence. Custody of the pinned PASS report remains an explicit input.
+    """
+    if not args.calibration_audit:
+        return {}, None
+    audit_path = Path(args.calibration_audit).resolve()
+    audit = strict_json(inputs.read(audit_path, args.calibration_audit_sha256))
+    require(audit["schema_version"] == "repeated_v2_clean_calibration_offline_audit_v1" and
+            audit["status"] == "PASS" and audit["complete_grid"] is True and audit["episodes"] == 40 and
+            audit["task_ids"] == list(TASKS), "calibration audit is not a passing complete four-task audit")
+    require(audit["auditor_sha256"] == AUDITOR_SHA and audit["driver_sha256"] == DRIVER_SHA and
+            audit["checkpoint_sha256"] == CHECKPOINT_SHA, "calibration source/checkpoint identity differs")
+    require(audit["all_40_measured_episodes_retained"] is True, "calibration cohort was reduced")
+    for name in ("provider_calls_by_auditor", "model_calls_by_auditor", "simulator_calls_by_auditor"):
+        require(audit[name] == 0, "custody audit performed a production call")
+    original = Path(audit["input_root_original"])
+    require(original.is_absolute(), "raw original root is not absolute")
+    raw_root = Path(args.calibration_input_root or audit["input_root_local"]).resolve()
+    require(raw_root.is_dir(), "calibration raw tree is missing")
+    receipts = {}
+    for receipt in audit["input_artifacts"]:
+        relative = safe_relative(receipt["relative_path"])
+        require(str(relative) not in receipts, "duplicate raw artifact receipt")
+        path = raw_root / relative
+        require(not path.is_symlink() and path.resolve().is_relative_to(raw_root), "raw artifact escapes input root")
+        data = inputs.read(path, receipt["sha256"])
+        require(len(data) == receipt["bytes"], "raw artifact byte count differs")
+        receipts[str(relative)] = receipt
+    actual_files = {str(path.relative_to(raw_root)) for path in raw_root.rglob("*") if path.is_file()}
+    require(actual_files == set(receipts), "raw artifact inventory changed after audit")
+    derived = {}
+    for receipt in audit["derived_artifacts"]:
+        name = Path(receipt["path"]).name
+        require(name not in derived, "duplicate derived artifact filename")
+        path = audit_path.parent / name
+        data = inputs.read(path, receipt["sha256"])
+        require(len(data) == receipt["bytes"], "derived artifact byte count differs")
+        derived[name] = (path, data, receipt)
+    names = {"CALIBRATION_EPISODES.csv", "CALIBRATION_SUMMARIES.csv", "MILESTONE_EVIDENCE.csv", "MILESTONE_COUNTS.csv",
+             "CALIBRATION_ADMISSION_RECORDS.txt", "CALIBRATION_POLICY_ID_PROVENANCE.txt"}
+    require(set(derived) == names, "audit has no exact derived admission inventory and provenance map")
+    aliases = index_grid(strict_json(derived["CALIBRATION_ADMISSION_RECORDS.txt"][1]))
+    raw_records = index_grid(strict_json(inputs.read(raw_root / "CALIBRATION_RECORDS.txt")))
+    mapping = strict_json(derived["CALIBRATION_POLICY_ID_PROVENANCE.txt"][1])
+    require(mapping["schema_version"] == "repeated_v2_policy_identity_alias_v1" and
+            mapping["original_records_modified"] is False and mapping["outcome_or_grid_changes"] is False and
+            mapping["provider_or_policy_calls"] == 0, "alias map changes scientific evidence")
+    require(mapping["source_aggregate"] == receipts["CALIBRATION_RECORDS.txt"], "raw aggregate lineage differs")
+    require(mapping["derived_admission_inventory"] == derived["CALIBRATION_ADMISSION_RECORDS.txt"][2],
+            "derived inventory lineage differs")
+    identity = audit["policy_identity"]
+    require(mapping["policy_identity"] == identity and identity["provider_id"] == "openvla_native",
+            "admission identity differs from audited native provider")
+    mappings = index_grid(mapping["records"])
+    for key, record in raw_records.items():
+        alias, entry = aliases[key], mappings[key]
+        CalibrationEpisode.from_dict(record)
+        CalibrationEpisode.from_dict(alias)
+        require(record["policy_id"] == identity["policy_model_id"] and alias == dict(record, policy_id=identity["provider_id"]),
+                "derived record is not the sole documented policy_id alias")
+        require(record["checkpoint_sha256"] == CHECKPOINT_SHA and record["protocol_sha256"] == audit["protocol_sha256"],
+                "record checkpoint/protocol differs from audited identity")
+        relative = f"task_{key[0]}_state_{key[1]}_seed_{key[2]}/CALIBRATION_RECORD.txt"
+        require(strict_json(inputs.read(raw_root / relative)) == record, "raw aggregate differs from per-cell record")
+        expected = {
+            "raw_record_path_original": str(original / relative),
+            "raw_record_file_sha256": receipts[relative]["sha256"],
+            "raw_record_canonical_sha256": sha(encoded(record)),
+            "derived_record_canonical_sha256": sha(encoded(alias)),
+            "changed_fields": {"policy_id": {"from": record["policy_id"], "to": alias["policy_id"]}},
+            "provider_id": identity["provider_id"], "policy_model_id": identity["policy_model_id"],
+            "provider_id_utf8_sha256": sha(identity["provider_id"].encode()),
+            "policy_model_id_utf8_sha256": sha(identity["policy_model_id"].encode()),
+            "checkpoint_sha256": record["checkpoint_sha256"], "protocol_sha256": record["protocol_sha256"],
+            "terminal_evidence_ref_unchanged": record["evidence_ref"],
+            "terminal_evidence_sha256_unchanged": record["evidence_sha256"],
+        }
+        require(all(entry.get(name) == value for name, value in expected.items()), "per-cell alias lineage differs")
+        terminal_path = Path(record["evidence_ref"])
+        require(terminal_path.is_absolute() and terminal_path.is_relative_to(original), "terminal reference escapes original cohort")
+        terminal_relative = safe_relative(terminal_path.relative_to(original))
+        require(str(terminal_relative) in receipts, "terminal absent from audited inventory")
+        inputs.read(raw_root / terminal_relative, record["evidence_sha256"])
+    supported, attachment = {}, {}
+    for task_id in TASKS:
+        records = [aliases[key] for key in sorted(aliases) if key[0] == task_id]
+        summary = summarize_calibration(task_id, records, initial_state_digests=tasks[task_id]["initial_state_digests"])
+        attached = sorted(tasks[task_id]["calibration_records"], key=cell) == records
+        attached &= "calibration_records" not in tasks[task_id]["unresolved_fields"]
+        for name in ("CALIBRATION_ADMISSION_RECORDS.txt", "CALIBRATION_POLICY_ID_PROVENANCE.txt"):
+            attached &= catalog_reference(tasks[task_id], derived[name][2]["sha256"], name)
+        attachment[str(task_id)] = {"exact_records_attached_with_source_refs": attached, "summary": summary.to_dict()}
+        if attached:
+            for row in baseline:
+                if row["category"] == "calibration_records" and int(row["task_id"]) == task_id:
+                    supported[row["raw_gap"]] = ("AUDITED_CLEAN_CALIBRATION_ATTACHMENT", [
+                        inputs.reference(audit_path, "complete 40-cell original-evidence custody audit"),
+                        inputs.reference(derived["CALIBRATION_ADMISSION_RECORDS.txt"][0], f"task_id={task_id};all ten cells"),
+                        inputs.reference(derived["CALIBRATION_POLICY_ID_PROVENANCE.txt"][0], f"task_id={task_id};raw terminal and model/provider lineage"),
+                    ])
+    return supported, attachment
+
+
+def reconcile(baseline, current, supported, migration_reference):
+    require(len(current) == len(set(current)), "duplicate current diagnostics")
+    available = set(current)
+    matched, resolutions = set(), []
+    for source in baseline:
+        raw = source["raw_gap"]
+        alias = MIGRATIONS.get(raw)
+        hits = [candidate for candidate in (raw, alias) if candidate is not None and candidate in available]
+        require(len(hits) <= 1, "both old and new support wording exist")
+        observed = hits[0] if hits else ""
+        if observed:
+            require(observed not in matched, "two baseline rows map to one current diagnostic")
+            matched.add(observed)
+        migrated = bool(observed and observed != raw)
+        closed = not observed and raw in supported
+        kind, evidence = supported[raw] if closed else ("", [])
+        resolutions.append(dict(source, resolution_status="CLOSED_EVIDENCE" if closed else "OPEN",
+            current_diagnostic_present=bool(observed), current_gap=observed,
+            wording_migration="TEN_SUPPORT_LITERAL_ALIAS" if migrated else "",
+            wording_migration_reference=json.dumps(migration_reference, sort_keys=True) if migrated else "",
+            closure_kind=kind, evidence=json.dumps(evidence, sort_keys=True),
+            reconciliation_note=("Current diagnostic remains unresolved; wording is not evidence." if observed else
+                "Diagnostic absent and exact attached evidence verified." if closed else
+                "UNEXPLAINED_DISAPPEARANCE: retained OPEN; scope/wording/flag edits are not closure evidence.")))
+    new = []
+    for number, raw in enumerate(sorted(available - matched), 1):
+        match = re.match(r"^task (\d+): ", raw)
+        new.append({"new_gap_id": f"NEW-{number:04d}", "task_id": match.group(1) if match else "GLOBAL",
+                    "raw_gap": raw, "category": "UNCLASSIFIED_NEW", "root_cause_unit_id": "UNCLASSIFIED_NEW",
+                    "artifact_unit_ids": "UNCLASSIFIED_NEW", "resolution_status": "OPEN",
+                    "note": "Not matched to the immutable baseline or ten documented literal wording migrations."})
+    return resolutions, new
+
+
+def units(rows, field):
+    return {unit for row in rows for unit in row[field].split(";") if unit}
+
+
+def counts(resolutions, new):
+    groups = defaultdict(list)
+    for row in resolutions:
+        groups["total", "ALL"].append(row)
+        for field in ("category", "task_id", "root_cause_unit_id"):
+            groups[field, row[field]].append(row)
+        for unit in units([row], "artifact_unit_ids"):
+            groups["artifact_unit_id", unit].append(row)
+    for row in new:
+        groups["task_id", row["task_id"]]
+    result = []
+    for (dimension, key), rows in sorted(groups.items()):
+        opened = [row for row in rows if row["resolution_status"] == "OPEN"]
+        new_count = len(new) if dimension == "total" else sum(row["task_id"] == key for row in new) if dimension == "task_id" else ""
+        result.append({"dimension": dimension, "key": key, "baseline_rows": len(rows),
+            "closed_evidence_rows": len(rows) - len(opened), "open_baseline_rows": len(opened),
+            "current_mapped_diagnostics": sum(row["current_diagnostic_present"] for row in rows),
+            "disappeared_without_evidence": sum(not row["current_diagnostic_present"] for row in opened),
+            "wording_migrations_retained_open": sum(bool(row["wording_migration"]) for row in rows),
+            "new_current_diagnostics": new_count,
+            "baseline_root_packages": len(units(rows, "root_cause_unit_id")),
+            "open_root_packages": len(units(opened, "root_cause_unit_id")),
+            "baseline_artifact_units": len(units(rows, "artifact_unit_ids")),
+            "open_artifact_units": len(units(opened, "artifact_unit_ids"))})
+    return result
+
+
+def write_csv(path, rows, fields=None):
+    with path.open("x", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields or list(rows[0]))
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--catalog", type=Path, default=ROOT / "task_catalogs/repeated_v2.json")
+    parser.add_argument("--output-root", type=Path, required=True)
+    parser.add_argument("--calibration-audit", type=Path)
+    parser.add_argument("--calibration-audit-sha256")
+    parser.add_argument("--calibration-input-root", type=Path)
+    args = parser.parse_args()
+    if bool(args.calibration_audit) != bool(args.calibration_audit_sha256):
+        parser.error("calibration audit and its custodian-verified SHA256 must be supplied together")
+    if args.calibration_audit_sha256 and not HEX.fullmatch(args.calibration_audit_sha256):
+        parser.error("calibration audit SHA256 must be lowercase hexadecimal")
+    if args.calibration_input_root and not args.calibration_audit:
+        parser.error("raw root remapping requires a calibration audit")
+    output = args.output_root.resolve()
+    require(not output.exists() and output.parent.is_dir(), "output must be a NEW directory with an existing parent")
+    inputs = Inputs()
+    baseline = read_csv(inputs.read(HERE / "GAP_MATRIX.csv", PINS["GAP_MATRIX.csv"]))
+    require(len(baseline) == 794 and len({row["gap_id"] for row in baseline}) == 794 and
+            len({row["raw_gap"] for row in baseline}) == 794, "immutable baseline rows are missing or duplicated")
+    catalog_bytes = inputs.read(args.catalog)
+    raw_catalog = strict_json(catalog_bytes)
+    require(raw_catalog["provenance_kind"] == "source_backed", "catalog provenance changed; separate review required")
+    tasks = {task["task_id"]: task for task in raw_catalog["tasks"]}
+    require(len(raw_catalog["tasks"]) == len(tasks) == 10 and set(tasks) == set(range(10)), "catalog task inventory changed")
+    catalog = load_task_catalog(args.catalog)
+    current = task_catalog_gaps(catalog)
+    for path in (ROOT / "cope_benchmark/repeated_v2/task_catalog.py", ROOT / "cope_benchmark/repeated_v2/task_calibration.py"):
+        inputs.read(path)
+    migration_path = HERE / "FAMILY_SCOPE_AUDIT.md"
+    migration_text = inputs.read(migration_path).decode()
+    require(all(old in migration_text and new in migration_text for old, new in MIGRATIONS.items()), "documented literal migration table is missing")
+    supported = state_closures(inputs, tasks, baseline)
+    calibration_supported, attachment = calibration_closures(inputs, args, tasks, baseline)
+    supported.update(calibration_supported)
+    resolutions, new = reconcile(baseline, current, supported,
+                                 inputs.reference(migration_path, "Exact diagnostic wording migration: ten retained gaps"))
+    count_rows = counts(resolutions, new)
+    total = next(row for row in count_rows if row["dimension"] == "total")
+    require(total["current_mapped_diagnostics"] + len(new) == len(current), "current diagnostic accounting differs")
+    inputs.unchanged()
+    inputs.read(Path(__file__))
+    status = "RECONCILED" if total["disappeared_without_evidence"] == 0 and not new else "REVIEW_REQUIRED"
+    report = {"schema_version": "repeated_v2_gap_reconciliation_v1", "status": status,
+        "baseline_preserved": True, "baseline_rows": 794, "current_raw_gap_count": len(current),
+        "totals": total, "closed_by_evidence_kind": dict(Counter(row["closure_kind"] for row in resolutions if row["closure_kind"])),
+        "current_gap_tuple_sha256": sha(encoded(current)), "current_gap_digest_encoding": "ordered compact UTF-8 JSON plus newline",
+        "api": "cope_benchmark.repeated_v2.task_catalog.task_catalog_gaps(load_task_catalog(path)); allow_synthetic=False",
+        "inputs": list(inputs.records.values()), "calibration_attachment": attachment,
+        "formal_eligibility_established": False, "provider_calls": 0, "model_calls": 0, "simulator_calls": 0,
+        "limitations": [
+            "Only state-digest and optional audited-calibration closures are recognized; all other disappeared rows remain OPEN.",
+            "Current gap count is observed diagnostics; open-baseline count is evidence-conservative and may be larger after unexplained removals.",
+            "Root-package/artifact counts refer to the immutable baseline universe; new diagnostics stay unclassified pending review.",
+            "Artifact membership groups can overlap and their diagnostic counts must not be added together.",
+            "Static state extraction is a pinned custodian receipt, not a new deserialization of the remote source assets.",
+            "Optional calibration trusts the explicitly supplied audit receipt after verifying its source identity and all inventoried bytes; it does not replay physical truth.",
+            "Four-task calibration cannot establish the all-100-cell shared-policy/checkpoint/protocol or minimum-eight-eligible-task gates.",
+            "No support, semantic trigger, milestone, safety, or event-feasibility certification is inferred from candidate definitions or mechanical effects.",
+        ]}
+    require(all(not Path(receipt["path"]).is_relative_to(output) for receipt in inputs.records.values()), "output would contain an input")
+    output.mkdir(exist_ok=False)
+    write_csv(output / "GAP_RESOLUTION.csv", resolutions)
+    write_csv(output / "GAP_COUNTS_BEFORE_AFTER.csv", count_rows)
+    write_csv(output / "NEW_GAPS.csv", new, ["new_gap_id", "task_id", "raw_gap", "category", "root_cause_unit_id", "artifact_unit_ids", "resolution_status", "note"])
+    write_csv(output / "CURRENT_GAPS.csv", [{"raw_gap": raw} for raw in current], ["raw_gap"])
+    summary = f"""# Evidence-based gap reconciliation
+
+Status: {status}. All 794 original rows and their classifications are retained.
+Observed current diagnostics: {len(current)}. Closed by attached evidence: {total['closed_evidence_rows']}.
+Open baseline rows: {total['open_baseline_rows']}. Unexplained disappearances retained OPEN: {total['disappeared_without_evidence']}.
+Documented wording migrations retained OPEN: {total['wording_migrations_retained_open']}. Explicit new diagnostics: {len(new)}.
+Baseline root packages: {total['baseline_root_packages']} → {total['open_root_packages']} still open.
+Baseline artifact units: {total['baseline_artifact_units']} → {total['open_artifact_units']} still open.
+
+GAP_RESOLUTION.csv keeps every original column and adds status, observed diagnostic,
+literal migration reference, closure kind, exact evidence file/selector/hash receipts,
+and an explanation. Missing diagnostics alone cannot close a row. NEW_GAPS.csv is
+header-only when no new diagnostics exist. CURRENT_GAPS.csv records the exact API output.
+GAP_COUNTS_BEFORE_AFTER.csv groups rows by category, task, root package and artifact unit.
+Blank new-gap counts at package/category/artifact level mean unclassified, not zero.
+Artifact membership groups may overlap; use the total row for distinct unit counts.
+
+The 18 existing state-receipt closures concern tasks 0, 4, and 8 only. Task 1's fresh
+receipts verify hashes already present and create no baseline closure. Passing and
+attaching the complete audited four-task calibration can close up to 24 additional
+calibration rows (six per task), without establishing task structural qualification,
+event safety, semantic triggers, the success-rate eligibility condition, or formal
+admission. No anticipated calibration outcome is used in this reconciliation.
+
+The four-task raw protocol hash preserves cohort, task-record, and gate-path identity.
+It cannot silently be merged with later different-hash evidence into the all-task
+shared-protocol gate. Historical 220/520-horizon data and different policy seeds
+remain outside this calibration contract. See FORMAL_CALIBRATION_SCOPE.md.
+"""
+    with (output / "GAP_RECONCILIATION.md").open("x") as handle:
+        handle.write(summary)
+    report["outputs"] = [{"path": str(path), "sha256": sha(path.read_bytes()), "bytes": path.stat().st_size}
+                         for path in sorted(output.iterdir())]
+    with (output / "GAP_RECONCILIATION.txt").open("xb") as handle:
+        handle.write(encoded(report))
+    print(json.dumps({"status": status, "output_root": str(output), "totals": total}, sort_keys=True))
+    if status != "RECONCILED":
+        raise SystemExit(2)
+
+
+if __name__ == "__main__":
+    main()

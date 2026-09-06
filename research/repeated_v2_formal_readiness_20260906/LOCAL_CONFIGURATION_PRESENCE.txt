@@ -1,0 +1,11 @@
+{
+  "COPE_FREEZE_BUNDLE": false,
+  "COPE_REASONER_API_KEY": false,
+  "COPE_REASONER_FACTORY": false,
+  "COPE_REASONER_MODEL": false,
+  "COPE_RUNTIME_FACTORY": false,
+  "COPE_VLA_CHECKPOINT": false,
+  "COPE_VLA_FACTORY": false,
+  "OPENAI_API_KEY": false,
+  "OPENROUTER_API_KEY": false
+}

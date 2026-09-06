@@ -1,0 +1,15 @@
+measure,before,after,change,interpretation
+raw_task_catalog_diagnostics,794,752,-42,Immutable baseline matrix retained;18 state-identity and24 calibration diagnostics closed by audited evidence
+task_root_cause_packages,127,120,-7,Cascade-aware task/category packages rather than independent manual jobs
+evidence_artifact_units,357,350,-7,Artifact groupings;one artifact may support several diagnostics
+aggregate_preflight_cascades,3,3,0,Catalog completeness;minimum-eight admission;manifest integrity remain consequences rather than task rows
+eligible_catalog_tasks,0,0,0,No task has complete semantic and feasibility evidence
+checkpoint_content_identity_verified,0,1,1,Actual15-file checkpoint bytes hashed
+production_VLA_bound_and_action_validated,0,1,1,Actual rendered observation and finite action gate passed
+audited_pilot_calibration_episodes,0,40,40,Complete frozen four-task cohort attached with per-cell lineage
+rate_eligible_pilot_tasks,0,2,2,Tasks1 and4 pass unchanged inclusive rate interval
+reset_feasibility_states,0,20,20,Measured CPU resets;zero policy/provider calls
+primitive_event_effect_applications,0,135,135,Mechanical witnesses only;not complete family certificates
+exact_event_snapshot_restorations,0,95,95,Measured isolated restore checks
+pilot_trajectories,0,0,0,Blocked before execution by catalog and production binding gates
+formal_provider_calls,0,0,0,Formal experiment has not started

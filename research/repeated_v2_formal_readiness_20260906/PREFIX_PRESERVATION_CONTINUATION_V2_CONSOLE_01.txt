@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/research/repeated_v2_formal_readiness_20260906/PREFIX_PRESERVATION_CONTINUATION_V2.txt", line 922, in <module>
+    main()
+  File "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/research/repeated_v2_formal_readiness_20260906/PREFIX_PRESERVATION_CONTINUATION_V2.txt", line 918, in main
+    run(args, root, definitions, state_hashes, plans, request, lineage)
+  File "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/research/repeated_v2_formal_readiness_20260906/PREFIX_PRESERVATION_CONTINUATION_V2.txt", line 372, in run
+    require(output.parent.is_dir() and output.is_relative_to((root / "research").resolve()),
+  File "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/research/repeated_v2_formal_readiness_20260906/PREFIX_PRESERVATION_CONTINUATION_V2.txt", line 126, in require
+    raise EvidenceError(reason)
+__main__.EvidenceError: output must be new under existing project research directory

@@ -1,0 +1,10 @@
+...[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+task=LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket
+[Warning]: datasets path /home/lijingsu/vla/src/LIBERO/libero/datasets does not exist!
+reset_ok initial_states=50
+step_ok reward=0.0 done=False
+restore_exact=True
+fresh_observation_without_step=True
+PASS_CPU_LIBERO_PHYSICS_SMOKE
+.
+4 passed in 7.18s

@@ -1,0 +1,1 @@
+{"approach_height_m":0.16,"close_steps":20,"grasp_attempt_xy_offsets_m":[[0.0,0.0]],"grasp_offset_m":0.005,"lift_height_m":0.2,"max_move_steps":60,"minimum_lift_m":0.08,"open_steps":10,"position_tolerance_m":0.008,"release_offset_m":0.1,"retreat_height_m":0.15,"settle_steps":20,"stable_steps":3,"transfer_height_m":0.72,"translation_scale_m":0.05,"warmup_steps":10}

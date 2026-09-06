@@ -1,0 +1,11 @@
+{
+  "remote_bytes": 309958,
+  "remote_files": 13,
+  "remote_inventory_sha256": "04b8c75eaae1abc60664ca322854693843a6e260590ca0428094c05030bfd09d",
+  "remote_raw_unchanged": true,
+  "status": "ALL_COPIED_BYTES_VERIFIED",
+  "worker_exit": {
+    "ended_utc": "2026-09-06T18:00:58.872972+00:00",
+    "exit_code": 1
+  }
+}

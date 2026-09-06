@@ -1,0 +1,410 @@
+#!/usr/bin/env python3
+"""Extract report-only structural sub-evidence from a verified clean audit.
+
+  python AUDIT_STRUCTURAL_WITNESSES.txt --calibration-audit /path/CALIBRATION_AUDIT.txt \
+    --calibration-audit-sha256 CUSTODIAN_VERIFIED_SHA --input-root /unchanged/raw/copy \
+    --output-root /existing/parent/NEW_directory
+
+The supplied PASS audit is hashed before its data is used. The existing pinned
+offline calibration auditor then revalidates the entire 40-cell raw cohort;
+every regenerated base-report field must match, except the local copied path.
+All raw/derived calibration artifacts remain unchanged. No interruption evidence,
+catalog writes, certification flags, experiments, model/provider/simulator calls,
+new thresholds, or success-based cell selection. --self-check is in-memory only.
+"""
+from __future__ import annotations
+
+import argparse
+import ast
+from collections import defaultdict
+import csv
+import hashlib
+import io
+import json
+import os
+from pathlib import Path
+import re
+import runpy
+import sys
+import uuid
+
+sys.dont_write_bytecode = True
+ROOT = Path(__file__).resolve().parents[2]
+HERE = Path(__file__).resolve().parent
+AUDITOR_SHA = "57d5219a82e7db9cdd8cd50a69e11e8bd992f89d2b714781b96f697031c479b5"
+CRITERIA_SHA = "9a0b71734ae71d1220611a2023736de41ff812ca62f9ec5205792ae9c705935a"
+STATIC_SHA = "def712a609bfbdb4e32721c03a6d30451aeebdf68e13ba51aa51d64b48001a02"
+PROGRESS_SHA = "48366a77d05a538c75656d7dcf5b231e68154d875d8904d10c51fc601fbe14b0"
+TASKS = (0, 1, 4, 8)
+HEX = re.compile(r"^[0-9a-f]{64}$")
+
+
+def require(value, reason):
+    if not value:
+        raise ValueError(reason)
+
+
+def encoded(value):
+    return (json.dumps(value, sort_keys=True, ensure_ascii=False, separators=(",", ":"), allow_nan=False) + "\n").encode()
+
+
+def sha(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def strict(data):
+    def pairs(items):
+        result = {}
+        for key, value in items:
+            require(key not in result, "duplicate JSON key: " + key)
+            result[key] = value
+        return result
+    def invalid(value):
+        raise ValueError("nonfinite JSON: " + value)
+    return json.loads(data, object_pairs_hook=pairs, parse_constant=invalid)
+
+
+def read(path, expected=None):
+    path = Path(path).resolve()
+    require(path.is_file(), "missing artifact: " + str(path))
+    data = path.read_bytes()
+    require(expected is None or sha(data) == expected, "artifact SHA differs: " + str(path))
+    return data
+
+
+def artifact(path):
+    data = read(path)
+    return {"path": str(Path(path).resolve()), "sha256": sha(data), "bytes": len(data)}
+
+
+def source_binding(path, data, container, name):
+    nodes = ast.parse(data.decode()).body
+    if container:
+        matches = [n for n in nodes if isinstance(n, ast.ClassDef) and n.name == container]
+        require(len(matches) == 1, "source reader class absent/ambiguous")
+        nodes = matches[0].body
+    nodes = [n for n in nodes if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)) and n.name == name]
+    require(len(nodes) == 1, "source reader function absent/ambiguous")
+    node = nodes[0]
+    block = b"".join(data.splitlines(keepends=True)[node.lineno - 1:node.end_lineno])
+    return {"path": str(path), "qualified_name": (container + "." if container else "") + name,
+            "source_sha256": sha(data), "first_line": node.lineno, "last_line": node.end_lineno,
+            "exact_source_block_sha256": sha(block)}
+
+
+def windows(samples, p, q):
+    """One earliest-start witness for each Q false→true transition while P held.
+
+    P regressions reset the possible witness. Q regressions start another one;
+    neither history is discarded. Initial P truth is permitted and labeled.
+    """
+    result, pending, p_run_start = [], None, None
+    for index, sample in enumerate(samples):
+        current = sample["current"]
+        require(type(current[p]) is bool and type(current[q]) is bool, "non-Boolean predicate")
+        if not current[p]:
+            pending = p_run_start = None
+            continue
+        if p_run_start is None:
+            p_run_start = index
+        if not current[q]:
+            if pending is None:
+                pending = index
+        elif pending is not None:
+            result.append((pending, index, p_run_start))
+            pending = None
+    return result
+
+
+def csv_bytes(rows, fields):
+    buffer = io.StringIO(newline="")
+    writer = csv.DictWriter(buffer, fieldnames=fields)
+    writer.writeheader()
+    writer.writerows(rows)
+    return buffer.getvalue().encode()
+
+
+def publish(directory, name, data):
+    path = directory / name
+    temporary = directory / ("." + name + "." + uuid.uuid4().hex)
+    with temporary.open("xb") as handle:
+        handle.write(data); handle.flush(); os.fsync(handle.fileno())
+    os.link(temporary, path)
+    temporary.unlink()
+    descriptor = os.open(str(directory), os.O_RDONLY | os.O_DIRECTORY)
+    try:
+        os.fsync(descriptor)
+    finally:
+        os.close(descriptor)
+    return artifact(path)
+
+
+def extract(args):
+    audit_path, raw_root = args.calibration_audit.resolve(), args.input_root.resolve()
+    audit_bytes = read(audit_path, args.calibration_audit_sha256)
+    audit = strict(audit_bytes)
+    require(audit["schema_version"] == "repeated_v2_clean_calibration_offline_audit_v1" and
+            audit["status"] == "PASS" and audit["complete_grid"] is True and audit["episodes"] == 40 and
+            audit["task_ids"] == list(TASKS) and audit["auditor_sha256"] == AUDITOR_SHA,
+            "a complete pinned four-task PASS audit is required")
+    criteria = HERE / "STRUCTURAL_WITNESS_CRITERIA.md"
+    read(criteria, CRITERIA_SHA)
+    auditor_path = HERE / "AUDIT_CALIBRATION.txt"
+    read(auditor_path, AUDITOR_SHA)
+    # This frozen module imports only offline validators, not a model or simulator.
+    auditor = runpy.run_path(str(auditor_path))
+    regenerated, episodes, _, milestones, _, records = auditor["audit"](raw_root, audit["input_root_original"])
+    for key, value in regenerated.items():
+        if key != "input_root_local":
+            require(key in audit and encoded(audit[key]) == encoded(value), "PASS report/raw revalidation differs: " + key)
+    derived_receipts = []
+    seen = set()
+    for entry in audit["derived_artifacts"]:
+        name = Path(entry["path"]).name
+        require(name not in seen, "duplicate derived audit filename")
+        seen.add(name)
+        path = audit_path.parent / name
+        data = read(path, entry["sha256"])
+        require(len(data) == entry["bytes"], "derived audit artifact byte count differs")
+        derived_receipts.append(artifact(path))
+    require({"MILESTONE_EVIDENCE.csv", "MILESTONE_COUNTS.csv", "CALIBRATION_EPISODES.csv", "CALIBRATION_SUMMARIES.csv"} <= seen,
+            "completed calibration audit derived outputs are missing")
+    protocol = strict(read(raw_root / "PROTOCOL.txt", audit["protocol_sha256"]))
+    progress_path = ROOT / "cope_benchmark/task_progress.py"
+    progress_bytes = read(progress_path, PROGRESS_SHA)
+    require([value for key, value in protocol["source_sha256"].items() if key.endswith("/cope_benchmark/task_progress.py")] == [PROGRESS_SHA],
+            "recorded progress-reader source identity differs")
+    bindings = [source_binding(progress_path, progress_bytes, owner, name) for owner, name in
+                (("ProgressTracker", "sample"), ("", "evaluate_predicate"), ("LiberoStateView", "libero_predicate"))]
+    static_path = HERE / "STATIC_TASK_EVIDENCE.txt"
+    static_text = read(static_path, STATIC_SHA).decode()
+    offset = static_text.index("Full machine-readable receipt")
+    static, _ = json.JSONDecoder().raw_decode(static_text[static_text.index("{", offset):])
+    definitions = {row["task_id"]: row for row in static["records"]}
+    placements, goal_specs = {}, {}
+    for task_id in TASKS:
+        task = protocol["task_records"][str(task_id)]
+        require(task["bddl"]["sha256"] == definitions[task_id]["bddl"]["sha256"], "actual BDDL differs from reviewed goal source")
+        goals = [p for p in task["progress_definition"]["predicates"] if p["commitment"] is True]
+        expected = [[str(g[0]).lower(), *g[1:]] for g in definitions[task_id]["goal_predicates"]]
+        require([g["arguments"] for g in goals] == expected and all(g["kind"] == "libero_predicate" for g in goals),
+                "individual original goal readers do not match actual source clauses")
+        chosen = [g for g in goals if g["arguments"][0] in {"in", "on"}]
+        require(len(chosen) == 2 and len({tuple(g["arguments"]) for g in chosen}) == 2, "expected two distinct placement goal readers")
+        placements[task_id], goal_specs[task_id] = chosen, goals
+    # Raw trace lines and whole-file hashes are retained, not canonicalized away.
+    manifests, raw_lines, samples_by_cell = [], {}, {}
+    episode_map = {(e["task_id"], e["initial_state_id"], e["policy_seed"]): e for e in episodes}
+    for record in records:
+        key = record["task_id"], record["initial_state_id"], record["policy_seed"]
+        trace_id = f"task_{key[0]}_state_{key[1]}_seed_{key[2]}"
+        relative = Path(trace_id) / "ACTION_TRACE.txt"
+        terminal_path = Path(record["evidence_ref"])
+        original = Path(audit["input_root_original"])
+        require(terminal_path.is_relative_to(original), "terminal reference escapes cohort")
+        local_terminal = raw_root / terminal_path.relative_to(original)
+        terminal = strict(read(local_terminal, record["evidence_sha256"]))
+        data = read(raw_root / relative, terminal["action_trace"]["sha256"])
+        lines = data.splitlines(keepends=True)
+        raw_lines[key] = lines
+        samples = []
+        for number, line in enumerate(lines, 1):
+            entry = strict(line)
+            if "progress" in entry:
+                samples.append({"trace_line": number, "line_sha256": sha(line), "record_type": entry["record_type"],
+                                "environment_control": entry["environment_control"], "policy_step": entry["policy_step"],
+                                "current": entry["progress"]["current"]})
+        require(len(samples) == 11 + terminal["policy_steps_consumed"], "sample count differs from full control history")
+        samples_by_cell[key] = samples
+        manifests.append({"trace_id": trace_id, "task_id": key[0], "initial_state_id": key[1], "policy_seed": key[2],
+                          "original_trace_path": str(original / relative), "local_trace_path": str(raw_root / relative),
+                          "trace_sha256": sha(data), "trace_bytes": len(data), "trace_lines": len(lines),
+                          "original_terminal_path": str(terminal_path), "local_terminal_path": str(local_terminal),
+                          "terminal_sha256": record["evidence_sha256"], "protocol_sha256": record["protocol_sha256"],
+                          "clean_terminal_success": record["success"], "policy_steps": terminal["policy_steps_consumed"]})
+    manifest_by_cell = {(m["task_id"], m["initial_state_id"], m["policy_seed"]): m for m in manifests}
+    observations, regressions, previous = [], [], {}
+    for row in milestones:
+        key = row["task_id"], row["initial_state_id"], row["policy_seed"]
+        name = row["predicate_name"]
+        line = raw_lines[key][row["trace_line"] - 1]
+        actual = strict(line)["progress"]["current"][name]
+        require(type(actual) is bool and actual == row["current"], "derived milestone differs from raw line")
+        selector = (*key, name)
+        prior = previous.get(selector)
+        expected_regression = prior is not None and prior["current"] is True and actual is False
+        require(row["regression"] == expected_regression, "regression chronology differs")
+        enriched = dict(row, trace_id=manifest_by_cell[key]["trace_id"],
+                        trace_sha256=manifest_by_cell[key]["trace_sha256"], line_sha256=sha(line),
+                        previous_sample_line=prior["trace_line"] if prior else "",
+                        previous_sample_line_sha256=prior["line_sha256"] if prior else "",
+                        is_placement_goal=name in {p["name"] for p in placements[key[0]]},
+                        catalog_certified=False)
+        observations.append(enriched)
+        if expected_regression:
+            regressions.append(enriched)
+        previous[selector] = enriched
+    intervals = []
+    for key in sorted(samples_by_cell):
+        task_id = key[0]
+        samples = samples_by_cell[key]
+        for p_spec, q_spec in (placements[task_id], list(reversed(placements[task_id]))):
+            p, q = p_spec["name"], q_spec["name"]
+            for start, end, p_start in windows(samples, p, q):
+                block = samples[start:end + 1]
+                require(all(s["current"][p] for s in block) and not block[0]["current"][q] and block[-1]["current"][q],
+                        "invalid sampled preservation interval")
+                has_policy = any(s["policy_step"] > samples[start]["policy_step"] for s in block[1:])
+                prior_p_false = samples[p_start - 1] if p_start > 0 else None
+                intervals.append({"task_id": key[0], "initial_state_id": key[1], "policy_seed": key[2],
+                    "trace_id": manifest_by_cell[key]["trace_id"], "trace_sha256": manifest_by_cell[key]["trace_sha256"],
+                    "preserved_predicate": p, "later_achieved_predicate": q,
+                    "preserved_arguments": json.dumps(p_spec["arguments"], separators=(",", ":")),
+                    "later_arguments": json.dumps(q_spec["arguments"], separators=(",", ":")),
+                    "start_trace_line": block[0]["trace_line"], "end_trace_line": block[-1]["trace_line"],
+                    "start_line_sha256": block[0]["line_sha256"], "end_line_sha256": block[-1]["line_sha256"],
+                    "start_environment_control": block[0]["environment_control"], "end_environment_control": block[-1]["environment_control"],
+                    "start_policy_step": block[0]["policy_step"], "end_policy_step": block[-1]["policy_step"],
+                    "observed_boundaries_including_endpoints": len(block),
+                    "ordered_interval_sample_line_hashes_sha256": sha(encoded([s["line_sha256"] for s in block])),
+                    "p_true_run_start_line": samples[p_start]["trace_line"],
+                    "p_previous_false_line": prior_p_false["trace_line"] if prior_p_false else "",
+                    "p_completion_transition_observed": prior_p_false is not None,
+                    "p_was_true_at_episode_initial": samples[0]["current"][p],
+                    "contains_later_policy_controls": has_policy, "p_true_at_every_recorded_boundary": True,
+                    "new_physical_skill_identity_proven": False, "interruption_preservation_proven": False,
+                    "catalog_certified": False, "scope": "sampled_clean_predicate_interval_only"})
+    evidence, summaries = [], []
+    for task_id in TASKS:
+        task = protocol["task_records"][str(task_id)]
+        task_rows = []
+        for predicate in placements[task_id]:
+            selected = [r for r in observations if r["task_id"] == task_id and r["predicate_name"] == predicate["name"]]
+            require(selected and all(r["predicate_kind"] == "libero_predicate" and r["commitment"] for r in selected),
+                    "placement lacks actual individual reader evaluations")
+            def first_selector(truth=None):
+                found = next((r for r in selected if truth is None or r["current"] is truth), None)
+                return json.dumps({k: found[k] for k in ("trace_id", "trace_sha256", "trace_line", "line_sha256", "environment_control", "policy_step", "current")}, sort_keys=True) if found else ""
+            row = {"task_id": task_id, "predicate_name": predicate["name"], "predicate": predicate["arguments"][0],
+                   "arguments": json.dumps(predicate["arguments"][1:], separators=(",", ":")),
+                   "actual_bound_reader": "LiberoStateView.libero_predicate -> env._eval_predicate(exact predicate, arguments)",
+                   "reader_source_sha256": PROGRESS_SHA, "bddl_sha256": task["bddl"]["sha256"],
+                   "observations": len(selected), "observed_true_samples": sum(r["current"] for r in selected),
+                   "observed_false_samples": sum(not r["current"] for r in selected),
+                   "regression_transitions": sum(r["regression"] for r in selected),
+                   "individual_goal_verifiability_supported": True,
+                   "achievement_observed": any(r["current"] for r in selected),
+                   "first_observation": first_selector(), "first_true_observation": first_selector(True),
+                   "first_false_observation": first_selector(False), "catalog_certified": False,
+                   "scope": "distinct_original_goal_reader_and_recorded_individual_evaluations"}
+            evidence.append(row); task_rows.append(row)
+        relevant = [r for r in intervals if r["task_id"] == task_id]
+        task_episodes = [e for k, e in episode_map.items() if k[0] == task_id]
+        require(len(task_episodes) == 10, "task denominator changed")
+        summaries.append({"task_id": task_id, "clean_cells_retained": 10,
+            "clean_successes": sum(e["success"] for e in task_episodes),
+            "distinct_individually_observed_placement_goal_readers": len(task_rows),
+            "two_independently_verifiable_goal_predicates_supported": len(task_rows) == 2,
+            "placement_predicates_observed_true": sum(r["achievement_observed"] for r in task_rows),
+            "sampled_p_held_q_achievement_intervals": len(relevant),
+            "intervals_with_later_policy_controls": sum(r["contains_later_policy_controls"] for r in relevant),
+            "all_progress_regressions_retained": sum(r["task_id"] == task_id for r in regressions),
+            "placement_regressions_retained": sum(r["task_id"] == task_id and r["is_placement_goal"] for r in regressions),
+            "can_remain_valid_through_interruptions": "NOT_ESTABLISHED_FROM_CLEAN_EPISODES",
+            "cross_skill_structural_check": "SEMANTIC_BINDING_AND_REVIEW_REQUIRED",
+            "catalog_certified": False, "task_eligible": "NOT_EVALUATED"})
+    # Verify the immutable receipt and all validated raw bytes again before output.
+    read(audit_path, args.calibration_audit_sha256)
+    for receipt in audit["input_artifacts"]:
+        read(raw_root / receipt["relative_path"], receipt["sha256"])
+    read(progress_path, PROGRESS_SHA); read(criteria, CRITERIA_SHA)
+    report = {"schema_version": "repeated_v2_structural_witness_extraction_v1", "status": "PASS_REPORT_ONLY",
+              "calibration_audit": artifact(audit_path), "offline_auditor": artifact(auditor_path),
+              "criteria": artifact(criteria), "static_source": artifact(static_path), "reader_bindings": bindings,
+              "verified_calibration_derived_artifacts": derived_receipts,
+              "raw_input_root_local": str(raw_root), "raw_input_root_original": audit["input_root_original"],
+              "protocol_sha256": audit["protocol_sha256"], "task_ids": list(TASKS), "clean_cells_retained": 40,
+              "calibration_outcomes_changed": False, "catalog_modified": False, "catalog_certificates": 0,
+              "placement_reader_evidence_rows": len(evidence), "all_progress_observations": len(observations),
+              "all_progress_regression_transitions": len(regressions), "sampled_intervals": len(intervals),
+              "provider_calls": 0, "model_calls": 0, "simulator_calls": 0,
+              "interval_rule": "one earliest-start witness per Q false-to-true transition within a contiguous observed P-true run; both orientations enumerated, neither required",
+              "line_hash_encoding": "exact raw ACTION_TRACE.txt line bytes including newline; interval digest is sorted-key compact JSON list of ordered line hashes plus newline",
+              "limitations": [
+                  "Recorded per-predicate evaluations are verified against source bindings and artifact bytes; physical truth is not re-evaluated offline.",
+                  "Individual goal verifiability does not require two successful episodes, either placement to become true, or both physical achievement orderings.",
+                  "Achievement_observed is a separate factual field; never-true predicates are not called completed milestones.",
+                  "Preservation intervals concern recorded environment-control boundaries, not every internal physics integration.",
+                  "Intervening policy controls do not prove a named planner skill or explicit persistent requirement binding.",
+                  "All regressions, including reachability/lift predicates and earlier failures before a later preserved interval, remain visible; these are not automatically method failures.",
+                  "No released-grasp certificate, interruption preservation, safe grounding, event feasibility, or preference contract is inferred from clean traces.",
+                  "Task8 stove-on observations remain original operational-goal evidence, not a newly achieved second placement.",
+                  "Four tasks do not satisfy the full-catalog common-protocol/minimum-eight-task gates."]}
+    return report, [("TRACE_ARTIFACTS.csv", manifests), ("ALL_PROGRESS_OBSERVATIONS.csv", observations),
+                    ("REGRESSIONS.csv", regressions), ("PLACEMENT_PREDICATE_EVIDENCE.csv", evidence),
+                    ("CROSS_STAGE_INTERVALS.csv", intervals), ("TASK_FIELD_SUMMARY.csv", summaries)]
+
+
+INTERVAL_FIELDS = ["task_id", "initial_state_id", "policy_seed", "trace_id", "trace_sha256", "preserved_predicate", "later_achieved_predicate", "preserved_arguments", "later_arguments", "start_trace_line", "end_trace_line", "start_line_sha256", "end_line_sha256", "start_environment_control", "end_environment_control", "start_policy_step", "end_policy_step", "observed_boundaries_including_endpoints", "ordered_interval_sample_line_hashes_sha256", "p_true_run_start_line", "p_previous_false_line", "p_completion_transition_observed", "p_was_true_at_episode_initial", "contains_later_policy_controls", "p_true_at_every_recorded_boundary", "new_physical_skill_identity_proven", "interruption_preservation_proven", "catalog_certified", "scope"]
+
+
+def self_check():
+    def samples(values):
+        return [{"current": {"P": p, "Q": q}} for p, q in values]
+    require(windows(samples([(False, False), (True, False), (True, True)]), "P", "Q") == [(1, 2, 1)], "ordinary window")
+    require(windows(samples([(True, False), (False, False), (False, True)]), "P", "Q") == [], "P regression was hidden")
+    require(windows(samples([(True, False), (False, False), (True, False), (True, True)]), "P", "Q") == [(2, 3, 2)], "later reacquisition mislabeled")
+    require(windows(samples([(True, False), (True, True), (True, False), (True, True)]), "P", "Q") == [(0, 1, 0), (2, 3, 0)], "Q regression dropped")
+    require(windows(samples([(False, False), (True, True)]), "P", "Q") == [], "simultaneous terminal invented interval")
+    require(windows(samples([(True, False), (True, True)]), "P", "Q") == [(0, 1, 0)], "initial true P incorrectly forbidden")
+    require(windows(samples([(False, False), (False, False)]), "P", "Q") == [], "never true invented interval")
+    reverse = samples([(False, False), (False, True), (True, True)])
+    require(windows(reverse, "P", "Q") == [] and windows(reverse, "Q", "P") == [(1, 2, 1)], "reverse orientation")
+    print(json.dumps({"status": "PASS_IN_MEMORY_SELF_CHECK", "checks": 8, "raw_calibration_data_used": False,
+                      "provider_calls": 0, "model_calls": 0, "simulator_calls": 0}))
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--calibration-audit", type=Path)
+    parser.add_argument("--calibration-audit-sha256")
+    parser.add_argument("--input-root", type=Path)
+    parser.add_argument("--output-root", type=Path)
+    parser.add_argument("--self-check", action="store_true")
+    args = parser.parse_args()
+    if args.self_check:
+        self_check(); return
+    if not all((args.calibration_audit, args.calibration_audit_sha256, args.input_root, args.output_root)):
+        parser.error("audit, audit SHA256, raw input root, and NEW output root are required")
+    if not HEX.fullmatch(args.calibration_audit_sha256):
+        parser.error("audit SHA256 must be lowercase hexadecimal")
+    output = args.output_root.resolve()
+    require(not output.exists() and output.parent.is_dir(), "output must be a NEW directory with an existing parent")
+    require(not output.is_relative_to(args.input_root.resolve()) and not output.is_relative_to(args.calibration_audit.resolve().parent),
+            "output must be outside raw and existing calibration audit trees")
+    # Validation completes before publishing any successful derived claim.
+    report, tables = extract(args)
+    report["extractor"] = artifact(__file__)
+    output.mkdir(exist_ok=False)
+    outputs = []
+    observation_fields = next(list(rows[0]) for name, rows in tables if name == "ALL_PROGRESS_OBSERVATIONS.csv")
+    for name, rows in tables:
+        fields = list(rows[0]) if rows else INTERVAL_FIELDS if name == "CROSS_STAGE_INTERVALS.csv" else observation_fields
+        outputs.append(publish(output, name, csv_bytes(rows, fields)))
+    note = ("# Structural witness extraction\n\nPASS_REPORT_ONLY: field-level evidence, not catalog certification.\n\n"
+            "PLACEMENT_PREDICATE_EVIDENCE.csv records two separately evaluated source-bound placement goals per task, including never-true goals. "
+            "TASK_FIELD_SUMMARY.csv separates verifiability, observed achievement, and sampled preservation intervals. "
+            "CROSS_STAGE_INTERVALS.csv lists every detected Q false-to-true transition while P remains true at each recorded boundary, in both orientations without requiring either. "
+            "ALL_PROGRESS_OBSERVATIONS.csv and REGRESSIONS.csv retain all episodes and all observed source-predicate regressions. "
+            "TRACE_ARTIFACTS.csv maps trace IDs to immutable original/local paths, whole-file hashes, and terminal hashes; observation/interval rows supply exact raw-line hashes.\n\n"
+            "No interruption, released-grasp, preference, safety, structural eligibility, or formal readiness certificate is inferred. "
+            "Earlier regression is never erased by a later preserved interval. Goal truth is evaluated independently of any fresh occurrence identity; no universal new false-to-true requirement is introduced.\n")
+    outputs.append(publish(output, "STRUCTURAL_WITNESS_REPORT.md", note.encode()))
+    report["outputs"] = outputs
+    receipt = publish(output, "STRUCTURAL_WITNESS_AUDIT.txt", encoded(report))
+    print(json.dumps({"status": report["status"], "receipt": receipt, "placement_reader_rows": report["placement_reader_evidence_rows"],
+                      "sampled_intervals": report["sampled_intervals"], "regressions_retained": report["all_progress_regression_transitions"]}))
+
+
+if __name__ == "__main__":
+    main()

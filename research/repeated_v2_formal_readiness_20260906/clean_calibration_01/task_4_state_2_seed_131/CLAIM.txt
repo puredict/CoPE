@@ -1,0 +1,1 @@
+{"attempt":1,"claimed_unix_seconds":1788720372.7824864,"initial_state_id":2,"policy_seed":131,"protocol_sha256":"ac3e0ff37bb1c6eea10b1fa827cc9090408055b1bc622e4aaee87afc769f8959","task_id":4}

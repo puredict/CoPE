@@ -74,7 +74,8 @@ def test_missing_and_unsupported_catalog_semantics_fail_closed():
     values = trigger_map()
     values.pop(EventFamily.TARGET_OBJECT_DISPLACED.value)
     with pytest.raises(ValueError, match="BLOCKED_TASK_CATALOG_GAP"):
-        build_master_schedule("test", semantic_triggers=values)
+        build_master_schedule("test", semantic_triggers=values,
+                              supported_event_families=tuple(EventFamily))
     values = trigger_map()
     del values[EventFamily.TARGET_OBJECT_DISPLACED.value]["physical_feasibility_guard"]
     with pytest.raises(ValueError, match="BLOCKED_TASK_CATALOG_GAP"):

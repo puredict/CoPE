@@ -1,0 +1,11 @@
+measure,planned_design,observed,status
+tasks,2,0,NO_ELIGIBLE_TASKS_SELECTED
+initial_states_per_task,2,0,NOT_STARTED
+policy_seeds,1,0,NOT_STARTED
+non_oracle_methods,8,0,NOT_STARTED
+continuous_trajectories,32,0,NOT_STARTED
+adaptation_event_cells_excluding_K0,128,0,NOT_STARTED
+event_cells_including_K0,160,0,NOT_STARTED
+external_reasoner_calls,112,0,NOT_STARTED
+learned_policy_act_calls,,0,NOT_STARTED
+journal_integrity,exact cells after manifest admission,NOT_ASSESSED,NO_JOURNAL_OR_MANIFEST_CREATED

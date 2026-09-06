@@ -1,0 +1,19 @@
+import os,subprocess,pathlib,hashlib,json,time
+root=pathlib.Path("/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4")
+script=root/"research/repeated_v2_formal_readiness_20260906/CALIBRATION_DRIVER.txt"
+assert hashlib.sha256(script.read_bytes()).hexdigest()=="c7e5ba2b1de42e06306eb3d4d04cfabebb420030220ef24e52953ac65cc8c206"
+base=pathlib.Path("/home/lijingsu/vla/outputs/repeated_v2_readiness_20260906")
+out=base/"clean_calibration_01"
+assert not out.exists()
+env=dict(os.environ)
+env.pop("LD_LIBRARY_PATH",None)
+env.update(LD_PRELOAD="/usr/lib/x86_64-linux-gnu/libnvidia-ml.so.535.54.03:/usr/lib/x86_64-linux-gnu/libcuda.so.535.54.03",MUJOCO_GL="osmesa",PYOPENGL_PLATFORM="osmesa",LIBERO_CONFIG_PATH="/home/lijingsu/.libero",PYTHONPATH="/home/lijingsu/vla/src/openvla:/home/lijingsu/vla/src/LIBERO",HF_HUB_CACHE="/home/lijingsu/.cache/cope-readiness-20260906/huggingface/hub",HF_MODULES_CACHE="/home/lijingsu/.cache/cope-readiness-20260906/huggingface/modules",TRANSFORMERS_CACHE="/home/lijingsu/.cache/cope-readiness-20260906/huggingface/hub",HF_HUB_OFFLINE="1",TRANSFORMERS_OFFLINE="1",TOKENIZERS_PARALLELISM="false",TF_FORCE_GPU_ALLOW_GROWTH="true")
+cmd=["/home/lijingsu/vla/.venv/bin/python","-u",str(script),"--execute","--gpu","6","--output-root",str(out),"--gate-evidence",str(base/"action_probe_01/VLA_GATE.txt"),"--gate-evidence-sha256","6876f04c352178c5738cf501e7c73dbb8af8199123dff2726e1bc11eaaa58dbb"]
+log=base/"CLEAN_CALIBRATION_01_CONSOLE.txt"
+with log.open("xb") as handle:
+    process=subprocess.Popen(cmd,cwd=str(root),env=env,stdin=subprocess.DEVNULL,stdout=handle,stderr=subprocess.STDOUT,start_new_session=True)
+    receipt={"pid":process.pid,"command":cmd,"console":str(log),"launch_unix":time.time(),"driver_sha256":hashlib.sha256(script.read_bytes()).hexdigest(),"formal_episodes":0,"reasoner_calls":0}
+    with (base/"CLEAN_CALIBRATION_01_LAUNCHER.txt").open("x") as receipt_file:
+        json.dump(receipt,receipt_file,sort_keys=True,indent=2)
+        receipt_file.flush();os.fsync(receipt_file.fileno())
+print(json.dumps(receipt,sort_keys=True))

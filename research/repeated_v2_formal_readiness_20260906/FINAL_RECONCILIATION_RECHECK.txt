@@ -1,0 +1,16 @@
+status=RECONCILED
+baseline_rows=794
+closed_evidence_rows=42
+open_baseline_rows=752
+baseline_root_packages=127
+open_root_packages=120
+baseline_artifact_units=357
+open_artifact_units=350
+new_current_diagnostics=0
+disappeared_without_evidence=0
+wording_migrations_retained_open=10
+current_gap_tuple_sha256=d62b61579aa8035d4a035f56956fbdb170627613fe0c09e560a89c84a5de77b9
+provider_calls=0
+model_calls=0
+simulator_calls=0
+recheck_output=/private/tmp/cope-reconcile-final-20260906-02/GAP_RECONCILIATION.txt

@@ -1,0 +1,22 @@
+{
+  "command": [
+    "/home/lijingsu/vla/.venv/bin/python",
+    "-u",
+    "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/research/repeated_v2_formal_readiness_20260906/CALIBRATION_DRIVER.txt",
+    "--execute",
+    "--gpu",
+    "6",
+    "--output-root",
+    "/home/lijingsu/vla/outputs/repeated_v2_readiness_20260906/clean_calibration_01",
+    "--gate-evidence",
+    "/home/lijingsu/vla/outputs/repeated_v2_readiness_20260906/action_probe_01/VLA_GATE.txt",
+    "--gate-evidence-sha256",
+    "6876f04c352178c5738cf501e7c73dbb8af8199123dff2726e1bc11eaaa58dbb"
+  ],
+  "console": "/home/lijingsu/vla/outputs/repeated_v2_readiness_20260906/CLEAN_CALIBRATION_01_CONSOLE.txt",
+  "driver_sha256": "c7e5ba2b1de42e06306eb3d4d04cfabebb420030220ef24e52953ac65cc8c206",
+  "formal_episodes": 0,
+  "launch_unix": 1788714754.209388,
+  "pid": 491166,
+  "reasoner_calls": 0
+}

@@ -1,0 +1,118 @@
+{
+  "base": "/home/lijingsu/vla/outputs/repeated_v2_readiness_20260906/horizon520_task8_state2_01",
+  "cells": [
+    {
+      "action_schema_valid": true,
+      "all_diagnostic_step_validations_pass": true,
+      "compared_actions": 260,
+      "diagnostic_seed": 919602,
+      "diagnostic_trace_sha256": "6f5065c29138b2fe78bb5dc7820af6c2f5b04365f9cf545e4c704d5c32037659",
+      "exception": null,
+      "first_260_raw_and_environment_actions_exact": true,
+      "frozen_terminal_unchanged_sha256": "ad1b4cd9684a49e7b04fc63d63add4800b3ce0ca4e3926201913ce54bc1bb3c2",
+      "frozen_trace_sha256": "a3886137d2ae2c57e95fd1c49899de0fadafc33a9f0dd1ff1bf236b0a97b66b8",
+      "initial_frame_exact": true,
+      "initial_state_id": 2,
+      "manual_intervention": false,
+      "policy_steps_consumed": 378,
+      "success": true,
+      "task_id": 8,
+      "termination_reason": "libero_done"
+    }
+  ],
+  "checkpoint_files_manifest_sha256": "58773a8ef85515f695c99402f692dc5afe0fb71efd7f3984ff44c1f117c4f034",
+  "checkpoint_path": "/home/lijingsu/vla/models/openvla-7b-finetuned-libero-10",
+  "checkpoint_revision": "80970322773f81baa2e22fe495d0487b93a05cfa",
+  "config_sha256": "bcea5af59fe47e67579afa1cc57788cf265d2c7479e09d788c17efaccb98fc62",
+  "episode_count": 1,
+  "evidence_admissibility": "failure_diagnosis_only_not_calibration_catalog_pilot_or_formal_evidence",
+  "expected_episode_count": 1,
+  "files": [
+    {
+      "bytes": 1743,
+      "relative_path": "DIAGNOSTIC_CONFIG.yaml",
+      "sha256": "bcea5af59fe47e67579afa1cc57788cf265d2c7479e09d788c17efaccb98fc62"
+    },
+    {
+      "bytes": 719,
+      "relative_path": "DIAGNOSTIC_PROTOCOL.txt",
+      "sha256": "22fc10f802da6c295e1a062035577412ab70d2a69fbecb66ad3225dfb6ef6916"
+    },
+    {
+      "bytes": 7521,
+      "relative_path": "RUN_CONSOLE.txt",
+      "sha256": "7509b205c39bb8256db4987d271a7a99dfb73707ea413ecb7b1a347a512ce25c"
+    },
+    {
+      "bytes": 1168,
+      "relative_path": "RUN_LAUNCHER.txt",
+      "sha256": "1cdfa4ac40df2438468aae4aa2a6110dc0127b4e613ffe572c7d186802291c50"
+    },
+    {
+      "bytes": 2905,
+      "relative_path": "run/calibration_summary.json",
+      "sha256": "69c9a09e86ff75c630f0ec69473e669618c511d40475e5fc614052ee59d28d44"
+    },
+    {
+      "bytes": 2905,
+      "relative_path": "run/calibration_summary.partial.json",
+      "sha256": "69c9a09e86ff75c630f0ec69473e669618c511d40475e5fc614052ee59d28d44"
+    },
+    {
+      "bytes": 479403,
+      "relative_path": "run/episodes/calibration__task08__state02__seed919602/attempt-001.jsonl",
+      "sha256": "6f5065c29138b2fe78bb5dc7820af6c2f5b04365f9cf545e4c704d5c32037659"
+    },
+    {
+      "bytes": 3054,
+      "relative_path": "run/episodes/calibration__task08__state02__seed919602/episode.json",
+      "sha256": "d4f86d337bc8a532ebb434a08d57958dad696cbdf3fa6756b7d1270dee3040de"
+    },
+    {
+      "bytes": 473,
+      "relative_path": "run/model_load.json",
+      "sha256": "bedf5e61333cb65c6fabf7d04a24445234d72a5407a0225e581814a0993c1593"
+    },
+    {
+      "bytes": 3282,
+      "relative_path": "run/run_manifest.json",
+      "sha256": "1081a87b2032cb45e3b3ccee07bc624138a3cda8615636057e2c30bf2a8ba7d9"
+    },
+    {
+      "bytes": 473,
+      "relative_path": "smoke/model_load.json",
+      "sha256": "8c9031036eea459a48e683000ec6256efbcd58355a8f741cd483c1078d17b517"
+    },
+    {
+      "bytes": 55138,
+      "relative_path": "smoke/reset_observation.png",
+      "sha256": "e822e4a5dd749e6e2cbc0819086c386378e7c59c144c0ff009cd713279f38a48"
+    },
+    {
+      "bytes": 3276,
+      "relative_path": "smoke/run_manifest.json",
+      "sha256": "78c77bdd1df69c8be481ddf1a60bd77cd622a8c931ac3b6d72ed239734537bbf"
+    },
+    {
+      "bytes": 6247,
+      "relative_path": "smoke/smoke_report.json",
+      "sha256": "ae292abef660846e6047d4dd2673dbf9812d0a98e4919be5ced7e1b7cf7ac59f"
+    }
+  ],
+  "formal_experiment_started": false,
+  "formal_provider_calls": 0,
+  "frozen_260_results_rewritten": false,
+  "interpretation": {
+    "task8_state2": "same first260 actions as frozen timeout; succeeds at378, so the frozen cutoff caused this cell's failure"
+  },
+  "oracle_actions": 0,
+  "protocol_sha256": "22fc10f802da6c295e1a062035577412ab70d2a69fbecb66ad3225dfb6ef6916",
+  "schema_version": "repeated_v2_posthoc_horizon_diagnostic_audit_v1",
+  "scientific_threshold_changed": false,
+  "selection_basis": "earliest first-stage completion among frozen task8 states",
+  "smoke_all_gates_pass": true,
+  "smoke_passed": true,
+  "source_commit": "c0308c1fc13036ef34983dd07397744f659cb417",
+  "status": "COMPLETE_SUCCESS",
+  "summary_complete": true
+}

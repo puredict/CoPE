@@ -1,0 +1,21 @@
+{
+  "workspace": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree",
+  "branch": "codex/repeated-v2-phase4",
+  "starting_head": "688b7eb3a91fdf5229ea2cda87e9a33f85566fe6",
+  "starting_status": "CLEAN (git status --short --branch printed only branch header before audit files existed)",
+  "recent_commits": [
+    "688b7eb3a91fdf5229ea2cda87e9a33f85566fe6 Record Window 4 validation and blocked formal claim decision",
+    "c0308c1fc13036ef34983dd07397744f659cb417 Rehash frozen bytes despite unchanged filesystem timestamps",
+    "71ca2700f8036805cd2deb6344bef338b903d6f1 Add integrity-first v2 analysis and formal freeze gates",
+    "02bc0143caf0e60f1cef273357433b660dfd75c3 Implement v2 durable runtime and gated VLA execution",
+    "41d15bd2ef8b4bb04194b524f9180d2b17b4fc3b Implement repeated v2 method adapters and controlled qualification",
+    "b8462c28424d6551ab1713e67d68f42ca149b55f Add repeated interruption v2 phase-one contracts and preflight",
+    "84e1e742579899adb67efee92cef16efca063b31 Archive unsynced CoPE and ReKep code and experiment results",
+    "7293f0a84521d81e58fc452b75a7cd0e7265ebe5 Merge pull request #1 from ljs0529/codex/cope-research-sync"
+  ],
+  "origin": "https://github.com/puredict/CoPE.git",
+  "push_action": "git push origin HEAD:refs/heads/codex/repeated-v2-phase4",
+  "verified_remote_branch": "refs/heads/codex/repeated-v2-phase4",
+  "verified_remote_sha": "688b7eb3a91fdf5229ea2cda87e9a33f85566fe6",
+  "original_workspace_note": "/Users/lijingsu/Documents/cope has unborn main and user files; unchanged. Actual integrated git worktree used here."
+}

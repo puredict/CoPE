@@ -1,0 +1,114 @@
+#!/usr/bin/env python3
+"""Attach an already audited four-task calibration to a new catalog candidate.
+
+This performs no model, simulator, policy, or provider call. The candidate is
+written exclusively and must still pass RECONCILE_GAPS before it replaces the
+checked-in catalog.
+"""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+from pathlib import Path
+import sys
+
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+
+from cope_benchmark.repeated_v2.canonical import strict_loads
+from cope_benchmark.repeated_v2.task_calibration import CalibrationEpisode, summarize_calibration
+from cope_benchmark.repeated_v2.task_catalog import TaskCatalog, load_task_catalog
+
+TASKS = (0, 1, 4, 8)
+AUDITOR_SHA256 = "57d5219a82e7db9cdd8cd50a69e11e8bd992f89d2b714781b96f697031c479b5"
+DRIVER_SHA256 = "c7e5ba2b1de42e06306eb3d4d04cfabebb420030220ef24e52953ac65cc8c206"
+CHECKPOINT_SHA256 = "d36eaa2a334cd52f4a3a94558cf90d82584743ea772fabf76f9e4372e7076076"
+
+
+def sha(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def require(value, reason):
+    if not value:
+        raise ValueError(reason)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--source-catalog", type=Path, required=True)
+    parser.add_argument("--audit", type=Path, required=True)
+    parser.add_argument("--audit-sha256", required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    require(not args.output.exists(), "refusing to overwrite output")
+    require(sha(args.audit) == args.audit_sha256, "audit bytes differ from supplied SHA256")
+    audit = strict_loads(args.audit.read_text())
+    require(audit["schema_version"] == "repeated_v2_clean_calibration_offline_audit_v1"
+            and audit["status"] == "PASS" and audit["complete_grid"] is True
+            and audit["episodes"] == 40 and tuple(audit["task_ids"]) == TASKS,
+            "audit is not the complete passing four-task cohort")
+    require(audit["auditor_sha256"] == AUDITOR_SHA256
+            and audit["driver_sha256"] == DRIVER_SHA256
+            and audit["checkpoint_sha256"] == CHECKPOINT_SHA256
+            and audit["all_40_measured_episodes_retained"] is True,
+            "audit source/checkpoint/cohort identity differs")
+    for key in ("provider_calls_by_auditor", "model_calls_by_auditor", "simulator_calls_by_auditor"):
+        require(audit[key] == 0, "offline audit unexpectedly made a production call")
+    derived = {Path(row["path"]).name: row for row in audit["derived_artifacts"]}
+    required = {"CALIBRATION_ADMISSION_RECORDS.txt", "CALIBRATION_POLICY_ID_PROVENANCE.txt"}
+    require(required <= set(derived), "audit lacks admission records or identity lineage")
+    values = {}
+    for name in required:
+        path = args.audit.parent / name
+        require(path.is_file() and sha(path) == derived[name]["sha256"]
+                and path.stat().st_size == derived[name]["bytes"], "derived artifact bytes differ: " + name)
+        values[name] = strict_loads(path.read_text())
+    records = values["CALIBRATION_ADMISSION_RECORDS.txt"]
+    mapping = values["CALIBRATION_POLICY_ID_PROVENANCE.txt"]
+    require(isinstance(records, list) and len(records) == 40, "admission inventory is not 40 records")
+    require(mapping["original_records_modified"] is False
+            and mapping["outcome_or_grid_changes"] is False
+            and mapping["provider_or_policy_calls"] == 0
+            and mapping["derived_admission_inventory"]["sha256"] == derived["CALIBRATION_ADMISSION_RECORDS.txt"]["sha256"],
+            "identity alias lineage differs")
+    identity = audit["policy_identity"]
+    require(identity["provider_id"] == "openvla_native"
+            and identity["checkpoint_sha256"] == CHECKPOINT_SHA256,
+            "production policy identity differs")
+    parsed = [CalibrationEpisode.from_dict(row) for row in records]
+    require({row.task_id for row in parsed} == set(TASKS)
+            and all(row.policy_id == identity["provider_id"] for row in parsed),
+            "admission policy/task identity differs")
+    candidate = load_task_catalog(args.source_catalog).to_dict()
+    tasks = {row["task_id"]: row for row in candidate["tasks"]}
+    for task_id in TASKS:
+        selected = [row.to_dict() for row in parsed if row.task_id == task_id]
+        summary = summarize_calibration(task_id, selected,
+                                        initial_state_digests=tasks[task_id]["initial_state_digests"])
+        require(summary.total == 10, "task calibration grid is incomplete")
+        tasks[task_id]["calibration_records"] = selected
+        tasks[task_id]["unresolved_fields"] = [name for name in tasks[task_id]["unresolved_fields"]
+                                                   if name != "calibration_records"]
+        for name in sorted(required):
+            receipt = derived[name]
+            reference = {"uri": str((args.audit.parent / name).resolve().relative_to(ROOT)),
+                         "sha256": receipt["sha256"],
+                         "description": "Audited measured four-task clean calibration; exact records and raw model/provider identity lineage."}
+            if not any(row.get("uri") == reference["uri"] and row.get("sha256") == reference["sha256"]
+                       for row in tasks[task_id]["source_refs"]):
+                tasks[task_id]["source_refs"].append(reference)
+    validated = TaskCatalog.from_dict(candidate)
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    with args.output.open("x") as handle:
+        json.dump(validated.to_dict(), handle, ensure_ascii=False, indent=2, sort_keys=True)
+        handle.write("\n")
+    print(json.dumps({"status": "CANDIDATE_WRITTEN_NOT_YET_RECONCILED",
+                      "tasks_attached": list(TASKS), "records": len(records),
+                      "provider_calls": 0, "model_calls": 0, "simulator_calls": 0,
+                      "output": str(args.output), "output_sha256": sha(args.output)}, sort_keys=True))
+
+
+if __name__ == "__main__":
+    main()

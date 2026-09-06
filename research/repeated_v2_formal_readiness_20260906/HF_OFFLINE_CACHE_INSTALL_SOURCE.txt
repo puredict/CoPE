@@ -1,0 +1,29 @@
+
+from pathlib import Path
+import tarfile,json,hashlib,os
+from huggingface_hub import hf_hub_download
+archive=Path('/tmp/cope-official-hf-source-47a0ec7f-20260906.tar.gz')
+cache=Path('/home/lijingsu/.cache/cope-readiness-20260906/huggingface/hub')
+with tarfile.open(archive) as bundle:
+ manifest=json.load(bundle.extractfile('SOURCE_MANIFEST.json'))
+ assert manifest['repo_id']=='openvla/openvla-7b'
+ revision=manifest['resolved_revision']; assert revision=='47a0ec7fc4ec123775a391911046cf33cf9ed83f'
+ base=cache/'models--openvla--openvla-7b'; snapshot=base/'snapshots'/revision
+ snapshot.mkdir(parents=True,exist_ok=True)
+ for item in manifest['files']:
+  assert item['file'] in {'configuration_prismatic.py','modeling_prismatic.py','processing_prismatic.py'}
+  data=bundle.extractfile(item['file']).read()
+  assert hashlib.sha256(data).hexdigest()==item['sha256'] and len(data)==item['bytes']
+  path=snapshot/item['file']
+  if path.exists():assert path.read_bytes()==data
+  else:
+   with path.open('xb') as f:f.write(data);f.flush();os.fsync(f.fileno())
+ (base/'refs').mkdir(exist_ok=True)
+ ref=base/'refs'/'main'
+ if ref.exists():assert ref.read_text()==revision
+ else:
+  with ref.open('x') as f:f.write(revision);f.flush();os.fsync(f.fileno())
+ for item in manifest['files']:
+  resolved=hf_hub_download(manifest['repo_id'],item['file'],cache_dir=str(cache),local_files_only=True,token=False)
+  assert hashlib.sha256(Path(resolved).read_bytes()).hexdigest()==item['sha256']
+ print(json.dumps({'status':'VERIFIED_OFFLINE_HF_CODE_CACHE','cache_dir':str(cache),'resolved_revision':revision,'files':manifest['files'],'hub_local_files_only_resolution':True,'checkpoint_weights_changed':False,'default_user_cache_changed':False}),flush=True)

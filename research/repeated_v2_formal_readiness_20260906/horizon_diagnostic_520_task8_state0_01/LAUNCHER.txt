@@ -1,0 +1,26 @@
+{
+  "command": [
+    "/home/lijingsu/vla/.venv/bin/python",
+    "-u",
+    "/home/lijingsu/codex-worktrees/cope-horizon-diagnostic-20260906/experiments/openvla_libero_calibration.py",
+    "--phase",
+    "calibration",
+    "--config",
+    "/home/lijingsu/vla/outputs/repeated_v2_readiness_20260906/horizon520_task8_state0_01/DIAGNOSTIC_CONFIG.yaml",
+    "--out-dir",
+    "/home/lijingsu/vla/outputs/repeated_v2_readiness_20260906/horizon520_task8_state0_01/run",
+    "--smoke-report",
+    "/home/lijingsu/vla/outputs/repeated_v2_readiness_20260906/horizon520_task8_state0_01/smoke/smoke_report.json"
+  ],
+  "config_sha256": "7167beaeb198b103446949bc365816a7ba3c438d4c103646a267220a3485700e",
+  "console": "/home/lijingsu/vla/outputs/repeated_v2_readiness_20260906/horizon520_task8_state0_01/RUN_CONSOLE.txt",
+  "formal_experiment_started": false,
+  "formal_provider_calls": 0,
+  "gpu": 7,
+  "launch_unix": 1788725693.4008236,
+  "oracle_actions": 0,
+  "pid": 789756,
+  "purpose": "posthoc_failure_diagnosis_only",
+  "smoke_report_sha256": "9ccde468dd00361be3d1d4d5cfcd929b280dbd29b528160b713eb53e71eed6ae",
+  "source_commit": "c0308c1fc13036ef34983dd07397744f659cb417"
+}

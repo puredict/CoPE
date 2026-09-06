@@ -1,0 +1,79 @@
+{
+  "driver_sha256": "0497a5dc6c80e3f866c7eac115f0e4c801bd4a66cbd2b4be7d712f8902cf9a0b",
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "",
+    "MUJOCO_GL": "osmesa",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "PYOPENGL_PLATFORM": "osmesa"
+  },
+  "kind": "sealed_prefix_zero_control_diagnostic",
+  "new_event_calls": 0,
+  "new_policy_calls": 0,
+  "physical_prefix_replayed": false,
+  "source_prefix": {
+    "bytes": 12067,
+    "path": "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/research/repeated_v2_formal_readiness_20260906/prefix_preservation_20260906T180046Z_6aef8497/raw/task0_state0_PREFIX_RESULT.txt",
+    "sha256": "7ecbee4ec083f6c40873bf79cbdb5dd8852b2ab3d4327fad184d3195b9f5d6ef"
+  },
+  "source_restore": {
+    "bytes": 7015,
+    "path": "/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4/research/repeated_v2_formal_readiness_20260906/prefix_preservation_20260906T180046Z_6aef8497/raw/task0_state0_target_object_moved_before_RESTORE.txt",
+    "sha256": "f236ce209adb6ddfb1c7d5c271b4c5521e526051d43403f18bc5be3eaac08fca"
+  },
+  "sources": [
+    {
+      "bytes": 8781,
+      "path": "/home/lijingsu/vla/src/LIBERO/libero/libero/envs/env_wrapper.py",
+      "ranges": [
+        {
+          "end": 145,
+          "start": 118,
+          "text": "118:     def get_sim_state(self):\n119:         return self.env.sim.get_state().flatten()\n120: \n121:     def _post_process(self):\n122:         return self.env._post_process()\n123: \n124:     def _update_observables(self, force=False):\n125:         self.env._update_observables(force=force)\n126: \n127:     def set_state(self, mujoco_state):\n128:         self.env.sim.set_state_from_flattened(mujoco_state)\n129: \n130:     def reset_from_xml_string(self, xml_string):\n131:         self.env.reset_from_xml_string(xml_string)\n132: \n133:     def seed(self, seed):\n134:         self.env.seed(seed)\n135: \n136:     def set_init_state(self, init_state):\n137:         return self.regenerate_obs_from_state(init_state)\n138: \n139:     def regenerate_obs_from_state(self, mujoco_state):\n140:         self.set_state(mujoco_state)\n141:         self.env.sim.forward()\n142:         self.check_success()\n143:         self._post_process()\n144:         self._update_observables(force=True)\n145:         return self.env._get_observations()"
+        }
+      ],
+      "sha256": "a782fb76c9792268d28979474fe72849e1e98ada49c8e997a65359a8d6b6acd0"
+    },
+    {
+      "bytes": 30357,
+      "path": "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/robosuite/environments/base.py",
+      "ranges": [
+        {
+          "end": 362,
+          "start": 296,
+          "text": "296: \n297:         if self.has_offscreen_renderer:\n298:             if self.sim._render_context_offscreen is None:\n299:                 render_context = MjRenderContextOffscreen(self.sim, device_id=self.render_gpu_device_id)\n300:             self.sim._render_context_offscreen.vopt.geomgroup[0] = 1 if self.render_collision_mesh else 0\n301:             self.sim._render_context_offscreen.vopt.geomgroup[1] = 1 if self.render_visual_mesh else 0\n302: \n303:         # additional housekeeping\n304:         self.sim_state_initial = self.sim.get_state()\n305:         self._setup_references()\n306:         self.cur_time = 0\n307:         self.timestep = 0\n308:         self.done = False\n309: \n310:         # Empty observation cache and reset all observables\n311:         self._obs_cache = {}\n312:         for observable in self._observables.values():\n313:             observable.reset()\n314: \n315:     def _update_observables(self, force=False):\n316:         \"\"\"\n317:         Updates all observables in this environment\n318:         Args:\n319:             force (bool): If True, will force all the observables to update their internal values to the newest\n320:                 value. This is useful if, e.g., you want to grab observations when directly setting simulation states\n321:                 without actually stepping the simulation.\n322:         \"\"\"\n323:         for observable in self._observables.values():\n324:             observable.update(timestep=self.model_timestep, obs_cache=self._obs_cache, force=force)\n325: \n326:     def _get_observations(self, force_update=False):\n327:         \"\"\"\n328:         Grabs observations from the environment.\n329:         Args:\n330:             force_update (bool): If True, will force all the observables to update their internal values to the newest\n331:                 value. This is useful if, e.g., you want to grab observations when directly setting simulation states\n332:                 without actually stepping the simulation.\n333:         Returns:\n334:             OrderedDict: OrderedDict containing observations [(name_string, np.array), ...]\n335:         \"\"\"\n336:         observations = OrderedDict()\n337:         obs_by_modality = OrderedDict()\n338: \n339:         # Force an update if requested\n340:         if force_update:\n341:             self._update_observables(force=True)\n342: \n343:         # Loop through all observables and grab their current observation\n344:         for obs_name, observable in self._observables.items():\n345:             if observable.is_enabled() and observable.is_active():\n346:                 obs = observable.obs\n347:                 observations[obs_name] = obs\n348:                 modality = observable.modality + \"-state\"\n349:                 if modality not in obs_by_modality:\n350:                     obs_by_modality[modality] = []\n351:                 # Make sure all observations are numpy arrays so we can concatenate them\n352:                 array_obs = [obs] if type(obs) in {int, float} or not obs.shape else obs\n353:                 obs_by_modality[modality].append(np.array(array_obs))\n354: \n355:         # Add in modality observations\n356:         for modality, obs in obs_by_modality.items():\n357:             # To save memory, we only concatenate the image observations if explicitly requested\n358:             if modality == \"image-state\" and not macros.CONCATENATE_IMAGES:\n359:                 continue\n360:             observations[modality] = np.concatenate(obs, axis=-1)\n361: \n362:         return observations"
+        },
+        {
+          "end": 407,
+          "start": 378,
+          "text": "378:         if self.done:\n379:             raise ValueError(\"executing action in terminated episode\")\n380: \n381:         self.timestep += 1\n382: \n383:         # Since the env.step frequency is slower than the mjsim timestep frequency, the internal controller will output\n384:         # multiple torque commands in between new high level action commands. Therefore, we need to denote via\n385:         # 'policy_step' whether the current step we're taking is simply an internal update of the controller,\n386:         # or an actual policy update\n387:         policy_step = True\n388: \n389:         # Loop through the simulation at the model timestep rate until we're ready to take the next policy step\n390:         # (as defined by the control frequency specified at the environment level)\n391:         for i in range(int(self.control_timestep / self.model_timestep)):\n392:             self.sim.forward()\n393:             self._pre_action(action, policy_step)\n394:             self.sim.step()\n395:             self._update_observables()\n396:             policy_step = False\n397: \n398:         # Note: this is done all at once to avoid floating point inaccuracies\n399:         self.cur_time += self.control_timestep\n400: \n401:         reward, done, info = self._post_action(action)\n402: \n403:         if self.viewer is not None and self.renderer != \"mujoco\":\n404:             self.viewer.update()\n405: \n406:         observations = self.viewer._get_observations() if self.viewer_get_obs else self._get_observations()\n407:         return observations, reward, done, info"
+        }
+      ],
+      "sha256": "60eab4afd3dc95b4ac4cf0659fb9afe6360161912a4ac6931efe86ce1e1de519"
+    },
+    {
+      "bytes": 19730,
+      "path": "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/robosuite/robots/single_arm.py",
+      "ranges": [
+        {
+          "end": 348,
+          "start": 300,
+          "text": "300:         # Get prefix from robot model to avoid naming clashes for multiple robots and define observables modality\n301:         pf = self.robot_model.naming_prefix\n302:         modality = f\"{pf}proprio\"\n303: \n304:         # eef features\n305:         @sensor(modality=modality)\n306:         def eef_pos(obs_cache):\n307:             return np.array(self.sim.data.site_xpos[self.eef_site_id])\n308: \n309:         @sensor(modality=modality)\n310:         def eef_quat(obs_cache):\n311:             return T.convert_quat(self.sim.data.get_body_xquat(self.robot_model.eef_name), to=\"xyzw\")\n312: \n313:         @sensor(modality=modality)\n314:         def eef_vel_lin(obs_cache):\n315:             return np.array(self.sim.data.get_body_xvelp(self.robot_model.eef_name))\n316: \n317:         @sensor(modality=modality)\n318:         def eef_vel_ang(obs_cache):\n319:             return np.array(self.sim.data.get_body_xvelr(self.robot_model.eef_name))\n320: \n321:         sensors = [eef_pos, eef_quat, eef_vel_lin, eef_vel_ang]\n322:         names = [f\"{pf}eef_pos\", f\"{pf}eef_quat\", f\"{pf}eef_vel_lin\", f\"{pf}eef_vel_ang\"]\n323:         # Exclude eef vel by default\n324:         actives = [True, True, False, False]\n325: \n326:         # add in gripper sensors if this robot has a gripper\n327:         if self.has_gripper:\n328: \n329:             @sensor(modality=modality)\n330:             def gripper_qpos(obs_cache):\n331:                 return np.array([self.sim.data.qpos[x] for x in self._ref_gripper_joint_pos_indexes])\n332: \n333:             @sensor(modality=modality)\n334:             def gripper_qvel(obs_cache):\n335:                 return np.array([self.sim.data.qvel[x] for x in self._ref_gripper_joint_vel_indexes])\n336: \n337:             sensors += [gripper_qpos, gripper_qvel]\n338:             names += [f\"{pf}gripper_qpos\", f\"{pf}gripper_qvel\"]\n339:             actives += [True, True]\n340: \n341:         # Create observables for this robot\n342:         for name, s, active in zip(names, sensors, actives):\n343:             observables[name] = Observable(\n344:                 name=name,\n345:                 sensor=s,\n346:                 sampling_rate=self.control_freq,\n347:                 active=active,\n348:             )"
+        }
+      ],
+      "sha256": "38237d7b68c876b413f0df811b135ca3b2fb91061c011696baab07db5e87fa14"
+    },
+    {
+      "bytes": 16066,
+      "path": "/home/lijingsu/vla/.venv/lib/python3.10/site-packages/robosuite/utils/observables.py",
+      "ranges": [
+        {
+          "end": 259,
+          "start": 214,
+          "text": "214:     def update(self, timestep, obs_cache, force=False):\n215:         \"\"\"\n216:         Updates internal values for this observable, if enabled.\n217: \n218:         Args:\n219:             timestep (float): Amount of simulation time (in sec) that has passed since last call.\n220:             obs_cache (dict): Observation cache mapping observable names to pre-computed values to pass to sensor. This\n221:                 will be updated in-place during this call.\n222:             force (bool): If True, will force the observable to update its internal value to the newest value.\n223:         \"\"\"\n224:         if self._enabled:\n225:             # Increment internal time counter\n226:             self._time_since_last_sample += timestep\n227: \n228:             # If the delayed sampling time has been passed and we haven't sampled yet for this sampling period,\n229:             # we should grab a new measurement\n230:             if (\n231:                 not self._sampled and self._sampling_timestep - self._current_delay >= self._time_since_last_sample\n232:             ) or force:\n233:                 # Get newest raw value, corrupt it, filter it, and set it as our current observed value\n234:                 obs = np.array(self._filter(self._corrupter(self._sensor(obs_cache))))\n235:                 self._current_observed_value = obs[0] if len(obs.shape) == 1 and obs.shape[0] == 1 else obs\n236:                 # Update cache entry as well\n237:                 obs_cache[self.name] = np.array(self._current_observed_value)\n238:                 # Toggle sampled and re-sample next time delay\n239:                 self._sampled = True\n240:                 self._current_delay = self._delayer()\n241: \n242:             # If our total time since last sample has surpassed our sampling timestep,\n243:             # then we reset our timer and sampled flag\n244:             if self._time_since_last_sample >= self._sampling_timestep:\n245:                 if not self._sampled:\n246:                     # If we still haven't sampled yet, sample immediately and warn user that sampling rate is too low\n247:                     print(\n248:                         f\"Warning: sampling rate for observable {self.name} is either too low or delay is too high. \"\n249:                         f\"Please adjust one (or both)\"\n250:                     )\n251:                     # Get newest raw value, corrupt it, filter it, and set it as our current observed value\n252:                     obs = np.array(self._filter(self._corrupter(self._sensor(obs_cache))))\n253:                     self._current_observed_value = obs[0] if len(obs.shape) == 1 and obs.shape[0] == 1 else obs\n254:                     # Update cache entry as well\n255:                     obs_cache[self.name] = np.array(self._current_observed_value)\n256:                     # Re-sample next time delay\n257:                     self._current_delay = self._delayer()\n258:                 self._time_since_last_sample %= self._sampling_timestep\n259:                 self._sampled = False"
+        }
+      ],
+      "sha256": "19ea2e0e2cfb4ebcd5911cd2526dd645859535d25fc7bc55944c54a90e6672dc"
+    }
+  ]
+}

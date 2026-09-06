@@ -1,0 +1,613 @@
+#!/usr/bin/env python3
+"""One-off CPU oracle prefix/preservation sub-evidence; NOT calibration.
+
+Default invocation validates the frozen input inventory and prints a plan only.
+No simulator import occurs without --execute and an exact driver SHA256.
+Example after independent review, from the remote source checkout:
+  env CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
+    scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python \
+    research/repeated_v2_formal_readiness_20260906/PREFIX_PRESERVATION_DRIVER.txt \
+    --execute --expected-driver-sha256 REVIEWED_SHA256 \
+    --output-dir /absolute/new/readiness/prefix_preservation_run
+
+One centered grasp attempt per task/state, no retry or retuning. First original
+placement commitment only; all original clauses are freshly evaluated. Failed
+prefixes produce explicit skipped candidate rows, never imagined measurements.
+Each candidate starts from the authentic achieved MuJoCo snapshot. A closing
+endpoint replays its original opening event as separately counted setup.
+Physical changes and active no-go/unavailability receive no control steps.
+Only unchanged physical states after clearance/preference can receive five
+zero-motion open-gripper controls, subject to the conservative guards below.
+This does not establish collision safety, trigger qualification, recoverability,
+clean learned-policy success, or any catalog certificate.
+"""
+from __future__ import annotations
+
+import argparse
+import csv
+from dataclasses import asdict
+import hashlib
+import io
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+import traceback
+import uuid
+
+TASKS = (0, 1, 4, 8)
+STATES = tuple(range(5))
+PREFIX_CAP = 620
+POST_HOLD_CAP = 5
+STATE_TOTAL_CAP = 630
+SEED = 101
+READINESS = "research/repeated_v2_formal_readiness_20260906"
+WITNESS_DIRECTORY = "event_effect_20260906T171946Z_1f2fc64b"
+INPUTS = {
+    "STATIC_TASK_EVIDENCE.txt": "def712a609bfbdb4e32721c03a6d30451aeebdf68e13ba51aa51d64b48001a02",
+    "STATE_HASHES.csv": "362ec0a9abd8d9237bfe8b52e589fd3cde7646e93fe1fd018f2ac9366c3926a3",
+    WITNESS_DIRECTORY + "/RECEIPT.txt": "1da58c27e802ab49ce896366eaf449a5f8a546073eed9a4a47366e3b59516b9b",
+    WITNESS_DIRECTORY + "/EVENT_RESULTS.txt": "ebca6836491803d447915e243cdcc25911b85d24bdcf0540ca75157cc1ebc260",
+}
+SOURCE_FILES = {
+    "cope_benchmark/oracle_skill_controller.py": "9a5f83e1580357840359670ab8643e6db546bd78ef3b4bfd8123eff3147ed648",
+    "cope_benchmark/task_progress.py": "48366a77d05a538c75656d7dcf5b231e68154d875d8904d10c51fc601fbe14b0",
+    "cope_benchmark/interruptions.py": "0aa257a533b3535acf7d38b8ca7cd6849a1d717725e7998dd26381246216bcf3",
+    "libero_experiment_core.py": "27f98452fa2dde1cec73d59214af63ae53eebe480a113083a01f9d6b5a9769c8",
+    "tools/audit_repeated_feasibility.py": "428209088aa3809ac936c5be68a9c85f7db3c0d420fafc8a47980340e3abbf7c",
+}
+HOLD_FAMILIES = {"temporary_no_go_zone_disappears", "user_adds_gentle_preference"}
+LIMITATIONS = [
+    "Privileged geometry oracle, zero VLA/provider calls; never clean-policy calibration.",
+    "First original placement goal only, one physical attempt per state; no selected successes or retry.",
+    "Old mechanical payloads are unchanged candidates, not safe injection certificates.",
+    "No controls in physically mutated or active no-go/unavailability states.",
+    "Five zero-motion controls are bounded local stability observations, not trajectory/recovery safety.",
+    "Flattened MuJoCo state restores are audit isolation, not robot recovery.",
+    "MuJoCo snapshots do not serialize arbitrary Python/controller internals.",
+    "Non-image privileged observations and contact/force proxies are scorer-only sub-evidence.",
+    "No semantic trigger, minimum event spacing, formal eligibility, or catalog certification is inferred.",
+]
+
+
+class EvidenceError(RuntimeError):
+    pass
+
+
+class BudgetStop(EvidenceError):
+    pass
+
+
+class ControlIntegrityStop(EvidenceError):
+    pass
+
+
+def require(value, reason):
+    if not value:
+        raise EvidenceError(reason)
+
+
+def encoded(value):
+    return (json.dumps(value, sort_keys=True, ensure_ascii=False,
+                       separators=(",", ":"), allow_nan=False) + "\n").encode()
+
+
+def sha(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def artifact(path):
+    path = Path(path)
+    data = path.read_bytes()
+    return {"path": str(path.resolve()), "sha256": sha(data), "bytes": len(data)}
+
+
+def primitive(value):
+    if isinstance(value, dict):
+        return {str(key): primitive(item) for key, item in value.items()}
+    if isinstance(value, (tuple, list)):
+        return [primitive(item) for item in value]
+    if hasattr(value, "tolist"):
+        return value.tolist()
+    return value
+
+
+def publish(directory, name, value, raw=False):
+    path = directory / name
+    data = value if raw else encoded(value)
+    temporary = path.with_name("." + path.name + "." + uuid.uuid4().hex)
+    with temporary.open("xb") as handle:
+        handle.write(data)
+        handle.flush()
+        os.fsync(handle.fileno())
+    os.link(temporary, path)
+    temporary.unlink()
+    descriptor = os.open(str(directory), os.O_RDONLY | os.O_DIRECTORY)
+    try:
+        os.fsync(descriptor)
+    finally:
+        os.close(descriptor)
+    return artifact(path)
+
+
+def append(handle, row):
+    handle.write(encoded(row))
+    handle.flush()
+    os.fsync(handle.fileno())
+
+
+def csv_data(rows):
+    stream = io.StringIO(newline="")
+    writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
+    writer.writeheader()
+    writer.writerows(rows)
+    return stream.getvalue().encode()
+
+
+def load_inputs(root):
+    base = root / READINESS
+    receipts = {}
+    for relative, expected in INPUTS.items():
+        receipts[relative] = artifact(base / relative)
+        require(receipts[relative]["sha256"] == expected, "frozen input bytes changed: " + relative)
+    for relative, expected in SOURCE_FILES.items():
+        require(artifact(root / relative)["sha256"] == expected, "reviewed source changed: " + relative)
+    text = (base / "STATIC_TASK_EVIDENCE.txt").read_text()
+    position = text.index("Full machine-readable receipt")
+    source, _ = json.JSONDecoder().raw_decode(text[text.index("{", position):])
+    definitions = {row["task_id"]: row for row in source["records"]}
+    require(set(definitions) == set(TASKS), "source task inventory differs")
+    with (base / "STATE_HASHES.csv").open() as handle:
+        hashes = list(csv.DictReader(handle))
+    require(len(hashes) == 20 and {(int(r["task_id"]), int(r["initial_state_id"])) for r in hashes}
+            == {(t, s) for t in TASKS for s in STATES}, "state hash grid differs")
+    state_hashes = {(int(r["task_id"]), int(r["initial_state_id"])): r for r in hashes}
+    receipt = json.loads((base / WITNESS_DIRECTORY / "RECEIPT.txt").read_text())
+    require(receipt["passed"] == 135 and receipt["failed"] == receipt["not_run"] == 0
+            and receipt["environment_control_attempts"] == 0, "prior witness sweep not complete")
+    witness = json.loads((base / WITNESS_DIRECTORY / "EVENT_RESULTS.txt").read_text())
+    keys = [(r["task_id"], r["initial_state_id"], r["family"]) for r in witness]
+    require(len(witness) == len(set(keys)) == 135, "prior witness grid differs")
+    for row in witness:
+        require(row["status"] == "PASS_MECHANICAL_WITNESS" and all(row["checks"].values()),
+                "prior event lacks successful mechanical witness")
+        require(row["initial_state_sha256"] == state_hashes[row["task_id"], row["initial_state_id"]]["state_sha256"],
+                "prior witness and state hash differ")
+    plans = []
+    for row in witness:
+        setup = [r["source_event"] for r in witness if r["case_id"] == row["case_id"]
+                 and r["event_index_within_probe"] < row["event_index_within_probe"]]
+        plans.append({"task_id": row["task_id"], "initial_state_id": row["initial_state_id"],
+                      "family": row["family"], "event": row["source_event"], "setup_events": setup,
+                      "prior_witness_case_id": row["case_id"],
+                      "prior_witness_sha256": sha(encoded(row))})
+    require(sum(len(p["setup_events"]) for p in plans) == 40, "paired setup inventory differs")
+    return definitions, state_hashes, plans, receipts
+
+
+def plan_summary(root, definitions, plans, receipts):
+    return {"schema_version": "repeated_v2_cpu_prefix_preservation_request_v1",
+            "task_ids": TASKS, "state_ids": STATES, "prefix_attempts": 20,
+            "prefix_rule": "first original placement commitment in unchanged task_progress order",
+            "goals_from_actual_bddl": {str(t): definitions[t]["goal_predicates"] for t in TASKS},
+            "prefix_control_cap": PREFIX_CAP, "post_event_hold_cap": POST_HOLD_CAP,
+            "total_controls_per_state_cap": STATE_TOTAL_CAP,
+            "single_grasp_attempt": True, "max_move_steps": 60, "environment_seed": SEED,
+            "scheduled_target_event_rows": len(plans), "possible_setup_applications": 40,
+            "post_control_candidate_families": sorted(HOLD_FAMILIES),
+            "unsupported": [{"task_id": 8, "family": "goal_receptacle_moved",
+                             "reason": "stove has no free joint; no replacement variant inferred"}],
+            "input_artifacts": receipts,
+            "source_files": {relative: artifact(root / relative) for relative in SOURCE_FILES},
+            "provider_calls": 0, "vla_calls": 0, "learned_policy": False,
+            "controller_privilege": "simulator_geometry_oracle", "catalog_certificates": 0,
+            "limitations": LIMITATIONS}
+
+
+def run(args, root, definitions, state_hashes, plans, request):
+    require(os.environ.get("CUDA_VISIBLE_DEVICES") == "", "CUDA_VISIBLE_DEVICES must be empty")
+    require(sha(Path(__file__).read_bytes()) == args.expected_driver_sha256, "driver SHA differs from review")
+    output = Path(args.output_dir).resolve()
+    require(output.parent.is_dir() and output.is_relative_to((root / "research").resolve()),
+            "output must be new under existing project research directory")
+    output.mkdir(exist_ok=False)
+    request["driver"] = artifact(__file__)
+    request["producer_git_sha"] = subprocess.check_output(["git", "-C", str(root), "rev-parse", "HEAD"], text=True).strip()
+    publish(output, "REQUEST.txt", request)
+    prefixes, events, restorations = [], [], []
+    attempted_targets = attempted_setups = controls = control_calls = 0
+    print(json.dumps({"stage": "started", "output_directory": str(output)}), flush=True)
+    try:
+        import numpy as np
+        import torch
+        from libero.libero import benchmark, get_libero_path
+        from libero.libero.envs.env_wrapper import ControlEnv
+        from cope_benchmark.oracle_skill_controller import LiberoOracleSkillController, OracleSkillConfig
+        from cope_benchmark.interruptions import LiberoInterruptionContext, InterruptionEvent, apply_interruption
+        from cope_benchmark.task_progress import get_task_definition, LiberoStateView
+        from libero_experiment_core import validate_free_joint
+        require(not torch.cuda.is_initialized(), "CUDA unexpectedly initialized")
+        suite = benchmark.get_benchmark_dict()["libero_10"]()
+        publish(output, "RUNTIME_SOURCES.txt", {
+            "numpy": np.__version__, "torch": torch.__version__, "python": sys.version,
+            "control_env_source": artifact(sys.modules[ControlEnv.__module__].__file__),
+            "torch_cuda_initialized": False,
+        })
+        config = OracleSkillConfig(max_move_steps=60, grasp_attempt_xy_offsets_m=((0.0, 0.0),))
+        publish(output, "CONTROLLER_CONFIG.txt", asdict(config))
+        for task_id in TASKS:
+            source = definitions[task_id]
+            definition = get_task_definition("libero_10", task_id)
+            committed = [p for p in definition.predicates if p.commitment]
+            normalized = [list(p.arguments) for p in committed]
+            require(normalized == [[str(a).lower() if i == 0 else a for i, a in enumerate(g)]
+                                   for g in source["goal_predicates"]], "task_progress/BDDL goal clauses differ")
+            chosen = committed[0]
+            require(chosen.arguments[0] in ("in", "on") and len(chosen.arguments) == 3,
+                    "first commitment is not a supported binary placement")
+            task = suite.get_task(task_id)
+            require(task.name == definition.task_name == source["task_name"], "task identity changed")
+            bddl = Path(get_libero_path("bddl_files")) / task.problem_folder / task.bddl_file
+            require(artifact(bddl)["sha256"] == source["bddl"]["sha256"], "actual BDDL source changed")
+            initial_states = suite.get_task_init_states(task_id)
+            publish(output, f"TASK_{task_id}_SOURCE.txt", {
+                "bddl": artifact(bddl), "bddl_text": bddl.read_text(), "task_progress": definition.to_dict(),
+                "chosen_first_goal": asdict(chosen), "raw_source_goal_clauses": source["goal_predicates"],
+                "on_controller_qualification": "unqualified" if task_id in (4, 8) else "historical_sub_evidence_only",
+            })
+            for state_id in STATES:
+                stem = f"task{task_id}_state{state_id}"
+                cell = {"task_id": task_id, "initial_state_id": state_id}
+                selected_plans = [p for p in plans if (p["task_id"], p["initial_state_id"]) == (task_id, state_id)]
+                initial = np.asarray(initial_states[state_id])
+                require(sha(initial.tobytes()) == state_hashes[task_id, state_id]["state_sha256"], "initial state changed")
+                env = ControlEnv(bddl_file_name=str(bddl), use_camera_obs=False, has_renderer=False,
+                                 has_offscreen_renderer=False, camera_names=[], ignore_done=True)
+                ledger = {"phase": "forbidden", "consumed": 0, "prefix": 0, "branch": 0,
+                          "inside_outer": False, "denied": 0, "step_calls_attempted": 0,
+                          "step_calls_raised": 0, "trace_label": "setup"}
+                trace_path = output / (stem + "_CONTROLS.txt")
+                try:
+                    env.seed(SEED)
+                    env.reset()
+                    observation = env.set_init_state(initial.copy())
+                    require(np.array_equal(np.asarray(env.get_sim_state()), initial)
+                            and np.asarray(env.get_sim_state()).dtype == initial.dtype
+                            and sha(np.asarray(env.get_sim_state()).tobytes()) == sha(initial.tobytes()),
+                            "initial snapshot bytes mismatch")
+                    view = LiberoStateView(env)
+                    controller = LiberoOracleSkillController(env, observation, config=config)
+                    objects = sorted(env.env.objects_dict)
+
+                    def current():
+                        truth = {p.name: bool(view.libero_predicate(p.arguments[0], p.arguments[1:])) for p in committed}
+                        require(bool(view.final_success()) == all(truth.values()), "current exact goal conjunction disagreement")
+                        grasps = {name: controller.is_grasping(name) for name in objects}
+                        force = np.asarray(env.sim.data.cfrc_ext)
+                        return {"simulator_time": float(env.sim.data.time), "commitments": truth,
+                                "final_goal_current": bool(view.final_success()), "grasps": grasps,
+                                "eef_position": primitive(controller.observation["robot0_eef_pos"]),
+                                "object_positions": {name: controller.position(name).tolist() for name in objects},
+                                "contact_count": int(env.sim.data.ncon),
+                                "peak_contact_force_proxy": float(np.linalg.norm(force[:, 3:], axis=1).max()) if len(force) else 0.0}
+
+                    def snapshot():
+                        value = np.asarray(env.get_sim_state()).copy()
+                        require(np.isfinite(value).all(), "non-finite simulator snapshot")
+                        return {"scope": "flattened_MjSimState_only", "dtype": str(value.dtype),
+                                "shape": list(value.shape), "sha256": sha(value.tobytes()), "values": value.tolist()}
+
+                    outer_step, inner_step = env.step, env.env.step
+                    with trace_path.open("xb") as trace:
+                        def guarded_inner(action):
+                            require(ledger["inside_outer"], "hidden base environment step forbidden")
+                            return inner_step(action)
+
+                        def guarded_outer(action):
+                            phase = ledger["phase"]
+                            if phase not in ("prefix", "post_event_hold"):
+                                ledger["denied"] += 1
+                                raise EvidenceError("environment control forbidden at event/restore boundary")
+                            if ledger["consumed"] >= STATE_TOTAL_CAP or (phase == "prefix" and ledger["prefix"] >= PREFIX_CAP) or (phase == "post_event_hold" and ledger["branch"] >= POST_HOLD_CAP):
+                                ledger["denied"] += 1
+                                raise BudgetStop("frozen control cap reached before env.step")
+                            values = np.asarray(action, dtype=float)
+                            require(values.shape == (7,) and np.isfinite(values).all(), "invalid oracle action")
+                            if phase == "post_event_hold":
+                                require(np.array_equal(values, [0, 0, 0, 0, 0, 0, -1]), "post-event motion forbidden")
+                            try:
+                                append(trace, {"record_type": "control_intent", "control": ledger["consumed"] + 1,
+                                               "phase": phase, "label": ledger["trace_label"], "action": values.tolist()})
+                            except Exception as exc:
+                                raise ControlIntegrityStop("control intent could not be durably recorded") from exc
+                            ledger["inside_outer"] = True
+                            ledger["step_calls_attempted"] += 1
+                            try:
+                                result = outer_step(values)
+                            except BaseException as exc:
+                                ledger["step_calls_raised"] += 1
+                                try:
+                                    append(trace, {"record_type": "control_exception", "phase": phase,
+                                                   "label": ledger["trace_label"], "exception": type(exc).__name__,
+                                                   "reason": str(exc), "physical_effect_uncertain": True})
+                                finally:
+                                    raise ControlIntegrityStop("env.step raised; physical effect uncertain") from exc
+                            finally:
+                                ledger["inside_outer"] = False
+                            ledger["consumed"] += 1
+                            ledger["prefix" if phase == "prefix" else "branch"] += 1
+                            try:
+                                controller.observation = result[0]
+                                sample = current()
+                                require(np.isfinite(np.asarray(env.get_sim_state())).all(), "non-finite state after control")
+                                append(trace, {"record_type": "control_result", "control": ledger["consumed"],
+                                               "phase": phase, "label": ledger["trace_label"], "sample": sample,
+                                               "reward": float(result[1]), "done": bool(result[2])})
+                            except Exception as exc:
+                                raise ControlIntegrityStop("returned control lacks valid durable observation evidence") from exc
+                            return result
+
+                        env.step, env.env.step = guarded_outer, guarded_inner
+                        prefix = {**cell, "attempt": 1, "status": "PREFIX_NOT_ESTABLISHED",
+                                  "initial_state_sha256": sha(initial.tobytes()), "chosen_goal": asdict(chosen),
+                                  "initial_sample": current(), "learned_policy": False,
+                                  "oracle_execution": True, "stability_checks": [], "control_cap": PREFIX_CAP,
+                                  "skill_call_attempted": False, "skill_call_returned": False}
+                        publish(output, stem + "_PREFIX_CLAIM.txt", prefix)
+                        try:
+                            require(not prefix["initial_sample"]["commitments"][chosen.name], "chosen placement already true; new completion not established")
+                            ledger["phase"] = "prefix"
+                            ledger["trace_label"] = "warmup"
+                            controller.warmup()
+                            ledger["trace_label"] = "single_placement_attempt"
+                            prefix["skill_call_attempted"] = True
+                            skill = controller.pick_and_place(chosen.arguments[1], chosen.arguments[2], predicate=chosen.arguments[0])
+                            prefix["skill_call_returned"] = True
+                            prefix["skill_result"] = skill.to_dict()
+                            require(skill.success, "single skill failure: " + str(skill.failure_reason))
+                            ledger["trace_label"] = "explicit_release"
+                            controller.hold("explicit_release", 10, gripper=-1.0)
+                            require(not any(current()["grasps"].values()), "objects remain grasped after bounded release")
+                            for index in range(5):
+                                ledger["trace_label"] = f"prefix_stability_{index + 1}"
+                                before_time = float(env.sim.data.time)
+                                controller.hold(ledger["trace_label"], 1, gripper=-1.0)
+                                sample = current()
+                                prefix["stability_checks"].append(sample)
+                                require(sample["simulator_time"] > before_time, "stability sample did not consume fresh physics step")
+                                require(sample["commitments"][chosen.name] and not any(sample["grasps"].values()), "released prefix predicate unstable")
+                                require(all(sample["commitments"][key] for key, truth in
+                                            prefix["initial_sample"]["commitments"].items() if truth),
+                                        "initially true operational commitment lost during prefix stability")
+                            prefix["status"] = "PREFIX_STABLE_RELEASED"
+                        except ControlIntegrityStop as exc:
+                            prefix["status"] = "PREFIX_INTEGRITY_STOP"
+                            prefix["failure"] = {"type": type(exc).__name__, "reason": str(exc)}
+                            raise
+                        except Exception as exc:
+                            prefix["failure"] = {"type": type(exc).__name__, "reason": str(exc)}
+                        finally:
+                            ledger["phase"] = "forbidden"
+                            prefix["controls_consumed"] = ledger["prefix"]
+                            prefix["final_sample"] = current()
+                            prefix["final_snapshot"] = snapshot()
+                            prefix["controller_recorded_action_count"] = len(controller.action_history)
+                            prefix["controller_history_may_include_denied_intent"] = ledger["denied"] > 0
+                            publish(output, stem + "_PREFIX_RESULT.txt", prefix)
+                            prefixes.append(prefix)
+                        base = np.asarray(env.get_sim_state()).copy()
+                        prefix_sample = current()
+
+                        def restore(label):
+                            ledger["phase"] = "forbidden"
+                            before = snapshot()
+                            restored_obs = env.set_init_state(base.copy())
+                            controller.observation = restored_obs
+                            after = snapshot()
+                            exact = (np.array_equal(np.asarray(env.get_sim_state()), base)
+                                     and after["sha256"] == sha(base.tobytes())
+                                     and after["dtype"] == str(base.dtype) and after["shape"] == list(base.shape))
+                            restored_sample = current()
+                            semantic_checks = {
+                                "same_commitments": restored_sample["commitments"] == prefix_sample["commitments"],
+                                "same_grasps": restored_sample["grasps"] == prefix_sample["grasps"],
+                                "same_object_positions": all(np.allclose(restored_sample["object_positions"][key],
+                                    value, rtol=0, atol=1e-10) for key, value in prefix_sample["object_positions"].items()),
+                                "same_eef_position": bool(np.allclose(restored_sample["eef_position"],
+                                    prefix_sample["eef_position"], rtol=0, atol=1e-10)),
+                            }
+                            record = {**cell, "label": label, "before": before, "after": after,
+                                      "authentic_prefix_sha256": sha(base.tobytes()), "exact_flattened_state_restore": bool(exact),
+                                      "python_controller_internals_restored": False, "robot_recovery": False,
+                                      "semantic_restore_checks": semantic_checks, "current_sample": restored_sample}
+                            restorations.append(record)
+                            publish(output, stem + "_" + label + "_RESTORE.txt", record)
+                            require(exact, "exact flattened MuJoCo restore failed; stop entire sweep")
+                            require(all(semantic_checks.values()), "restored semantic/geometry sample differs from authentic prefix")
+
+                        for plan in selected_plans:
+                            name = plan["family"]
+                            row = {**cell, "family": name, "source_event": plan["event"],
+                                   "prior_witness_sha256": plan["prior_witness_sha256"],
+                                   "setup_events": plan["setup_events"], "setup_applications_attempted": 0,
+                                   "target_application_attempted": False, "target_application_returned": False,
+                                   "status": "NOT_RUN_PREFIX_UNAVAILABLE", "post_event_controls": 0,
+                                   "post_hold_status": "NOT_RUN", "catalog_certificate": False}
+                            if prefix["status"] != "PREFIX_STABLE_RELEASED":
+                                row["skip_reason"] = prefix.get("failure", {}).get("reason", prefix["status"])
+                                events.append(row)
+                                publish(output, stem + "_" + name + "_EVENT.txt", row)
+                                continue
+                            restore(name + "_before")
+                            context = LiberoInterruptionContext(env, controller.observation)
+                            ledger["branch"] = 0
+                            row["before_snapshot"] = snapshot()
+                            row["before_sample"] = current()
+                            applications = []
+                            try:
+                                for setup_index, raw in enumerate([*plan["setup_events"], plan["event"]]):
+                                    is_target = setup_index == len(plan["setup_events"])
+                                    before_q = np.asarray(env.sim.data.qpos).copy()
+                                    before_v = np.asarray(env.sim.data.qvel).copy()
+                                    before_time = float(env.sim.data.time)
+                                    before_count = ledger["consumed"]
+                                    require(not any(current()["grasps"].values()), "do not inject while any object is held")
+                                    payload = raw["payload"]
+                                    expected_q = before_q.copy()
+                                    if "joint" in payload:
+                                        _, _, address = validate_free_joint(env, payload["joint"])
+                                        expected_q[address] += float(payload["dx"])
+                                        expected_q[address + 1] += float(payload["dy"])
+                                    elif "tool_joint" in payload:
+                                        _, _, address = validate_free_joint(env, payload["tool_joint"])
+                                        expected_q[address:address + 3] = payload.get("unavailable_xyz", payload.get("release_xyz"))
+                                    publish(output, stem + "_" + name + f"_apply{setup_index}_INTENT.txt",
+                                            {"event": raw, "role": "target" if is_target else "paired_setup",
+                                             "actual_oracle_controls_returned_at_injection": ledger["consumed"],
+                                             "learned_policy_steps": 0, "legacy_trigger_executed": False,
+                                             "before_snapshot": snapshot(), "current_sample": current()})
+                                    if is_target:
+                                        attempted_targets += 1
+                                        row["target_application_attempted"] = True
+                                    else:
+                                        attempted_setups += 1
+                                        row["setup_applications_attempted"] += 1
+                                    application, observation = apply_interruption(context, InterruptionEvent.from_dict(raw), policy_step=0)
+                                    if is_target:
+                                        row["target_application_returned"] = True
+                                    controller.observation = observation
+                                    independent_obs = env.env._get_observations(force_update=True)
+                                    checks = {"expected_qpos": bool(np.allclose(env.sim.data.qpos, expected_q, rtol=0, atol=1e-10)),
+                                              "qvel_unchanged": bool(np.array_equal(env.sim.data.qvel, before_v)),
+                                              "time_unchanged": float(env.sim.data.time) == before_time,
+                                              "no_controls": ledger["consumed"] == before_count,
+                                              "fresh_observation": application.fresh_observation is True,
+                                              "no_noop_refresh": application.observation_refresh["consumed_noop_env_step"] is False,
+                                              "forced_observation_equal": primitive(observation) == primitive(independent_obs)}
+                                    applications.append({"role": "target" if is_target else "paired_setup",
+                                                         "application": application.to_dict(), "checks": checks,
+                                                         "post_sample": current(), "post_snapshot": snapshot()})
+                                    require(all(checks.values()), "candidate mechanical/refresh verification failed")
+                                row["immediate_sample"] = current()
+                                row["immediate_first_goal_preserved"] = row["immediate_sample"]["commitments"][chosen.name]
+                                row["immediate_all_previously_true_commitments_preserved"] = all(
+                                    row["immediate_sample"]["commitments"][key] for key, truth in prefix_sample["commitments"].items() if truth)
+                                row["status"] = "IMMEDIATE_PRESERVATION_EVALUATED"
+                                unchanged = (np.array_equal(np.asarray(env.get_sim_state()), base)
+                                             and np.asarray(env.get_sim_state()).dtype == base.dtype
+                                             and sha(np.asarray(env.get_sim_state()).tobytes()) == sha(base.tobytes()))
+                                inactive = not context.constraint_state.active_no_go_zones and not any(
+                                    value is False for value in context.constraint_state.tool_availability.values())
+                                allowed = (name in HOLD_FAMILIES and unchanged and inactive
+                                           and row["immediate_all_previously_true_commitments_preserved"]
+                                           and not any(current()["grasps"].values()))
+                                row["post_hold_guard"] = {"family_whitelisted": name in HOLD_FAMILIES,
+                                                          "exact_physical_prefix_state_unchanged": bool(unchanged),
+                                                          "no_active_no_go_or_unavailability": bool(inactive),
+                                                          "all_true_commitments_preserved": row["immediate_all_previously_true_commitments_preserved"]}
+                                row["post_hold_samples"] = []
+                                if allowed:
+                                    ledger["phase"] = "post_event_hold"
+                                    for index in range(5):
+                                        ledger["trace_label"] = name + f"_stability_{index + 1}"
+                                        before_time = float(env.sim.data.time)
+                                        controller.hold(ledger["trace_label"], 1, gripper=-1.0)
+                                        sample = current()
+                                        row["post_hold_samples"].append(sample)
+                                        require(sample["simulator_time"] > before_time, "post-event observation not freshly stepped")
+                                        require(not any(sample["grasps"].values()) and all(
+                                            sample["commitments"][key] for key, truth in prefix_sample["commitments"].items() if truth),
+                                            "post-event preservation lost; stop branch controls")
+                                    row["post_hold_status"] = "FIVE_FRESH_CHECKS_PRESERVED"
+                                else:
+                                    row["post_hold_status"] = "NOT_RUN_CONSERVATIVE_INACTIVE_STATE_GUARD"
+                            except ControlIntegrityStop as exc:
+                                row["status"] = "OBSERVATION_INTEGRITY_STOP"
+                                row["failure"] = {"type": type(exc).__name__, "reason": str(exc)}
+                                raise
+                            except Exception as exc:
+                                row["status"] = "OBSERVED_BRANCH_FAILURE"
+                                row["failure"] = {"type": type(exc).__name__, "reason": str(exc)}
+                            finally:
+                                ledger["phase"] = "forbidden"
+                                row["applications"] = applications
+                                row["post_event_controls"] = ledger["branch"]
+                                row["final_sample"] = current()
+                                row["final_snapshot"] = snapshot()
+                                events.append(row)
+                                publish(output, stem + "_" + name + "_EVENT.txt", row)
+                                restore(name + "_after")
+                    controls += ledger["consumed"]
+                    control_calls += ledger["step_calls_attempted"]
+                    publish(output, stem + "_CONTROL_ACCOUNTING.txt", {
+                        **cell, **{k: v for k, v in ledger.items() if k != "inside_outer"},
+                        "trace": artifact(trace_path), "control_count_is_actual_returned_env_step": True,
+                        "oracle_execution": True, "policy_calls": 0, "provider_calls": 0,
+                    })
+                finally:
+                    env.close()
+        require(len(prefixes) == 20 and len(events) == 135, "incomplete planned grid")
+        require(not torch.cuda.is_initialized(), "CUDA unexpectedly initialized")
+        for relative, expected in SOURCE_FILES.items():
+            require(artifact(root / relative)["sha256"] == expected, "source bytes changed during sweep: " + relative)
+        report = {"status": "COMPLETED_SUB_EVIDENCE_SWEEP", "prefix_cells_recorded": len(prefixes),
+                  "physical_prefix_skill_calls_attempted": sum(p["skill_call_attempted"] for p in prefixes),
+                  "physical_prefix_skill_calls_returned": sum(p["skill_call_returned"] for p in prefixes),
+                  "released_stable_prefixes": sum(p["status"] == "PREFIX_STABLE_RELEASED" for p in prefixes),
+                  "scheduled_candidate_rows": len(events), "target_apply_calls_attempted": attempted_targets,
+                  "setup_apply_calls_attempted": attempted_setups, "environment_step_calls_attempted": control_calls,
+                  "environment_step_calls_returned": controls,
+                  "environment_step_calls_with_uncertain_effect": control_calls - controls,
+                  "skipped_prefix_unavailable": sum(r["status"] == "NOT_RUN_PREFIX_UNAVAILABLE" for r in events),
+                  "branch_failures": sum(r["status"] == "OBSERVED_BRANCH_FAILURE" for r in events),
+                  "full_five_check_preservation_branches": sum(r["post_hold_status"] == "FIVE_FRESH_CHECKS_PRESERVED" for r in events),
+                  "exact_flattened_state_restores": len(restorations),
+                  "restorations_are_recovery": False, "catalog_certificates": 0,
+                  "provider_calls": 0, "vla_calls": 0, "cuda_initialized": False, "limitations": LIMITATIONS}
+        report["prefix_results"] = publish(output, "PREFIX_RESULTS.txt", prefixes)
+        report["event_results"] = publish(output, "EVENT_RESULTS.txt", events)
+        report["restore_results"] = publish(output, "RESTORE_RESULTS.txt", restorations)
+        table = [{**{k: row[k] for k in ("task_id", "initial_state_id", "family", "status", "target_application_attempted",
+                                        "target_application_returned", "setup_applications_attempted", "post_event_controls", "post_hold_status")},
+                  "immediate_first_goal_preserved": row.get("immediate_first_goal_preserved", ""),
+                  "immediate_all_true_preserved": row.get("immediate_all_previously_true_commitments_preserved", ""),
+                  "skip_or_failure": row.get("skip_reason", row.get("failure", {}).get("reason", "")),
+                  "catalog_certificate": False} for row in events]
+        report["counts_csv"] = publish(output, "EVENT_COUNTS.csv", csv_data(table), raw=True)
+        publish(output, "REPORT.md", ("# CPU prefix and preservation sub-evidence\n\n" +
+                json.dumps({k: v for k, v in report.items() if k != "limitations"}, indent=2) +
+                "\n\n" + "\n".join("- " + note for note in LIMITATIONS) + "\n").encode(), raw=True)
+        receipt = publish(output, "RECEIPT.txt", report)
+        print(json.dumps({"stage": "completed", "receipt": receipt, "report": report}), flush=True)
+    except BaseException as exc:
+        failure = {"status": "INFRASTRUCTURE_OR_INTEGRITY_STOP", "exception": type(exc).__name__,
+                   "reason": str(exc), "traceback": traceback.format_exc(), "prefix_rows": len(prefixes),
+                   "event_rows": len(events), "attempted_target_applications": attempted_targets,
+                   "attempted_setup_applications": attempted_setups, "catalog_certificates": 0,
+                   "note": "Incomplete controls/rows are not counted as outcomes; inspect durable cell traces."}
+        print(json.dumps({"stage": "stopped", "artifact": publish(output, "STOPPED.txt", failure)}), flush=True)
+        raise
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--repo-root", type=Path, default=Path(__file__).resolve().parents[2])
+    parser.add_argument("--execute", action="store_true")
+    parser.add_argument("--expected-driver-sha256")
+    parser.add_argument("--output-dir")
+    args = parser.parse_args()
+    root = args.repo_root.resolve()
+    sys.path.insert(0, str(root))
+    definitions, state_hashes, plans, receipts = load_inputs(root)
+    request = plan_summary(root, definitions, plans, receipts)
+    if not args.execute:
+        print(json.dumps(request, sort_keys=True, indent=2))
+        return
+    if not args.output_dir or not args.expected_driver_sha256:
+        parser.error("--execute requires --output-dir and --expected-driver-sha256")
+    run(args, root, definitions, state_hashes, plans, request)
+
+
+if __name__ == "__main__":
+    main()

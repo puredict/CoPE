@@ -1,0 +1,9 @@
+requirement,expected,observed,status,evidence
+learned_policy,true,True,PASS,action_probe_01/VLA_GATE.txt
+uses_privileged_state,false,False,PASS,action_probe_01/VLA_GATE.txt
+real_rendered_observation,224x224 RGB,True,PASS,action_probe_01/VLA_GATE.txt
+finite_action_chunks,finite 1x7,True,PASS,action_probe_01/VLA_GATE.txt
+checkpoint_sha256,actual byte hash,d36eaa2a334cd52f4a3a94558cf90d82584743ea772fabf76f9e4372e7076076,PASS,action_probe_01/VLA_GATE.txt
+real_environment_action,one step,1,PASS,action_probe_01/VLA_GATE.txt
+hf_offline_source,pinned official Python sources,47a0ec7fc4ec123775a391911046cf33cf9ed83f,PASS,HF_OFFLINE_CACHE_INSTALL_OUTPUT.txt
+formal_run,not started,0,NOT_STARTED,CLEAN_CALIBRATION_LAUNCH_OUTPUT.txt

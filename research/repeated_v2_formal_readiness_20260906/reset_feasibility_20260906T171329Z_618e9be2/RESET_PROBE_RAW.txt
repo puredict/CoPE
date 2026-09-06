@@ -1,0 +1,1032 @@
+{
+  "candidate_gate": {
+    "all_declared_free_joints_exist": true,
+    "all_have_at_least_two_commitment_predicates": true,
+    "all_have_five_audited_states": true,
+    "no_go_excludes_all_reset_eef_positions": true
+  },
+  "candidate_tasks": [
+    {
+      "all_declared_free_joints_exist": true,
+      "audited_state_count": 5,
+      "available_initial_states": 50,
+      "bddl_file": "/home/lijingsu/vla/src/LIBERO/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket.bddl",
+      "commitment_predicate_count": 2,
+      "free_joints": [
+        "alphabet_soup_1_joint0",
+        "basket_1_joint0",
+        "butter_1_joint0",
+        "cream_cheese_1_joint0",
+        "ketchup_1_joint0",
+        "milk_1_joint0",
+        "orange_juice_1_joint0",
+        "tomato_sauce_1_joint0"
+      ],
+      "language": "put both the alphabet soup and the tomato sauce in the basket",
+      "progress_predicate_count": 6,
+      "receptacle_joints": [
+        "basket_1_joint0"
+      ],
+      "states": [
+        {
+          "eef_position": [
+            -0.037499094486540485,
+            -0.005375515997324933,
+            0.7129679373389846
+          ],
+          "final_success_initial": false,
+          "initial_state_digest": "747b653b2ca1feeae8f3bd994880ce743730993ea5ce4bd003623e877f26b3bd",
+          "no_go_contains_reset_eef": false,
+          "progress_initial": {
+            "commitment_names": [
+              "alphabet_soup_in_basket",
+              "tomato_sauce_in_basket"
+            ],
+            "current": {
+              "alphabet_soup_in_basket": false,
+              "alphabet_soup_lifted": false,
+              "basket_reachable": true,
+              "final_goal_currently_satisfied": false,
+              "tomato_sauce_in_basket": false,
+              "tomato_sauce_lifted": false
+            },
+            "ever_achieved": {
+              "alphabet_soup_in_basket": false,
+              "alphabet_soup_lifted": false,
+              "basket_reachable": true,
+              "final_goal_currently_satisfied": false,
+              "tomato_sauce_in_basket": false,
+              "tomato_sauce_lifted": false
+            },
+            "irreversible": {
+              "ever:alphabet_soup_in_basket": false,
+              "ever:alphabet_soup_lifted": false,
+              "ever:basket_reachable": true,
+              "ever:final_goal_currently_satisfied": false,
+              "ever:tomato_sauce_in_basket": false,
+              "ever:tomato_sauce_lifted": false
+            },
+            "policy_step": 0
+          },
+          "state_id": 0
+        },
+        {
+          "eef_position": [
+            -0.0638299041203499,
+            0.015406615404537184,
+            0.6704240090059872
+          ],
+          "final_success_initial": false,
+          "initial_state_digest": "cf85ed132ae09bfad8798a3126b14879071228e0e2e7bd17c3e9d20e519cdb5a",
+          "no_go_contains_reset_eef": false,
+          "progress_initial": {
+            "commitment_names": [
+              "alphabet_soup_in_basket",
+              "tomato_sauce_in_basket"
+            ],
+            "current": {
+              "alphabet_soup_in_basket": false,
+              "alphabet_soup_lifted": false,
+              "basket_reachable": true,
+              "final_goal_currently_satisfied": false,
+              "tomato_sauce_in_basket": false,
+              "tomato_sauce_lifted": false
+            },
+            "ever_achieved": {
+              "alphabet_soup_in_basket": false,
+              "alphabet_soup_lifted": false,
+              "basket_reachable": true,
+              "final_goal_currently_satisfied": false,
+              "tomato_sauce_in_basket": false,
+              "tomato_sauce_lifted": false
+            },
+            "irreversible": {
+              "ever:alphabet_soup_in_basket": false,
+              "ever:alphabet_soup_lifted": false,
+              "ever:basket_reachable": true,
+              "ever:final_goal_currently_satisfied": false,
+              "ever:tomato_sauce_in_basket": false,
+              "ever:tomato_sauce_lifted": false
+            },
+            "policy_step": 0
+          },
+          "state_id": 1
+        },
+        {
+          "eef_position": [
+            -0.04731747172865116,
+            -0.020345004538329655,
+            0.6942032795827205
+          ],
+          "final_success_initial": false,
+          "initial_state_digest": "be0c23f82748baf99eea1ecc4ff28eb82163945bc0bfffb509eeef0decced138",
+          "no_go_contains_reset_eef": false,
+          "progress_initial": {
+            "commitment_names": [
+              "alphabet_soup_in_basket",
+              "tomato_sauce_in_basket"
+            ],
+            "current": {
+              "alphabet_soup_in_basket": false,
+              "alphabet_soup_lifted": false,
+              "basket_reachable": true,
+              "final_goal_currently_satisfied": false,
+              "tomato_sauce_in_basket": false,
+              "tomato_sauce_lifted": false
+            },
+            "ever_achieved": {
+              "alphabet_soup_in_basket": false,
+              "alphabet_soup_lifted": false,
+              "basket_reachable": true,
+              "final_goal_currently_satisfied": false,
+              "tomato_sauce_in_basket": false,
+              "tomato_sauce_lifted": false
+            },
+            "irreversible": {
+              "ever:alphabet_soup_in_basket": false,
+              "ever:alphabet_soup_lifted": false,
+              "ever:basket_reachable": true,
+              "ever:final_goal_currently_satisfied": false,
+              "ever:tomato_sauce_in_basket": false,
+              "ever:tomato_sauce_lifted": false
+            },
+            "policy_step": 0
+          },
+          "state_id": 2
+        },
+        {
+          "eef_position": [
+            -0.05014990832168966,
+            -0.008050793830951834,
+            0.6887148265184175
+          ],
+          "final_success_initial": false,
+          "initial_state_digest": "6929d3090ef9a3431c21b84539c99c3b481b09042bc6f3cf07ea0cc44fb65a70",
+          "no_go_contains_reset_eef": false,
+          "progress_initial": {
+            "commitment_names": [
+              "alphabet_soup_in_basket",
+              "tomato_sauce_in_basket"
+            ],
+            "current": {
+              "alphabet_soup_in_basket": false,
+              "alphabet_soup_lifted": false,
+              "basket_reachable": true,
+              "final_goal_currently_satisfied": false,
+              "tomato_sauce_in_basket": false,
+              "tomato_sauce_lifted": false
+            },
+            "ever_achieved": {
+              "alphabet_soup_in_basket": false,
+              "alphabet_soup_lifted": false,
+              "basket_reachable": true,
+              "final_goal_currently_satisfied": false,
+              "tomato_sauce_in_basket": false,
+              "tomato_sauce_lifted": false
+            },
+            "irreversible": {
+              "ever:alphabet_soup_in_basket": false,
+              "ever:alphabet_soup_lifted": false,
+              "ever:basket_reachable": true,
+              "ever:final_goal_currently_satisfied": false,
+              "ever:tomato_sauce_in_basket": false,
+              "ever:tomato_sauce_lifted": false
+            },
+            "policy_step": 0
+          },
+          "state_id": 3
+        },
+        {
+          "eef_position": [
+            -0.05227723274518145,
+            0.01600133468111811,
+            0.690005368850532
+          ],
+          "final_success_initial": false,
+          "initial_state_digest": "376f48b75f50d4e1eff9e3f49f307de0bcfc44d2a081f5cb9c124cf985330c41",
+          "no_go_contains_reset_eef": false,
+          "progress_initial": {
+            "commitment_names": [
+              "alphabet_soup_in_basket",
+              "tomato_sauce_in_basket"
+            ],
+            "current": {
+              "alphabet_soup_in_basket": false,
+              "alphabet_soup_lifted": false,
+              "basket_reachable": true,
+              "final_goal_currently_satisfied": false,
+              "tomato_sauce_in_basket": false,
+              "tomato_sauce_lifted": false
+            },
+            "ever_achieved": {
+              "alphabet_soup_in_basket": false,
+              "alphabet_soup_lifted": false,
+              "basket_reachable": true,
+              "final_goal_currently_satisfied": false,
+              "tomato_sauce_in_basket": false,
+              "tomato_sauce_lifted": false
+            },
+            "irreversible": {
+              "ever:alphabet_soup_in_basket": false,
+              "ever:alphabet_soup_lifted": false,
+              "ever:basket_reachable": true,
+              "ever:final_goal_currently_satisfied": false,
+              "ever:tomato_sauce_in_basket": false,
+              "ever:tomato_sauce_lifted": false
+            },
+            "policy_step": 0
+          },
+          "state_id": 4
+        }
+      ],
+      "target_joints": [
+        "alphabet_soup_1_joint0",
+        "tomato_sauce_1_joint0"
+      ],
+      "task_id": 0,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket",
+      "tool_joints": [
+        "alphabet_soup_1_joint0",
+        "tomato_sauce_1_joint0"
+      ]
+    },
+    {
+      "all_declared_free_joints_exist": true,
+      "audited_state_count": 5,
+      "available_initial_states": 50,
+      "bddl_file": "/home/lijingsu/vla/src/LIBERO/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket.bddl",
+      "commitment_predicate_count": 2,
+      "free_joints": [
+        "alphabet_soup_1_joint0",
+        "basket_1_joint0",
+        "butter_1_joint0",
+        "cream_cheese_1_joint0",
+        "ketchup_1_joint0",
+        "milk_1_joint0",
+        "orange_juice_1_joint0",
+        "tomato_sauce_1_joint0"
+      ],
+      "language": "put both the cream cheese box and the butter in the basket",
+      "progress_predicate_count": 6,
+      "receptacle_joints": [
+        "basket_1_joint0"
+      ],
+      "states": [
+        {
+          "eef_position": [
+            -0.0574365735771077,
+            -0.013975804244636562,
+            0.6794593845357235
+          ],
+          "final_success_initial": false,
+          "initial_state_digest": "5abdf8f466f490901dee9f931b32eb181b2928eaa17bb6379742f988581d564a",
+          "no_go_contains_reset_eef": false,
+          "progress_initial": {
+            "commitment_names": [
+              "cream_cheese_in_basket",
+              "butter_in_basket"
+            ],
+            "current": {
+              "basket_reachable": true,
+              "butter_in_basket": false,
+              "butter_lifted": false,
+              "cream_cheese_in_basket": false,
+              "cream_cheese_lifted": false,
+              "final_goal_currently_satisfied": false
+            },
+            "ever_achieved": {
+              "basket_reachable": true,
+              "butter_in_basket": false,
+              "butter_lifted": false,
+              "cream_cheese_in_basket": false,
+              "cream_cheese_lifted": false,
+              "final_goal_currently_satisfied": false
+            },
+            "irreversible": {
+              "ever:basket_reachable": true,
+              "ever:butter_in_basket": false,
+              "ever:butter_lifted": false,
+              "ever:cream_cheese_in_basket": false,
+              "ever:cream_cheese_lifted": false,
+              "ever:final_goal_currently_satisfied": false
+            },
+            "policy_step": 0
+          },
+          "state_id": 0
+        },
+        {
+          "eef_position": [
+            -0.04257439143315387,
+            0.012448157446292575,
+            0.6940022342079417
+          ],
+          "final_success_initial": false,
+          "initial_state_digest": "cd3e7f86ef217ee7b7d26cc505b3f56ea8f49664ef10f6749270dfcd39dd17a6",
+          "no_go_contains_reset_eef": false,
+          "progress_initial": {
+            "commitment_names": [
+              "cream_cheese_in_basket",
+              "butter_in_basket"
+            ],
+            "current": {
+              "basket_reachable": true,
+              "butter_in_basket": false,
+              "butter_lifted": false,
+              "cream_cheese_in_basket": false,
+              "cream_cheese_lifted": false,
+              "final_goal_currently_satisfied": false
+            },
+            "ever_achieved": {
+              "basket_reachable": true,
+              "butter_in_basket": false,
+              "butter_lifted": false,
+              "cream_cheese_in_basket": false,
+              "cream_cheese_lifted": false,
+              "final_goal_currently_satisfied": false
+            },
+            "irreversible": {
+              "ever:basket_reachable": true,
+              "ever:butter_in_basket": false,
+              "ever:butter_lifted": false,
+              "ever:cream_cheese_in_basket": false,
+              "ever:cream_cheese_lifted": false,
+              "ever:final_goal_currently_satisfied": false
+            },
+            "policy_step": 0
+          },
+          "state_id": 1
+        },
+        {
+          "eef_position": [
+            -0.06230349507368421,
+            -0.007249528557530314,
+            0.678146629161061
+          ],
+          "final_success_initial": false,
+          "initial_state_digest": "ab6bf2ca98e96f1692d8ec7a5b7ec25eee1ea61c57d45c2816ac3dcc938ea3ee",
+          "no_go_contains_reset_eef": false,
+          "progress_initial": {
+            "commitment_names": [
+              "cream_cheese_in_basket",
+              "butter_in_basket"
+            ],
+            "current": {
+              "basket_reachable": true,
+              "butter_in_basket": false,
+              "butter_lifted": false,
+              "cream_cheese_in_basket": false,
+              "cream_cheese_lifted": false,
+              "final_goal_currently_satisfied": false
+            },
+            "ever_achieved": {
+              "basket_reachable": true,
+              "butter_in_basket": false,
+              "butter_lifted": false,
+              "cream_cheese_in_basket": false,
+              "cream_cheese_lifted": false,
+              "final_goal_currently_satisfied": false
+            },
+            "irreversible": {
+              "ever:basket_reachable": true,
+              "ever:butter_in_basket": false,
+              "ever:butter_lifted": false,
+              "ever:cream_cheese_in_basket": false,
+              "ever:cream_cheese_lifted": false,
+              "ever:final_goal_currently_satisfied": false
+            },
+            "policy_step": 0
+          },
+          "state_id": 2
+        },
+        {
+          "eef_position": [
+            -0.04702372189148617,
+            0.0017896872802257108,
+            0.7031977526971598
+          ],
+          "final_success_initial": false,
+          "initial_state_digest": "3e0d23df2cf22ae6e897e15a1739d5bf25474b4e33196644890b8485f0e880f5",
+          "no_go_contains_reset_eef": false,
+          "progress_initial": {
+            "commitment_names": [
+              "cream_cheese_in_basket",
+              "butter_in_basket"
+            ],
+            "current": {
+              "basket_reachable": true,
+              "butter_in_basket": false,
+              "butter_lifted": false,
+              "cream_cheese_in_basket": false,
+              "cream_cheese_lifted": false,
+              "final_goal_currently_satisfied": false
+            },
+            "ever_achieved": {
+              "basket_reachable": true,
+              "butter_in_basket": false,
+              "butter_lifted": false,
+              "cream_cheese_in_basket": false,
+              "cream_cheese_lifted": false,
+              "final_goal_currently_satisfied": false
+            },
+            "irreversible": {
+              "ever:basket_reachable": true,
+              "ever:butter_in_basket": false,
+              "ever:butter_lifted": false,
+              "ever:cream_cheese_in_basket": false,
+              "ever:cream_cheese_lifted": false,
+              "ever:final_goal_currently_satisfied": false
+            },
+            "policy_step": 0
+          },
+          "state_id": 3
+        },
+        {
+          "eef_position": [
+            -0.051147699153253054,
+            -0.014383486659702927,
+            0.6970105040901008
+          ],
+          "final_success_initial": false,
+          "initial_state_digest": "d2cecde6c34039556fadf729cf7eb15d628b42094f6f0c092d9969c9cf659856",
+          "no_go_contains_reset_eef": false,
+          "progress_initial": {
+            "commitment_names": [
+              "cream_cheese_in_basket",
+              "butter_in_basket"
+            ],
+            "current": {
+              "basket_reachable": true,
+              "butter_in_basket": false,
+              "butter_lifted": false,
+              "cream_cheese_in_basket": false,
+              "cream_cheese_lifted": false,
+              "final_goal_currently_satisfied": false
+            },
+            "ever_achieved": {
+              "basket_reachable": true,
+              "butter_in_basket": false,
+              "butter_lifted": false,
+              "cream_cheese_in_basket": false,
+              "cream_cheese_lifted": false,
+              "final_goal_currently_satisfied": false
+            },
+            "irreversible": {
+              "ever:basket_reachable": true,
+              "ever:butter_in_basket": false,
+              "ever:butter_lifted": false,
+              "ever:cream_cheese_in_basket": false,
+              "ever:cream_cheese_lifted": false,
+              "ever:final_goal_currently_satisfied": false
+            },
+            "policy_step": 0
+          },
+          "state_id": 4
+        }
+      ],
+      "target_joints": [
+        "cream_cheese_1_joint0",
+        "butter_1_joint0"
+      ],
+      "task_id": 1,
+      "task_name": "LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket",
+      "tool_joints": [
+        "cream_cheese_1_joint0",
+        "butter_1_joint0"
+      ]
+    },
+    {
+      "all_declared_free_joints_exist": true,
+      "audited_state_count": 5,
+      "available_initial_states": 50,
+      "bddl_file": "/home/lijingsu/vla/src/LIBERO/libero/libero/bddl_files/libero_10/LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_and_put_the_yellow_and_white_mug_on_the_right_plate.bddl",
+      "commitment_predicate_count": 2,
+      "free_joints": [
+        "plate_1_joint0",
+        "plate_2_joint0",
+        "porcelain_mug_1_joint0",
+        "red_coffee_mug_1_joint0",
+        "white_yellow_mug_1_joint0"
+      ],
+      "language": "put the white mug on the left plate and put the yellow and white mug on the right plate",
+      "progress_predicate_count": 7,
+      "receptacle_joints": [
+        "plate_1_joint0",
+        "plate_2_joint0"
+      ],
+      "states": [
+        {
+          "eef_position": [
+            -0.05172618406637395,
+            -0.01473596593269069,
+            0.6879857076692913
+          ],
+          "final_success_initial": false,
+          "initial_state_digest": "4365b3c5a82da7f8818c11ef5fd494c4890c17c4c3e27948dc290a9ac2f08131",
+          "no_go_contains_reset_eef": false,
+          "progress_initial": {
+            "commitment_names": [
+              "white_mug_on_left_plate",
+              "yellow_white_mug_on_right_plate"
+            ],
+            "current": {
+              "final_goal_currently_satisfied": false,
+              "left_plate_reachable": true,
+              "right_plate_reachable": true,
+              "white_mug_lifted": false,
+              "white_mug_on_left_plate": false,
+              "yellow_white_mug_lifted": false,
+              "yellow_white_mug_on_right_plate": false
+            },
+            "ever_achieved": {
+              "final_goal_currently_satisfied": false,
+              "left_plate_reachable": true,
+              "right_plate_reachable": true,
+              "white_mug_lifted": false,
+              "white_mug_on_left_plate": false,
+              "yellow_white_mug_lifted": false,
+              "yellow_white_mug_on_right_plate": false
+            },
+            "irreversible": {
+              "ever:final_goal_currently_satisfied": false,
+              "ever:left_plate_reachable": true,
+              "ever:right_plate_reachable": true,
+              "ever:white_mug_lifted": false,
+              "ever:white_mug_on_left_plate": false,
+              "ever:yellow_white_mug_lifted": false,
+              "ever:yellow_white_mug_on_right_plate": false
+            },
+            "policy_step": 0
+          },
+          "state_id": 0
+        },
+        {
+          "eef_position": [
+            -0.05886400679394999,
+            -0.013152365011312828,
+            0.6816466419770286
+          ],
+          "final_success_initial": false,
+          "initial_state_digest": "b55dd89278457f3c00d7b4d871dc8d64e84534e5a119dd35a53e5a152c831d6a",
+          "no_go_contains_reset_eef": false,
+          "progress_initial": {
+            "commitment_names": [
+              "white_mug_on_left_plate",
+              "yellow_white_mug_on_right_plate"
+            ],
+            "current": {
+              "final_goal_currently_satisfied": false,
+              "left_plate_reachable": true,
+              "right_plate_reachable": true,
+              "white_mug_lifted": false,
+              "white_mug_on_left_plate": false,
+              "yellow_white_mug_lifted": false,
+              "yellow_white_mug_on_right_plate": false
+            },
+            "ever_achieved": {
+              "final_goal_currently_satisfied": false,
+              "left_plate_reachable": true,
+              "right_plate_reachable": true,
+              "white_mug_lifted": false,
+              "white_mug_on_left_plate": false,
+              "yellow_white_mug_lifted": false,
+              "yellow_white_mug_on_right_plate": false
+            },
+            "irreversible": {
+              "ever:final_goal_currently_satisfied": false,
+              "ever:left_plate_reachable": true,
+              "ever:right_plate_reachable": true,
+              "ever:white_mug_lifted": false,
+              "ever:white_mug_on_left_plate": false,
+              "ever:yellow_white_mug_lifted": false,
+              "ever:yellow_white_mug_on_right_plate": false
+            },
+            "policy_step": 0
+          },
+          "state_id": 1
+        },
+        {
+          "eef_position": [
+            -0.06032580227824404,
+            0.004479196370219307,
+            0.6635814952643784
+          ],
+          "final_success_initial": false,
+          "initial_state_digest": "1d2fdd615bb32a097ad2781dd5e9203104555e54521dd9bce6eacbb5bf718e33",
+          "no_go_contains_reset_eef": false,
+          "progress_initial": {
+            "commitment_names": [
+              "white_mug_on_left_plate",
+              "yellow_white_mug_on_right_plate"
+            ],
+            "current": {
+              "final_goal_currently_satisfied": false,
+              "left_plate_reachable": true,
+              "right_plate_reachable": true,
+              "white_mug_lifted": false,
+              "white_mug_on_left_plate": false,
+              "yellow_white_mug_lifted": false,
+              "yellow_white_mug_on_right_plate": false
+            },
+            "ever_achieved": {
+              "final_goal_currently_satisfied": false,
+              "left_plate_reachable": true,
+              "right_plate_reachable": true,
+              "white_mug_lifted": false,
+              "white_mug_on_left_plate": false,
+              "yellow_white_mug_lifted": false,
+              "yellow_white_mug_on_right_plate": false
+            },
+            "irreversible": {
+              "ever:final_goal_currently_satisfied": false,
+              "ever:left_plate_reachable": true,
+              "ever:right_plate_reachable": true,
+              "ever:white_mug_lifted": false,
+              "ever:white_mug_on_left_plate": false,
+              "ever:yellow_white_mug_lifted": false,
+              "ever:yellow_white_mug_on_right_plate": false
+            },
+            "policy_step": 0
+          },
+          "state_id": 2
+        },
+        {
+          "eef_position": [
+            -0.06640358090232401,
+            0.012254081161407476,
+            0.6764458530827051
+          ],
+          "final_success_initial": false,
+          "initial_state_digest": "79a2ec18a6067d027a62de697a1931bf818dffc4dd7572c39c4426e122bd35d0",
+          "no_go_contains_reset_eef": false,
+          "progress_initial": {
+            "commitment_names": [
+              "white_mug_on_left_plate",
+              "yellow_white_mug_on_right_plate"
+            ],
+            "current": {
+              "final_goal_currently_satisfied": false,
+              "left_plate_reachable": true,
+              "right_plate_reachable": true,
+              "white_mug_lifted": false,
+              "white_mug_on_left_plate": false,
+              "yellow_white_mug_lifted": false,
+              "yellow_white_mug_on_right_plate": false
+            },
+            "ever_achieved": {
+              "final_goal_currently_satisfied": false,
+              "left_plate_reachable": true,
+              "right_plate_reachable": true,
+              "white_mug_lifted": false,
+              "white_mug_on_left_plate": false,
+              "yellow_white_mug_lifted": false,
+              "yellow_white_mug_on_right_plate": false
+            },
+            "irreversible": {
+              "ever:final_goal_currently_satisfied": false,
+              "ever:left_plate_reachable": true,
+              "ever:right_plate_reachable": true,
+              "ever:white_mug_lifted": false,
+              "ever:white_mug_on_left_plate": false,
+              "ever:yellow_white_mug_lifted": false,
+              "ever:yellow_white_mug_on_right_plate": false
+            },
+            "policy_step": 0
+          },
+          "state_id": 3
+        },
+        {
+          "eef_position": [
+            -0.06555095158981769,
+            -0.0044632159366270845,
+            0.6763188322274603
+          ],
+          "final_success_initial": false,
+          "initial_state_digest": "4da1e19512111404fa9dc3c87088cf26dce60996e1e9cf5b43ca04c73465a4e6",
+          "no_go_contains_reset_eef": false,
+          "progress_initial": {
+            "commitment_names": [
+              "white_mug_on_left_plate",
+              "yellow_white_mug_on_right_plate"
+            ],
+            "current": {
+              "final_goal_currently_satisfied": false,
+              "left_plate_reachable": true,
+              "right_plate_reachable": true,
+              "white_mug_lifted": false,
+              "white_mug_on_left_plate": false,
+              "yellow_white_mug_lifted": false,
+              "yellow_white_mug_on_right_plate": false
+            },
+            "ever_achieved": {
+              "final_goal_currently_satisfied": false,
+              "left_plate_reachable": true,
+              "right_plate_reachable": true,
+              "white_mug_lifted": false,
+              "white_mug_on_left_plate": false,
+              "yellow_white_mug_lifted": false,
+              "yellow_white_mug_on_right_plate": false
+            },
+            "irreversible": {
+              "ever:final_goal_currently_satisfied": false,
+              "ever:left_plate_reachable": true,
+              "ever:right_plate_reachable": true,
+              "ever:white_mug_lifted": false,
+              "ever:white_mug_on_left_plate": false,
+              "ever:yellow_white_mug_lifted": false,
+              "ever:yellow_white_mug_on_right_plate": false
+            },
+            "policy_step": 0
+          },
+          "state_id": 4
+        }
+      ],
+      "target_joints": [
+        "porcelain_mug_1_joint0",
+        "white_yellow_mug_1_joint0"
+      ],
+      "task_id": 4,
+      "task_name": "LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_and_put_the_yellow_and_white_mug_on_the_right_plate",
+      "tool_joints": [
+        "porcelain_mug_1_joint0",
+        "white_yellow_mug_1_joint0"
+      ]
+    },
+    {
+      "all_declared_free_joints_exist": true,
+      "audited_state_count": 5,
+      "available_initial_states": 50,
+      "bddl_file": "/home/lijingsu/vla/src/LIBERO/libero/libero/bddl_files/libero_10/KITCHEN_SCENE8_put_both_moka_pots_on_the_stove.bddl",
+      "commitment_predicate_count": 3,
+      "free_joints": [
+        "moka_pot_1_joint0",
+        "moka_pot_2_joint0"
+      ],
+      "language": "put both moka pots on the stove",
+      "progress_predicate_count": 6,
+      "receptacle_joints": [],
+      "states": [
+        {
+          "eef_position": [
+            -0.19909992671762544,
+            0.016280741617720647,
+            1.1859107152415256
+          ],
+          "final_success_initial": false,
+          "initial_state_digest": "61a34575b44313156895ce73996cf18dd243c396572fd0e1cd476e0e9fbe70af",
+          "no_go_contains_reset_eef": false,
+          "progress_initial": {
+            "commitment_names": [
+              "right_moka_pot_on_stove",
+              "left_moka_pot_on_stove",
+              "stove_remains_on"
+            ],
+            "current": {
+              "final_goal_currently_satisfied": false,
+              "left_moka_pot_lifted": false,
+              "left_moka_pot_on_stove": false,
+              "right_moka_pot_lifted": false,
+              "right_moka_pot_on_stove": false,
+              "stove_remains_on": true
+            },
+            "ever_achieved": {
+              "final_goal_currently_satisfied": false,
+              "left_moka_pot_lifted": false,
+              "left_moka_pot_on_stove": false,
+              "right_moka_pot_lifted": false,
+              "right_moka_pot_on_stove": false,
+              "stove_remains_on": true
+            },
+            "irreversible": {
+              "ever:final_goal_currently_satisfied": false,
+              "ever:left_moka_pot_lifted": false,
+              "ever:left_moka_pot_on_stove": false,
+              "ever:right_moka_pot_lifted": false,
+              "ever:right_moka_pot_on_stove": false,
+              "ever:stove_remains_on": true
+            },
+            "policy_step": 0
+          },
+          "state_id": 0
+        },
+        {
+          "eef_position": [
+            -0.1968797679418296,
+            0.015308666626198324,
+            1.1920926451936424
+          ],
+          "final_success_initial": false,
+          "initial_state_digest": "cf1b859b0688c3c3ea64fba0ab5bd29b88ff7f28dc5893df4cb7564ac4db8cce",
+          "no_go_contains_reset_eef": false,
+          "progress_initial": {
+            "commitment_names": [
+              "right_moka_pot_on_stove",
+              "left_moka_pot_on_stove",
+              "stove_remains_on"
+            ],
+            "current": {
+              "final_goal_currently_satisfied": false,
+              "left_moka_pot_lifted": false,
+              "left_moka_pot_on_stove": false,
+              "right_moka_pot_lifted": false,
+              "right_moka_pot_on_stove": false,
+              "stove_remains_on": true
+            },
+            "ever_achieved": {
+              "final_goal_currently_satisfied": false,
+              "left_moka_pot_lifted": false,
+              "left_moka_pot_on_stove": false,
+              "right_moka_pot_lifted": false,
+              "right_moka_pot_on_stove": false,
+              "stove_remains_on": true
+            },
+            "irreversible": {
+              "ever:final_goal_currently_satisfied": false,
+              "ever:left_moka_pot_lifted": false,
+              "ever:left_moka_pot_on_stove": false,
+              "ever:right_moka_pot_lifted": false,
+              "ever:right_moka_pot_on_stove": false,
+              "ever:stove_remains_on": true
+            },
+            "policy_step": 0
+          },
+          "state_id": 1
+        },
+        {
+          "eef_position": [
+            -0.20902337463849818,
+            -0.018556177409577088,
+            1.1736771893212854
+          ],
+          "final_success_initial": false,
+          "initial_state_digest": "9f3bbe14f940c66de58d1dbecf0b5a2af12b48cbb93deec15c094fe4a9f5323a",
+          "no_go_contains_reset_eef": false,
+          "progress_initial": {
+            "commitment_names": [
+              "right_moka_pot_on_stove",
+              "left_moka_pot_on_stove",
+              "stove_remains_on"
+            ],
+            "current": {
+              "final_goal_currently_satisfied": false,
+              "left_moka_pot_lifted": false,
+              "left_moka_pot_on_stove": false,
+              "right_moka_pot_lifted": false,
+              "right_moka_pot_on_stove": false,
+              "stove_remains_on": true
+            },
+            "ever_achieved": {
+              "final_goal_currently_satisfied": false,
+              "left_moka_pot_lifted": false,
+              "left_moka_pot_on_stove": false,
+              "right_moka_pot_lifted": false,
+              "right_moka_pot_on_stove": false,
+              "stove_remains_on": true
+            },
+            "irreversible": {
+              "ever:final_goal_currently_satisfied": false,
+              "ever:left_moka_pot_lifted": false,
+              "ever:left_moka_pot_on_stove": false,
+              "ever:right_moka_pot_lifted": false,
+              "ever:right_moka_pot_on_stove": false,
+              "ever:stove_remains_on": true
+            },
+            "policy_step": 0
+          },
+          "state_id": 2
+        },
+        {
+          "eef_position": [
+            -0.21304198730621085,
+            -0.013417601012369523,
+            1.1649959380361885
+          ],
+          "final_success_initial": false,
+          "initial_state_digest": "f53dd32b70bd23ffa2dd5b1e41267ba1c59e88e245857be8b71d5f9b93865763",
+          "no_go_contains_reset_eef": false,
+          "progress_initial": {
+            "commitment_names": [
+              "right_moka_pot_on_stove",
+              "left_moka_pot_on_stove",
+              "stove_remains_on"
+            ],
+            "current": {
+              "final_goal_currently_satisfied": false,
+              "left_moka_pot_lifted": false,
+              "left_moka_pot_on_stove": false,
+              "right_moka_pot_lifted": false,
+              "right_moka_pot_on_stove": false,
+              "stove_remains_on": true
+            },
+            "ever_achieved": {
+              "final_goal_currently_satisfied": false,
+              "left_moka_pot_lifted": false,
+              "left_moka_pot_on_stove": false,
+              "right_moka_pot_lifted": false,
+              "right_moka_pot_on_stove": false,
+              "stove_remains_on": true
+            },
+            "irreversible": {
+              "ever:final_goal_currently_satisfied": false,
+              "ever:left_moka_pot_lifted": false,
+              "ever:left_moka_pot_on_stove": false,
+              "ever:right_moka_pot_lifted": false,
+              "ever:right_moka_pot_on_stove": false,
+              "ever:stove_remains_on": true
+            },
+            "policy_step": 0
+          },
+          "state_id": 3
+        },
+        {
+          "eef_position": [
+            -0.19444379269122136,
+            0.013752505312758543,
+            1.1783603577191415
+          ],
+          "final_success_initial": false,
+          "initial_state_digest": "02b2b6ed14553a05557e097c0a838ce6f5d5aa05c839844aef81678752dace65",
+          "no_go_contains_reset_eef": false,
+          "progress_initial": {
+            "commitment_names": [
+              "right_moka_pot_on_stove",
+              "left_moka_pot_on_stove",
+              "stove_remains_on"
+            ],
+            "current": {
+              "final_goal_currently_satisfied": false,
+              "left_moka_pot_lifted": false,
+              "left_moka_pot_on_stove": false,
+              "right_moka_pot_lifted": false,
+              "right_moka_pot_on_stove": false,
+              "stove_remains_on": true
+            },
+            "ever_achieved": {
+              "final_goal_currently_satisfied": false,
+              "left_moka_pot_lifted": false,
+              "left_moka_pot_on_stove": false,
+              "right_moka_pot_lifted": false,
+              "right_moka_pot_on_stove": false,
+              "stove_remains_on": true
+            },
+            "irreversible": {
+              "ever:final_goal_currently_satisfied": false,
+              "ever:left_moka_pot_lifted": false,
+              "ever:left_moka_pot_on_stove": false,
+              "ever:right_moka_pot_lifted": false,
+              "ever:right_moka_pot_on_stove": false,
+              "ever:stove_remains_on": true
+            },
+            "policy_step": 0
+          },
+          "state_id": 4
+        }
+      ],
+      "target_joints": [
+        "moka_pot_1_joint0",
+        "moka_pot_2_joint0"
+      ],
+      "task_id": 8,
+      "task_name": "KITCHEN_SCENE8_put_both_moka_pots_on_the_stove",
+      "tool_joints": [
+        "moka_pot_1_joint0",
+        "moka_pot_2_joint0"
+      ]
+    }
+  ],
+  "clean_calibration": {
+    "reason": "OpenVLA checkpoint is not configured locally",
+    "required_success_rate": 0.6,
+    "status": "not_run"
+  },
+  "formal_policy_evidence": false,
+  "installed_bddl_root": "/home/lijingsu/vla/src/LIBERO/libero/libero/bddl_files",
+  "installed_benchmark_root": "/home/lijingsu/vla/src/LIBERO/libero/libero",
+  "probe_kind": "real_installed_libero_mujoco_without_policy",
+  "schema_version": "repeated_feasibility_probe_v1",
+  "suite_status": {
+    "libero_10": {
+      "available": true,
+      "n_tasks": 10
+    },
+    "libero_100": {
+      "available": false,
+      "error": "KeyError: 'libero_100'"
+    },
+    "libero_90": {
+      "available": true,
+      "n_tasks": 90
+    },
+    "libero_goal": {
+      "available": true,
+      "n_tasks": 10
+    },
+    "libero_object": {
+      "available": true,
+      "n_tasks": 10
+    },
+    "libero_spatial": {
+      "available": true,
+      "n_tasks": 10
+    }
+  }
+}

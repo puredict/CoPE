@@ -1,0 +1,37 @@
+ssh -o BatchMode=yes -o ConnectTimeout=10 fudan-26575 "cd /home/lijingsu/codex-worktrees/cope-repeated-v2-phase4 && env CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 MUJOCO_GL=osmesa PYOPENGL_PLATFORM=osmesa LIBERO_CONFIG_PATH=/home/lijingsu/.libero scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python -" <<'COPE_RESET_FEASIBILITY'
+import os,sys,pathlib,json,hashlib,datetime,subprocess,contextlib,traceback,uuid
+from pathlib import Path
+repo=Path("/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4")
+assert os.environ["CUDA_VISIBLE_DEVICES"]==""
+root=repo/"research/repeated_v2_formal_readiness_20260906"
+out=root/("reset_feasibility_"+datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")+"_"+uuid.uuid4().hex[:8])
+out.mkdir(parents=True,exist_ok=False)
+def sha(p): return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+def artifact(p): return {"path":str(p),"sha256":sha(p),"bytes":Path(p).stat().st_size}
+def publish(name,value):
+ p=out/name
+ with p.open("x") as f:json.dump(value,f,sort_keys=True,indent=2);f.write("\n");f.flush();os.fsync(f.fileno())
+ return artifact(p)
+metadata={"schema_version":"repeated_v2_source_reset_feasibility_execution_v1","evidence_admissibility":"actual_cpu_reset_probe_only_not_event_safety","time_utc":datetime.datetime.now(datetime.timezone.utc).isoformat(),"host":subprocess.check_output(["hostname"],text=True).strip(),"repo_head":subprocess.check_output(["git","-C",str(repo),"rev-parse","HEAD"],text=True).strip(),"command_api":"tools.audit_repeated_feasibility.audit(Path('manifests/repeated_interruptions_v1.jsonl'))","task_ids":[0,1,4,8],"initial_state_ids":[0,1,2,3,4],"cuda_visible_devices":os.environ["CUDA_VISIBLE_DEVICES"],"renderer_configuration":{"use_camera_obs":False,"has_renderer":False,"has_offscreen_renderer":False,"camera_names":[]},"provider_calls":0,"policy_calls":0,"gpu_calls":0,"source_files":{p:sha(repo/p) for p in ["tools/audit_repeated_feasibility.py","cope_benchmark/task_progress.py","cope_benchmark/interruptions.py","manifests/repeated_interruptions_v1.jsonl"]},"historical_clean_calibration_block":"Ignored: this old helper's 0.60 threshold/missing-checkpoint message is historical metadata, not current v2 status."}
+publish("REQUEST.txt",metadata)
+print(json.dumps({"stage":"started","directory":str(out)}),flush=True)
+log=out/"STDOUT_STDERR.txt"
+try:
+ with log.open("x") as stream,contextlib.redirect_stdout(stream),contextlib.redirect_stderr(stream):
+  from tools.audit_repeated_feasibility import audit
+  result=audit(repo/"manifests/repeated_interruptions_v1.jsonl")
+  import torch
+  assert not torch.cuda.is_initialized()
+ result_artifact=publish("RESET_PROBE_RAW.txt",result)
+ tasks=result["candidate_tasks"]
+ assert {t["task_id"] for t in tasks}=={0,1,4,8}
+ assert len(tasks)==4 and all([s["state_id"] for s in t["states"]]==list(range(5)) for t in tasks)
+ receipt={**metadata,"status":"RESET_PROBE_COMPLETED","output_directory":str(out),"candidate_gate":result["candidate_gate"],"torch_cuda_initialized":torch.cuda.is_initialized(),"task_state_pairs":20,"raw_artifact":result_artifact,"log_artifact":artifact(log),"per_task":[{"task_id":t["task_id"],"all_declared_free_joints_exist":t["all_declared_free_joints_exist"],"free_joints":t["free_joints"],"commitment_predicate_count":t["commitment_predicate_count"],"initial_state_digests":{str(s["state_id"]):s["initial_state_digest"] for s in t["states"]},"initial_goal_successes":sum(s["final_success_initial"] for s in t["states"]),"no_go_contains_reset_eef_count":sum(s["no_go_contains_reset_eef"] for s in t["states"])} for t in tasks],"event_injections":0,"safe_event_certificates":0,"milestone_preservation_certificates":0}
+ receipt_artifact=publish("RECEIPT.txt",receipt)
+ print(json.dumps({"stage":"completed","receipt_artifact":receipt_artifact,"receipt":receipt}),flush=True)
+except BaseException as exc:
+ failure={**metadata,"status":"RESET_PROBE_FAILED","output_directory":str(out),"exception_type":type(exc).__name__,"detail":str(exc),"traceback":traceback.format_exc()}
+ print(json.dumps({"stage":"failed","failure_artifact":publish("FAILED.txt",failure),"failure":failure}),flush=True)
+ raise
+
+COPE_RESET_FEASIBILITY

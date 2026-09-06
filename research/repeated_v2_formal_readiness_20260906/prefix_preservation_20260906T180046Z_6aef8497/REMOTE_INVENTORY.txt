@@ -1,0 +1,67 @@
+[
+  {
+    "bytes": 66,
+    "relative_path": "EXIT.txt",
+    "sha256": "94317bbffe73eedd402def66f9adaa3f40a960970d10694db5256cbfa04c50d8"
+  },
+  {
+    "bytes": 1363,
+    "relative_path": "LAUNCH.txt",
+    "sha256": "d4c7148c5f8fa762c52b19e9c9a8aa8b387586eb04bb60f3acea2a928446fb2d"
+  },
+  {
+    "bytes": 3704,
+    "relative_path": "STDOUT_STDERR.txt",
+    "sha256": "46a575f571aa8e5315131152c340e83b0442eff5c1e90549875100316feddb9c"
+  },
+  {
+    "bytes": 66,
+    "relative_path": "WORKER.txt",
+    "sha256": "dc567ce8ddff3e11f25098e6faa83eea06a194fb4c5655d4ff5e943907bb65a4"
+  },
+  {
+    "bytes": 367,
+    "relative_path": "raw/CONTROLLER_CONFIG.txt",
+    "sha256": "355e57c889f275cbb962da6893ca0be6c4f6c2f5cfc33d9fe348cf25292d7f94"
+  },
+  {
+    "bytes": 4644,
+    "relative_path": "raw/REQUEST.txt",
+    "sha256": "d5d6d011190e574a552e3236e6506cf38ec68d358fc7e35000c94f932e50b003"
+  },
+  {
+    "bytes": 319,
+    "relative_path": "raw/RUNTIME_SOURCES.txt",
+    "sha256": "edca065d0b2912be79c0fc2751ac20ade5b89ca241bd75ec7c0f007815dcb00a"
+  },
+  {
+    "bytes": 1170,
+    "relative_path": "raw/STOPPED.txt",
+    "sha256": "7b59f89d2a5019ad23125ae26fe6a510e789f829b6f11f5647f4346c6bd68e28"
+  },
+  {
+    "bytes": 5945,
+    "relative_path": "raw/TASK_0_SOURCE.txt",
+    "sha256": "a8f467ef549a28c2f550d1f1b8a86b5a01db9c9a88dbb495fe01936428e3ca75"
+  },
+  {
+    "bytes": 271667,
+    "relative_path": "raw/task0_state0_CONTROLS.txt",
+    "sha256": "69b00185c49ddcebb239a0bdc4eb469fcf41cf1f3c23e604c0fa07b3b6fd1a33"
+  },
+  {
+    "bytes": 1565,
+    "relative_path": "raw/task0_state0_PREFIX_CLAIM.txt",
+    "sha256": "101096b941f12aab6afecc996a5f8f921a14113f4ba649e943d0ba9b4f758884"
+  },
+  {
+    "bytes": 12067,
+    "relative_path": "raw/task0_state0_PREFIX_RESULT.txt",
+    "sha256": "7ecbee4ec083f6c40873bf79cbdb5dd8852b2ab3d4327fad184d3195b9f5d6ef"
+  },
+  {
+    "bytes": 7015,
+    "relative_path": "raw/task0_state0_target_object_moved_before_RESTORE.txt",
+    "sha256": "f236ce209adb6ddfb1c7d5c271b4c5521e526051d43403f18bc5be3eaac08fca"
+  }
+]

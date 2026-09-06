@@ -1,0 +1,125 @@
+ssh -o BatchMode=yes -o ConnectTimeout=10 fudan-26575 "cd /home/lijingsu/codex-worktrees/cope-repeated-v2-phase4 && env CUDA_VISIBLE_DEVICES='' COPE_EFFECT_DRIVER_SHA256=7dec80897e62a3953817681a8f1a01aece9e52c0ed27e96b0f165000e28eaf08 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 MUJOCO_GL=osmesa PYOPENGL_PLATFORM=osmesa LIBERO_CONFIG_PATH=/home/lijingsu/.libero scripts/run_project_env.sh /home/lijingsu/vla/.venv/bin/python -" <<'COPE_EVENT_EFFECT'
+#!/usr/bin/env python3
+"""One-off isolated CPU event-effect witnesses; no safe-event certification."""
+import os,sys,json,hashlib,datetime,uuid,traceback,contextlib
+from pathlib import Path
+assert os.environ.get("CUDA_VISIBLE_DEVICES")==""
+ROOT=Path("/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4")
+sys.path.insert(0,str(ROOT))
+OUT=ROOT/"research/repeated_v2_formal_readiness_20260906"/("event_effect_"+datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")+"_"+uuid.uuid4().hex[:8])
+OUT.mkdir(parents=True,exist_ok=False)
+def encoded(v):return (json.dumps(v,sort_keys=True,indent=2,allow_nan=False)+"\n").encode()
+def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+def artifact(p):return {"path":str(p),"bytes":Path(p).stat().st_size,"sha256":sha(p)}
+def publish(name,v):
+ p=OUT/name
+ with p.open("xb") as f:f.write(encoded(v));f.flush();os.fsync(f.fileno())
+ return artifact(p)
+def primitive(v):
+ if isinstance(v,dict):return {str(k):primitive(x) for k,x in v.items()}
+ if isinstance(v,(list,tuple)):return [primitive(x) for x in v]
+ if hasattr(v,"tolist"):return v.tolist()
+ return v
+manifest=ROOT/"manifests/repeated_interruptions_v1.jsonl"
+rows=[json.loads(line) for line in manifest.read_text().splitlines() if line.strip()]
+groups=[("target",("target_object_moved",)),("receptacle",("goal_receptacle_moved",)),("no_go",("temporary_no_go_zone_appears","temporary_no_go_zone_disappears")),("preference",("user_adds_gentle_preference",)),("availability",("tool_temporarily_unavailable","tool_becomes_available_again"))]
+plans=[]
+for task in (0,1,4,8):
+ for label,families in groups:
+  eligible=[r for r in rows if r["pair_fields"]["task_id"]==task and set(families)<=set(e["event_type"] for e in r["event_schedule"])]
+  if task==8 and label=="receptacle":
+   assert not eligible
+   continue
+  assert eligible,(task,label)
+  source=eligible[0]
+  events=[e for e in source["event_schedule"] if e["event_type"] in families]
+  assert tuple(e["event_type"] for e in events)==families
+  for state in range(5):
+   plans.append({"task_id":task,"initial_state_id":state,"group":label,"source_pair_fields":source["pair_fields"],"source_pair_key":source["pair_key"],"events":events,"actual_probe_policy_step":0,"legacy_trigger_executed":False})
+assert sum(len(p["events"]) for p in plans)==135 and len(plans)==95
+metadata={"schema_version":"repeated_v2_isolated_event_effect_request_v1","evidence_admissibility":"actual_cpu_injection_effect_and_refresh_only","time_utc":datetime.datetime.now(datetime.timezone.utc).isoformat(),"source_manifest":artifact(manifest),"source_files":{str(ROOT/p):sha(ROOT/p) for p in ("cope_benchmark/interruptions.py","cope_benchmark/task_progress.py","libero_experiment_core.py")},"driver_sha256":os.environ["COPE_EFFECT_DRIVER_SHA256"],"plans":plans,"expected_event_applications":135,"isolated_cases":95,"provider_calls":0,"vla_calls":0,"gpu_calls":0,"unsupported":[{"task_id":8,"family":"GOAL_RECEPTACLE_OR_GROUNDING_CHANGED","variant":"free_joint_stove_relocation","status":"UNSUPPORTED_THIS_PRIMITIVE","other_variants":"unqualified; not inferred"}],"restrictions":["not semantic-trigger or min-spacing execution","not safe-position/stability/reachability certification","snapshot restoration is isolated audit cleanup, not recovery behavior","cameras disabled; fresh non-image observations do not certify production RGB perception"]}
+publish("REQUEST.txt",metadata)
+print(json.dumps({"stage":"started","directory":str(OUT),"event_applications":135}),flush=True)
+log=OUT/"STDOUT_STDERR.txt"
+events_out=[];cases_out=[];restoration_failures=0;control_attempts=0
+try:
+ with log.open("x") as logs,contextlib.redirect_stdout(logs),contextlib.redirect_stderr(logs):
+  import numpy as np,torch
+  from libero.libero import benchmark,get_libero_path
+  from libero.libero.envs.env_wrapper import ControlEnv
+  from cope_benchmark.interruptions import LiberoInterruptionContext,InterruptionEvent,apply_interruption
+  from cope_benchmark.task_progress import get_task_definition,ProgressTracker,LiberoStateView
+  from libero_experiment_core import validate_free_joint
+  assert not torch.cuda.is_initialized()
+  suite=benchmark.get_benchmark_dict()["libero_10"]()
+  for task_id in (0,1,4,8):
+   task=suite.get_task(task_id);states=suite.get_task_init_states(task_id)
+   bddl=Path(get_libero_path("bddl_files"))/task.problem_folder/task.bddl_file
+   env=ControlEnv(bddl_file_name=str(bddl),use_camera_obs=False,has_renderer=False,has_offscreen_renderer=False,camera_names=[],ignore_done=True)
+   try:
+    env.seed(101);env.reset()
+    def denied(*a,**kw):
+     global control_attempts
+     control_attempts+=1
+     raise RuntimeError("ENVIRONMENT_CONTROL_FORBIDDEN_DURING_ISOLATED_PROBE")
+    env.step=denied;env.env.step=denied
+    for plan in (p for p in plans if p["task_id"]==task_id):
+     case_id=f"task{task_id}_state{plan['initial_state_id']}_{plan['group']}"
+     initial=np.asarray(states[plan["initial_state_id"]])
+     obs=env.set_init_state(initial.copy())
+     base=np.asarray(env.get_sim_state()).copy()
+     assert np.array_equal(base,initial),"initial snapshot differs"
+     ctx=LiberoInterruptionContext(env,obs)
+     tracker=ProgressTracker(get_task_definition("libero_10",task_id))
+     view=LiberoStateView(env);case_events=[];stop=False
+     for event_index,raw in enumerate(plan["events"],1):
+      row={"case_id":case_id,"task_id":task_id,"initial_state_id":plan["initial_state_id"],"initial_state_sha256":hashlib.sha256(initial.tobytes()).hexdigest(),"family":raw["event_type"],"event_index_within_probe":event_index,"source_event":raw,"actual_probe_policy_step":0,"source_trigger_executed":False,"evidence_admissibility":"mechanical_effect_sub_evidence"}
+      if stop:
+       row["status"]="NOT_RUN_AFTER_PAIR_FAILURE";case_events.append(row);events_out.append(row);continue
+      sim=env.sim
+      beforeq=np.asarray(sim.data.qpos).copy();beforev=np.asarray(sim.data.qvel).copy();beforetime=float(sim.data.time)
+      beforeobs=primitive(env.env._get_observations(force_update=True));beforeprogress=tracker.sample(view,0).to_dict()
+      expected=beforeq.copy();payload=raw["payload"];joint=None
+      try:
+       if "joint" in payload:
+        joint=payload["joint"];_,joint_id,addr=validate_free_joint(env,joint)
+        expected[addr]+=float(payload["dx"]);expected[addr+1]+=float(payload["dy"])
+       elif "tool_joint" in payload:
+        joint=payload["tool_joint"];_,joint_id,addr=validate_free_joint(env,joint)
+        expected[addr:addr+3]=payload.get("unavailable_xyz",payload.get("release_xyz"))
+       publish(case_id+f"_event{event_index}_INTENT.txt",{**row,"qpos":beforeq.tolist(),"qvel":beforev.tolist(),"simulator_time":beforetime,"progress":beforeprogress})
+       app,returned=apply_interruption(ctx,InterruptionEvent.from_dict(raw),policy_step=0)
+       current=env.env._get_observations(force_update=True)
+       returned_data=primitive(returned);current_data=primitive(current)
+       exact_observation_equal=returned_data==current_data
+       afterq=np.asarray(sim.data.qpos).copy();afterv=np.asarray(sim.data.qvel).copy()
+       checks={"expected_qpos":bool(np.allclose(afterq,expected,rtol=0,atol=1e-10)),"qvel_unchanged":bool(np.array_equal(beforev,afterv)),"simulator_time_unchanged":float(sim.data.time)==beforetime,"no_environment_control_attempts":control_attempts==0,"fresh_observation_flag":app.fresh_observation is True,"no_refresh_noop_step":app.observation_refresh["consumed_noop_env_step"] is False,"independent_forced_observation_equal":exact_observation_equal,"policy_step_unchanged":app.policy_step_before==app.policy_step_after==0}
+       changedkeys=[k for k in current_data if beforeobs.get(k)!=current_data[k]]
+       row.update(status="PASS_MECHANICAL_WITNESS" if all(checks.values()) else "FAIL_MECHANICAL_WITNESS",checks=checks,application=app.to_dict(),before_qpos=beforeq.tolist(),after_qpos=afterq.tolist(),before_qvel=beforev.tolist(),after_qvel=afterv.tolist(),simulator_time_before=beforetime,simulator_time_after=float(sim.data.time),progress_before=beforeprogress,progress_after=tracker.sample(view,0).to_dict(),post_observation=current_data,post_observation_sha256=hashlib.sha256(encoded(current_data)).hexdigest(),observation_keys=sorted(current_data),observation_changed_keys=changedkeys,rendered_rgb_observation=False,affected_joint=joint)
+       stop=row["status"]!="PASS_MECHANICAL_WITNESS"
+      except Exception as exc:
+       row.update(status="FAIL_MECHANICAL_WITNESS",exception_type=type(exc).__name__,detail=str(exc),traceback=traceback.format_exc());stop=True
+      publish(case_id+f"_event{event_index}_RESULT.txt",row);case_events.append(row);events_out.append(row)
+     before_restore=np.asarray(env.get_sim_state()).copy()
+     env.set_init_state(base.copy())
+     restored=bool(np.array_equal(np.asarray(env.get_sim_state()),base))
+     case_record={"case_id":case_id,"restored_exactly":restored,"snapshot_before":base.tolist(),"snapshot_before_restore":before_restore.tolist(),"snapshot_after_restore":np.asarray(env.get_sim_state()).tolist(),"events":len(case_events),"all_effects_pass":all(r["status"]=="PASS_MECHANICAL_WITNESS" for r in case_events)}
+     publish(case_id+"_RESTORE.txt",case_record);cases_out.append(case_record)
+     if not restored:
+      restoration_failures+=1
+      raise RuntimeError("EXACT_AUDIT_SNAPSHOT_RESTORE_FAILED")
+   finally:
+    env.close()
+  assert not torch.cuda.is_initialized()
+ assert len(events_out)==135 and len(cases_out)==95
+ summary={k:v for k,v in metadata.items() if k!="plans"}
+ summary.update(status="COMPLETED_MECHANICAL_WITNESS_SWEEP",output_directory=str(OUT),event_applications=len(events_out),passed=sum(r["status"]=="PASS_MECHANICAL_WITNESS" for r in events_out),failed=sum(r["status"]=="FAIL_MECHANICAL_WITNESS" for r in events_out),not_run=sum(r["status"].startswith("NOT_RUN") for r in events_out),restored_cases=sum(c["restored_exactly"] for c in cases_out),restoration_failures=restoration_failures,environment_control_attempts=control_attempts,torch_cuda_initialized=False,safe_event_certificates=0,semantic_trigger_certificates=0,per_task_family=[{"task_id":t,"family":f,"attempts":len(rs),"passed":sum(r["status"]=="PASS_MECHANICAL_WITNESS" for r in rs)} for t,f in sorted(set((r["task_id"],r["family"]) for r in events_out)) for rs in [[r for r in events_out if (r["task_id"],r["family"])==(t,f)]]])
+ summary["event_results_artifact"]=publish("EVENT_RESULTS.txt",events_out);summary["case_results_artifact"]=publish("CASE_RESTORATIONS.txt",cases_out);summary["log_artifact"]=artifact(log)
+ receipt=publish("RECEIPT.txt",summary)
+ print(json.dumps({"stage":"completed","receipt_artifact":receipt,"summary":summary}),flush=True)
+except BaseException as exc:
+ failure={"status":"EVENT_EFFECT_SWEEP_STOPPED","exception_type":type(exc).__name__,"detail":str(exc),"traceback":traceback.format_exc(),"events_recorded":len(events_out),"cases_recorded":len(cases_out),"control_attempts":control_attempts,"output_directory":str(OUT)}
+ print(json.dumps({"stage":"failed","artifact":publish("FAILED.txt",failure),"failure":failure}),flush=True)
+ raise
+
+COPE_EVENT_EFFECT

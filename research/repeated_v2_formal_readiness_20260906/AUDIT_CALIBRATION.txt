@@ -1,0 +1,619 @@
+#!/usr/bin/env python3
+"""Offline, fail-closed audit of the complete four-task clean calibration.
+
+Example after all 40 cells are complete, using an unchanged local copy:
+  python AUDIT_CALIBRATION.txt --input-root /absolute/copied/clean_calibration_01 \
+    --output-root /absolute/new/calibration_audit_01
+The original remote root is read from LAUNCH.txt; --original-root can assert it.
+Artifact references are remapped only in memory. Raw inputs are never modified.
+The output directory must be new, outside the input tree, with an existing parent.
+
+Outputs on success: CALIBRATION_AUDIT.txt, CALIBRATION_EPISODES.csv,
+CALIBRATION_SUMMARIES.csv, MILESTONE_EVIDENCE.csv, MILESTONE_COUNTS.csv.
+Optional --derive-admission-records also publishes separate provider-ID aliases
+and a lossless provenance map after the entire original 40-cell audit passes.
+Original records and their model-ID policy_id fields remain unchanged.
+On failure only CALIBRATION_AUDIT.txt is published and exit status is nonzero;
+missing or corrupt cells never become failures/zeroes or a smaller denominator.
+Milestone rows describe recorded current/ever/regression observations, not task
+structural, event safety, semantic-trigger, or physical feasibility certificates.
+
+No model/provider/simulator/GPU imports or requests are performed. Initial and
+terminal RGB payload bytes are verified. Intermediate frames were not archived
+by this driver: their hash/proprio chains can be checked, not re-rendered or
+independently recovered. The scorer's recorded predicates are checked for exact
+history/terminal consistency; this is not a new physical LIBERO evaluation.
+--self-check uses in-memory synthetic fixtures only and writes no files.
+"""
+from __future__ import annotations
+
+import argparse
+import base64
+import csv
+import hashlib
+import io
+import json
+import math
+import os
+from pathlib import Path
+import re
+import struct
+import sys
+from types import SimpleNamespace
+import uuid
+
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+from cope_benchmark.repeated_v2.task_calibration import CalibrationEpisode, calibration_grid, summarize_calibration
+from cope_benchmark.repeated_v2.vla_adapter import to_environment_action, validate_action_chunk
+from cope_benchmark.task_progress import get_task_definition
+from cope.calibration import validate_openvla_action
+
+TASK_IDS = (0, 1, 4, 8)
+CHECKPOINT = "d36eaa2a334cd52f4a3a94558cf90d82584743ea772fabf76f9e4372e7076076"
+DRIVER_SHA256 = "c7e5ba2b1de42e06306eb3d4d04cfabebb420030220ef24e52953ac65cc8c206"
+ACTION_SPACE = "openvla_raw_normalize_binarize_then_invert_gripper"
+GOAL = "final_goal_currently_satisfied"
+HEX = re.compile(r"^[0-9a-f]{64}$")
+
+
+class InvalidEvidence(ValueError):
+    pass
+
+
+def require(condition, reason):
+    if not condition:
+        raise InvalidEvidence(reason)
+
+
+def encoded(value):
+    return (json.dumps(value, sort_keys=True, ensure_ascii=False, separators=(",", ":"), allow_nan=False) + "\n").encode()
+
+
+def equal(left, right):
+    return encoded(left) == encoded(right)
+
+
+def sha(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def strict_json(data):
+    def pairs(items):
+        result = {}
+        for key, value in items:
+            require(key not in result, "duplicate JSON key: " + key)
+            result[key] = value
+        return result
+    def invalid(value):
+        raise InvalidEvidence("non-finite JSON constant: " + value)
+    return json.loads(data, object_pairs_hook=pairs, parse_constant=invalid)
+
+
+def integer(value, minimum=0):
+    require(type(value) is int and value >= minimum, "invalid integer count")
+    return value
+
+
+def finite(value):
+    require(type(value) in (int, float) and math.isfinite(value), "non-finite/non-numeric value")
+    return value
+
+
+def vector(value, length):
+    require(type(value) is list and len(value) == length, "vector shape differs")
+    for item in value:
+        finite(item)
+    return value
+
+
+def boolean(value):
+    require(type(value) is bool, "expected explicit Boolean")
+    return value
+
+
+def observation(value, pixels=False):
+    keys = {"policy_fields", "frame_dtype", "frame_shape", "frame_sha256", "public_proprio"}
+    require(set(value) == keys | ({"frame_raw_uint8_base64"} if pixels else set()), "observation metadata fields differ")
+    require(value["policy_fields"] == ["full_image", "state"], "policy input is not image/proprio only")
+    require(value["frame_dtype"] == "uint8" and value["frame_shape"] == [224, 224, 3], "policy RGB format differs")
+    require(isinstance(value["frame_sha256"], str) and HEX.fullmatch(value["frame_sha256"]), "invalid RGB digest")
+    vector(value["public_proprio"], 8)
+    if pixels:
+        raw = base64.b64decode(value["frame_raw_uint8_base64"], validate=True)
+        require(len(raw) == 224 * 224 * 3 and sha(raw) == value["frame_sha256"], "RGB payload digest/shape differs")
+    return {key: value[key] for key in keys}
+
+
+class InputTree:
+    def __init__(self, root, original=None):
+        self.root = Path(root).resolve()
+        require(self.root.is_dir(), "input directory is absent")
+        self.receipts = {}
+        launch = self.read("LAUNCH.txt")
+        self.original = Path(launch["output_root"])
+        require(self.original.is_absolute(), "original output root is not absolute")
+        if original is not None:
+            require(self.original == Path(original), "requested original root differs from launch")
+        self.launch = launch
+
+    def bytes(self, relative):
+        relative = Path(relative)
+        require(not relative.is_absolute() and ".." not in relative.parts, "invalid relative artifact path")
+        path = self.root / relative
+        require(path.is_file() and not path.is_symlink(), "missing/non-regular artifact: " + str(relative))
+        require(path.resolve().is_relative_to(self.root), "artifact escapes copied root")
+        data = path.read_bytes()
+        receipt = {"relative_path": relative.as_posix(), "sha256": sha(data), "bytes": len(data)}
+        old = self.receipts.get(relative.as_posix())
+        require(old is None or old == receipt, "artifact changed while auditing: " + str(relative))
+        self.receipts[relative.as_posix()] = receipt
+        return data
+
+    def read(self, relative):
+        return strict_json(self.bytes(relative))
+
+    def artifact(self, reference, expected):
+        require(reference["path"] == str(self.original / expected), "artifact reference points at wrong cell/file")
+        data = self.bytes(expected)
+        require(reference["sha256"] == sha(data), "artifact checksum differs: " + str(expected))
+        if "bytes" in reference:
+            require(type(reference["bytes"]) is int and reference["bytes"] == len(data), "artifact size differs")
+        return strict_json(data) if str(expected).endswith(".txt") and not str(expected).endswith("ACTION_TRACE.txt") else data
+
+    def verify_unchanged(self):
+        for relative, receipt in list(self.receipts.items()):
+            require(sha(self.bytes(relative)) == receipt["sha256"], "input mutated during audit")
+
+
+def progress_check(sample, definition, ever, previous, policy_step):
+    names = [spec.name for spec in definition.predicates]
+    require(set(sample) == {"policy_step", "current", "ever_achieved", "irreversible", "commitment_names"}, "progress fields differ")
+    require(type(sample["policy_step"]) is int and sample["policy_step"] == policy_step, "progress policy step differs")
+    require(set(sample["current"]) == set(names), "progress predicate set differs")
+    commitments = [spec.name for spec in definition.predicates if spec.commitment]
+    require(sample["commitment_names"] == commitments, "commitment-name set/order differs")
+    regressions = {}
+    for name in names:
+        current = boolean(sample["current"][name])
+        regressions[name] = bool(previous.get(name, False) and not current)
+        ever[name] = bool(ever.get(name, False) or current)
+    require(equal(sample["ever_achieved"], ever), "ever history does not equal accumulated observed truth")
+    require(equal(sample["irreversible"], {"ever:" + key: value for key, value in ever.items()}), "irreversible history differs")
+    require(sample["current"][GOAL] == all(sample["current"][key] for key in commitments), "exact goal disagrees with recorded LIBERO goal conjunction")
+    previous.clear()
+    previous.update(sample["current"])
+    return regressions
+
+
+def check_trace(rows, terminal, definition, initial_image, terminal_image, cell):
+    require(rows and len(rows) >= 21, "trace lacks initial/ten settling pairs")
+    count = integer(terminal["policy_steps_consumed"])
+    require(count <= 260 and len(rows) == 21 + 4 * count, "trace action count or trailing rows differ")
+    low, high = vector(terminal["action_low"], 7), vector(terminal["action_high"], 7)
+    require(all(a <= b for a, b in zip(low, high)), "action bounds reversed")
+    require(terminal["action_spec_source"] in {"env.action_spec", "env.env.action_spec"}, "live action specification source missing")
+    initial = rows[0]
+    require(set(initial) == {"record_type", "environment_control", "policy_step", "progress", "observation"}, "initial trace schema differs")
+    require(initial["record_type"] == "initial" and integer(initial["environment_control"]) == 0 and integer(initial["policy_step"]) == 0, "initial trace boundary differs")
+    require(equal(observation(initial["observation"]), observation(initial_image, True)), "initial image/trace linkage differs")
+    observation(terminal_image, True)
+    ever, previous, milestones = {}, {}, []
+
+    def add_sample(row, line, phase):
+        step = integer(row["policy_step"])
+        env_control = integer(row["environment_control"])
+        regressions = progress_check(row["progress"], definition, ever, previous, step)
+        for spec in definition.predicates:
+            milestones.append({**cell, "trace_line": line, "phase": phase,
+                               "policy_step": step, "environment_control": env_control,
+                               "predicate_name": spec.name, "predicate_kind": spec.kind,
+                               "predicate_arguments": json.dumps(spec.arguments, separators=(",", ":")),
+                               "commitment": spec.commitment, "current": previous[spec.name],
+                               "ever": ever[spec.name], "regression": regressions[spec.name],
+                               "evidence_admissibility": "recorded_milestone_sub_evidence"})
+
+    add_sample(initial, 1, "initial")
+    last = initial
+    for warmup in range(1, 11):
+        intent, result = rows[2 * warmup - 1:2 * warmup + 1]
+        require(set(intent) == {"record_type", "settling_control", "environment_action", "policy_inference"}, "settling intent fields differ")
+        require(set(result) == {"record_type", "settling_control", "environment_control", "policy_step", "reward", "done", "progress"}, "settling result fields differ")
+        require(intent["record_type"] == "settling_intent" and result["record_type"] == "settling_result", "settling pair order differs")
+        require(integer(intent["settling_control"]) == integer(result["settling_control"]) == integer(result["environment_control"]) == warmup, "settling count differs")
+        require(integer(result["policy_step"]) == 0 and intent["policy_inference"] is False, "settling incorrectly counts policy inference")
+        require(vector(intent["environment_action"], 7) == [0, 0, 0, 0, 0, 0, -1], "settling action differs from production dummy helper")
+        finite(result["reward"]); boolean(result["done"])
+        add_sample(result, 2 * warmup + 1, "settling")
+        last = result
+    previous_observation = None
+    inference_seconds = 0.0
+    raw_sequence, environment_sequence = [], []
+    for step in range(1, count + 1):
+        require(not last["done"] and not last["progress"]["current"][GOAL], "policy continued after terminal boundary")
+        start = 21 + (step - 1) * 4
+        intent, response, env_intent, result = rows[start:start + 4]
+        expected = [
+            {"record_type", "policy_step", "observation"},
+            {"record_type", "policy_step", "raw_action", "environment_action", "action_space", "action_validation", "inference_seconds"},
+            {"record_type", "policy_step", "environment_control", "environment_action"},
+            {"record_type", "policy_step", "environment_control", "reward", "done", "environment_seconds", "progress", "post_observation"},
+        ]
+        for row, keys, name in zip((intent, response, env_intent, result), expected,
+                                  ("inference_intent", "inference_response", "environment_intent", "environment_result")):
+            require(set(row) == keys and row["record_type"] == name and integer(row["policy_step"]) == step, "policy trace phase/schema/order differs")
+        current_observation = observation(intent["observation"])
+        if previous_observation is not None:
+            require(equal(current_observation, previous_observation), "inference did not use immediately preceding post-action observation")
+        previous_observation = observation(result["post_observation"])
+        raw, action = vector(response["raw_action"], 7), vector(response["environment_action"], 7)
+        validate_action_chunk([raw], action_dim=7, max_horizon=1)
+        require(response["action_space"] == ACTION_SPACE, "action space changed")
+        converted = list(to_environment_action(SimpleNamespace(identity={"action_space": ACTION_SPACE}), raw))
+        require(equal(converted, action) and equal(action, env_intent["environment_action"]), "raw conversion/action consumed linkage differs")
+        validation = validate_openvla_action(raw, action, expected_dim=7, action_low=low, action_high=high)
+        require(validation["passed"] and equal(response["action_validation"], validation), "independent action/bounds validation failed")
+        raw_sequence.append(raw)
+        environment_sequence.append(action)
+        require(integer(env_intent["environment_control"]) == integer(result["environment_control"]) == 10 + step, "environment control sequence differs")
+        seconds = finite(response["inference_seconds"])
+        require(seconds >= 0 and finite(result["environment_seconds"]) >= 0, "negative elapsed time")
+        inference_seconds += seconds
+        finite(result["reward"]); boolean(result["done"])
+        add_sample(result, start + 4, "policy")
+        last = result
+    if previous_observation is not None:
+        require(equal(previous_observation, observation(terminal_image, True)), "terminal image differs from final action observation")
+    success = last["progress"]["current"][GOAL]
+    require(boolean(terminal["success"]) == success, "terminal success uses a different criterion than current exact goal")
+    require(boolean(terminal["environment_done"]) == last["done"] and equal(terminal["reward"], last["reward"]), "terminal reward/done differs")
+    require(equal(terminal["progress"], last["progress"]), "terminal progress differs from final sample")
+    reason = "exact_libero_goal" if success else ("environment_done" if last["done"] else "policy_budget_exhausted")
+    require(terminal["terminal_reason"] == reason, "terminal reason differs")
+    require(success or last["done"] or count == 260, "unexplained early termination")
+    require(terminal["status"] == ("completed" if success or last["done"] else "timeout"), "terminal status differs")
+    require(integer(terminal["settling_controls_consumed"]) == 10 and integer(terminal["environment_controls_consumed"]) == 10 + count, "terminal controls differ")
+    require(integer(terminal["extra_refresh_controls"]) == 0 and integer(terminal["max_policy_steps"]) == 260, "hidden/excess controls declared")
+    require(finite(terminal["wall_seconds"]) >= inference_seconds, "terminal wall time is less than inference time")
+    return milestones, inference_seconds, sha(encoded(raw_sequence)), sha(encoded(environment_sequence))
+
+
+def audit(input_root, original=None):
+    tree = InputTree(input_root, original)
+    require(not (tree.root / "INFRASTRUCTURE_STOP.txt").exists(), "infrastructure stop present; grid is not an admissible complete run")
+    protocol_bytes = tree.bytes("PROTOCOL.txt")
+    protocol = strict_json(protocol_bytes)
+    protocol_sha = sha(protocol_bytes)
+    require(protocol_bytes == encoded(protocol), "protocol bytes are not the pinned driver's canonical encoding")
+    for key, expected in {"task_suite": "libero_10", "task_ids": list(TASK_IDS), "initial_state_ids": list(range(5)),
+                          "policy_seeds": [101, 131], "environment_seed": 0, "max_policy_steps": 260,
+                          "settling_controls": 10, "max_environment_controls": 270, "extra_refresh_controls": 0,
+                          "interruptions": 0, "public_policy_fields": ["full_image", "state"]}.items():
+        require(equal(protocol[key], expected), "frozen protocol field differs: " + key)
+    require([value for key, value in protocol["source_sha256"].items() if key.endswith("/CALIBRATION_DRIVER.txt")] == [DRIVER_SHA256], "driver source identity differs")
+    identity = protocol["policy_identity"]
+    require(identity["checkpoint_sha256"] == CHECKPOINT and identity["action_space"] == ACTION_SPACE
+            and identity["action_dim"] == 7 and identity["max_chunk_horizon"] == 1
+            and identity["provider_id"] == "openvla_native", "native policy identity differs")
+    gate = tree.artifact(protocol["action_probe_evidence"], Path("VLA_GATE_EVIDENCE.txt"))
+    require(equal(tree.launch["gate_evidence"], protocol["action_probe_evidence"]), "launch/protocol gate differs")
+    require(gate["passed"] is True and gate["fixture"] is False and gate["learned_policy"] is True
+            and gate["uses_privileged_state"] is False and gate["status"] == "ACTUAL_ACTION_PROBE_PASSED"
+            and equal(gate["identity"], identity), "production action probe/identity gate differs")
+    grid = calibration_grid(TASK_IDS)
+    expected_dirs = {f"task_{c['task_id']}_state_{c['initial_state_id']}_seed_{c['policy_seed']}" for c in grid}
+    require({path.name for path in tree.root.iterdir() if path.is_dir()} == expected_dirs, "missing/extra/duplicate episode directories")
+    task_records = protocol["task_records"]
+    require(set(task_records) == {str(t) for t in TASK_IDS}, "task identity set differs")
+    for task_id in TASK_IDS:
+        task = task_records[str(task_id)]
+        definition = get_task_definition("libero_10", task_id)
+        require(task["task_name"] == definition.task_name and task["language"] == definition.language
+                and equal(task["progress_definition"], definition.to_dict()), "task/progress definition differs")
+        bddl_ref = task["bddl"]
+        require(bddl_ref["path"] == str(tree.original / f"TASK_{task_id}_BDDL.txt"), "BDDL reference differs")
+        bddl = tree.bytes(f"TASK_{task_id}_BDDL.txt")
+        require(sha(bddl) == bddl_ref["sha256"] and len(bddl) == bddl_ref["bytes"], "BDDL bytes differ")
+        require(set(task["initial_states"]) == {str(s) for s in range(5)}, "initial state set differs")
+        for state_id in range(5):
+            item = task["initial_states"][str(state_id)]
+            state = tree.artifact(item["artifact"], Path(f"TASK_{task_id}_STATE_{state_id}.txt"))
+            require(state["dtype"] == item["dtype"] and state["shape"] == item["shape"], "initial state metadata differs")
+            require(state["dtype"] in {"float64", "float32"} and len(state["shape"]) == 1, "unsupported source initial state format")
+            values = vector(state["values"], integer(state["shape"][0], 1))
+            raw = struct.pack("<" + ("d" if state["dtype"] == "float64" else "f") * len(values), *values)
+            require(sha(raw) == state["raw_bytes_sha256"] == item["sha256"], "initial state bytes digest differs")
+    aggregate = tree.read("CALIBRATION_RECORDS.txt")
+    require(type(aggregate) is list and len(aggregate) == 40, "aggregate must contain exactly 40 episodes")
+    by_cell = {}
+    for row in aggregate:
+        record = CalibrationEpisode.from_dict(row)
+        key = (record.task_id, record.initial_state_id, record.policy_seed)
+        require(key not in by_cell, "duplicate aggregate cell")
+        by_cell[key] = row
+    require(set(by_cell) == {tuple(c.values()) for c in grid}, "aggregate cell grid differs")
+    episodes, milestones, records = [], [], []
+    for cell in grid:
+        task_id, state_id, seed = cell.values()
+        directory = Path(f"task_{task_id}_state_{state_id}_seed_{seed}")
+        require({p.name for p in (tree.root / directory).iterdir()} == {
+            "CLAIM.txt", "ACTION_TRACE.txt", "INITIAL_OBSERVATION.txt", "TERMINAL_OBSERVATION.txt", "TERMINAL.txt", "CALIBRATION_RECORD.txt"}, "unexpected/missing episode artifacts")
+        claim = tree.read(directory / "CLAIM.txt")
+        record = tree.read(directory / "CALIBRATION_RECORD.txt")
+        CalibrationEpisode.from_dict(record)
+        require(equal(record, by_cell[(task_id, state_id, seed)]), "aggregate and cell record differ")
+        require(all(type(claim[k]) is int and claim[k] == v for k, v in cell.items())
+                and integer(claim["attempt"]) == 1 and claim["protocol_sha256"] == protocol_sha, "claim cell/attempt/protocol differs")
+        terminal = tree.artifact({"path": record["evidence_ref"], "sha256": record["evidence_sha256"]}, directory / "TERMINAL.txt")
+        require(terminal["schema_version"] == "repeated_v2_native_clean_terminal_evidence_v1", "terminal schema differs")
+        require(all(type(terminal[k]) is int and terminal[k] == v for k, v in cell.items()), "terminal cell differs")
+        for field in ("success", "status", "learned_policy", "privileged_policy_state", "clean_episode", "protocol_sha256", "initial_state_sha256", "max_policy_steps"):
+            require(equal(record[field], terminal[field]), "record/terminal field differs: " + field)
+        require(record["provenance_kind"] == "measured" and record["learned_policy"] is True
+                and record["privileged_policy_state"] is False and record["clean_episode"] is True
+                and integer(terminal["interruption_count"]) == 0, "fixture/privileged/interrupted record")
+        require(record["checkpoint_sha256"] == CHECKPOINT and record["policy_id"] == identity["policy_model_id"]
+                and equal(terminal["policy_identity"], identity), "episode policy identity differs")
+        require(record["protocol_sha256"] == protocol_sha, "episode protocol identity differs")
+        require(record["initial_state_sha256"] == task_records[str(task_id)]["initial_states"][str(state_id)]["sha256"], "cell initial state differs")
+        data = tree.artifact(terminal["action_trace"], directory / "ACTION_TRACE.txt")
+        require(data.endswith(b"\n"), "unterminated trace")
+        rows = [strict_json(line) for line in data.splitlines()]
+        initial_image = tree.artifact(terminal["initial_observation"], directory / "INITIAL_OBSERVATION.txt")
+        final_image = tree.artifact(terminal["terminal_observation"], directory / "TERMINAL_OBSERVATION.txt")
+        cell_milestones, inference_seconds, raw_sequence_sha, environment_sequence_sha = check_trace(rows, terminal, get_task_definition("libero_10", task_id), initial_image, final_image, cell)
+        milestones.extend(cell_milestones)
+        episodes.append({**cell, "success": record["success"], "status": record["status"],
+                         "raw_policy_id": record["policy_id"], "provider_id": identity["provider_id"],
+                         "policy_model_id": identity["policy_model_id"],
+                         "freeze_policy_id_matches_provider": record["policy_id"] == identity["provider_id"],
+                         "policy_steps": terminal["policy_steps_consumed"], "settling_controls": 10,
+                         "environment_controls": terminal["environment_controls_consumed"],
+                         "inference_seconds": inference_seconds, "terminal_goal_current": terminal["progress"]["current"][GOAL],
+                         "terminal_goal_ever": terminal["progress"]["ever_achieved"][GOAL],
+                         "initial_state_sha256": record["initial_state_sha256"],
+                         "terminal_sha256": record["evidence_sha256"], "trace_sha256": terminal["action_trace"]["sha256"],
+                         "raw_policy_action_sequence_sha256": raw_sequence_sha,
+                         "environment_policy_action_sequence_sha256": environment_sequence_sha,
+                         "evidence_ref_original": record["evidence_ref"], "integrity_status": "PASS"})
+        records.append(record)
+    summaries = []
+    for task_id in TASK_IDS:
+        selected = [record for record in records if record["task_id"] == task_id]
+        digests = {state_id: item["sha256"] for state_id, item in task_records[str(task_id)]["initial_states"].items()}
+        summary = summarize_calibration(task_id, selected, initial_state_digests=digests).to_dict()
+        require(equal(summary, tree.read(f"TASK_{task_id}_CALIBRATION_SUMMARY.txt")), "saved task summary differs")
+        summaries.append(summary)
+    completed = tree.read("COMPLETED_SUBSET.txt")
+    require(completed["task_ids"] == list(TASK_IDS) and completed["episode_count"] == 40
+            and completed["protocol_sha256"] == protocol_sha and equal(completed["summaries"], summaries)
+            and completed["catalog_semantic_or_feasibility_claims"] == [], "completion receipt differs")
+    # Every raw file must have an identified role, including hidden interrupted publications.
+    require({p.relative_to(tree.root).as_posix() for p in tree.root.rglob("*") if p.is_file()} == set(tree.receipts), "unaccounted raw artifacts / extra attempts")
+    tree.verify_unchanged()
+    seed_comparison = []
+    for task_id in TASK_IDS:
+        for state_id in range(5):
+            pair = {row["policy_seed"]: row for row in episodes if row["task_id"] == task_id and row["initial_state_id"] == state_id}
+            require(set(pair) == {101, 131}, "seed pair incomplete")
+            seed_comparison.append({"task_id": task_id, "initial_state_id": state_id,
+                                    "policy_seeds": [101, 131],
+                                    "policy_steps": [pair[seed]["policy_steps"] for seed in (101, 131)],
+                                    "raw_sequence_sha256": [pair[seed]["raw_policy_action_sequence_sha256"] for seed in (101, 131)],
+                                    "environment_sequence_sha256": [pair[seed]["environment_policy_action_sequence_sha256"] for seed in (101, 131)],
+                                    "raw_sequences_identical": pair[101]["raw_policy_action_sequence_sha256"] == pair[131]["raw_policy_action_sequence_sha256"],
+                                    "environment_sequences_identical": pair[101]["environment_policy_action_sequence_sha256"] == pair[131]["environment_policy_action_sequence_sha256"]})
+    counts = []
+    for cell in grid:
+        for spec in get_task_definition("libero_10", cell["task_id"]).predicates:
+            selected = [row for row in milestones if all(row[k] == v for k, v in cell.items()) and row["predicate_name"] == spec.name]
+            counts.append({**cell, "predicate_name": spec.name, "commitment": spec.commitment,
+                           "observations": len(selected), "observed_true_samples": sum(r["current"] for r in selected),
+                           "ever_observed": selected[-1]["ever"], "terminal_current": selected[-1]["current"],
+                           "regression_transitions": sum(r["regression"] for r in selected),
+                           "evidence_admissibility": "recorded_milestone_sub_evidence"})
+    report = {"schema_version": "repeated_v2_clean_calibration_offline_audit_v1", "status": "PASS",
+              "complete_grid": True, "episodes": 40, "task_ids": list(TASK_IDS),
+              "input_root_local": str(tree.root), "input_root_original": str(tree.original),
+              "protocol_sha256": protocol_sha, "checkpoint_sha256": CHECKPOINT,
+              "policy_identity": identity,
+              "raw_policy_id_field_semantics": "terminal.policy_identity.policy_model_id",
+              "freeze_policy_id_field_semantics": "identities.vla.provider_id (freeze.py:719-721)",
+              "raw_policy_id_freeze_naming_mismatch": identity["policy_model_id"] != identity["provider_id"],
+              "formal_runtime_identity_binding": "UNBOUND; calibration identity aliasing is not runtime qualification",
+              "driver_sha256": DRIVER_SHA256, "input_artifacts": sorted(tree.receipts.values(), key=lambda r: r["relative_path"]),
+              "total_policy_calls": sum(row["policy_steps"] for row in episodes), "settling_controls": 400,
+              "policy_action_sequence_digest_encoding": "ordered policy-action vectors only, excluding timing/settling; sorted compact JSON plus newline",
+              "seed_pair_action_comparison": seed_comparison,
+              "stochastic_independence_assumed": False, "all_40_measured_episodes_retained": True,
+              "provider_calls_by_auditor": 0, "model_calls_by_auditor": 0, "simulator_calls_by_auditor": 0,
+              "limitations": ["Intermediate RGB payloads were not archived; only their digest/proprio chain is auditable.",
+                              "Recorded LIBERO predicate consistency is checked; no physical predicate is re-evaluated offline.",
+                              "Milestone observations are sub-evidence, not structural/safety/trigger/feasibility certification.",
+                              "Initial state numeric bytes are reconstructed as little-endian float32/float64 from the recorded Linux source format.",
+                              "Four-task calibration does not establish the formal minimum-eight-task rule."]}
+    return report, episodes, summaries, milestones, counts, records
+
+
+def admission_aliases(report, records):
+    """Derive one documented field alias; never overwrite or rescore evidence."""
+    identity = report["policy_identity"]
+    receipts = {row["relative_path"]: row for row in report["input_artifacts"]}
+    derived, mappings = [], []
+    for record in records:
+        require(record["policy_id"] == identity["policy_model_id"], "raw policy ID is not the terminal model identity")
+        alias = dict(record, policy_id=identity["provider_id"])
+        CalibrationEpisode.from_dict(alias)
+        require({key for key in record if not equal(record[key], alias[key])} <= {"policy_id"}, "alias modified outcome/provenance fields")
+        relative = f"task_{record['task_id']}_state_{record['initial_state_id']}_seed_{record['policy_seed']}/CALIBRATION_RECORD.txt"
+        mappings.append({
+            "task_id": record["task_id"], "initial_state_id": record["initial_state_id"], "policy_seed": record["policy_seed"],
+            "raw_record_path_original": str(Path(report["input_root_original"]) / relative),
+            "raw_record_file_sha256": receipts[relative]["sha256"],
+            "raw_record_canonical_sha256": sha(encoded(record)),
+            "derived_record_canonical_sha256": sha(encoded(alias)),
+            "changed_fields": {"policy_id": {"from": record["policy_id"], "to": alias["policy_id"]}},
+            "provider_id": identity["provider_id"], "policy_model_id": identity["policy_model_id"],
+            "provider_id_utf8_sha256": sha(identity["provider_id"].encode()),
+            "policy_model_id_utf8_sha256": sha(identity["policy_model_id"].encode()),
+            "checkpoint_sha256": record["checkpoint_sha256"], "protocol_sha256": record["protocol_sha256"],
+            "terminal_evidence_ref_unchanged": record["evidence_ref"],
+            "terminal_evidence_sha256_unchanged": record["evidence_sha256"],
+        })
+        derived.append(alias)
+    for task_id in TASK_IDS:
+        before = summarize_calibration(task_id, [r for r in records if r["task_id"] == task_id])
+        after = summarize_calibration(task_id, [r for r in derived if r["task_id"] == task_id])
+        require((before.total, before.successes, before.clean_success_rate, before.eligible_success_rate) ==
+                (after.total, after.successes, after.clean_success_rate, after.eligible_success_rate), "identity alias changed calibration outcomes")
+    mapping = {"schema_version": "repeated_v2_policy_identity_alias_v1",
+               "normalization": "policy_id: terminal.policy_identity.policy_model_id -> terminal.policy_identity.provider_id",
+               "reason": "CalibrationEpisode allows a nonempty policy identifier; existing freeze requires the VLA provider ID.",
+               "source_aggregate": receipts["CALIBRATION_RECORDS.txt"],
+               "record_digest_encoding": "sorted compact UTF-8 JSON plus newline; ensure_ascii=False",
+               "identity_string_digest_encoding": "exact UTF-8 string bytes",
+               "policy_identity": identity, "original_records_modified": False,
+               "outcome_or_grid_changes": False, "provider_or_policy_calls": 0,
+               "formal_runtime_identity_binding": "UNBOUND",
+               "catalog_requirement": "Embed these exact derived records and use their identical admission inventory; preserve this map and all raw terminals.",
+               "records": mappings}
+    return derived, mapping
+
+
+def publish(path, data):
+    temporary = path.with_name("." + path.name + "." + uuid.uuid4().hex)
+    with temporary.open("xb") as handle:
+        handle.write(data); handle.flush(); os.fsync(handle.fileno())
+    os.link(temporary, path)
+    temporary.unlink()
+    descriptor = os.open(str(path.parent), os.O_RDONLY | os.O_DIRECTORY)
+    try: os.fsync(descriptor)
+    finally: os.close(descriptor)
+    return {"path": str(path), "sha256": sha(data), "bytes": len(data)}
+
+
+def csv_bytes(rows):
+    stream = io.StringIO(newline="")
+    writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
+    writer.writeheader()
+    for row in rows:
+        writer.writerow({key: json.dumps(value, separators=(",", ":")) if isinstance(value, (list, tuple, dict)) else value for key, value in row.items()})
+    return stream.getvalue().encode()
+
+
+def self_check():
+    raw = bytes(224 * 224 * 3)
+    sample = {"policy_fields": ["full_image", "state"], "frame_dtype": "uint8", "frame_shape": [224, 224, 3],
+              "frame_sha256": sha(raw), "public_proprio": [0.0] * 8, "frame_raw_uint8_base64": base64.b64encode(raw).decode()}
+    observation(sample, True)
+    for invalid in (b'{"a":1,"a":2}', b'{"a":NaN}'):
+        try: strict_json(invalid)
+        except InvalidEvidence: pass
+        else: raise AssertionError("invalid JSON accepted")
+    corrupted = dict(sample, frame_sha256="0" * 64)
+    try: observation(corrupted, True)
+    except InvalidEvidence: pass
+    else: raise AssertionError("corrupt RGB accepted")
+    definition = get_task_definition("libero_10", 0)
+    current = {spec.name: False for spec in definition.predicates}
+    value = {"policy_step": 0, "current": current, "ever_achieved": dict(current),
+             "irreversible": {"ever:" + name: False for name in current},
+             "commitment_names": [spec.name for spec in definition.predicates if spec.commitment]}
+    progress_check(value, definition, {}, {}, 0)
+    value["ever_achieved"][GOAL] = True
+    try: progress_check(value, definition, {}, {}, 0)
+    except InvalidEvidence: pass
+    else: raise AssertionError("fabricated ever history accepted")
+    # A synthetic single-policy-step completed episode exercises the same
+    # strict phase parser and independent conversion checks used on real data.
+    def progress(complete, step):
+        flags = {spec.name: bool(complete and (spec.commitment or spec.name == GOAL)) for spec in definition.predicates}
+        return {"policy_step": step, "current": flags, "ever_achieved": dict(flags),
+                "irreversible": {"ever:" + key: item for key, item in flags.items()},
+                "commitment_names": [spec.name for spec in definition.predicates if spec.commitment]}
+    obs = observation(sample, True)
+    rows = [{"record_type": "initial", "environment_control": 0, "policy_step": 0,
+             "progress": progress(False, 0), "observation": obs}]
+    for warmup in range(1, 11):
+        rows.extend([{"record_type": "settling_intent", "settling_control": warmup,
+                      "environment_action": [0, 0, 0, 0, 0, 0, -1], "policy_inference": False},
+                     {"record_type": "settling_result", "settling_control": warmup,
+                      "environment_control": warmup, "policy_step": 0, "reward": 0.0,
+                      "done": False, "progress": progress(False, 0)}])
+    raw, action, low, high = [0.0] * 6 + [0.25], [0.0] * 6 + [1.0], [-1.0] * 7, [1.0] * 7
+    rows.extend([{"record_type": "inference_intent", "policy_step": 1, "observation": obs},
+                 {"record_type": "inference_response", "policy_step": 1, "raw_action": raw,
+                  "environment_action": action, "action_space": ACTION_SPACE,
+                  "action_validation": validate_openvla_action(raw, action, expected_dim=7, action_low=low, action_high=high),
+                  "inference_seconds": 0.5},
+                 {"record_type": "environment_intent", "policy_step": 1, "environment_control": 11, "environment_action": action},
+                 {"record_type": "environment_result", "policy_step": 1, "environment_control": 11,
+                  "reward": 1.0, "done": True, "environment_seconds": 0.1,
+                  "progress": progress(True, 1), "post_observation": obs}])
+    terminal = {"policy_steps_consumed": 1, "action_low": low, "action_high": high,
+                "action_spec_source": "env.action_spec", "success": True, "environment_done": True,
+                "reward": 1.0, "progress": progress(True, 1), "terminal_reason": "exact_libero_goal",
+                "status": "completed", "settling_controls_consumed": 10, "environment_controls_consumed": 11,
+                "extra_refresh_controls": 0, "max_policy_steps": 260, "wall_seconds": 2.0}
+    cell = {"task_id": 0, "initial_state_id": 0, "policy_seed": 101}
+    checked = check_trace(rows, terminal, definition, sample, sample, cell)
+    require(checked[2] == sha(encoded([raw])) and checked[3] == sha(encoded([action])), "action sequence digest differs")
+    for mode in ("missing_intent", "duplicate_result", "conversion", "terminal_goal", "private_input"):
+        bad, bad_terminal = strict_json(encoded(rows)), strict_json(encoded(terminal))
+        if mode == "missing_intent": del bad[-4]
+        elif mode == "duplicate_result": bad.append(bad[-1])
+        elif mode == "conversion": bad[-3]["environment_action"][-1] = -1.0
+        elif mode == "terminal_goal": bad_terminal["success"] = False
+        else: bad[-4]["observation"]["canonical_state"] = {}
+        try: check_trace(bad, bad_terminal, definition, sample, sample, cell)
+        except InvalidEvidence: pass
+        else: raise AssertionError("trace corruption accepted: " + mode)
+    require(len(calibration_grid(TASK_IDS)) == 40, "grid changed")
+    require("torch" not in sys.modules and "libero.libero" not in sys.modules, "forbidden runtime import")
+    print("PASS: offline synthetic JSON/RGB/progress/grid/trace/conversion/digest checks; no files or runtime calls")
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--self-check", action="store_true")
+    parser.add_argument("--input-root")
+    parser.add_argument("--original-root")
+    parser.add_argument("--output-root")
+    parser.add_argument("--derive-admission-records", action="store_true")
+    args = parser.parse_args()
+    if args.self_check:
+        self_check(); return
+    if not args.input_root or not args.output_root:
+        parser.error("--input-root and --output-root are required")
+    input_root, output = Path(args.input_root).resolve(), Path(args.output_root).resolve()
+    if output.is_relative_to(input_root) or input_root.is_relative_to(output):
+        parser.error("output must be a separate directory outside the input tree")
+    output.mkdir(exist_ok=False)
+    try:
+        report, episodes, summaries, milestones, counts, records = audit(input_root, args.original_root)
+        aliases_and_mapping = admission_aliases(report, records) if args.derive_admission_records else None
+        report["derived_artifacts"] = [publish(output / name, csv_bytes(rows)) for name, rows in (
+            ("CALIBRATION_EPISODES.csv", episodes), ("CALIBRATION_SUMMARIES.csv", summaries),
+            ("MILESTONE_EVIDENCE.csv", milestones), ("MILESTONE_COUNTS.csv", counts))]
+        if aliases_and_mapping is not None:
+            aliases, mapping = aliases_and_mapping
+            admission_artifact = publish(output / "CALIBRATION_ADMISSION_RECORDS.txt", encoded(aliases))
+            mapping["derived_admission_inventory"] = admission_artifact
+            mapping_artifact = publish(output / "CALIBRATION_POLICY_ID_PROVENANCE.txt", encoded(mapping))
+            report["derived_artifacts"].extend([admission_artifact, mapping_artifact])
+            report["admission_identity_alias"] = "AVAILABLE; raw naming mismatch remains explicitly preserved"
+    except Exception as exc:
+        report = {"schema_version": "repeated_v2_clean_calibration_offline_audit_v1", "status": "FAIL",
+                  "complete_grid": False, "input_root_local": str(input_root),
+                  "error_type": type(exc).__name__, "reason": str(exc),
+                  "note": "No missing/corrupt cell was counted as failure or dropped from a denominator.",
+                  "provider_calls_by_auditor": 0, "model_calls_by_auditor": 0, "simulator_calls_by_auditor": 0}
+    report["auditor_sha256"] = sha(Path(__file__).read_bytes())
+    result = publish(output / "CALIBRATION_AUDIT.txt", encoded(report))
+    print(json.dumps({"status": report["status"], "audit_artifact": result}), flush=True)
+    if report["status"] != "PASS":
+        raise SystemExit(1)
+
+
+if __name__ == "__main__":
+    main()

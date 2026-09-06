@@ -1,0 +1,74 @@
+#!/usr/bin/env python3
+"""Authorized zero-control investigation of one sealed prefix; never replay motion."""
+import contextlib, datetime, hashlib, json, os, sys, traceback, uuid
+from pathlib import Path
+ROOT=Path('/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4')
+BASE=ROOT/'research/repeated_v2_formal_readiness_20260906/prefix_preservation_20260906T180046Z_6aef8497'
+sys.path.insert(0,str(ROOT))
+assert os.environ['CUDA_VISIBLE_DEVICES']==''
+OUT=BASE/('zero_step_diagnostic_'+datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%SZ')+'_'+uuid.uuid4().hex[:8])
+OUT.mkdir(exist_ok=False)
+def encode(v):return (json.dumps(v,sort_keys=True,indent=2,allow_nan=False)+'\n').encode()
+def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+def artifact(p):return {'path':str(p),'sha256':sha(p),'bytes':Path(p).stat().st_size}
+def publish(name,value):
+ with (OUT/name).open('xb') as f:f.write(encode(value));f.flush();os.fsync(f.fileno())
+ return artifact(OUT/name)
+prefix_path=BASE/'raw/task0_state0_PREFIX_RESULT.txt'
+restore_path=BASE/'raw/task0_state0_target_object_moved_before_RESTORE.txt'
+prefix=json.loads(prefix_path.read_text());restore=json.loads(restore_path.read_text())
+assert prefix['status']=='PREFIX_STABLE_RELEASED' and prefix['controls_consumed']==197
+assert prefix['final_snapshot']==restore['before']==restore['after']
+assert prefix['final_snapshot']['sha256']=='edcddba7d6a16d8d786ad9bec10d82652e393c3bf8baae62c7afdf162677242c'
+source=json.loads((BASE/'raw/TASK_0_SOURCE.txt').read_text());bddl=Path(source['bddl']['path'])
+assert sha(bddl)==source['bddl']['sha256']
+source_ranges={
+ '/home/lijingsu/vla/src/LIBERO/libero/libero/envs/env_wrapper.py':[(118,145)],
+ '/home/lijingsu/vla/.venv/lib/python3.10/site-packages/robosuite/environments/base.py':[(296,362),(378,407)],
+ '/home/lijingsu/vla/.venv/lib/python3.10/site-packages/robosuite/robots/single_arm.py':[(300,348)],
+ '/home/lijingsu/vla/.venv/lib/python3.10/site-packages/robosuite/utils/observables.py':[(214,259)]}
+sources=[]
+for name,ranges in source_ranges.items():
+ p=Path(name);lines=p.read_text().splitlines()
+ sources.append({**artifact(p),'ranges':[{'start':a,'end':b,'text':'\n'.join(f'{i+1}: {lines[i]}' for i in range(a-1,b))} for a,b in ranges]})
+publish('CLAIM.txt',{'kind':'sealed_prefix_zero_control_diagnostic','source_prefix':artifact(prefix_path),'source_restore':artifact(restore_path),'driver_sha256':os.environ['COPE_DIAGNOSTIC_SHA256'],'environment':{k:os.environ.get(k) for k in ('CUDA_VISIBLE_DEVICES','MUJOCO_GL','PYOPENGL_PLATFORM','OMP_NUM_THREADS','OPENBLAS_NUM_THREADS')},'sources':sources,'physical_prefix_replayed':False,'new_policy_calls':0,'new_event_calls':0})
+attempts=0;env=None
+try:
+ with (OUT/'STDOUT_STDERR.txt').open('x') as log,contextlib.redirect_stdout(log),contextlib.redirect_stderr(log):
+  import numpy as np
+  from libero.libero.envs.env_wrapper import ControlEnv
+  from cope_benchmark.task_progress import get_task_definition,LiberoStateView
+  state=np.asarray(prefix['final_snapshot']['values'],dtype=prefix['final_snapshot']['dtype'])
+  assert hashlib.sha256(state.tobytes()).hexdigest()==prefix['final_snapshot']['sha256']
+  env=ControlEnv(bddl_file_name=str(bddl),use_camera_obs=False,has_renderer=False,has_offscreen_renderer=False,camera_names=[],ignore_done=True)
+  def denied(*a,**kw):
+   global attempts
+   attempts+=1
+   raise RuntimeError('ENV_STEP_FORBIDDEN_IN_SEALED_DIAGNOSTIC')
+  env.step=denied;env.env.step=denied
+  env.seed(101);env.reset()
+  returned=env.set_init_state(state.copy())
+  site_id=env.env.robots[0].eef_site_id
+  view=LiberoStateView(env);definition=get_task_definition('libero_10',0)
+  def sample(label,observation):
+   flat=np.asarray(env.get_sim_state())
+   return {'label':label,'snapshot_sha256':hashlib.sha256(flat.tobytes()).hexdigest(),'snapshot_exact':bool(np.array_equal(flat,state)),'time':float(env.sim.data.time),'authoritative_eef_site':np.asarray(env.sim.data.site_xpos[site_id]).tolist(),'observed_eef':np.asarray(observation['robot0_eef_pos']).tolist(),'commitments':{p.name:bool(view.libero_predicate(p.arguments[0],p.arguments[1:])) for p in definition.predicates if p.commitment},'contact_count':int(env.sim.data.ncon)}
+  samples=[sample('set_init_state_returned',returned)]
+  samples.append(sample('ordinary_getter',env.env._get_observations()))
+  samples.append(sample('forced_getter',env.env._get_observations(force_update=True)))
+  env.sim.forward()
+  samples.append(sample('sim_forward_then_forced',env.env._get_observations(force_update=True)))
+  samples.append(sample('second_restore_same_seal',env.set_init_state(state.copy())))
+  for s in samples:
+   assert s['snapshot_exact'] and s['snapshot_sha256']==prefix['final_snapshot']['sha256']
+   assert s['commitments']==prefix['final_sample']['commitments']
+  assert attempts==0
+  cuda_initialized='torch' in sys.modules and sys.modules['torch'].cuda.is_initialized()
+  assert not cuda_initialized
+  result={'status':'ZERO_CONTROL_DIAGNOSTIC_COMPLETED','samples':samples,'saved_prefix_observed_eef':prefix['final_sample']['eef_position'],'saved_restore_observed_eef':restore['current_sample']['eef_position'],'env_step_attempts':attempts,'physical_prefix_replays':0,'event_injections':0,'provider_calls':0,'vla_calls':0,'cuda_initialized':cuda_initialized,'prefix_seal_sha256':prefix['final_snapshot']['sha256'],'interpretation':'compare cached returned prefix observation with recomputed sealed-state geometry; no recovery or new stability claim'}
+ print(json.dumps({'out':str(OUT),'result_artifact':publish('RESULT.txt',result),'result':result}),flush=True)
+except BaseException as exc:
+ print(json.dumps({'out':str(OUT),'failure_artifact':publish('FAILED.txt',{'status':'DIAGNOSTIC_FAILED','error':type(exc).__name__,'reason':str(exc),'traceback':traceback.format_exc(),'env_step_attempts':attempts})}),flush=True)
+ raise
+finally:
+ if env is not None:env.close()

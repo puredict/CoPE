@@ -1,0 +1,20 @@
+{
+  "diagnostic_config_sha256": "8b14dfa70863e61cb7b6d7f47a9600deab97bae190bf78296affdba77b67aa4e",
+  "formal_experiment_started": false,
+  "formal_provider_calls": 0,
+  "frozen_260_results_rewritten": false,
+  "initial_state_ids": [
+    1
+  ],
+  "oracle_actions": 0,
+  "policy_step_budget": 520,
+  "purpose": "posthoc_failure_diagnosis_only_not_calibration_or_formal_evidence",
+  "scientific_threshold_changed": false,
+  "source_commit": "c0308c1fc13036ef34983dd07397744f659cb417",
+  "source_config_sha256": "06b8c202b39037efccab1df6fda80f571df831e60542fec4901ec411a7774624",
+  "task_ids": [
+    0,
+    8
+  ],
+  "warmup_simulator_steps": 10
+}
