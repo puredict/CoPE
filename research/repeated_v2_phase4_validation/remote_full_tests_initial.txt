@@ -1,0 +1,53 @@
+........................................................................ [  4%]
+........................................................................ [  9%]
+........................................................................ [ 14%]
+........................................................................ [ 19%]
+........................................................................ [ 24%]
+........................................................................ [ 29%]
+...........................F............................................ [ 33%]
+........................................................................ [ 38%]
+........................................................................ [ 43%]
+........................................................................ [ 48%]
+........................................................................ [ 53%]
+........................s............................................................. [ 58%]
+.............................. [ 60%]
+........................................................................ [ 65%]
+........................................................................ [ 70%]
+........................................................................ [ 75%]
+........................................................................ [ 80%]
+........................................................................ [ 85%]
+........................................................................ [ 89%]
+........................................................................ [ 94%]
+........................................................................ [ 99%]
+.....                                                                    [100%]
+=================================== FAILURES ===================================
+____ test_file_hash_cache_reuses_bytes_but_detects_same_size_restored_mtime ____
+
+tmp_path = PosixPath('/tmp/pytest-of-lijingsu/pytest-310/test_file_hash_cache_reuses_by0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fb9babea950>
+
+    def test_file_hash_cache_reuses_bytes_but_detects_same_size_restored_mtime(tmp_path, monkeypatch):
+        from cope_benchmark.repeated_v2.freeze import _sha_file
+        path = tmp_path / "checkpoint.bin"
+        path.write_bytes(b"first-checkpoint")
+        original_stat = path.stat()
+        original_open = Path.open
+        reads = []
+        def counted_open(source, *args, **kwargs):
+            if source == path and args and args[0] == "rb":
+                reads.append(str(source))
+            return original_open(source, *args, **kwargs)
+        monkeypatch.setattr(Path, "open", counted_open)
+        original = _sha_file(path)
+        assert _sha_file(path) == original and len(reads) == 1
+        path.write_bytes(b"other-checkpoint")
+        os.utime(path, ns=(original_stat.st_atime_ns, original_stat.st_mtime_ns))
+        assert path.stat().st_size == original_stat.st_size and path.stat().st_mtime_ns == original_stat.st_mtime_ns
+        changed = _sha_file(path)
+>       assert changed != original and len(reads) == 2
+E       AssertionError: assert ('3bb3e8de4bb9c026cd14e053bc001109aebb188eb57955b4a74b775ecb2f7598' != '3bb3e8de4bb9c026cd14e053bc001109aebb188eb57955b4a74b775ecb2f7598')
+
+tests/repeated_v2/test_freeze_window4.py:640: AssertionError
+=========================== short test summary info ============================
+FAILED tests/repeated_v2/test_freeze_window4.py::test_file_hash_cache_reuses_bytes_but_detects_same_size_restored_mtime
+1 failed, 1487 passed, 1 skipped, 100 subtests passed in 203.09s (0:03:23)

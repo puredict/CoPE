@@ -1,0 +1,902 @@
+{
+  "analysis_git_sha": "71ca2700f8036805cd2deb6344bef338b903d6f1",
+  "artifacts": {
+    "analysis_implementation": {
+      "entries": [
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/cope_benchmark/repeated_v2/analysis.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/cope_benchmark/repeated_v2/analysis.py",
+          "sha256": "187f503e2bfb6b91d79c0858420f4c4c33d48b0bb5127fdfbf39a9525747dea4",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/cope_benchmark/repeated_v2/analysis_shards.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/cope_benchmark/repeated_v2/analysis_shards.py",
+          "sha256": "d7d0fd227e990e26b40c10c00ff1e14fb22e7b09508a22e275610570960810cb",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/cope_benchmark/repeated_v2/claim_decision.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/cope_benchmark/repeated_v2/claim_decision.py",
+          "sha256": "535759dd1a68c874095d77e9191264c20d49a75d80354f859f001fbbea9cbe25",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/cope_benchmark/repeated_v2/formal_launch.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/cope_benchmark/repeated_v2/formal_launch.py",
+          "sha256": "cd928a18ccb2041f8ecdbc3bc40651b984eb62fe4a27ad4e4eb3a59de22483c5",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/cope_benchmark/repeated_v2/freeze.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/cope_benchmark/repeated_v2/freeze.py",
+          "sha256": "d12fff29065740d89f6e852e85c012f8b3976c424a859c4464a5b04de630501f",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/cope_benchmark/repeated_v2/parity_analysis.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/cope_benchmark/repeated_v2/parity_analysis.py",
+          "sha256": "5869f508a6bfdf95e3048a50bb666894469685134c451c04e58ad838abad6fe6",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/cope_benchmark/repeated_v2/statistics.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/cope_benchmark/repeated_v2/statistics.py",
+          "sha256": "fe97d96fffdc53c7bf032f59c38051818a8fe827ea95d0a6159da94214bcb28e",
+          "symlinks": []
+        }
+      ],
+      "sha256": "1cd7b88c883f18502d35ef0a5de4b2de453e75088a34edc3b1f378b816840d9c"
+    },
+    "backend_implementation": {
+      "entries": [
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/cope_benchmark/repeated_v2/continuation_backend.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/cope_benchmark/repeated_v2/continuation_backend.py",
+          "sha256": "4f11183dd30c87c2f38da4fb8e6f383038dfd799f717f6d0478ceaf564b05187",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/cope_benchmark/repeated_v2/planner_backend.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/cope_benchmark/repeated_v2/planner_backend.py",
+          "sha256": "96c937641768179e9c181eb6a574d03009ed2d7908f9aad0ec8cfbf55402974e",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/__init__.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/__init__.py",
+          "sha256": "fe1a68fb8ff1ec4352bc78bd90f356934a5aafc2c03ae650ce17272ccd5f131f",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/adapter.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/adapter.py",
+          "sha256": "3e107ac77fb3bf731881a1e376ede95dbca47f76f8b6bb764d1d73192540a996",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/benchmark/__init__.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/benchmark/__init__.py",
+          "sha256": "83bf7e5a95fd97f8fae57408c8a7fb24e9f5329852c495699fa619e3af66bd35",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/benchmark/mismatch.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/benchmark/mismatch.py",
+          "sha256": "1409c8b97595f12304dd2bcb868495b41a87f1f3c863a5aba26cd1b746669bcd",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/benchmark/probe.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/benchmark/probe.py",
+          "sha256": "30e5fc20bec42bd3905492dd42e04ee1eee756b524788b830ebd58662feb2538",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/benchmark/runner.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/benchmark/runner.py",
+          "sha256": "a67fdf69767bf092c6693072df8cbc064f342ebede83d546c4fbb40ad9cb30da",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/benchmark/scenes.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/benchmark/scenes.py",
+          "sha256": "6f1684abcf64892f61699752b24681768692682e2f77d2995869d0e4cc514eab",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/benchmark/statistics.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/benchmark/statistics.py",
+          "sha256": "e691f990b0fea1469aa40741fef25ff1172664b0e387bd9d09f1178dcd30ee43",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/events/__init__.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/events/__init__.py",
+          "sha256": "ce3db84991c483bf2bd8a6485373947b315d8a1da7b1901a11e6c9b3a021b769",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/events/detector.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/events/detector.py",
+          "sha256": "b6f0ad69212fdcc29d754be4a13dd31bdeef776e6d99a18678e1c5f4c936c7d1",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/events/event.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/events/event.py",
+          "sha256": "aeb657b3c43fa9a713ceb5eefb3e1d9c5dd175bebd218987a6d4379ba388e1ee",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/events/predicates.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/events/predicates.py",
+          "sha256": "87d362e3ff79c7c9a3328d35175a10fe577a3821cc4d913ef3ff761463b4a9b5",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/execution/__init__.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/execution/__init__.py",
+          "sha256": "71ea6377dd2de8201f83feb211f3c53b19088433a006fb705e02e42a2380d460",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/execution/action.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/execution/action.py",
+          "sha256": "456f0f32745a04be64b4f4e62330bad4aa0076706690258e037a4f83e95b89a6",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/execution/context.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/execution/context.py",
+          "sha256": "54a0ae5d2cd2f7f50229d62357068f75986b02e29efad48ddb3d180068859563",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/execution/controller.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/execution/controller.py",
+          "sha256": "0d3534ce0b2ab53cc2f09e2b638a423648af6bab81359d0a87e9fd165b82236f",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/execution/executor.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/execution/executor.py",
+          "sha256": "b9feb0daaf509dc7911e9083be5984969bc0ee71341cb3ad99c9bbeee4579ea7",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/execution/fallback.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/execution/fallback.py",
+          "sha256": "486f963a107577815910fcc3112966374512df9ccf91e0e0d9d22c9aa721e228",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/execution/guard_monitor.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/execution/guard_monitor.py",
+          "sha256": "e846702a813a503bacef899f7dbeb10b15cd9b6289a527572ff8058d8e8673a5",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/execution/provenance_logger.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/execution/provenance_logger.py",
+          "sha256": "55176b89271fbcb545e293ba494ca7dc2acef82a226288c3b1602abd68221832",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/gpu_metrics/__init__.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/gpu_metrics/__init__.py",
+          "sha256": "8858b680013fb8b43f1bd01934f75162176eb138d67730b6aa52377e84949a45",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/gpu_metrics/geometry.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/gpu_metrics/geometry.py",
+          "sha256": "3c68f3bbe631d85434934b8be394b6da534b2f11ef647a8e266ecf54e1d5d87f",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/gpu_metrics/gpu_rollout.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/gpu_metrics/gpu_rollout.py",
+          "sha256": "ed9d029d90d1029adb62bb13c288cc49736abee4e200b7cf519532fd85097d60",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/gpu_metrics/pen_in_holder.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/gpu_metrics/pen_in_holder.py",
+          "sha256": "7c354a34ab41389813ac7d6d0639aa17616201d28af25e38fba84e4e29627ffd",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/gpu_metrics/pilot_spec.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/gpu_metrics/pilot_spec.py",
+          "sha256": "bc988c682bf020ee9cb88af35274360f3cee4c2ff4d368cef79b159161f347e0",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/gpu_metrics/restore_contract.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/gpu_metrics/restore_contract.py",
+          "sha256": "29d88c0b7ba4d5caee363f064b7af0ab998fbfbd8516df419ad5cb955dba7fc6",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/gpu_metrics/structured_log.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/gpu_metrics/structured_log.py",
+          "sha256": "7934fba142c60efa2863ec6fc608efbd5f5fd1c2ca8d74acf478bc6365893648",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/policies/__init__.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/policies/__init__.py",
+          "sha256": "648f2e72dc61e28cc589ff7082301d27724a820f5207b91ff5eb3e0d0a6bc6b4",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/policies/ablations.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/policies/ablations.py",
+          "sha256": "2ca485205ddff21549de9cf12e86ecff3eb15573c1e7af404316fda058562216",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/policies/common.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/policies/common.py",
+          "sha256": "9c39db8a12a60507795a69c1ce81b3b422a9c018b9d3c5a6db28360f21cbd729",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/policies/fixed_program.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/policies/fixed_program.py",
+          "sha256": "5f15f4dcbc9faa1347e2aeec2528d0029732d45f098e1190cabf75faede8ff0e",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/policies/offline_parameterized.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/policies/offline_parameterized.py",
+          "sha256": "06bde635faebc379ef08b752346cbcf34af832472897da939316eed0109813e6",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/policies/offline_recovery.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/policies/offline_recovery.py",
+          "sha256": "cdd1f4657dcb481140dc41963e4d3ddd34a49a3897119d6234b4360d02882ad4",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/policies/online_repair.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/policies/online_repair.py",
+          "sha256": "c414574aa0815757c280027fe9b2e189a2498a979b2915e673c1a3159711382c",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/policies/path_only.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/policies/path_only.py",
+          "sha256": "dafe85d7f02302f291800551593999098e29ebc14dec4f8db1124116f92ef828",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/policies/safe_stop.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/policies/safe_stop.py",
+          "sha256": "c9f06d82f7fe2396449c5dec808a3df686c1826f70b52d0d3d5924f66c426700",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/policies/template_repair.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/policies/template_repair.py",
+          "sha256": "0b713c300033e530b8a4c104977d7b94a3a08764b0e2fb6b2451486d4efd8908",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/policies/verified_repair.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/policies/verified_repair.py",
+          "sha256": "26d52fe4960158e04087539714610c9be248fbfc8a09882ae38b3c8043eeaba0",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/program/__init__.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/program/__init__.py",
+          "sha256": "076f70afbe5a79fe18cbe500ac4ff4d20782072a407cdf7302ee2274ed80e1f2",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/program/continuation.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/program/continuation.py",
+          "sha256": "16b6001e1722203c42e39fb6fbab1e7daefbb7c712bfa0294661318fc90ca17a",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/program/contracts.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/program/contracts.py",
+          "sha256": "fa61c9d2b0b5c120d1ccb86e53c3553b6bb7a9d8c89e62ee98680479765f2353",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/program/graph.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/program/graph.py",
+          "sha256": "ec7212eead910c5c831de471065da3f36dc745556cd5ae8af48d1e73b1b19123",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/program/stage.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/program/stage.py",
+          "sha256": "3039f7614dee9bf355d801421a75cd6476e3c64c4e2acd735de804cf005aecdc",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/program/task_program.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/program/task_program.py",
+          "sha256": "b855e77ab654246c18479e0a6a00e6d8c287e86af990ccd0b02ed0b5d497e492",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/rekep_adapter.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/rekep_adapter.py",
+          "sha256": "7405813bfb9c0986bfa20e66d0d8488446dec7f265cbbe8f69c118d475bd710a",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/repair/__init__.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/repair/__init__.py",
+          "sha256": "551d7d28b50c4014f079468eae6b14a75432f595e75626dbde13e32ecb149f78",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/repair/abstract_state.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/repair/abstract_state.py",
+          "sha256": "4b69fb4250d4f6fcc1c91281da5380d0ca05d8f1e8c09bcbab396a31528fee4c",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/repair/candidate.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/repair/candidate.py",
+          "sha256": "5c098d7b5eed0fea52940f202f1b8e97c8acacf67acfe8e54006af9d05d716cc",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/repair/candidate_generator.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/repair/candidate_generator.py",
+          "sha256": "8ee4d419235b04f93fbd9756b93ebf67e635cd57f97d269ff143172b92f3690c",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/repair/feasibility_filter.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/repair/feasibility_filter.py",
+          "sha256": "21a60878719aa561d1e6cbecbd64c168e732a14d0a16c840ccb10d05d7102a3d",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/repair/legality_filter.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/repair/legality_filter.py",
+          "sha256": "33a1dde3a8c957a926afe4330b714481d17fcfba1467dc59c2ac34066303f0ca",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/repair/operator.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/repair/operator.py",
+          "sha256": "8e41c7b2606b625bb323bfdcafc2bb33dcf406e4bc56c68b7c74e2a6b6cf9638",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/repair/planner.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/repair/planner.py",
+          "sha256": "5203c1ff35011cc84e88101f5cde6abab6ad43f93b4ddcfb3b74e273218594c4",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/repair/repair_manager.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/repair/repair_manager.py",
+          "sha256": "bd6d1d059baea611110ad5714c57a2b9350287b00daa3d421da4739d36b3ef04",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/repair/rollout_verifier.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/repair/rollout_verifier.py",
+          "sha256": "29e1f17c7289ace22cb39e18862db67c43b5073064f892e9ba94480356476e64",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/repair/scorer.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/repair/scorer.py",
+          "sha256": "0708045f187c0f40acca877c85076c5e4769b20d44665efdd7314c64b9400216",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/repair/synthesis_generator.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/repair/synthesis_generator.py",
+          "sha256": "31c6e2f20a30dc1c79e9c6f96450eccfad1dfc84c80679b3cdcee0c51208ccb6",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/repair/template_library.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/repair/template_library.py",
+          "sha256": "bce71388c12757ff4ba6a122dceed064245aa5bb55df5dbdbca8281aae93f050",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/repair/verifier_variants.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/repair/verifier_variants.py",
+          "sha256": "c9b917cd4cf3fca5e52699d3642ed85519bd7f940865d409dfb1fa4d1a6f9a65",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/synthetic/__init__.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/synthetic/__init__.py",
+          "sha256": "b6e3eff3dc53042a732356fc22d6b9e8b2de3a7377c9609048a0e266e4bb846b",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/synthetic/conflict_bound.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/synthetic/conflict_bound.py",
+          "sha256": "38d3218316f0a9d8678942785787a602da57c770d151c902307a00a769c453ff",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/synthetic/dynamics.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/synthetic/dynamics.py",
+          "sha256": "491d867e7ec6674149f53432e852b98699c51aee30264f31cbf48c3f2dea51bd",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/synthetic/env.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair/synthetic/env.py",
+          "sha256": "29d3cc5fa85d55d2c05a0201d4228c6458f35aafb997ce6ebee045c7823b0fc3",
+          "symlinks": []
+        }
+      ],
+      "sha256": "55200b8e233447f0b64f4e50fabc4f0a8e032e5f5a75377b36709cb435ff1655"
+    },
+    "catalog": {
+      "entries": [
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/task_catalogs/repeated_v2.json",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/task_catalogs/repeated_v2.json",
+          "sha256": "e2406a00c8b39b497f3a8af7ffa39d7ed117394a9f64085f2c6e69914f763f2f",
+          "symlinks": []
+        }
+      ],
+      "sha256": "5ce89f0339355058f9f2be3406a42bf5eaa631e6269ab2d8e75cddaa3833abf2"
+    },
+    "compiler_implementation": {
+      "entries": [
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/cope_benchmark/repeated_v2/compiler.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/cope_benchmark/repeated_v2/compiler.py",
+          "sha256": "a8a56f303907eeedf7fc46506e22834ae4ecb7254823a4fbcd3979b39865b2cc",
+          "symlinks": []
+        }
+      ],
+      "sha256": "a17d506ced3a1e8443fc64a3bf4dfbccfc3fe5ad26da39a8f69b024430b926a4"
+    },
+    "config": {
+      "entries": [
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/configs/repeated_interruptions_v2_formal.yaml",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/configs/repeated_interruptions_v2_formal.yaml",
+          "sha256": "bba933c81fae1e8f0f9079c82811a61ea39c4d9cfb12b5aeee32d9252704ed16",
+          "symlinks": []
+        }
+      ],
+      "sha256": "93dccaa07b2d4fce6bbebba51a794aa25c0fc54d19a24a7a1f7a57b88d4a5121"
+    },
+    "gate_tests": {
+      "entries": [
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/__init__.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/__init__.py",
+          "sha256": "214d2cd3e3328f912b6fb35494f56df1817b94b0671d3d76d66d295332188bcd",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/catalog_fixtures.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/catalog_fixtures.py",
+          "sha256": "24b794c45422ce5531316e916fdc5311fdb3a435321d1238d98ebc74905464c1",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_analysis_cli_window4.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_analysis_cli_window4.py",
+          "sha256": "9d8e04ddb1c32b4a058099798a87609b86a28d9efb86c23c6c46ac6871f567f3",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_analysis_shards_window4.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_analysis_shards_window4.py",
+          "sha256": "aec99ee53798438c25a0245814d3fc48c4349a5c7352e3381a2ab0ff45fb8dfd",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_analysis_window4.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_analysis_window4.py",
+          "sha256": "efef5bcacea954163e38d3f279a1f76197d05888e51724f4b2781a7e7313895c",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_claim_decision_window4.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_claim_decision_window4.py",
+          "sha256": "72e21cc53272e04e40ffac96fa5ef66001f7da9e449392d6b79a892f25b1055d",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_events.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_events.py",
+          "sha256": "d3d1e71c822b4f43b923f944db49e4a7ee69972bfae94c3902e4a712fb5966ff",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_evidence.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_evidence.py",
+          "sha256": "16315ebf433c2572eeaf5224fb233a49378d8473bb4add5820521d8b6b0d7d01",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_formal_launch_window4.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_formal_launch_window4.py",
+          "sha256": "268278eae884e6d20c6252b51f912a2b33221d0fc72a751d34eef0ec2c361a7e",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_freeze_window4.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_freeze_window4.py",
+          "sha256": "5e6fedfcc3e237fb41023b43ac936054da02c953ba745489750175528c889bbc",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_journal_analysis_integration_window4.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_journal_analysis_integration_window4.py",
+          "sha256": "03c47873d332ed91b35c81a8efdc5cb4984a2ee982e54fcaefd30e1681a9b490",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_manifest.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_manifest.py",
+          "sha256": "18cb4ce6761337a03b8e61e411ae53e0ef4859fb9a756d012c332e53f0c40725",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_occurrence.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_occurrence.py",
+          "sha256": "c53f05ed4f3e62af576090185d02c07872ff237afca3c0cdc53cf48dbcd05123",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_parity_analysis_window4.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_parity_analysis_window4.py",
+          "sha256": "760a21e339a9dfa3bcfa0fce139a1b0f0f1e0420258cbe7faf9499b8a71d6333",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_phase2_adapters.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_phase2_adapters.py",
+          "sha256": "a14fc9b44fb75c825165b44cee6560a94d1ba20f3e2759de761d06388ec5dc2b",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_phase2_compiler.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_phase2_compiler.py",
+          "sha256": "937a149b5ee88badd49fb742d6eb3b706c51a02c5c3d4fbf9afaa941bcb8b3f7",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_phase2_integration.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_phase2_integration.py",
+          "sha256": "0b9a2e47f3587fc56bc2d2a338987c47327cc7cea949830bf577fc285dd00821",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_phase2_transactions.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_phase2_transactions.py",
+          "sha256": "b6fb819b6e7b12cb4e821d52a71ffc395164e1fd1c2583c3ab5e32686c7c1eed",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_phase3_actual_adapters.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_phase3_actual_adapters.py",
+          "sha256": "326b61ab8bd815dd0d5a9cbb8246488a21d7994e1e58a7f5d511ed537509a14a",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_phase3_continuation.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_phase3_continuation.py",
+          "sha256": "00349f322a3966cb2a1c9b85cc52ab6fcd2df3bfad471e64577ac62fce55ad60",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_phase3_dynamic_evaluator.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_phase3_dynamic_evaluator.py",
+          "sha256": "a6541890341869752025d21b3dbc3e3b672c180f3f3a5eea6b495947899565b7",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_phase3_journal.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_phase3_journal.py",
+          "sha256": "02b73650dd1c766fbccdcc06d4bb978f5bb3fb0e3dea710341cf646c178e5f61",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_phase3_pilot.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_phase3_pilot.py",
+          "sha256": "ae4ab76140fce2b534d8daab64b4f92710728354756debbf951470fcaf9fcb3d",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_phase3_runner.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_phase3_runner.py",
+          "sha256": "bf19acc258ab98dd3d00ade5ef5e10cefc5eed5b5522cc2694fa4c3c3b266fbb",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_phase3_simulator_smoke.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_phase3_simulator_smoke.py",
+          "sha256": "a2731c049e1b013ed4c6df767789fdfe27c64a5974cba9224ec4a08e53787d3c",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_phase3_vla.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_phase3_vla.py",
+          "sha256": "39483fc6ee3b8899e232b868f30d872e4d10ddda6cbe143d9a7252c116118e68",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_preflight.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_preflight.py",
+          "sha256": "85d1f5602682086341043f70dffbbc6b3115b9aa906b9522b41387b78852f1d5",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_scheduler.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_scheduler.py",
+          "sha256": "bf4cc3932f12f125fe21b9d8a7bb9e592469f7b2daead24c471d3ae8a28a9f0f",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_schema.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_schema.py",
+          "sha256": "a3b2bf0bcbf25d9623b6843629beb2fb92a1be1b099ea14772dfb53e5d3c6d4d",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_statistics_window4.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_statistics_window4.py",
+          "sha256": "4630fee5d53d9f9d224078a2fa6287e367ad650a6cd94ce67f6d089804ccdaa5",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_task_calibration.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_task_calibration.py",
+          "sha256": "fd83ea395f577d1e6a08346ef6488e68bfda9eae94d75864526231815b52da0c",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_task_catalog.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/tests/repeated_v2/test_task_catalog.py",
+          "sha256": "55d0f292d95cdeab0e3e044e17405ede554667225f5f01c230451d7c4fa9d7ca",
+          "symlinks": []
+        }
+      ],
+      "sha256": "5b560db4883c348ebf07ed98c23d7052cb580d4ab579f61326451f9cd909e162"
+    },
+    "prompts": {
+      "entries": [
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/cope_benchmark/repeated_v2/prompts.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/cope_benchmark/repeated_v2/prompts.py",
+          "sha256": "3093203d42080e84e34d5976b0bee8b4fad1a00b87870c1e50ed8f1df42dd0d5",
+          "symlinks": []
+        }
+      ],
+      "sha256": "fddd56c49568a94538a3777b41f08d4735c444e3cabb885c0a0b7af38dbfa914"
+    },
+    "reasoner_implementation": {
+      "entries": [
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/cope_benchmark/repeated_v2/adapters/methods.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/cope_benchmark/repeated_v2/adapters/methods.py",
+          "sha256": "fad2d78488b60696c017973068abba2882ca14c1b6ee8c9e3041ea474efc68c5",
+          "symlinks": []
+        },
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/cope_benchmark/repeated_v2/provider.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/cope_benchmark/repeated_v2/provider.py",
+          "sha256": "2185003f7b900edd38326272d9ba2a9f080d47d2114d93a4b7330f95e7238eb7",
+          "symlinks": []
+        }
+      ],
+      "sha256": "425cb5832a2e54999bbe453e8baa738743b9f7f04547d36dd2f0dc29dd6186ab"
+    },
+    "retriever_implementation": {
+      "entries": [
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/cope_benchmark/repeated_v2/history.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/cope_benchmark/repeated_v2/history.py",
+          "sha256": "e3f939e449521e23fc28584cc0e5db5d7651bd83e43ed9c0aaf7453b9d97f864",
+          "symlinks": []
+        }
+      ],
+      "sha256": "aaebd9b9a31bd75b23bdb722f5d2d7e2b8804bf8e09f438c23809cecbdbf6e60"
+    },
+    "schemas": {
+      "entries": [
+        {
+          "files": [
+            {
+              "relative_path": "commitment_occurrence.schema.json",
+              "sha256": "1342f73bec4968ce2afb30fa4e210701453b0902e035366ab443257c44aeb834"
+            },
+            {
+              "relative_path": "cope_patch.schema.json",
+              "sha256": "6db57ec47d527fa7325a9ed384046a164d33b89e7eab274e50af86984d8251e0"
+            },
+            {
+              "relative_path": "event_evidence.schema.json",
+              "sha256": "f56ac6272722817f3f199649ce01254ce6bca545b8845d9087da9facee8c5d60"
+            },
+            {
+              "relative_path": "execution_context.schema.json",
+              "sha256": "cabe8c0848fdf2db38e45240b04b7bbf058110761f193cb09a12bccf3d4b0d77"
+            },
+            {
+              "relative_path": "full_state.schema.json",
+              "sha256": "8b0632a3136b1558c04157ab3802de5c2fa75b269a9d818430f69757cd50ecdd"
+            },
+            {
+              "relative_path": "generic_transaction.schema.json",
+              "sha256": "61a081911873f1162122b08a88ef4cfc749bc0b8aee3224074fcfbdf2f567c63"
+            },
+            {
+              "relative_path": "hidden_canonical_effect.schema.json",
+              "sha256": "624ec9f3d552adec254f7cbd2cfb9e94011a8d0c2d5572ce5711ae465977cee5"
+            },
+            {
+              "relative_path": "persistent_ledger.schema.json",
+              "sha256": "2c5c16f5cbc49f8f54f227a481d7014b82e5fbb0078c98ad4c2e3990465bf4cf"
+            },
+            {
+              "relative_path": "planning_directive.schema.json",
+              "sha256": "ab13a02d92f59caf181a5fd55b434342af8e761e2bf0e30343db0eccc28be547"
+            },
+            {
+              "relative_path": "planning_problem.schema.json",
+              "sha256": "a5c8ca79e355347d19775aea50c6042dedcfccff1afa2086c4f5cae50043208a"
+            },
+            {
+              "relative_path": "public_event_payload.schema.json",
+              "sha256": "fb182ebf3b9d18d134222abb27cd6da67c42e383b583edc3228ff36b26dbcb98"
+            },
+            {
+              "relative_path": "summary_memory.schema.json",
+              "sha256": "93fd077f66ddc3825688f53726b2500a15f1f2e8bc01098f1ed5ee885bc84158"
+            }
+          ],
+          "kind": "directory",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/schemas/repeated_v2",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/schemas/repeated_v2",
+          "sha256": "3fa62dedbaddba3357910f8c312e4b16e9d9e16a309b61cd2960b4d2f9a05101",
+          "symlinks": []
+        }
+      ],
+      "sha256": "027138f4df063122f154ede403a63d3695db6d45170f132c2f840f25550c0d6a"
+    },
+    "vla_implementation": {
+      "entries": [
+        {
+          "kind": "file",
+          "path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/cope_benchmark/repeated_v2/vla_adapter.py",
+          "resolved_path": "/Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/cope_benchmark/repeated_v2/vla_adapter.py",
+          "sha256": "86b6eec20c29a6bec670311702235b2d33e1e35826cea57cc07902a9d66863cd",
+          "symlinks": []
+        }
+      ],
+      "sha256": "4551153b35509ecc31852af12613d99cc85a9bd6503db5041e91c2a64b913220"
+    }
+  },
+  "status": "READINESS_ONLY_NOT_FROZEN"
+}

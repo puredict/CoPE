@@ -1,0 +1,17 @@
+# Window 4 validation and formal readiness
+
+Final analysis source: `c0308c1fc13036ef34983dd07397744f659cb417`, following phase-3 `02bc0143caf0e60f1cef273357433b660dfd75c3`.
+
+The final server regression passed **1,488 tests and 100 subtests**, with one opt-in simulator test skipped, in 197.20 seconds. `FULL_SUITE_JUNIT_FINAL.txt` is genuine pytest XML: 1,589 total cases includes the 100 subtests and one skip; errors and failures are zero. `REMOTE_SOURCE_PROOF.txt` records the interpreter and clean tracked checkout. All 21 Window 4 source files match the tested server bytes in `LOCAL_REMOTE_SOURCE_MATCH.csv`.
+
+The first code commit `71ca2700f8036805cd2deb6344bef338b903d6f1` passed local checks but its server regression exposed a real stat-only hash-cache defect: 1 failed, 1,487 passed, 1 skipped, 100 subtests. Those logs and XML are retained as `remote_full_tests_initial.txt` and `FULL_SUITE_JUNIT_INITIAL.txt`. `CACHE_DIAGNOSTIC.txt` contains independent filesystem and byte-hash observations. The fix commit `c0308c1fc13036ef34983dd07397744f659cb417` removes that cache; the deterministic regression preserves all stat fields while changing bytes. Local fix checks passed 64 tests. Rehashing large checkpoints has an unbenchmarked I/O/CPU cost.
+
+`LOCAL_VALIDATION.txt` records the earlier 846-test local v2 pass plus the final five actual-journal integration tests. The isolated server worktree is `/home/lijingsu/codex-worktrees/cope-repeated-v2-phase4`, using `/home/lijingsu/vla/.venv/bin/python` with `CUDA_VISIBLE_DEVICES` empty. No GPU or formal provider/VLA inference was used. The phase-3 opt-in CPU simulator smoke passed separately in its retained qualification artifacts; this Window 4 full-suite run did not repeat it.
+
+`PRODUCTION_PREFLIGHT_FINAL_1.txt` and `_2.txt` were actually rerun at the final source and are byte-identical: 0 eligible tasks, 794 gaps, no manifest, zero provider/VLA calls. Earlier preflight and hash inventories remain as historical records. `FINAL_HASH_INVENTORY.txt` and `.csv` supersede those earlier inventories for current source bytes; they are explicitly **readiness only, not a formal freeze**. Blank hashes mean qualified evidence was not supplied. Existing remote weight files were not fully hashed or model-qualified.
+
+The initial `freeze_attempt/` checked the minimal CLI inputs; `freeze_available_sources/` added the then-available source map. Their missing-role lists describe supplied inputs at those attempts, not an assertion that all omitted source code was absent. `final_freeze/` uses explicit source files and the successful final JUnit evidence. It still blocks on real calibration, development, pilot, production detector/verifier and model qualification. No authorized freeze, production manifest, production shard file or formal result cell was created.
+
+All original attempts and logs are retained. No existing experiment output, result cell or frozen v1 file was modified or deleted. The research hypothesis remains unchanged. This directory and the report directory are committed after the analysis and fix commits.
+
+Final documents: [REPORT.md](../repeated_v2_phase4_report/REPORT.md), [CLAIM_DECISION.md](../repeated_v2_phase4_report/CLAIM_DECISION.md). Read `READINESS_GATES.csv` for concrete prerequisites. Gates must pass on authentic evidence before using the formal launcher; these software results alone do not authorize a run.

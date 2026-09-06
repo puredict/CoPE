@@ -1,0 +1,8 @@
+Software validation only; no formal performance evidence.
+Code commit: 71ca2700f8036805cd2deb6344bef338b903d6f1
+Command: .venv/bin/python -m pytest tests/repeated_v2 -q
+846 passed, 1 optional simulator test skipped, 100 subtests passed in 88.73 seconds.
+The final added actual-journal integration file was then checked separately:
+Command: .venv/bin/python -m pytest tests/repeated_v2/test_journal_analysis_integration_window4.py -q
+5 passed in 3.62 seconds. No other source changed between these tests and the code commit.
+Combined complete exact-source regression is recorded separately in remote_full_tests.txt and FULL_SUITE_JUNIT.txt.

@@ -1,0 +1,7 @@
+{
+  "formal_calls": 0,
+  "reasons": [
+    "BLOCKED_MISSING_FREEZE_ARTIFACTS: analysis_implementation, backend_implementation, calibration_records, calibration_traces, compiler_implementation, detector_implementation, development_records, development_traces, gate_report, gate_tests, junit_report, pilot_controlled_journals, pilot_controlled_records, pilot_end_to_end_journals, pilot_end_to_end_records, prompts, reasoner_implementation, retriever_implementation, schemas, verifier_implementation, vla_checkpoint, vla_implementation"
+  ],
+  "status": "BLOCKED_FORMAL_FREEZE"
+}

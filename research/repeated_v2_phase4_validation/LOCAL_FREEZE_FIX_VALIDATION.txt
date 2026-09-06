@@ -1,0 +1,4 @@
+Code commit: c0308c1fc13036ef34983dd07397744f659cb417
+Command: .venv/bin/python -m pytest tests/repeated_v2/test_freeze_window4.py tests/repeated_v2/test_journal_analysis_integration_window4.py -q
+64 passed in 46.25 seconds. The final source was committed without further modifications.
+The earlier server failure is retained in remote_full_tests_initial.txt and FULL_SUITE_JUNIT_INITIAL.txt.

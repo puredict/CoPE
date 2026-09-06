@@ -1,0 +1,26 @@
+{
+  "analysis_implementation": [
+    "cope_benchmark/repeated_v2/statistics.py",
+    "cope_benchmark/repeated_v2/analysis.py",
+    "cope_benchmark/repeated_v2/analysis_shards.py",
+    "cope_benchmark/repeated_v2/claim_decision.py",
+    "cope_benchmark/repeated_v2/freeze.py",
+    "cope_benchmark/repeated_v2/formal_launch.py",
+    "cope_benchmark/repeated_v2/parity_analysis.py"
+  ],
+  "backend_implementation": [
+    "cope_benchmark/repeated_v2/planner_backend.py",
+    "cope_benchmark/repeated_v2/continuation_backend.py",
+    "research/server_sync_20260905/content/fvl12/v/cope_r4_20260905/code/rekep_repair"
+  ],
+  "compiler_implementation": "cope_benchmark/repeated_v2/compiler.py",
+  "gate_tests": "tests/repeated_v2",
+  "prompts": "cope_benchmark/repeated_v2/prompts.py",
+  "reasoner_implementation": [
+    "cope_benchmark/repeated_v2/provider.py",
+    "cope_benchmark/repeated_v2/adapters/methods.py"
+  ],
+  "retriever_implementation": "cope_benchmark/repeated_v2/history.py",
+  "schemas": "schemas/repeated_v2",
+  "vla_implementation": "cope_benchmark/repeated_v2/vla_adapter.py"
+}

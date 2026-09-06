@@ -1,0 +1,13 @@
+{
+  "configured": {
+    "COPE_CONTINUATION_BACKEND_FACTORY": false,
+    "COPE_PLANNER_FACTORY": false,
+    "COPE_REASONER_FACTORY": false,
+    "COPE_REASONER_MODEL": false,
+    "COPE_RETRIEVER_FACTORY": false,
+    "COPE_RUNTIME_FACTORY": false,
+    "COPE_VLA_CHECKPOINT": false,
+    "COPE_VLA_FACTORY": false
+  },
+  "scope": "local calling environment; Boolean presence only, no credentials or endpoint values"
+}

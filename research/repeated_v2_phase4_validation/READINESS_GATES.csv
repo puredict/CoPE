@@ -1,0 +1,15 @@
+gate,status,evidence,explanation
+analysis_code,PASS,c0308c1fc13036ef34983dd07397744f659cb417,Committed before result artifacts and before any formal call
+complete_software_regression,PASS,remote_full_tests_final.txt,1488 passed;100 subtests;1 explicitly opt-in simulator test skipped
+source_correspondence,PASS,LOCAL_REMOTE_SOURCE_MATCH.csv,21 Window4 files match exact tested remote source;tracked trees clean
+catalog_eligibility,BLOCKED,PRODUCTION_PREFLIGHT_FINAL_1.txt,10 listed tasks;0 eligible;794 gaps;minimum8
+calibration,BLOCKED,task_catalogs/repeated_v2.json,No complete authentic v2 calibration and feasibility proof
+master_manifest,BLOCKED,manifests/repeated_interruptions_v2.jsonl,Not created:eligible-task gate failed
+primary_comparator,BLOCKED,final_freeze/BLOCKED_FREEZE.txt,No qualified disjoint production development outcomes
+controlled_pilot,BLOCKED,../repeated_v2_phase3_validation/pilot_controlled/13_INFRASTRUCTURE_STOP.json,Prior actual pilot attempt stopped before calls;no result cells
+vla_pilot,BLOCKED,../repeated_v2_phase3_validation/pilot_end_to_end/13_INFRASTRUCTURE_STOP.json,Prior actual pilot attempt stopped before calls;no result cells
+production_runtime_and_model_identity,BLOCKED,LOCAL_CONFIGURATION_PRESENCE.txt,Factories/model identities unconfigured locally;remote checkpoint presence is not qualification
+full_formal_freeze,BLOCKED,final_freeze/BLOCKED_FREEZE.txt,Only available bytes hashed;no authorized FREEZE.txt
+eight_way_shards,NOT_CREATED,../../docs/repeated_v2/WINDOW4_RUNBOOK.md,Deterministic eight-way ownership implemented and tested;no production manifest to partition
+formal_controlled,NOT_RUN,full_formal_freeze,No launcher or model called;no cells generated
+formal_vla,NOT_RUN,full_formal_freeze,No launcher or VLA called;no cells generated

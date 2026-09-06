@@ -1,0 +1,32 @@
+{
+  "git_sha": "c0308c1fc13036ef34983dd07397744f659cb417",
+  "gpu_visibility_for_full_suite": "empty",
+  "interpreter": "/home/lijingsu/vla/.venv/bin/python",
+  "platform": "Linux-5.19.0-50-generic-x86_64-with-glibc2.35",
+  "python_version": "3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]",
+  "source_files": {
+    "cope_benchmark/repeated_v2/analysis.py": "187f503e2bfb6b91d79c0858420f4c4c33d48b0bb5127fdfbf39a9525747dea4",
+    "cope_benchmark/repeated_v2/analysis_shards.py": "d7d0fd227e990e26b40c10c00ff1e14fb22e7b09508a22e275610570960810cb",
+    "cope_benchmark/repeated_v2/claim_decision.py": "535759dd1a68c874095d77e9191264c20d49a75d80354f859f001fbbea9cbe25",
+    "cope_benchmark/repeated_v2/formal_launch.py": "cd928a18ccb2041f8ecdbc3bc40651b984eb62fe4a27ad4e4eb3a59de22483c5",
+    "cope_benchmark/repeated_v2/freeze.py": "f7e0385ad669add8b3e30c4fd74dee4214c696aacde7126df063457612e26019",
+    "cope_benchmark/repeated_v2/parity_analysis.py": "5869f508a6bfdf95e3048a50bb666894469685134c451c04e58ad838abad6fe6",
+    "cope_benchmark/repeated_v2/statistics.py": "fe97d96fffdc53c7bf032f59c38051818a8fe827ea95d0a6159da94214bcb28e",
+    "docs/repeated_v2/WINDOW4_RUNBOOK.md": "76df0cdc4b6647b04ca4de8178c4a79ffbd99b9ec4a82ad20af0c984f09794db",
+    "docs/repeated_v2/WINDOW4_STATISTICAL_PREREGISTRATION.md": "eea73b9ae72f3140fd7b6c9fe6a246115fabab7e2a69a9e9107fb9a0bebbbeb5",
+    "scripts/run_repeated_interruptions_v2.sh": "000306d87fa4f3c03d5b7cd7fa5db8f4c61c0c9d59e33fbb27e63e921dd5f2cc",
+    "tests/repeated_v2/test_analysis_cli_window4.py": "9d8e04ddb1c32b4a058099798a87609b86a28d9efb86c23c6c46ac6871f567f3",
+    "tests/repeated_v2/test_analysis_shards_window4.py": "aec99ee53798438c25a0245814d3fc48c4349a5c7352e3381a2ab0ff45fb8dfd",
+    "tests/repeated_v2/test_analysis_window4.py": "efef5bcacea954163e38d3f279a1f76197d05888e51724f4b2781a7e7313895c",
+    "tests/repeated_v2/test_claim_decision_window4.py": "72e21cc53272e04e40ffac96fa5ef66001f7da9e449392d6b79a892f25b1055d",
+    "tests/repeated_v2/test_formal_launch_window4.py": "268278eae884e6d20c6252b51f912a2b33221d0fc72a751d34eef0ec2c361a7e",
+    "tests/repeated_v2/test_freeze_window4.py": "576c64033a4757121b40991447ea4a257ffd3b269f7b1614d612ca10c3598c2a",
+    "tests/repeated_v2/test_journal_analysis_integration_window4.py": "03c47873d332ed91b35c81a8efdc5cb4984a2ee982e54fcaefd30e1681a9b490",
+    "tests/repeated_v2/test_parity_analysis_window4.py": "760a21e339a9dfa3bcfa0fce139a1b0f0f1e0420258cbe7faf9499b8a71d6333",
+    "tests/repeated_v2/test_statistics_window4.py": "4630fee5d53d9f9d224078a2fa6287e367ad650a6cd94ce67f6d089804ccdaa5",
+    "tools/analyze_repeated_interruptions_v2.py": "36d802f3e391232a751667961cfd15eb2c7b6f5dc65da43a826fc638c2376875",
+    "tools/freeze_repeated_interruptions_v2.py": "1aa84aad270baeae4aae2ddcf0c4e9868f1ed68057eb2f92473a1baa700c10f0"
+  },
+  "tracked_source_clean": true,
+  "tree_sha": "4955088b7173dfd93c1968a334a11b4e32d67ea3"
+}

@@ -1,0 +1,7 @@
+{
+  "formal_calls": 0,
+  "reasons": [
+    "BLOCKED_MISSING_FREEZE_ARTIFACTS: calibration_records, calibration_traces, detector_implementation, development_records, development_traces, gate_report, pilot_controlled_journals, pilot_controlled_records, pilot_end_to_end_journals, pilot_end_to_end_records, verifier_implementation, vla_checkpoint"
+  ],
+  "status": "BLOCKED_FORMAL_FREEZE"
+}

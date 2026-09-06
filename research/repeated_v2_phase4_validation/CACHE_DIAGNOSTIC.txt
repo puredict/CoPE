@@ -1,0 +1,136 @@
+CoPE repeated-interruptions v2: stat-only file-hash cache diagnostic
+
+Scope and provenance
+--------------------
+Affected analysis-code commit: 71ca2700f8036805cd2deb6344bef338b903d6f1
+The retained remote_full_tests_initial.txt was inspected and shows failure in
+test_file_hash_cache_reuses_bytes_but_detects_same_size_restored_mtime. Its failed
+assertion received the same cached SHA256 before and after changed bytes:
+3bb3e8de4bb9c026cd14e053bc001109aebb188eb57955b4a74b775ecb2f7598.
+That retained run reports 1 failed, 1487 passed, 1 skipped, 100 subtests passed
+in 203.09 seconds. The failed test used a directory under /tmp/pytest-of-lijingsu.
+The diagnostic below independently tested the cache's file-identity assumption.
+It did not change source code, implementation files, checkpoints, or result cells.
+It created only temporary diagnostic files, using Python TemporaryDirectory.
+No GPU, policy, model, simulator, or external reasoner calls were made.
+
+Host and access
+---------------
+SSH alias: fudan-26575
+SSH user: lijingsu
+SSH host: 10.176.53.120
+SSH port: 26575
+Remote hostname from os.uname(): fvl12
+Kernel: Linux 5.19.0-50-generic
+Kernel build: #50-Ubuntu SMP PREEMPT_DYNAMIC Mon Jul 10 18:24:29 UTC 2023
+Architecture: x86_64
+
+Old cache key
+-------------
+The affected code cached a file digest using the resolved path and these stat
+fields: st_dev, st_ino, st_size, st_mtime_ns, st_ctime_ns. The before/after stat
+comparison used the same fields. These observations show that changed file bytes
+can retain the entire key on this host. A cached digest can therefore be stale.
+
+Diagnostic 1: rapid writes and stat readings
+-------------------------------------------
+Temporary directory: /tmp/cope-cache-stat-diagnostic-g24e972e
+Trial count: 20
+In each trial, checkpoint.bin was written with b'first-checkpoint', then rewritten
+with b'other-checkpoint'. Both byte strings are length 16. os.utime restored the
+first write's atime and mtime. Stat readings were collected before the rewrite,
+immediately after the rewrite, and after restoring mtime.
+
+Observed identical full stat key before/after: 19 of 20 trials.
+For trials 0 through 18, the before, after-write, and restored readings were:
+  st_dev: 2050
+  st_ino: 37098276
+  st_size: 16
+  st_mtime_ns: 1788681678521417361
+  st_ctime_ns: 1788681678521417361
+
+Trial 19 before:
+  st_dev: 2050
+  st_ino: 37098276
+  st_size: 16
+  st_mtime_ns: 1788681678521417361
+  st_ctime_ns: 1788681678521417361
+Trial 19 immediately after write:
+  st_mtime_ns: 1788681678525417373
+  st_ctime_ns: 1788681678525417373
+Trial 19 after restoring mtime:
+  st_mtime_ns: 1788681678521417361
+  st_ctime_ns: 1788681678525417373
+The ctime change in this observed trial was 4,000,012 ns.
+
+A separate delayed write in the same diagnostic used a 0.01-second sleep before
+the rewrite. Before the rewrite, mtime_ns and ctime_ns were both
+1788681678533417396. After rewriting and restoring mtime, mtime_ns remained
+1788681678533417396 and ctime_ns was 1788681678545417429, a change of 12,000,033 ns.
+This delayed observation explains why adding sleeps could hide the rapid-write
+counterexample; it does not justify a stat-only cache.
+
+Diagnostic 2: independent byte readback and SHA256 proof
+-------------------------------------------------------
+This diagnostic separately read and hashed the file bytes before and after each
+rewrite, in addition to comparing the complete stat key. It repeated 20 trials
+in /tmp and 20 trials in /home/lijingsu.
+
+findmnt -T output for both locations:
+  SOURCE: /dev/sda2
+  FSTYPE: ext4
+  OPTIONS: rw,relatime,errors=remount-ro
+
+/tmp results:
+  Trials: 20
+  Different readback SHA256 with identical complete stat key: 20
+  First counterexample trial: 0
+  Key [dev, ino, size, mtime_ns, ctime_ns]:
+  [2050, 37097863, 16, 1788681704673490556, 1788681704673490556]
+
+/home/lijingsu results:
+  Trials: 20
+  Different readback SHA256 with identical complete stat key: 19
+  First counterexample trial: 0
+  Key [dev, ino, size, mtime_ns, ctime_ns]:
+  [2050, 9611195, 16, 1788681704677490567, 1788681704677490567]
+
+Both first counterexamples had these actual readback hashes:
+  b'first-checkpoint':
+  3bb3e8de4bb9c026cd14e053bc001109aebb188eb57955b4a74b775ecb2f7598
+  b'other-checkpoint':
+  87204884eaf738df23df12c9d1d64de84b56915391f071b65d99c5ba0dce9363
+
+Interpretation and correction constraint
+----------------------------------------
+This is an observed cache-integrity defect, not grounds to weaken the test or
+insert a sleep. Rapid writes were not distinguishable by the selected stat
+fields on this host, despite their nanosecond API representation. The evidence
+does not establish a universal timestamp resolution for every ext4 filesystem.
+
+The safe correction identified here is to remove the stat-only digest cache and
+read/hash actual bytes at each required validation boundary. Stat checks remain
+useful for detecting some changes during a read, but are not proof that bytes
+are unchanged. No stronger immutable-file guarantee was established during this
+diagnostic. File permissions or advisory locks alone would not prove immutability
+of files controlled by a writer.
+
+The root task subsequently reported removing the cache and adding a deterministic
+regression test with identical mocked stat fields for different file contents.
+The fix and its validation belong to their separate code/test records. This
+diagnostic does not claim that a formal protocol or model run passed.
+
+Performance constraint
+----------------------
+Always reading/hashing files incurs I/O and CPU work proportional to their byte
+size. Repeated validation of large checkpoints may materially slow execution.
+No full-checkpoint throughput or formal-run latency benchmark was performed in
+this diagnostic. Performance must not be improved by accepting stale digests.
+
+Calls performed by this diagnostic
+-----------------------------------
+GPU calls: 0
+Model/policy inference calls: 0
+Simulator calls: 0
+External reasoner/provider calls: 0
+Formal experiment calls: 0

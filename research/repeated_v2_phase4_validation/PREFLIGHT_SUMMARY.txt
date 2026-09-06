@@ -1,0 +1,10 @@
+{
+  "byte_identical_repeated_preflight": true,
+  "catalog_gap_count": 794,
+  "eligible_task_ids": [],
+  "manifest_sha256": null,
+  "provider_calls": 0,
+  "source_commit": "71ca2700f8036805cd2deb6344bef338b903d6f1",
+  "status": "BLOCKED_TASK_CATALOG_GAPS",
+  "vla_calls": 0
+}
