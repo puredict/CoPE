@@ -70,6 +70,6 @@ Remaining machine-readable blockers are:
 - `BLOCKED_TASK_CATALOG_GAP`:752 semantic, structural, support and feasibility diagnostics remain open; consequently zero tasks are catalog-eligible.
 - `BLOCKED_PILOT_EVIDENCE` and downstream freeze/comparator gates: the production pilot cannot be admitted before the upstream gates pass.
 
-The full related software suite passed876 tests and100 subtests; one opt-in local simulator test was skipped. Its real CPU simulator invocation separately passed all four smoke tests. Software fixtures are not counted as learned-policy, semantic or formal evidence.
+The full related software suite passed876 tests and100 subtests; one opt-in local simulator test was skipped. Its real CPU simulator invocation separately passed all four smoke tests. After the branch was pushed, the full repository suite was repeated from the repository root on the asset host at commit `b93563f01ec4513c9c2c15891eb25fc2c6e03336`:1513 tests and100 subtests passed, with one opt-in test skipped. [Remote test receipt](FINAL_REMOTE_TESTS.txt). Software fixtures are not counted as learned-policy, semantic or formal evidence.
 
 The exact next zero-provider command is recorded in [NEXT_COMMAND.md](NEXT_COMMAND.md). It audits the attached admission inventory and is expected to return `BLOCKED_CALIBRATION_EVIDENCE` for tasks2,3,5,6,7,9. It does not start a simulator, model, provider or formal run. No formal launch command is issued until calibration, catalog, feasibility, production adapter/runtime, pilot and freeze gates pass.
