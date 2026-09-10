@@ -6,6 +6,15 @@ Command:
 Result:
 17 passed in 0.27s
 
+After discovering and preserving the pre-existing immutable core tag, the core
+commit was merged and both core and repeated-v2 binding suites were run together.
+
+Command:
+/Users/lijingsu/miniforge3/envs/lerobot312/bin/python -m pytest -q tests/exp1_trace_contract_v1 tests/repeated_v2/test_trace_contract_v1.py tests/repeated_v2/test_trace_exporter_v1.py tests/repeated_v2/test_trace_contract_no_hidden_leakage.py tests/repeated_v2/test_trace_contract_canonical_hashes.py tests/repeated_v2/test_trace_contract_backward_compatibility.py
+
+Result:
+28 passed in 0.32s
+
 Command:
 /Users/lijingsu/miniforge3/envs/lerobot312/bin/python -m pytest -q tests/repeated_v2
 

@@ -51,7 +51,7 @@
           "type": "boolean"
         },
         "schema_version": {
-          "const": "exp1-trace-contract-v1"
+          "const": "cope-exp1-trace-contract/v1"
         },
         "timeout": {
           "type": "boolean"

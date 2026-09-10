@@ -70,7 +70,7 @@
           "type": "array"
         },
         "schema_version": {
-          "const": "exp1-trace-contract-v1"
+          "const": "cope-exp1-trace-contract/v1"
         },
         "soft_preferences": {
           "items": {
@@ -166,7 +166,7 @@
           "type": "string"
         },
         "schema_version": {
-          "const": "exp1-trace-contract-v1"
+          "const": "cope-exp1-trace-contract/v1"
         },
         "verified_at_step": {
           "minimum": 0,

@@ -1,6 +1,6 @@
 # Experiment-1 trace contract v1
 
-`exp1-trace-contract-v1` is the stable, read-only interchange boundary exported
+`cope-exp1-trace-contract/v1` is the stable, read-only interchange boundary exported
 by Experiment 1. Experiment 2 may consume this interface independently of task
 catalog eligibility, pilot completion, or a positive Experiment-1 result.
 
@@ -63,10 +63,15 @@ consulting task IDs and simulator truth. Writers use exclusive file creation so
 an existing trace is not overwritten. Readers require canonical bytes and run
 both the executable record invariants and checked-in JSON Schema validation.
 
-The schemas are under `schemas/repeated_v2/trace_contract_v1/`. Canonical
-fixtures and their byte hashes are under
-`frozen/repeated_v2_trace_contract_v1/`. The immutable Git tag
-`exp1-trace-contract-v1` identifies the commit that passed the contract tests.
+The canonical core is the already frozen
+`cope_benchmark.exp1_trace_contract_v1` package. This repeated-v2 binding adds
+the requested action-trace and proposed/accepted-patch records without changing
+the core version or public/sealed boundary. Its schemas are under
+`schemas/repeated_v2/trace_contract_v1/`, and its canonical fixtures and byte
+hashes are under `frozen/repeated_v2_trace_contract_v1/`. The immutable Git tag
+`exp1-trace-contract-v1` identifies core commit
+`1237de979fad501b2e1c730111160959a246bf96`; the v2.1 branch merges that commit
+and records the binding byte hashes separately.
 
 ## Independent downstream gates
 

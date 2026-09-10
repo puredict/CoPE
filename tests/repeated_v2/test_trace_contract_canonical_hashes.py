@@ -25,7 +25,7 @@ def test_reordered_object_keys_have_same_hash_but_array_order_does_not():
 def test_frozen_manifest_matches_every_listed_byte():
     manifest_path = ROOT / "frozen/repeated_v2_trace_contract_v1/HASH_MANIFEST.json"
     manifest = load_canonical_record(manifest_path)
-    assert manifest["schema_version"] == "exp1-trace-contract-v1"
+    assert manifest["schema_version"] == "cope-exp1-trace-contract/v1"
     for entry in manifest["files"]:
         path = ROOT / entry["path"]
         assert path.stat().st_size == entry["bytes"]

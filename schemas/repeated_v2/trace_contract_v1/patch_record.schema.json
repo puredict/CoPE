@@ -54,7 +54,7 @@
           "type": "array"
         },
         "schema_version": {
-          "const": "exp1-trace-contract-v1"
+          "const": "cope-exp1-trace-contract/v1"
         },
         "state_revision_after": {
           "minimum": 0,
@@ -124,7 +124,7 @@
           "type": "object"
         },
         "schema_version": {
-          "const": "exp1-trace-contract-v1"
+          "const": "cope-exp1-trace-contract/v1"
         }
       },
       "required": [

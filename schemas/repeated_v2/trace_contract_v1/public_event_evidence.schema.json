@@ -52,7 +52,7 @@
           "type": "string"
         },
         "schema_version": {
-          "const": "exp1-trace-contract-v1"
+          "const": "cope-exp1-trace-contract/v1"
         },
         "timestamp": {
           "minimum": 0,

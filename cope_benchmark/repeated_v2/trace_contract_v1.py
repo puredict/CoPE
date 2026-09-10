@@ -16,8 +16,8 @@ from .enums import MethodName, ProtocolName, Satisfaction
 from .schema import Record, record_json_schema
 
 
-TRACE_CONTRACT_VERSION = "exp1-trace-contract-v1"
-OCCURRENCE_ALLOCATOR_VERSION = "occurrence-family-monotone-v1"
+TRACE_CONTRACT_VERSION = "cope-exp1-trace-contract/v1"
+OCCURRENCE_ALLOCATOR_VERSION = "cope-exp1-occurrence-allocator/v1"
 EXP1_INTERFACE_CONTRACT_FROZEN = "EXP1_INTERFACE_CONTRACT_FROZEN"
 EXP1_TASK_CATALOG_FROZEN = "EXP1_TASK_CATALOG_FROZEN"
 EXP1_FORMAL_TRACE_DATA_AVAILABLE = "EXP1_FORMAL_TRACE_DATA_AVAILABLE"

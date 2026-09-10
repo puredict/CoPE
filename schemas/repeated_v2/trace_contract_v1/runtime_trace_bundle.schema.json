@@ -54,7 +54,7 @@
           "type": "array"
         },
         "schema_version": {
-          "const": "exp1-trace-contract-v1"
+          "const": "cope-exp1-trace-contract/v1"
         },
         "state_revision_after": {
           "minimum": 0,
@@ -111,7 +111,7 @@
           "type": "string"
         },
         "schema_version": {
-          "const": "exp1-trace-contract-v1"
+          "const": "cope-exp1-trace-contract/v1"
         },
         "trace_id": {
           "minLength": 1,
@@ -160,7 +160,7 @@
           "type": "array"
         },
         "schema_version": {
-          "const": "exp1-trace-contract-v1"
+          "const": "cope-exp1-trace-contract/v1"
         }
       },
       "required": [
@@ -190,7 +190,7 @@
           "type": "string"
         },
         "schema_version": {
-          "const": "exp1-trace-contract-v1"
+          "const": "cope-exp1-trace-contract/v1"
         }
       },
       "required": [
@@ -223,7 +223,7 @@
           "type": "integer"
         },
         "schema_version": {
-          "const": "exp1-trace-contract-v1"
+          "const": "cope-exp1-trace-contract/v1"
         },
         "slots": {
           "items": {
@@ -310,7 +310,7 @@
           "type": "array"
         },
         "schema_version": {
-          "const": "exp1-trace-contract-v1"
+          "const": "cope-exp1-trace-contract/v1"
         },
         "soft_preferences": {
           "items": {
@@ -406,7 +406,7 @@
           "type": "string"
         },
         "schema_version": {
-          "const": "exp1-trace-contract-v1"
+          "const": "cope-exp1-trace-contract/v1"
         },
         "verified_at_step": {
           "minimum": 0,
@@ -470,7 +470,7 @@
           "type": "object"
         },
         "schema_version": {
-          "const": "exp1-trace-contract-v1"
+          "const": "cope-exp1-trace-contract/v1"
         }
       },
       "required": [
@@ -536,7 +536,7 @@
           "type": "string"
         },
         "schema_version": {
-          "const": "exp1-trace-contract-v1"
+          "const": "cope-exp1-trace-contract/v1"
         },
         "timestamp": {
           "minimum": 0,
@@ -675,7 +675,7 @@
           "type": "string"
         },
         "schema_version": {
-          "const": "exp1-trace-contract-v1"
+          "const": "cope-exp1-trace-contract/v1"
         },
         "sealed_outcome_ref": {
           "pattern": "^[0-9a-f]{64}$",
