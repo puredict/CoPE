@@ -1,5 +1,7 @@
 import csv
 from pathlib import Path
+import subprocess
+import sys
 
 import pytest
 
@@ -12,6 +14,8 @@ from cope_benchmark.repeated_v2.calibration_v2_1 import (
     derive_clean_horizon,
     derive_interrupted_budget,
     group_duplicate_trajectories,
+    summarize_task_calibration,
+    validate_calibration_record,
     validate_initial_state_split,
     validate_state_inventory,
 )
@@ -34,6 +38,43 @@ def _record(state, seed, digest, success, completion, **extra):
         "success": success,
         "completion_policy_steps": completion,
         **extra,
+    }
+
+
+def _admission_record(state, *, success):
+    digest = _sha(state + 1)
+    return {
+        "schema_version": "repeated_v2_1_clean_calibration_episode_v1",
+        "task_id": 1,
+        "initial_state_id": state,
+        "policy_seed": 101,
+        "success": success,
+        "status": "success" if success else "timeout",
+        "termination_reason": "exact_libero_goal" if success else "policy_budget_exhausted",
+        "learned_policy": True,
+        "uses_privileged_state": False,
+        "clean_episode": True,
+        "all_action_validations_pass": True,
+        "manual_intervention": False,
+        "provider_id": "openvla_native",
+        "policy_model_id": "openvla-7b-finetuned-libero-10",
+        "checkpoint_sha256": "d36eaa2a334cd52f4a3a94558cf90d82584743ea772fabf76f9e4372e7076076",
+        "adapter_source_sha256": _sha(20),
+        "runtime_client_sha256": _sha(21),
+        "runtime_inference_sha256": _sha(22),
+        "protocol_sha256": _sha(23),
+        "initial_state_sha256": _sha(100 + state),
+        "evidence_ref": f"measured/task1/state{state}/TERMINAL.txt",
+        "evidence_sha256": _sha(30 + state),
+        "full_trace_sha256": _sha(40 + state),
+        "raw_policy_action_sequence_sha256": _sha(50 + state),
+        "environment_policy_action_sequence_sha256": digest,
+        "action_trajectory_sha256": digest,
+        "collection_ceiling_policy_steps": 520,
+        "policy_steps_consumed": 240 + state if success else 520,
+        "completion_policy_steps": 240 + state if success else None,
+        "inference_seconds": 10.0,
+        "wall_seconds": 12.0,
     }
 
 
@@ -131,6 +172,32 @@ def test_interrupted_budget_deduplicates_and_ignores_method_identity():
     assert decision.unique_overhead_measurements == 3
     assert decision.event_allowance == 120
     assert decision.horizon == 868
+
+
+def test_v21_admission_records_require_real_policy_identity_and_complete_grid():
+    records = [_admission_record(state, success=state < 4) for state in range(10)]
+    for record in records:
+        validate_calibration_record(record)
+    summary = summarize_task_calibration(1, records)
+    assert summary["nominal_trajectories"] == 10
+    assert summary["unique_trajectories"] == 10
+    assert summary["horizon"] == 320
+    assert summary["clean_success_rate"] == 0.4
+    assert summary["eligible_success_rate"] is True
+    poisoned = {**records[0], "uses_privileged_state": True}
+    with pytest.raises(CalibrationV21Error, match="uses_privileged_state"):
+        validate_calibration_record(poisoned)
+
+
+def test_calibration_driver_self_check_imports_no_model_or_simulator():
+    result = subprocess.run(
+        [sys.executable, str(ROOT / "scripts/run_repeated_v2_1_clean_calibration.py"), "--self-check"],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    assert "no model, simulator, GPU" in result.stdout
 
 
 @pytest.mark.parametrize("bad", ([[1] * 6], [[0, 0, 0, 0, 0, 0, float("nan")]]))

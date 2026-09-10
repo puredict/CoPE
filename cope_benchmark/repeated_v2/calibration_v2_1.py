@@ -16,6 +16,7 @@ from typing import Any, Iterable, Mapping, Sequence
 
 
 PROTOCOL_VERSION = "repeated_v2_1_horizon_and_independence_v1"
+CALIBRATION_RECORD_VERSION = "repeated_v2_1_clean_calibration_episode_v1"
 AVAILABLE_STATE_IDS = tuple(range(50))
 CALIBRATION_STATE_IDS = tuple(range(10))
 FORMAL_STATE_IDS = tuple(range(10, 15))
@@ -36,6 +37,79 @@ _SHA256 = re.compile(r"^[a-f0-9]{64}$")
 
 class CalibrationV21Error(ValueError):
     """Raised when evidence cannot satisfy the frozen v2.1 protocol."""
+
+
+def validate_calibration_record(record: Mapping[str, Any]) -> None:
+    """Validate one measured v2.1 clean episode without trusting its source."""
+    errors: list[str] = []
+    if record.get("schema_version") != CALIBRATION_RECORD_VERSION:
+        errors.append("schema_version")
+    if type(record.get("task_id")) is not int or not 0 <= record["task_id"] < 10:
+        errors.append("task_id")
+    if type(record.get("initial_state_id")) is not int or record["initial_state_id"] not in CALIBRATION_STATE_IDS:
+        errors.append("initial_state_id")
+    if record.get("policy_seed") != CALIBRATION_TECHNICAL_SEED:
+        errors.append("policy_seed")
+    for name, expected in (
+        ("learned_policy", True),
+        ("uses_privileged_state", False),
+        ("clean_episode", True),
+        ("all_action_validations_pass", True),
+        ("manual_intervention", False),
+    ):
+        if record.get(name) is not expected:
+            errors.append(name)
+    if record.get("provider_id") != "openvla_native":
+        errors.append("provider_id")
+    if record.get("policy_model_id") != "openvla-7b-finetuned-libero-10":
+        errors.append("policy_model_id")
+    if record.get("checkpoint_sha256") != "d36eaa2a334cd52f4a3a94558cf90d82584743ea772fabf76f9e4372e7076076":
+        errors.append("checkpoint_sha256")
+    if record.get("collection_ceiling_policy_steps") != CALIBRATION_MEASUREMENT_CEILING:
+        errors.append("collection_ceiling_policy_steps")
+    if type(record.get("policy_steps_consumed")) is not int or not 0 <= record["policy_steps_consumed"] <= CALIBRATION_MEASUREMENT_CEILING:
+        errors.append("policy_steps_consumed")
+    if type(record.get("success")) is not bool:
+        errors.append("success")
+    allowed_statuses = {"success", "timeout", "environment_done_failure"}
+    if record.get("status") not in allowed_statuses:
+        errors.append("status")
+    if record.get("success") is True and record.get("status") != "success":
+        errors.append("success_status_consistency")
+    if record.get("success") is False and record.get("status") == "success":
+        errors.append("failure_status_consistency")
+    completion = record.get("completion_policy_steps")
+    if record.get("success") is True:
+        if type(completion) is not int or completion != record.get("policy_steps_consumed"):
+            errors.append("completion_policy_steps")
+    elif completion is not None:
+        errors.append("failure_completion_policy_steps")
+    for name in (
+        "protocol_sha256",
+        "initial_state_sha256",
+        "evidence_sha256",
+        "full_trace_sha256",
+        "raw_policy_action_sequence_sha256",
+        "environment_policy_action_sequence_sha256",
+        "action_trajectory_sha256",
+        "adapter_source_sha256",
+        "runtime_client_sha256",
+        "runtime_inference_sha256",
+    ):
+        value = record.get(name)
+        if not isinstance(value, str) or not _SHA256.fullmatch(value):
+            errors.append(name)
+    if record.get("action_trajectory_sha256") != record.get("environment_policy_action_sequence_sha256"):
+        errors.append("action_trajectory_alias")
+    for name in ("evidence_ref", "termination_reason"):
+        if not isinstance(record.get(name), str) or not record[name]:
+            errors.append(name)
+    for name in ("inference_seconds", "wall_seconds"):
+        value = record.get(name)
+        if type(value) not in (int, float) or not math.isfinite(value) or value < 0:
+            errors.append(name)
+    if errors:
+        raise CalibrationV21Error("invalid v2.1 calibration record fields: " + ", ".join(sorted(set(errors))))
 
 
 @dataclass(frozen=True)
@@ -263,6 +337,53 @@ def derive_clean_horizon(records: Iterable[Mapping[str, Any]]) -> HorizonDecisio
         q95,
         "clip(ceil(1.20 * empirical nearest-rank Q95), 320, 520)",
     )
+
+
+def summarize_task_calibration(task_id: int, records: Iterable[Mapping[str, Any]]) -> dict[str, Any]:
+    """Validate a complete ten-state task cohort and report unique outcomes."""
+    task = _strict_int(task_id, "task_id")
+    parsed = tuple(records)
+    for row in parsed:
+        validate_calibration_record(row)
+        if row["task_id"] != task:
+            raise CalibrationV21Error("calibration record belongs to another task")
+    expected = {(state_id, CALIBRATION_TECHNICAL_SEED) for state_id in CALIBRATION_STATE_IDS}
+    actual = {(row["initial_state_id"], row["policy_seed"]) for row in parsed}
+    if len(parsed) != len(actual):
+        raise CalibrationV21Error("duplicate nominal calibration cell")
+    if actual != expected:
+        raise CalibrationV21Error("incomplete v2.1 task calibration grid")
+    groups = group_duplicate_trajectories(parsed)
+    horizon = derive_clean_horizon(parsed)
+    successes_at_horizon = None
+    rate = None
+    eligible = False
+    if horizon.horizon is not None:
+        successes_at_horizon = sum(
+            group["success"] is True
+            and type(group["completion_policy_steps"]) is int
+            and group["completion_policy_steps"] <= horizon.horizon
+            for group in groups
+        )
+        rate = successes_at_horizon / len(groups)
+        eligible = CLEAN_SUCCESS_INTERVAL[0] <= rate <= CLEAN_SUCCESS_INTERVAL[1]
+    return {
+        "protocol_version": PROTOCOL_VERSION,
+        "task_id": task,
+        "nominal_trajectories": len(parsed),
+        "unique_trajectories": len(groups),
+        "successful_unique_trajectories_by_collection_ceiling": sum(
+            group["success"] is True for group in groups
+        ),
+        "completion_times": list(horizon.completion_times),
+        "q95_nearest_rank": horizon.q95_nearest_rank,
+        "horizon": horizon.horizon,
+        "horizon_gate": horizon.status,
+        "successful_unique_trajectories_at_horizon": successes_at_horizon,
+        "clean_success_rate": rate,
+        "eligible_success_rate": eligible,
+        "success_interval": list(CLEAN_SUCCESS_INTERVAL),
+    }
 
 
 def derive_interrupted_budget(
