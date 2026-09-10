@@ -39,17 +39,15 @@ def _task0_state() -> FakeState:
     )
 
 
-def test_four_tasks_have_multistage_deterministic_progress_definitions() -> None:
-    assert sorted(TASK_DEFINITIONS) == [
-        ("libero_10", 0),
-        ("libero_10", 1),
-        ("libero_10", 4),
-        ("libero_10", 8),
-    ]
+def test_all_tasks_have_source_grounded_deterministic_progress_definitions() -> None:
+    assert sorted(TASK_DEFINITIONS) == [("libero_10", task_id) for task_id in range(10)]
     for definition in TASK_DEFINITIONS.values():
         commitments = [predicate for predicate in definition.predicates if predicate.commitment]
-        assert len(commitments) >= 2
+        # Task 5 has one terminal BDDL clause.  Its catalog must retain that
+        # structural limitation instead of inventing a second goal.
+        assert len(commitments) >= 1
         assert all(predicate.reversible for predicate in commitments)
+        assert len(definition.predicates) >= 3
         assert any(predicate.kind == "final_success" for predicate in definition.predicates)
 
 

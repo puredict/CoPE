@@ -6,10 +6,15 @@ implements ``Reasoner``; the included fixture is explicitly not a model result.
 from __future__ import annotations
 
 import copy
+import hashlib
+import importlib
 import json
+import os
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Callable, Mapping, Protocol, Sequence
+import urllib.error
+import urllib.request
 
 
 @dataclass(frozen=True)
@@ -187,3 +192,133 @@ class FixtureReasoner:
         text = value if isinstance(value, str) else json.dumps(value, ensure_ascii=False)
         return ReasonerResponse(text, self.count_tokens(messages), len(text.encode("utf-8")),
                                 "fixture_utf8_bytes", True)
+
+
+class ReasonerUnavailable(RuntimeError):
+    """Raised before an experiment call when production configuration is absent."""
+
+    status = "BLOCKED_REASONER_ADAPTER_UNAVAILABLE"
+
+
+class ReasonerModelUnavailable(ReasonerUnavailable):
+    """Raised before generation when no production model identity is bound."""
+
+    status = "BLOCKED_REASONER_MODEL_UNAVAILABLE"
+
+
+class OpenAICompatibleReasoner:
+    """Single-request OpenAI-compatible transport for the v2 gateway.
+
+    The provider owns final token accounting through its required ``usage``
+    object.  ``count_tokens`` uses UTF-8 bytes as a conservative, deterministic
+    preflight ceiling and is never reported as provider token usage.  There is
+    no retry or schema repair path.
+    """
+
+    provider_id = "openai_compatible_http"
+    version = "repeated_v2_openai_compatible_reasoner_v1"
+
+    def __init__(self, *, endpoint: str, model: str, api_key: str | None,
+                 timeout_seconds: float = 180.0, opener=None) -> None:
+        endpoint = str(endpoint).strip().rstrip("/")
+        model = str(model).strip()
+        if not model:
+            raise ReasonerModelUnavailable("configured reasoner model is unavailable")
+        if not endpoint.startswith(("http://", "https://")):
+            raise ReasonerUnavailable("configured reasoner endpoint is invalid")
+        if type(timeout_seconds) not in (int, float) or not 0 < timeout_seconds <= 600:
+            raise ReasonerUnavailable("configured reasoner timeout is invalid")
+        self.endpoint = endpoint if endpoint.endswith("/chat/completions") else endpoint + "/chat/completions"
+        self.model_id = model
+        self._api_key = None if api_key is None else str(api_key)
+        self.timeout_seconds = float(timeout_seconds)
+        self._opener = opener or urllib.request.urlopen
+        self.calls = 0
+        self.identity = {
+            "provider_id": self.provider_id,
+            "model_id": self.model_id,
+            "endpoint_sha256": hashlib.sha256(self.endpoint.encode()).hexdigest(),
+            "transport_version": self.version,
+            "temperature": 0.0,
+            "top_p": 1.0,
+            "semantic_retries": 0,
+            "timeout_seconds": self.timeout_seconds,
+        }
+
+    def count_tokens(self, messages: Sequence[Mapping[str, str]]) -> int:
+        # A byte ceiling cannot undercount UTF-8 encoded model tokens.  Exact
+        # provider counts are required and recorded from the response below.
+        return len(json.dumps(list(messages), ensure_ascii=False,
+                              separators=(",", ":")).encode("utf-8"))
+
+    def complete(self, *, messages: Sequence[Mapping[str, str]],
+                 config: ReasonerConfig) -> ReasonerResponse:
+        if (config.provider != self.provider_id or config.model != self.model_id
+                or config.temperature != 0 or config.semantic_retries != 0):
+            raise ValueError("reasoner request differs from the bound model/decoding contract")
+        payload = {
+            "model": self.model_id,
+            "messages": copy.deepcopy(list(messages)),
+            "temperature": 0.0,
+            "top_p": 1.0,
+            "max_tokens": config.max_output_tokens,
+            "seed": config.seed,
+        }
+        body = json.dumps(payload, ensure_ascii=False, separators=(",", ":"),
+                          allow_nan=False).encode("utf-8")
+        headers = {"Content-Type": "application/json", "Accept": "application/json"}
+        if self._api_key:
+            headers["Authorization"] = "Bearer " + self._api_key
+        request = urllib.request.Request(self.endpoint, data=body, headers=headers, method="POST")
+        self.calls += 1
+        try:
+            with self._opener(request, timeout=self.timeout_seconds) as response:
+                value = json.loads(response.read())
+        except (OSError, urllib.error.URLError, json.JSONDecodeError) as exc:
+            raise ReasonerUnavailable("production reasoner request failed") from exc
+        try:
+            text = value["choices"][0]["message"]["content"]
+            input_tokens = value["usage"]["prompt_tokens"]
+            output_tokens = value["usage"]["completion_tokens"]
+        except (KeyError, IndexError, TypeError) as exc:
+            raise ReasonerUnavailable("production reasoner response lacks text or exact usage") from exc
+        if (not isinstance(text, str) or type(input_tokens) is not int or input_tokens < 0
+                or type(output_tokens) is not int or output_tokens < 0):
+            raise ReasonerUnavailable("production reasoner returned invalid text or usage")
+        return ReasonerResponse(text, input_tokens, output_tokens, "provider_usage", False)
+
+
+def create_openai_compatible_reasoner(*, config: Mapping[str, object]):
+    """Factory compatible with ``COPE_REASONER_FACTORY`` assembly wiring."""
+    return OpenAICompatibleReasoner(
+        endpoint=str(config.get("endpoint", "")), model=str(config.get("model", "")),
+        api_key=None if config.get("api_key") is None else str(config["api_key"]),
+        timeout_seconds=float(config.get("timeout_seconds", 180)),
+    )
+
+
+def reasoner_from_environment(environ: Mapping[str, str] | None = None):
+    """Bind the configured factory without exposing or persisting credentials."""
+    env = os.environ if environ is None else environ
+    if not str(env.get("COPE_REASONER_MODEL", "")).strip():
+        raise ReasonerModelUnavailable("missing production reasoner configuration: COPE_REASONER_MODEL")
+    required_adapter = ("COPE_REASONER_FACTORY", "COPE_REASONER_ENDPOINT")
+    missing = [name for name in required_adapter if not str(env.get(name, "")).strip()]
+    if missing:
+        raise ReasonerUnavailable("missing production reasoner configuration: " + ",".join(missing))
+    spec = env["COPE_REASONER_FACTORY"]
+    if ":" not in spec:
+        raise ReasonerUnavailable("COPE_REASONER_FACTORY must be module.path:factory")
+    module, name = spec.split(":", 1)
+    try:
+        factory = getattr(importlib.import_module(module), name)
+        reasoner = factory(config={
+            "endpoint": env["COPE_REASONER_ENDPOINT"], "model": env["COPE_REASONER_MODEL"],
+            "api_key": env.get("COPE_REASONER_API_KEY"), "timeout_seconds": 180,
+        })
+    except (ImportError, AttributeError, TypeError, ValueError) as exc:
+        raise ReasonerUnavailable("configured production reasoner factory is unavailable") from exc
+    if (not callable(getattr(reasoner, "count_tokens", None))
+            or not callable(getattr(reasoner, "complete", None))):
+        raise ReasonerUnavailable("configured factory did not return a v2 Reasoner")
+    return reasoner

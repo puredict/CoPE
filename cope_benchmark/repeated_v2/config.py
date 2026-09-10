@@ -9,6 +9,11 @@ from .canonical import canonical_json
 
 ROOT = Path(__file__).resolve().parents[2]
 SPECIFICATION = ROOT / "docs/repeated_v2/specification/02_CONFIG_TEMPLATE.yaml"
+SPECIFICATION_V2_1 = ROOT / "docs/repeated_v2/specification/02_CONFIG_TEMPLATE_V2_1.yaml"
+SPECIFICATIONS = {
+    "repeated_interruptions_v2_config_v1": SPECIFICATION,
+    "repeated_interruptions_v2_1_config_v1": SPECIFICATION_V2_1,
+}
 
 
 def _read_yaml(path: Path) -> dict[str, Any]:
@@ -36,8 +41,12 @@ def _read_yaml(path: Path) -> dict[str, Any]:
 
 def validate_config(config: Mapping[str, Any]) -> tuple[str, ...]:
     """Refuse scientific drift. Only the artifact destination may be changed."""
-    expected = _read_yaml(SPECIFICATION)
     errors = []
+    schema_version = config.get("schema_version") if isinstance(config, Mapping) else None
+    specification = SPECIFICATIONS.get(schema_version)
+    if specification is None:
+        return ("config.schema_version: unsupported frozen scientific config",)
+    expected = _read_yaml(specification)
 
     def compare(actual, required, path):
         if isinstance(required, dict):

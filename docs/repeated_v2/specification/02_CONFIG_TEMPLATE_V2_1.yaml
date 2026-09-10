@@ -1,0 +1,159 @@
+schema_version: repeated_interruptions_v2_1_config_v1
+experiment_name: repeated_interruption_planning_under_history_pressure_v2
+repo_commit_audited: 6b5f4aadfba567e11dbd2019d981f8d187aa72e9
+
+task_suite: libero_10
+task_selection:
+  mode: all_semantically_eligible
+  min_tasks: 8
+  max_tasks: 10
+  clean_success_interval: [0.40, 0.95]
+  calibration_state_ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  calibration_policy_seeds: [101]
+  formal_state_ids: [10, 11, 12, 13, 14]
+  formal_policy_seeds: [11]
+  forbid_selection_by_method_difference: true
+
+protocols:
+  controlled:
+    enabled: true
+    event_count: 8
+    checkpoints: [0, 1, 2, 4, 8]
+    executor_kind: controlled_mechanism
+  end_to_end:
+    enabled: true
+    event_count: 4
+    checkpoints: [0, 1, 2, 4]
+    require_learned_policy: true
+    forbid_privileged_policy_state: true
+
+methods:
+  non_oracle:
+    - cope_typed_edit
+    - generic_persistent_edit
+    - full_state_regeneration
+    - full_history_replan
+    - rag_replan
+    - summary_memory_replan
+    - skill_local_replan
+    - classical_execution_monitor
+  oracle:
+    - oracle_persistent_update
+
+events:
+  master_seed: 20260906
+  families:
+    - TARGET_OBJECT_DISPLACED
+    - GOAL_RECEPTACLE_OR_GROUNDING_CHANGED
+    - TEMPORARY_NO_GO_APPEARS
+    - TEMPORARY_NO_GO_CLEARS
+    - USER_ADDS_PERSISTENT_PREFERENCE
+    - TOOL_OR_TARGET_TEMPORARILY_UNAVAILABLE
+    - TOOL_OR_TARGET_AVAILABLE_AGAIN
+    - USER_REPLACES_ACTIVE_GOAL
+    - USER_CANCELS_ACTIVE_GOAL
+    - USER_REISSUES_RETIRED_GOAL
+  min_steps_between_events: 10
+  use_semantic_triggers: true
+  require_fresh_post_event_observation: true
+  event_unreached_due_to_prior_failure_is_failure: true
+
+reasoner:
+  provider_factory_env: COPE_REASONER_FACTORY
+  endpoint_env: COPE_REASONER_ENDPOINT
+  api_key_env: COPE_REASONER_API_KEY
+  model_env: COPE_REASONER_MODEL
+  temperature: 0.0
+  top_p: 1.0
+  max_input_tokens_evidence_matched: 32768
+  max_input_tokens_token_matched: 4096
+  max_output_tokens: 8192
+  timeout_seconds: 180
+  semantic_retries: 0
+  calls_per_event: 1
+  record_exact_prompts: true
+
+retrieval:
+  factory_env: COPE_RETRIEVER_FACTORY
+  public_history_only: true
+  top_k: 12
+  recent_window_chunks: 4
+  token_budget: 4096
+
+vla:
+  factory_env: COPE_VLA_FACTORY
+  checkpoint_env: COPE_VLA_CHECKPOINT
+  provider_id_env: COPE_VLA_PROVIDER_ID
+  require_learned_policy: true
+  forbid_privileged_state: true
+  max_policy_steps: 1040
+  action_chunk_horizon: 8
+  action_dimension: 7
+  record_checkpoint_hash: true
+
+planner:
+  factory_env: COPE_PLANNER_FACTORY
+  common_across_methods: true
+  pure_compiler: true
+  forbid_hidden_canonical_state: true
+  continuation_backend_factory_env: COPE_CONTINUATION_BACKEND_FACTORY
+
+evidence:
+  primary_condition: evidence_matched
+  secondary_condition: token_matched
+  hide_expected_operator: true
+  hide_hidden_cause: true
+  hide_canonical_state: true
+  require_confidence: true
+  require_provenance: true
+  require_timestamp: true
+
+kernel:
+  preserve_unmentioned_slots: true
+  protected_projection_required: true
+  atomic_transactions: true
+  append_only_history: true
+  restore_requires_fresh_revalidation: true
+  occurrence_ids_allocated_by_kernel: true
+  legacy_demoted_mode_forbidden: true
+
+fallback:
+  max_reobservations: 2
+  max_broader_context_attempts: 1
+  allow_conservative_replan: true
+  explicit_termination_after_budget: true
+
+primary_analysis:
+  protocol: end_to_end
+  checkpoint: 4
+  success_margin_vs_nonpersistent: 0.10
+  generic_noninferiority_margin: -0.05
+  bootstrap_replicates: 10000
+  alpha: 0.05
+  multiple_testing: holm
+  cluster_unit: master_episode_id
+
+formal_gates:
+  min_clean_success_rate: 0.40
+  max_clean_success_rate: 0.95
+  no_fake_or_scripted_reasoner: true
+  no_fake_or_scripted_vla: true
+  no_oracle_policy_in_end_to_end: true
+  same_public_evidence: true
+  same_reasoner_backbone: true
+  same_event_call_budget: true
+  same_executor_and_safety_layer: true
+  compiler_cannot_repair_semantics: true
+  timeout_is_failure: true
+  manual_intervention_is_failure: true
+  no_posthoc_case_deletion: true
+  freeze_hashes_before_formal: true
+
+output:
+  root: outputs/repeated_interruptions_v2
+  atomic_event_results: true
+  atomic_episode_results: true
+  save_state_at_event_boundaries: true
+  save_action_traces: true
+  compress_action_traces: true
+  resume_completed_cells: true

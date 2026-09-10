@@ -14,7 +14,7 @@ from cope_benchmark.repeated_v2.enums import MethodName
 from cope_benchmark.repeated_v2.journal import DurableJournal, stable_hash
 from cope_benchmark.repeated_v2.pilot import (
     EpisodeInputs, RuntimeAssembly, _publish, dependency_report, execute_assembly,
-    export_journal, run_experiment,
+    export_journal, pilot_manifest, run_experiment,
 )
 from cope_benchmark.repeated_v2.provider import FixtureReasoner, ReasonerConfig
 from cope_benchmark.repeated_v2.runner import RuntimeBlocked
@@ -22,6 +22,7 @@ from .test_phase3_runner import (
     EPISODE, MockEnvironment, MockMethod, MockPlanner, MockVLA, canonical_ledger,
     context, schedule,
 )
+from .catalog_fixtures import synthetic_catalog_v2_1
 
 
 def config():
@@ -78,6 +79,49 @@ def test_mock_qualification_exports_every_method_cell_without_claims(tmp_path, p
     for path in (tmp_path / "10_ACTION_TRACES").glob("*.gz"):
         entries = [json.loads(line) for line in gzip.decompress(path.read_bytes()).splitlines()]
         assert entries and all("target_occurrence_id" in entry for entry in entries)
+    assert report["exports"]["evidence_matched"]["integrity"]["valid"]
+
+
+def test_v2_1_smallest_pilot_is_two_tasks_two_states_one_seed_and_eight_nonoracle_methods(tmp_path):
+    cfg = load_config(ROOT / "configs/repeated_interruptions_v2_1_pilot.yaml")
+    raw_catalog = synthetic_catalog_v2_1().to_dict()
+    raw_catalog["provenance_kind"] = "source_backed"
+    from cope_benchmark.repeated_v2.task_catalog import TaskCatalog
+    task_catalog = TaskCatalog.from_dict(raw_catalog)
+    rows = pilot_manifest(cfg, task_catalog, source_commit="a" * 40)
+    assert len(rows) == 4
+    assert {(row["pair_fields"]["task_id"], row["pair_fields"]["initial_state_id"],
+             row["pair_fields"]["policy_seed"]) for row in rows} == {
+        (task_id, state_id, 11) for task_id in (1, 4) for state_id in (10, 11)
+    }
+    assert all(row["pipeline_evidence_only"] is True for row in rows)
+    environments = []
+    class PilotMockEnvironment(MockEnvironment):
+        def trigger_context(self, *, previous_event_step):
+            from cope_benchmark.repeated_v2.scheduler import TriggerContext
+            return TriggerContext(
+                self.policy_step, {"verified_cube_placement": self.segment_actions > 0},
+                {"certified_event_pose": True}, previous_event_step=previous_event_step,
+            )
+    def environment_factory():
+        value = PilotMockEnvironment()
+        environments.append(value)
+        return value
+    runtime = assembly(environment_factory=environment_factory)
+    report = execute_assembly(
+        assembly=runtime, config=cfg, manifest=rows,
+        catalog={task.task_id: task.to_dict() for task in task_catalog.tasks},
+        catalog_data=task_catalog.to_dict(), output_dir=tmp_path, phase="pilot",
+        protocol="end_to_end", source_commit="a" * 40, qualification=True,
+    )
+    assert report["master_count"] == 4
+    assert report["method_count"] == 8
+    assert report["information_conditions"] == ["evidence_matched"]
+    assert len(environments) == 32
+    episodes = [json.loads(line) for line in
+                (tmp_path / "evidence_matched/07_EPISODE_RESULTS.jsonl").read_text().splitlines()]
+    assert len(episodes) == 32
+    assert all(row["required_events"] == row["reached_events"] == 4 for row in episodes)
     assert report["exports"]["evidence_matched"]["integrity"]["valid"]
 
 

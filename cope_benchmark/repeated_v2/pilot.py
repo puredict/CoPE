@@ -218,31 +218,46 @@ def _validate_empty_formal_inputs(*, config: Mapping, catalog_data: Mapping | No
 
 
 def pilot_manifest(config: Mapping, catalog: Any, *, source_commit: str, phase: str = "pilot") -> list[dict]:
-    """One deterministic development trajectory per eligible task, disjoint seeds."""
+    """Build the frozen qualification grid without consulting method outcomes."""
     from .scheduler import build_balanced_master_schedules
-    from .task_catalog import select_eligible_tasks
-    tasks = select_eligible_tasks(catalog)
-    state = config["task_selection"]["calibration_state_ids"][0]
+    from .task_catalog import CATALOG_SCHEMA_VERSION_V2_1, select_eligible_tasks, select_pilot_tasks
     if phase not in {"pilot", "development"}:
         raise ValueError("qualification manifest requires pilot or development phase")
-    seed = config["task_selection"]["calibration_policy_seeds"][0 if phase == "pilot" else 1]
-    if seed in config["task_selection"]["formal_policy_seeds"]:
-        raise RuntimeBlocked("INVALID_PILOT_FORMAL_OVERLAP", "pilot seed occurs in formal design")
+    v2_1 = catalog.schema_version == CATALOG_SCHEMA_VERSION_V2_1
+    if v2_1 and phase == "pilot":
+        # v2.1 explicitly registers the smallest end-to-end pilot on two of the
+        # frozen formal-design state IDs.  It remains pipeline evidence only.
+        tasks = select_pilot_tasks(catalog)
+        states = tuple(config["task_selection"]["formal_state_ids"][:2])
+        seed = config["task_selection"]["formal_policy_seeds"][0]
+        if len(states) != 2 or len(set(states)) != 2:
+            raise RuntimeBlocked("INVALID_PILOT_DESIGN", "v2.1 pilot requires two unique initial states")
+    else:
+        tasks = select_eligible_tasks(catalog)
+        states = (config["task_selection"]["calibration_state_ids"][0],)
+        seed = config["task_selection"]["calibration_policy_seeds"][0 if phase == "pilot" else 1]
+        if seed in config["task_selection"]["formal_policy_seeds"]:
+            raise RuntimeBlocked("INVALID_PILOT_FORMAL_OVERLAP", "pilot seed occurs in formal design")
     specs, rows = [], []
     for task in tasks:
-        pair = {"task_suite": config["task_suite"], "task_id": task.task_id,
-                "initial_state_id": state, "policy_seed": seed,
-                "initial_state_sha256": task.initial_state_digests[str(state)],
-                "master_seed": config["events"]["master_seed"]}
-        episode = "rv2-" + phase + "-" + stable_hash(pair)[:24]
-        specs.append({"master_episode_id": episode,
-                      "semantic_triggers": json_value(task.semantic_triggers),
-                      "supported_event_families": task.supported_event_families})
-        rows.append({"schema_version": "cope-repeated-v2/pilot-manifest-1",
-                     "master_episode_id": episode, "pair_fields": pair,
-                     "source_commit": source_commit, "phase": phase,
-                     "config_sha256": stable_hash(config),
-                     "task_catalog_sha256": stable_hash(catalog.to_dict())})
+        for state in states:
+            pair = {"task_suite": config["task_suite"], "task_id": task.task_id,
+                    "initial_state_id": state, "policy_seed": seed,
+                    "initial_state_sha256": task.initial_state_digests[str(state)],
+                    "master_seed": config["events"]["master_seed"]}
+            episode = "rv2-" + phase + "-" + stable_hash(pair)[:24]
+            specs.append({"master_episode_id": episode,
+                          "semantic_triggers": json_value(task.semantic_triggers),
+                          "supported_event_families": task.supported_event_families})
+            rows.append({
+                "schema_version": ("cope-repeated-v2.1/pilot-manifest-1" if v2_1
+                                   else "cope-repeated-v2/pilot-manifest-1"),
+                "master_episode_id": episode, "pair_fields": pair,
+                "source_commit": source_commit, "phase": phase,
+                "config_sha256": stable_hash(config),
+                "task_catalog_sha256": stable_hash(catalog.to_dict()),
+                "pipeline_evidence_only": bool(v2_1 and phase == "pilot"),
+            })
     schedules = build_balanced_master_schedules(specs, seed=config["events"]["master_seed"])
     by_id = {schedule.master_episode_id: schedule for schedule in schedules}
     for row in rows:
@@ -371,8 +386,14 @@ def execute_assembly(*, assembly: RuntimeAssembly | None, config: Mapping, manif
     if not resume and root.exists() and any(root.iterdir()):
         raise RuntimeBlocked("INVALID_OUTPUT_DIRECTORY", "output directory is nonempty; use --resume")
     root.mkdir(parents=True, exist_ok=True)
-    methods = list(config["methods"]["non_oracle"]) + list(config["methods"]["oracle"])
+    v2_1_pilot = (phase == "pilot"
+                  and config.get("schema_version") == "repeated_interruptions_v2_1_config_v1")
+    methods = list(config["methods"]["non_oracle"])
+    if not v2_1_pilot:
+        methods += list(config["methods"]["oracle"])
     conditions = [config["evidence"]["primary_condition"], config["evidence"]["secondary_condition"]]
+    if v2_1_pilot and information_condition is None:
+        conditions = [config["evidence"]["primary_condition"]]
     if information_condition is not None:
         if information_condition not in conditions:
             raise RuntimeBlocked("INVALID_INFORMATION_CONDITION", "condition differs from frozen config")

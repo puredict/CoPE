@@ -7,9 +7,10 @@ import pytest
 
 from cope_benchmark.repeated_v2.canonical import canonical_sha256
 from cope_benchmark.repeated_v2.task_catalog import (
-    CatalogBlockedError, DEFAULT_CATALOG_PATH, TaskCatalog, load_task_catalog, select_eligible_tasks, task_catalog_gaps,
+    CatalogBlockedError, DEFAULT_CATALOG_PATH, TaskCatalog, load_task_catalog,
+    select_eligible_tasks, select_pilot_tasks, task_catalog_gaps,
 )
-from tests.repeated_v2.catalog_fixtures import synthetic_catalog
+from tests.repeated_v2.catalog_fixtures import synthetic_catalog, synthetic_catalog_v2_1
 
 
 def test_real_catalog_enumerates_all_ten_and_cannot_be_selected():
@@ -53,6 +54,13 @@ def test_include_every_eligible_task(count):
 def test_less_than_eight_blocks_without_relaxing_rule():
     with pytest.raises(CatalogBlockedError, match="BLOCKED_INSUFFICIENT_ELIGIBLE_TASKS"):
         select_eligible_tasks(synthetic_catalog(7), allow_synthetic=True)
+
+
+def test_v2_1_pilot_selects_two_preferred_tasks_without_relaxing_formal_minimum():
+    catalog = synthetic_catalog_v2_1(7)
+    assert [task.task_id for task in select_pilot_tasks(catalog, allow_synthetic=True)] == [1, 4]
+    with pytest.raises(CatalogBlockedError, match="BLOCKED_INSUFFICIENT_ELIGIBLE_TASKS"):
+        select_eligible_tasks(catalog, allow_synthetic=True)
 
 
 def test_formal_selection_rejects_synthetic_catalog():
