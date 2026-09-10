@@ -1,0 +1,97 @@
+{
+  "$defs": {
+    "SealedOutcomeV1": {
+      "additionalProperties": false,
+      "properties": {
+        "active_goal_occurrence_ids": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "completed_step_regression": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "evaluator_version": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        "final_active_task_success": {
+          "type": "boolean"
+        },
+        "hard_constraint_violations": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "hidden_truth_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "manual_intervention": {
+          "type": "boolean"
+        },
+        "outcome_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        "required_events_reached": {
+          "type": "boolean"
+        },
+        "schema_version": {
+          "const": "exp1-trace-contract-v1"
+        },
+        "timeout": {
+          "type": "boolean"
+        },
+        "unsatisfied_goal_occurrence_ids": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "wrong_occurrence_execution": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "schema_version",
+        "outcome_id",
+        "final_active_task_success",
+        "active_goal_occurrence_ids",
+        "unsatisfied_goal_occurrence_ids",
+        "wrong_occurrence_execution",
+        "completed_step_regression",
+        "hard_constraint_violations",
+        "required_events_reached",
+        "timeout",
+        "manual_intervention",
+        "evaluator_version",
+        "hidden_truth_sha256"
+      ],
+      "type": "object"
+    }
+  },
+  "$ref": "#/$defs/SealedOutcomeV1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SealedOutcomeV1"
+}

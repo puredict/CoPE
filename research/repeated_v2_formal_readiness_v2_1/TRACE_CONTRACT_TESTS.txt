@@ -1,0 +1,15 @@
+Experiment-1 trace contract v1 verification
+
+Command:
+/Users/lijingsu/miniforge3/envs/lerobot312/bin/python -m pytest -q tests/repeated_v2/test_trace_contract_v1.py tests/repeated_v2/test_trace_exporter_v1.py tests/repeated_v2/test_trace_contract_no_hidden_leakage.py tests/repeated_v2/test_trace_contract_canonical_hashes.py tests/repeated_v2/test_trace_contract_backward_compatibility.py
+
+Result:
+17 passed in 0.27s
+
+Command:
+/Users/lijingsu/miniforge3/envs/lerobot312/bin/python -m pytest -q tests/repeated_v2
+
+Result:
+893 passed, 1 skipped, 100 subtests passed in 98.33s
+
+No provider, VLA, simulator, pilot, or formal-experiment call was made by these commands.

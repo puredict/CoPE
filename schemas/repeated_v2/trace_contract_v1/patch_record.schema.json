@@ -1,0 +1,152 @@
+{
+  "$defs": {
+    "AcceptedPatchRecordV1": {
+      "additionalProperties": false,
+      "properties": {
+        "accepted": {
+          "type": "boolean"
+        },
+        "accepted_patch": {
+          "anyOf": [
+            {
+              "additionalProperties": {},
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "applied_at_ns": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "event_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "cope_typed_edit",
+            "generic_persistent_edit",
+            "full_state_regeneration",
+            "full_history_replan",
+            "rag_replan",
+            "summary_memory_replan",
+            "skill_local_replan",
+            "classical_execution_monitor",
+            "oracle_persistent_update"
+          ],
+          "type": "string"
+        },
+        "proposal_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        "rejection_reasons": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "exp1-trace-contract-v1"
+        },
+        "state_revision_after": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "state_revision_before": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "validation_status": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "method",
+        "event_id",
+        "proposal_id",
+        "accepted",
+        "accepted_patch",
+        "validation_status",
+        "state_revision_before",
+        "state_revision_after",
+        "applied_at_ns"
+      ],
+      "type": "object"
+    },
+    "ProposedPatchRecordV1": {
+      "additionalProperties": false,
+      "properties": {
+        "event_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        "input_evidence_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "cope_typed_edit",
+            "generic_persistent_edit",
+            "full_state_regeneration",
+            "full_history_replan",
+            "rag_replan",
+            "summary_memory_replan",
+            "skill_local_replan",
+            "classical_execution_monitor",
+            "oracle_persistent_update"
+          ],
+          "type": "string"
+        },
+        "proposal_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        "proposed_at_ns": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "raw_patch": {
+          "additionalProperties": {},
+          "type": "object"
+        },
+        "schema_version": {
+          "const": "exp1-trace-contract-v1"
+        }
+      },
+      "required": [
+        "schema_version",
+        "method",
+        "event_id",
+        "proposal_id",
+        "raw_patch",
+        "input_evidence_sha256",
+        "proposed_at_ns"
+      ],
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/ProposedPatchRecordV1"
+    },
+    {
+      "$ref": "#/$defs/AcceptedPatchRecordV1"
+    }
+  ],
+  "title": "PatchRecordV1"
+}

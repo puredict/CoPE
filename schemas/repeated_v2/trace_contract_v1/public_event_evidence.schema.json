@@ -1,0 +1,90 @@
+{
+  "$defs": {
+    "PublicEventEvidenceV1": {
+      "additionalProperties": false,
+      "properties": {
+        "affected_entity_hypotheses": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        "event_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        "event_index": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "evidence_ids": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "hypothesis": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        "observation_refs": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "provenance": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "exp1-trace-contract-v1"
+        },
+        "timestamp": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "user_message": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "schema_version",
+        "event_id",
+        "event_index",
+        "hypothesis",
+        "confidence",
+        "evidence_ids",
+        "timestamp",
+        "provenance"
+      ],
+      "type": "object"
+    }
+  },
+  "$ref": "#/$defs/PublicEventEvidenceV1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PublicEventEvidenceV1"
+}

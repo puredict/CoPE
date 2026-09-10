@@ -1,0 +1,731 @@
+{
+  "$defs": {
+    "AcceptedPatchRecordV1": {
+      "additionalProperties": false,
+      "properties": {
+        "accepted": {
+          "type": "boolean"
+        },
+        "accepted_patch": {
+          "anyOf": [
+            {
+              "additionalProperties": {},
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "applied_at_ns": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "event_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "cope_typed_edit",
+            "generic_persistent_edit",
+            "full_state_regeneration",
+            "full_history_replan",
+            "rag_replan",
+            "summary_memory_replan",
+            "skill_local_replan",
+            "classical_execution_monitor",
+            "oracle_persistent_update"
+          ],
+          "type": "string"
+        },
+        "proposal_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        "rejection_reasons": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "exp1-trace-contract-v1"
+        },
+        "state_revision_after": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "state_revision_before": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "validation_status": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "method",
+        "event_id",
+        "proposal_id",
+        "accepted",
+        "accepted_patch",
+        "validation_status",
+        "state_revision_before",
+        "state_revision_after",
+        "applied_at_ns"
+      ],
+      "type": "object"
+    },
+    "ActionTraceReferenceV1": {
+      "additionalProperties": false,
+      "properties": {
+        "action_count": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "action_space": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        "artifact_ref": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        "checkpoint_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "policy_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "exp1-trace-contract-v1"
+        },
+        "trace_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        "trace_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "trace_id",
+        "artifact_ref",
+        "trace_sha256",
+        "action_count",
+        "action_space",
+        "policy_id",
+        "checkpoint_sha256"
+      ],
+      "type": "object"
+    },
+    "ExecutionContextSnapshotV1": {
+      "additionalProperties": false,
+      "properties": {
+        "beliefs": {
+          "items": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "captured_at_step": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "continuation": {
+          "additionalProperties": {},
+          "type": "object"
+        },
+        "progress": {
+          "items": {
+            "$ref": "#/$defs/ProgressCertificateV1"
+          },
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "exp1-trace-contract-v1"
+        }
+      },
+      "required": [
+        "schema_version",
+        "beliefs",
+        "progress",
+        "continuation",
+        "captured_at_step"
+      ],
+      "type": "object"
+    },
+    "OccurrenceAllocatorVersionV1": {
+      "additionalProperties": false,
+      "properties": {
+        "allocator_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        "implementation_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "occurrence_id_pattern": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "exp1-trace-contract-v1"
+        }
+      },
+      "required": [
+        "schema_version",
+        "allocator_id",
+        "occurrence_id_pattern",
+        "implementation_sha256"
+      ],
+      "type": "object"
+    },
+    "PersistentLedgerSnapshotV1": {
+      "additionalProperties": false,
+      "properties": {
+        "history_records": {
+          "items": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "relations": {
+          "items": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "revision": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "exp1-trace-contract-v1"
+        },
+        "slots": {
+          "items": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "schema_version",
+        "revision",
+        "slots"
+      ],
+      "type": "object"
+    },
+    "PlanningProblemV1": {
+      "additionalProperties": false,
+      "properties": {
+        "active_goal_occurrence_ids": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "continuation_assumptions": {
+          "additionalProperties": {},
+          "type": "object"
+        },
+        "forbidden_regressions": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "grounding_bindings": {
+          "items": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "hard_constraints": {
+          "items": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "initial_facts": {
+          "items": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "problem_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        "progress_certificates": {
+          "items": {
+            "$ref": "#/$defs/ProgressCertificateV1"
+          },
+          "type": "array"
+        },
+        "remaining_goals": {
+          "items": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "restore_eligibility": {
+          "items": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "exp1-trace-contract-v1"
+        },
+        "soft_preferences": {
+          "items": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "source_method": {
+          "enum": [
+            "cope_typed_edit",
+            "generic_persistent_edit",
+            "full_state_regeneration",
+            "full_history_replan",
+            "rag_replan",
+            "summary_memory_replan",
+            "skill_local_replan",
+            "classical_execution_monitor",
+            "oracle_persistent_update"
+          ],
+          "type": "string"
+        },
+        "source_revision": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "schema_version",
+        "problem_id",
+        "source_method",
+        "source_revision",
+        "initial_facts",
+        "active_goal_occurrence_ids",
+        "remaining_goals",
+        "hard_constraints",
+        "soft_preferences",
+        "forbidden_regressions",
+        "grounding_bindings",
+        "restore_eligibility",
+        "progress_certificates",
+        "continuation_assumptions"
+      ],
+      "type": "object"
+    },
+    "ProgressCertificateV1": {
+      "additionalProperties": false,
+      "properties": {
+        "affected_by_event_ids": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "arguments": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "currently_preserved": {
+          "type": "boolean"
+        },
+        "evidence_ids": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "milestone_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        "predicate": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        "satisfaction": {
+          "enum": [
+            "unresolved",
+            "satisfied",
+            "violated",
+            "unknown"
+          ],
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "exp1-trace-contract-v1"
+        },
+        "verified_at_step": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "verifier_record_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "milestone_id",
+        "predicate",
+        "arguments",
+        "satisfaction",
+        "verifier_record_id",
+        "evidence_ids",
+        "verified_at_step"
+      ],
+      "type": "object"
+    },
+    "ProposedPatchRecordV1": {
+      "additionalProperties": false,
+      "properties": {
+        "event_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        "input_evidence_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "cope_typed_edit",
+            "generic_persistent_edit",
+            "full_state_regeneration",
+            "full_history_replan",
+            "rag_replan",
+            "summary_memory_replan",
+            "skill_local_replan",
+            "classical_execution_monitor",
+            "oracle_persistent_update"
+          ],
+          "type": "string"
+        },
+        "proposal_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        "proposed_at_ns": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "raw_patch": {
+          "additionalProperties": {},
+          "type": "object"
+        },
+        "schema_version": {
+          "const": "exp1-trace-contract-v1"
+        }
+      },
+      "required": [
+        "schema_version",
+        "method",
+        "event_id",
+        "proposal_id",
+        "raw_patch",
+        "input_evidence_sha256",
+        "proposed_at_ns"
+      ],
+      "type": "object"
+    },
+    "PublicEventEvidenceV1": {
+      "additionalProperties": false,
+      "properties": {
+        "affected_entity_hypotheses": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        "event_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        "event_index": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "evidence_ids": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "hypothesis": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        "observation_refs": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "provenance": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "exp1-trace-contract-v1"
+        },
+        "timestamp": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "user_message": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "schema_version",
+        "event_id",
+        "event_index",
+        "hypothesis",
+        "confidence",
+        "evidence_ids",
+        "timestamp",
+        "provenance"
+      ],
+      "type": "object"
+    },
+    "RuntimeTraceBundleV1": {
+      "additionalProperties": false,
+      "properties": {
+        "accepted_patches": {
+          "items": {
+            "$ref": "#/$defs/AcceptedPatchRecordV1"
+          },
+          "type": "array"
+        },
+        "action_traces": {
+          "items": {
+            "$ref": "#/$defs/ActionTraceReferenceV1"
+          },
+          "type": "array"
+        },
+        "created_at_ns": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "execution_context_snapshots": {
+          "items": {
+            "$ref": "#/$defs/ExecutionContextSnapshotV1"
+          },
+          "type": "array"
+        },
+        "initial_state_id": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "ledger_snapshots": {
+          "items": {
+            "$ref": "#/$defs/PersistentLedgerSnapshotV1"
+          },
+          "type": "array"
+        },
+        "master_session_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "cope_typed_edit",
+            "generic_persistent_edit",
+            "full_state_regeneration",
+            "full_history_replan",
+            "rag_replan",
+            "summary_memory_replan",
+            "skill_local_replan",
+            "classical_execution_monitor",
+            "oracle_persistent_update"
+          ],
+          "type": "string"
+        },
+        "occurrence_allocator": {
+          "$ref": "#/$defs/OccurrenceAllocatorVersionV1"
+        },
+        "planner_decisions": {
+          "items": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "planning_problems": {
+          "items": {
+            "$ref": "#/$defs/PlanningProblemV1"
+          },
+          "type": "array"
+        },
+        "progress_certificates": {
+          "items": {
+            "$ref": "#/$defs/ProgressCertificateV1"
+          },
+          "type": "array"
+        },
+        "proposed_patches": {
+          "items": {
+            "$ref": "#/$defs/ProposedPatchRecordV1"
+          },
+          "type": "array"
+        },
+        "protocol": {
+          "enum": [
+            "controlled",
+            "end_to_end"
+          ],
+          "type": "string"
+        },
+        "public_events": {
+          "items": {
+            "$ref": "#/$defs/PublicEventEvidenceV1"
+          },
+          "type": "array"
+        },
+        "runtime_verifier_outputs": {
+          "items": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "schedule_realization_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "exp1-trace-contract-v1"
+        },
+        "sealed_outcome_ref": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "skill_calls": {
+          "items": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "task_id": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "trace_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "trace_id",
+        "master_session_id",
+        "method",
+        "protocol",
+        "task_id",
+        "initial_state_id",
+        "schedule_realization_id",
+        "occurrence_allocator",
+        "public_events",
+        "ledger_snapshots",
+        "execution_context_snapshots",
+        "proposed_patches",
+        "accepted_patches",
+        "planning_problems",
+        "planner_decisions",
+        "skill_calls",
+        "action_traces",
+        "runtime_verifier_outputs",
+        "progress_certificates",
+        "sealed_outcome_ref",
+        "created_at_ns"
+      ],
+      "type": "object"
+    }
+  },
+  "$ref": "#/$defs/RuntimeTraceBundleV1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RuntimeTraceBundleV1"
+}

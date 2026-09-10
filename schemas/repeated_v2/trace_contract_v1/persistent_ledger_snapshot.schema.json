@@ -1,0 +1,46 @@
+{
+  "$defs": {
+    "PersistentLedgerSnapshotV1": {
+      "additionalProperties": false,
+      "properties": {
+        "history_records": {
+          "items": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "relations": {
+          "items": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "revision": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": "exp1-trace-contract-v1"
+        },
+        "slots": {
+          "items": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "schema_version",
+        "revision",
+        "slots"
+      ],
+      "type": "object"
+    }
+  },
+  "$ref": "#/$defs/PersistentLedgerSnapshotV1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PersistentLedgerSnapshotV1"
+}

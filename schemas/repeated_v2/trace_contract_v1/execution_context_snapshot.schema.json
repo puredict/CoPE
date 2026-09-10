@@ -1,0 +1,118 @@
+{
+  "$defs": {
+    "ExecutionContextSnapshotV1": {
+      "additionalProperties": false,
+      "properties": {
+        "beliefs": {
+          "items": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "captured_at_step": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "continuation": {
+          "additionalProperties": {},
+          "type": "object"
+        },
+        "progress": {
+          "items": {
+            "$ref": "#/$defs/ProgressCertificateV1"
+          },
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "exp1-trace-contract-v1"
+        }
+      },
+      "required": [
+        "schema_version",
+        "beliefs",
+        "progress",
+        "continuation",
+        "captured_at_step"
+      ],
+      "type": "object"
+    },
+    "ProgressCertificateV1": {
+      "additionalProperties": false,
+      "properties": {
+        "affected_by_event_ids": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "arguments": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "currently_preserved": {
+          "type": "boolean"
+        },
+        "evidence_ids": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "milestone_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        "predicate": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        "satisfaction": {
+          "enum": [
+            "unresolved",
+            "satisfied",
+            "violated",
+            "unknown"
+          ],
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "exp1-trace-contract-v1"
+        },
+        "verified_at_step": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "verifier_record_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "milestone_id",
+        "predicate",
+        "arguments",
+        "satisfaction",
+        "verifier_record_id",
+        "evidence_ids",
+        "verified_at_step"
+      ],
+      "type": "object"
+    }
+  },
+  "$ref": "#/$defs/ExecutionContextSnapshotV1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ExecutionContextSnapshotV1"
+}

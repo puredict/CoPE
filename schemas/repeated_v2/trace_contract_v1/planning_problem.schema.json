@@ -1,0 +1,197 @@
+{
+  "$defs": {
+    "PlanningProblemV1": {
+      "additionalProperties": false,
+      "properties": {
+        "active_goal_occurrence_ids": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "continuation_assumptions": {
+          "additionalProperties": {},
+          "type": "object"
+        },
+        "forbidden_regressions": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "grounding_bindings": {
+          "items": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "hard_constraints": {
+          "items": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "initial_facts": {
+          "items": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "problem_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        "progress_certificates": {
+          "items": {
+            "$ref": "#/$defs/ProgressCertificateV1"
+          },
+          "type": "array"
+        },
+        "remaining_goals": {
+          "items": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "restore_eligibility": {
+          "items": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "exp1-trace-contract-v1"
+        },
+        "soft_preferences": {
+          "items": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "source_method": {
+          "enum": [
+            "cope_typed_edit",
+            "generic_persistent_edit",
+            "full_state_regeneration",
+            "full_history_replan",
+            "rag_replan",
+            "summary_memory_replan",
+            "skill_local_replan",
+            "classical_execution_monitor",
+            "oracle_persistent_update"
+          ],
+          "type": "string"
+        },
+        "source_revision": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "schema_version",
+        "problem_id",
+        "source_method",
+        "source_revision",
+        "initial_facts",
+        "active_goal_occurrence_ids",
+        "remaining_goals",
+        "hard_constraints",
+        "soft_preferences",
+        "forbidden_regressions",
+        "grounding_bindings",
+        "restore_eligibility",
+        "progress_certificates",
+        "continuation_assumptions"
+      ],
+      "type": "object"
+    },
+    "ProgressCertificateV1": {
+      "additionalProperties": false,
+      "properties": {
+        "affected_by_event_ids": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "arguments": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "currently_preserved": {
+          "type": "boolean"
+        },
+        "evidence_ids": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "milestone_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        "predicate": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        },
+        "satisfaction": {
+          "enum": [
+            "unresolved",
+            "satisfied",
+            "violated",
+            "unknown"
+          ],
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "exp1-trace-contract-v1"
+        },
+        "verified_at_step": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "verifier_record_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "milestone_id",
+        "predicate",
+        "arguments",
+        "satisfaction",
+        "verifier_record_id",
+        "evidence_ids",
+        "verified_at_step"
+      ],
+      "type": "object"
+    }
+  },
+  "$ref": "#/$defs/PlanningProblemV1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PlanningProblemV1"
+}
