@@ -1,0 +1,11 @@
+task_id,v1_nominal_runs,v1_unique_trajectories,v1_successful_nominal_runs_at_260,v1_successful_unique_trajectories_at_260,audited_clean_success_completion_steps,audited_clean_timeout_censor_steps,successful_unique_count_for_diagnostic,q95_nearest_rank,rule_output_if_evidence_were_v2_1_admissible,v2_1_horizon_status_before_phase4,evidence_scope,source_refs
+0,10,5,0,0,264,,1,,,HORIZON_UNESTIMABLE,v1 plus posthoc clean diagnostic; not v2.1 admission,POSTHOC_LONG_HORIZON_DIAGNOSTICS.csv
+1,10,5,4,2,242;250;273;276;323,,5,323,388,PENDING_V2_1_CALIBRATION,v1 plus preserved historical clean calibration; not v2.1 admission,HORIZON_FAILURE_DIAGNOSTIC.csv
+2,0,0,0,0,,,0,,,PENDING_V2_1_CALIBRATION,no prior real clean calibration for this task,
+3,0,0,0,0,,,0,,,PENDING_V2_1_CALIBRATION,no prior real clean calibration for this task,
+4,10,5,4,2,208;230,,2,,,HORIZON_UNESTIMABLE,v1 frozen calibration only,clean_calibration_audit_01/CALIBRATION_EPISODES.csv
+5,0,0,0,0,,,0,,,PENDING_V2_1_CALIBRATION,no prior real clean calibration for this task,
+6,0,0,0,0,,,0,,,PENDING_V2_1_CALIBRATION,no prior real clean calibration for this task,
+7,0,0,0,0,,,0,,,PENDING_V2_1_CALIBRATION,no prior real clean calibration for this task,
+8,10,5,0,0,378,520;520,1,,,HORIZON_UNESTIMABLE,v1 plus posthoc clean diagnostic; not v2.1 admission,POSTHOC_LONG_HORIZON_DIAGNOSTICS.csv
+9,0,0,0,0,,,0,,,PENDING_V2_1_CALIBRATION,no prior real clean calibration for this task,
