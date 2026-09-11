@@ -96,6 +96,7 @@ BASE_FAMILIES = (
 )
 PHYSICAL_FAMILY_PARAMETERS = {
     "TARGET_OBJECT_DISPLACED": "target_delta_xy",
+    "GOAL_RECEPTACLE_OR_GROUNDING_CHANGED": "grounding_delta_xy",
     "TEMPORARY_NO_GO_APPEARS": "no_go_half_width",
     "TEMPORARY_NO_GO_CLEARS": "no_go_half_width",
     "TOOL_OR_TARGET_TEMPORARILY_UNAVAILABLE": "availability_release_delta_xy",
@@ -370,6 +371,14 @@ def _unrelated_preserved(before: Mapping[str, bool], after: Mapping[str, bool],
     return {"passed": not regressions, "unexpected_true_to_false": regressions}
 
 
+def _affected_progress_names(definition: Any, entity: str) -> list[str]:
+    return [
+        predicate.name for predicate in definition.predicates
+        if any(str(argument) == entity or str(argument).startswith(entity + "_")
+               for argument in predicate.arguments)
+    ]
+
+
 def _target_candidate(env: Any, state: np.ndarray, observation: Any, task_id: int,
                       state_id: int, delta: Sequence[float]) -> dict[str, Any]:
     observation = _reset(env, state)
@@ -387,8 +396,7 @@ def _target_candidate(env: Any, state: np.ndarray, observation: Any, task_id: in
     application, _ = apply_interruption(context, event, policy_step=10)
     after = _predicate_snapshot(tracker, view, 10)
     position = context.free_joint_xyz(joint)
-    affected = [p.name for p in definition.predicates
-                if entity in tuple(str(v) for v in p.arguments)]
+    affected = _affected_progress_names(definition, entity)
     preservation = _unrelated_preserved(before, after, affected)
     contact_after = _contact_summary(env)
     passed = (
@@ -396,6 +404,46 @@ def _target_candidate(env: Any, state: np.ndarray, observation: Any, task_id: in
         and application.policy_step_unchanged_by_event
         and _inside(position, margin=0.01)
         and all(math.isfinite(v) for v in position)
+        and preservation["passed"]
+        and _contact_count_nonincreasing(contact_before, contact_after)
+    )
+    return {
+        "passed": passed, "delta": list(delta), "entity": entity, "joint": joint,
+        "position_after": list(position), "fresh_observation": application.fresh_observation,
+        "policy_step_unchanged": application.policy_step_unchanged_by_event,
+        "inside_accessible_bounds": _inside(position, margin=0.01),
+        "unrelated_progress": preservation,
+        "contacts_before": contact_before, "contacts_after": contact_after,
+    }
+
+
+def _grounding_candidate(env: Any, state: np.ndarray, observation: Any, task_id: int,
+                         state_id: int, delta: Sequence[float]) -> dict[str, Any]:
+    observation = _reset(env, state)
+    definition = get_task_definition("libero_10", task_id)
+    if not definition.receptacle_joints:
+        raise ValueError(f"task {task_id} has no movable goal receptacle")
+    view, tracker = LiberoStateView(env), ProgressTracker(definition)
+    before = _predicate_snapshot(tracker, view)
+    joint = definition.receptacle_joints[0]
+    entity = joint.removesuffix("_joint0")
+    contact_before = _contact_summary(env)
+    context = LiberoInterruptionContext(env, observation)
+    event = InterruptionEvent(
+        f"discover-grounding-{task_id}-{state_id}", InterruptionType.GOAL_RECEPTACLE_MOVED,
+        15, {"joint": joint, "dx": float(delta[0]), "dy": float(delta[1])},
+    )
+    application, _ = apply_interruption(context, event, policy_step=15)
+    after = _predicate_snapshot(tracker, view, 15)
+    position = context.free_joint_xyz(joint)
+    preservation = _unrelated_preserved(
+        before, after, _affected_progress_names(definition, entity))
+    contact_after = _contact_summary(env)
+    passed = (
+        application.fresh_observation
+        and application.policy_step_unchanged_by_event
+        and _inside(position, margin=0.01)
+        and all(math.isfinite(value) for value in position)
         and preservation["passed"]
         and _contact_count_nonincreasing(contact_before, contact_after)
     )
@@ -440,8 +488,7 @@ def _availability_candidate(env: Any, state: np.ndarray, observation: Any, task_
     context.fallback_observation = obs_down
     application_up, _ = apply_interruption(context, up, policy_step=30)
     progress_up = _predicate_snapshot(tracker, view, 30)
-    affected = [p.name for p in definition.predicates
-                if entity in tuple(str(v) for v in p.arguments)]
+    affected = _affected_progress_names(definition, entity)
     preserve_down = _unrelated_preserved(before, progress_down, affected)
     preserve_up = _unrelated_preserved(before, progress_up, affected)
     contact = _contact_summary(env)
@@ -567,8 +614,8 @@ def _select(rows: Sequence[Mapping[str, Any]], field: str, candidates: Sequence[
     return None
 
 
-def _classify_task_parameters(task_id: int, target: Any | None, release: Any | None,
-                              half_width: float | None) -> dict[str, Any]:
+def _classify_task_parameters(task_id: int, target: Any | None, grounding: Any | None,
+                              release: Any | None, half_width: float | None) -> dict[str, Any]:
     supported = [
         "USER_ADDS_PERSISTENT_PREFERENCE",
         "USER_CANCELS_ACTIVE_GOAL",
@@ -576,6 +623,8 @@ def _classify_task_parameters(task_id: int, target: Any | None, release: Any | N
     ]
     if target is not None:
         supported.append("TARGET_OBJECT_DISPLACED")
+    if grounding is not None:
+        supported.append("GOAL_RECEPTACLE_OR_GROUNDING_CHANGED")
     if release is not None:
         supported.extend(("TOOL_OR_TARGET_TEMPORARILY_UNAVAILABLE",
                           "TOOL_OR_TARGET_AVAILABLE_AGAIN"))
@@ -586,6 +635,7 @@ def _classify_task_parameters(task_id: int, target: Any | None, release: Any | N
     supported = [family for family in EVENT_FAMILIES if family in supported]
     return {
         "target_delta_xy": None if target is None else list(target),
+        "grounding_delta_xy": None if grounding is None else list(grounding),
         "availability_unavailable_rule": "x=accessible_max_x+0.10,y=pre_event_y,z=pre_event_z",
         "availability_release_delta_xy": None if release is None else list(release),
         "no_go_half_width": half_width,
@@ -596,6 +646,7 @@ def _classify_task_parameters(task_id: int, target: Any | None, release: Any | N
         },
         "parameter_family_status": {
             "target_displacement": "PASS" if target is not None else "UNSUPPORTED_BY_RESERVE_AUDIT",
+            "grounding_change": "PASS" if grounding is not None else "UNSUPPORTED_BY_RESERVE_AUDIT",
             "temporary_availability": "PASS" if release is not None else "UNSUPPORTED_BY_RESERVE_AUDIT",
             "temporary_no_go": "PASS" if half_width is not None else "UNSUPPORTED_BY_RESERVE_AUDIT",
         },
@@ -610,13 +661,18 @@ def discover(output: Path) -> dict[str, Any]:
     suite = get_benchmark_suite("libero_10")
     rows, tasks = [], {}
     for task_id in range(10):
-        task_rows = {"target": [], "availability": [], "no_go": []}
+        task_rows = {"target": [], "grounding": [], "availability": [], "no_go": []}
+        definition = get_task_definition("libero_10", task_id)
         for state_id in RESERVE_STATE_IDS:
             env, observation, state = _task_env(suite, task_id, state_id)
             try:
                 for delta in TARGET_DELTAS:
                     row = _target_candidate(env, state, observation, task_id, state_id, delta)
                     task_rows["target"].append(row); rows.append({"task_id": task_id, "state_id": state_id, "kind": "target", **row})
+                if definition.receptacle_joints:
+                    for delta in TARGET_DELTAS:
+                        row = _grounding_candidate(env, state, observation, task_id, state_id, delta)
+                        task_rows["grounding"].append(row); rows.append({"task_id": task_id, "state_id": state_id, "kind": "grounding", **row})
                 for delta in RELEASE_DELTAS:
                     row = _availability_candidate(env, state, observation, task_id, state_id, delta)
                     task_rows["availability"].append(row); rows.append({"task_id": task_id, "state_id": state_id, "kind": "availability", **row})
@@ -626,13 +682,16 @@ def discover(output: Path) -> dict[str, Any]:
             finally:
                 env.close()
         target = _select(task_rows["target"], "delta", TARGET_DELTAS)
+        grounding = _select(task_rows["grounding"], "delta", TARGET_DELTAS)
         release = _select(task_rows["availability"], "release_delta", RELEASE_DELTAS)
         half_width = _select(task_rows["no_go"], "half_width", NO_GO_HALF_WIDTHS)
-        tasks[str(task_id)] = _classify_task_parameters(task_id, target, release, half_width)
+        tasks[str(task_id)] = _classify_task_parameters(
+            task_id, target, grounding, release, half_width)
     result = {
         "schema_version": PARAMETER_SCHEMA,
         "mode": "reserve_discovery", "state_ids": list(RESERVE_STATE_IDS),
-        "candidate_grid": {"target_deltas": TARGET_DELTAS, "release_deltas": RELEASE_DELTAS,
+        "candidate_grid": {"target_deltas": TARGET_DELTAS, "grounding_deltas": TARGET_DELTAS,
+                           "release_deltas": RELEASE_DELTAS,
                            "no_go_half_widths": NO_GO_HALF_WIDTHS},
         "task_parameters": tasks, "provider_calls": 0, "vla_calls": 0,
         "formal_trajectories": 0, "source_commit": _git_head(),
@@ -651,6 +710,7 @@ def discover(output: Path) -> dict[str, Any]:
 def _semantic_trigger(family: str, entity: str | None = None) -> SemanticTrigger:
     predicates = {
         "TARGET_OBJECT_DISPLACED": "goal_pending_and_target_publicly_localized",
+        "GOAL_RECEPTACLE_OR_GROUNDING_CHANGED": "active_goal_grounding_publicly_changed",
         "TEMPORARY_NO_GO_APPEARS": "active_goal_requires_workspace_transit",
         "TEMPORARY_NO_GO_CLEARS": "temporary_no_go_is_publicly_observed",
         "USER_ADDS_PERSISTENT_PREFERENCE": "active_goal_exists",
@@ -662,6 +722,7 @@ def _semantic_trigger(family: str, entity: str | None = None) -> SemanticTrigger
     }
     guards = {
         "TARGET_OBJECT_DISPLACED": "catalog_target_displacement_guard",
+        "GOAL_RECEPTACLE_OR_GROUNDING_CHANGED": "catalog_receptacle_displacement_guard",
         "TEMPORARY_NO_GO_APPEARS": "catalog_no_go_clearance_guard",
         "TEMPORARY_NO_GO_CLEARS": "catalog_no_go_retirement_guard",
         "USER_ADDS_PERSISTENT_PREFERENCE": "positive_preference_limits_guard",
@@ -671,7 +732,8 @@ def _semantic_trigger(family: str, entity: str | None = None) -> SemanticTrigger
         "USER_CANCELS_ACTIVE_GOAL": "active_occurrence_not_retired_guard",
         "USER_REISSUES_RETIRED_GOAL": "retired_family_fresh_id_guard",
     }
-    moves = family in {"TARGET_OBJECT_DISPLACED", "TOOL_OR_TARGET_TEMPORARILY_UNAVAILABLE",
+    moves = family in {"TARGET_OBJECT_DISPLACED", "GOAL_RECEPTACLE_OR_GROUNDING_CHANGED",
+                       "TOOL_OR_TARGET_TEMPORARILY_UNAVAILABLE",
                        "TOOL_OR_TARGET_AVAILABLE_AGAIN"}
     return SemanticTrigger(predicates[family], 0, 520, guards[family], 10,
                            moves_object=moves, intervention_entity=entity if moves else None,
@@ -720,6 +782,10 @@ def audit(parameters_path: Path, output: Path) -> dict[str, Any]:
                     physical["TARGET_OBJECT_DISPLACED"] = _target_candidate(
                         env, state, observation, task_id, state_id,
                         task_parameters["target_delta_xy"])
+                if "GOAL_RECEPTACLE_OR_GROUNDING_CHANGED" in supported:
+                    physical["GOAL_RECEPTACLE_OR_GROUNDING_CHANGED"] = _grounding_candidate(
+                        env, state, observation, task_id, state_id,
+                        task_parameters["grounding_delta_xy"])
                 if "TOOL_OR_TARGET_TEMPORARILY_UNAVAILABLE" in supported:
                     physical["TOOL_OR_TARGET_TEMPORARILY_UNAVAILABLE"] = _availability_candidate(
                         env, state, observation, task_id, state_id,
@@ -757,7 +823,7 @@ def audit(parameters_path: Path, output: Path) -> dict[str, Any]:
                         alternative["error"] = f"{type(exc).__name__}: {exc}"
                 for family in supported:
                     detail = physical.get(family, logical.get(family, {}))
-                    trigger = _trigger_audit(family, entity)
+                    trigger = _trigger_audit(family, detail.get("entity", entity))
                     checks = {
                         "semantic_trigger_reached": trigger["semantic_trigger_reached"],
                         "inside_registered_window": trigger["inside_registered_window"],

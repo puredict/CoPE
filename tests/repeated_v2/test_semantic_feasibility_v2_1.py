@@ -24,12 +24,22 @@ def test_reserve_parameter_selection_requires_all_five_states():
 
 
 def test_unsupported_physical_family_is_declared_without_blocking_other_families():
-    result = MODULE._classify_task_parameters(8, (0.06, 0.0), (0.04, 0.0), None)
+    result = MODULE._classify_task_parameters(
+        8, (0.06, 0.0), None, (0.04, 0.0), None)
     assert result["parameter_discovery_complete"]
     assert "TARGET_OBJECT_DISPLACED" in result["supported_event_families"]
     assert "TOOL_OR_TARGET_TEMPORARILY_UNAVAILABLE" in result["supported_event_families"]
     assert "TEMPORARY_NO_GO_APPEARS" in result["unsupported_event_families"]
+    assert "GOAL_RECEPTACLE_OR_GROUNDING_CHANGED" in result["unsupported_event_families"]
     assert result["parameter_family_status"]["temporary_no_go"] == "UNSUPPORTED_BY_RESERVE_AUDIT"
+
+
+def test_movable_receptacle_registers_grounding_change_family():
+    result = MODULE._classify_task_parameters(
+        4, (0.06, 0.0), (-0.06, 0.0), (0.04, 0.0), 0.018)
+    assert "GOAL_RECEPTACLE_OR_GROUNDING_CHANGED" in result["supported_event_families"]
+    assert result["grounding_delta_xy"] == [-0.06, 0.0]
+    assert result["parameter_family_status"]["grounding_change"] == "PASS"
 
 
 def test_contact_guard_rejects_only_new_penetration():

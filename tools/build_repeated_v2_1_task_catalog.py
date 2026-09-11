@@ -95,6 +95,7 @@ def _bool(value: str) -> bool:
 def _trigger(family: str, entity: str | None) -> dict[str, Any]:
     predicates = {
         "TARGET_OBJECT_DISPLACED": "goal_pending_and_target_publicly_localized",
+        "GOAL_RECEPTACLE_OR_GROUNDING_CHANGED": "active_goal_grounding_publicly_changed",
         "TEMPORARY_NO_GO_APPEARS": "active_goal_requires_workspace_transit",
         "TEMPORARY_NO_GO_CLEARS": "temporary_no_go_is_publicly_observed",
         "USER_ADDS_PERSISTENT_PREFERENCE": "active_goal_exists",
@@ -106,6 +107,7 @@ def _trigger(family: str, entity: str | None) -> dict[str, Any]:
     }
     guards = {
         "TARGET_OBJECT_DISPLACED": "catalog_target_displacement_guard",
+        "GOAL_RECEPTACLE_OR_GROUNDING_CHANGED": "catalog_receptacle_displacement_guard",
         "TEMPORARY_NO_GO_APPEARS": "catalog_no_go_clearance_guard",
         "TEMPORARY_NO_GO_CLEARS": "catalog_no_go_retirement_guard",
         "USER_ADDS_PERSISTENT_PREFERENCE": "positive_preference_limits_guard",
@@ -116,7 +118,8 @@ def _trigger(family: str, entity: str | None) -> dict[str, Any]:
         "USER_REISSUES_RETIRED_GOAL": "retired_family_fresh_id_guard",
     }
     moves = family in {
-        "TARGET_OBJECT_DISPLACED", "TOOL_OR_TARGET_TEMPORARILY_UNAVAILABLE",
+        "TARGET_OBJECT_DISPLACED", "GOAL_RECEPTACLE_OR_GROUNDING_CHANGED",
+        "TOOL_OR_TARGET_TEMPORARILY_UNAVAILABLE",
         "TOOL_OR_TARGET_AVAILABLE_AGAIN",
     }
     return {
@@ -200,6 +203,15 @@ def _build(args: argparse.Namespace) -> tuple[dict[str, Any], list[dict[str, Any
                 "entity": target_entity,
                 "region": {"frame": "pre_event_entity", "delta_xy": task_parameters["target_delta_xy"]},
                 "evidence_refs": [parameter_ref, f"{feasibility_ref}#task={task_id}&family=TARGET_OBJECT_DISPLACED"],
+            }
+        if "GOAL_RECEPTACLE_OR_GROUNDING_CHANGED" in families:
+            grounding_entity = definition.receptacle_joints[0].removesuffix("_joint0")
+            safe["GOAL_RECEPTACLE_OR_GROUNDING_CHANGED"] = {
+                "entity": grounding_entity,
+                "region": {"frame": "pre_event_entity",
+                           "delta_xy": task_parameters["grounding_delta_xy"]},
+                "evidence_refs": [parameter_ref,
+                    f"{feasibility_ref}#task={task_id}&family=GOAL_RECEPTACLE_OR_GROUNDING_CHANGED"],
             }
         for family in ("TEMPORARY_NO_GO_APPEARS", "TEMPORARY_NO_GO_CLEARS"):
             if family in families:
@@ -285,7 +297,14 @@ def _build(args: argparse.Namespace) -> tuple[dict[str, Any], list[dict[str, Any
             "replaceable_goal_families": replaceable,
             "safe_event_injection_poses": safe,
             "supported_event_families": families,
-            "semantic_triggers": {family: _trigger(family, target_entity) for family in families},
+            "semantic_triggers": {
+                family: _trigger(
+                    family,
+                    (definition.receptacle_joints[0].removesuffix("_joint0")
+                     if family == "GOAL_RECEPTACLE_OR_GROUNDING_CHANGED" else target_entity),
+                )
+                for family in families
+            },
             "dynamic_evaluator_predicates": [
                 {"predicate": goal["predicate"], "arguments": goal["arguments"],
                  "family_key": goal["family_key"], "source_ref": goal["source_ref"]}
