@@ -67,3 +67,4 @@ def test_pilot_preflight_requires_two_tasks_but_preserves_formal_eight_task_gate
     assert pilot["expected_counts"]["primary_non_oracle_trajectories"] == 32
     assert formal["status"] == "BLOCKED_INSUFFICIENT_ELIGIBLE_TASKS"
     assert formal["passed"] is False
+    assert formal["eligible_task_ids"] == list(range(7))

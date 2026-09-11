@@ -40,7 +40,13 @@ def run_preflight(config: Mapping[str, Any], catalog: Any, *, source_commit: str
     selected = ()
     selection_status = None
     try:
-        selected = select_eligible_tasks(catalog, allow_synthetic=allow_synthetic)
+        selected = eligible_task_candidates(catalog, allow_synthetic=allow_synthetic)
+        if len(selected) < 8:
+            selection_status = "BLOCKED_INSUFFICIENT_ELIGIBLE_TASKS"
+            errors.append(f"need at least 8 eligible tasks; found {len(selected)}")
+        else:
+            # Preserve the registered formal selector as the final authority.
+            selected = select_eligible_tasks(catalog, allow_synthetic=allow_synthetic)
     except CatalogBlockedError as exc:
         selection_status = exc.status
         errors.extend(exc.reasons)
