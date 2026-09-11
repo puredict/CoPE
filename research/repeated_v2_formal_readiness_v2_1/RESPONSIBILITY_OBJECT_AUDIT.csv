@@ -1,0 +1,4 @@
+task_id,achievement_goals,independent_verified_milestones,maintenance_invariants,natural_initial_user_preferences,independent_grounding_commitments,independent_responsibility_objects,passes_two_object_rule,recommendation
+0,2,2,0,0,0,2,True,ELIGIBLE_ONLY_UNDER_VERSIONED_SUPPORT_MATRIX_AMENDMENT
+2,2,2,0,0,0,2,True,ELIGIBLE_ONLY_UNDER_VERSIONED_SUPPORT_MATRIX_AMENDMENT
+5,1,0,0,0,0,1,False,STRUCTURALLY_INELIGIBLE

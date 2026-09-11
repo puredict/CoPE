@@ -1,0 +1,3 @@
+# Dynamic evaluator audit
+
+The zero-provider dev-state sweep constructed exact occurrence ledgers from source BDDL goals. For cancellation it expired the selected occurrence and proved the sealed evaluator no longer required it. For reissue it retained the expired occurrence and allocated `@2`; the compiler and evaluator both selected only the fresh active occurrence. Where a source-grounded alternative entity was registered, replacement retired the original occurrence, activated the alternative, and verified that LIBERO exposes the corresponding predicate. Simulator truth remained inside this feasibility/scoring process. Provider calls, learned-VLA calls, and formal trajectories were zero.

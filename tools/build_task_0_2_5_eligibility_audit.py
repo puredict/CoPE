@@ -74,7 +74,7 @@ def build(*, development: Path, formal_task0: Path, catalog_path: Path,
                 for row in (*dev, *formal)}
     matrix = []
     for task_id in TASKS:
-        states = tuple(range(10, 15)) if task_id == 0 else tuple(range(15, 20))
+        states = tuple(range(10, 20)) if task_id == 0 else tuple(range(15, 20))
         for state_id in states:
             for family in FAMILIES:
                 row = evidence.get((task_id, state_id, family))

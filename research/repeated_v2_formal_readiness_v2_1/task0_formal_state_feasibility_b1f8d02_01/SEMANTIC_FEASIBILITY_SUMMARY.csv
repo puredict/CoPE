@@ -1,0 +1,2 @@
+task_id,covered_state_ids,registered_event_families,event_state_cells,passing_event_state_cells,complete_feasibility_certificate,provider_calls,vla_calls,status
+0,"[10, 11, 12, 13, 14]",10,50,50,True,0,0,PASS
