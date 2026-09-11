@@ -1,0 +1,10 @@
+scenario_id,method,public_realization,expected_transition,observed_transition,accepted,planning_problem_fidelity,wrong_occurrence,downstream_controlled_execution,output_tokens,invalid_transaction_rate,status
+temporary_not_visible,fixed_event_template_editor,The mug is not visible.,SUSPEND,SUSPEND,True,NOT_ASSESSED,False,NOT_RUN,0,0.0,SOFTWARE_DIAGNOSTIC_PASS
+cancel_not_visible,fixed_event_template_editor,Cancel placing the mug on the shelf.,EXPIRE,EXPIRE,True,NOT_ASSESSED,False,NOT_RUN,0,0.0,SOFTWARE_DIAGNOSTIC_PASS
+temporary_occluded,fixed_event_template_editor,The mug is temporarily occluded.,SUSPEND,SUSPEND,True,NOT_ASSESSED,False,NOT_RUN,0,0.0,SOFTWARE_DIAGNOSTIC_PASS
+temporary_unavailable,fixed_event_template_editor,The mug is temporarily unavailable.,SUSPEND,SUSPEND,True,NOT_ASSESSED,False,NOT_RUN,0,0.0,SOFTWARE_DIAGNOSTIC_PASS
+temporary_safety_boundary,fixed_event_template_editor,A safety boundary blocks the mug.,SUSPEND,SUSPEND,True,NOT_ASSESSED,False,NOT_RUN,0,0.0,SOFTWARE_DIAGNOSTIC_PASS
+leave_one_realization_out,fixed_event_template_editor,The mug is temporarily occluded.,SUSPEND,,False,NOT_ASSESSED,False,NOT_RUN,0,0.0,EXPECTED_FAIL_CLOSED
+production_runtime,cope_typed_edit,,,,,NOT_ASSESSED,,NOT_RUN,,,BLOCKED_PRODUCTION_RUNTIME_ASSEMBLY_UNAVAILABLE
+production_runtime,generic_persistent_edit,,,,,NOT_ASSESSED,,NOT_RUN,,,BLOCKED_PRODUCTION_RUNTIME_ASSEMBLY_UNAVAILABLE
+production_runtime,full_state_regeneration,,,,,NOT_ASSESSED,,NOT_RUN,,,BLOCKED_PRODUCTION_RUNTIME_ASSEMBLY_UNAVAILABLE
