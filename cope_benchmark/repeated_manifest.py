@@ -16,6 +16,10 @@ MANIFEST_VERSION = "repeated_interruptions_v1"
 DEFAULT_STATES = tuple(range(5))
 DEFAULT_SEEDS = (11, 29, 47)
 DEFAULT_INTERRUPTION_COUNTS = (0, 1, 2, 3)
+# The v1 manifest was frozen around these four calibrated tasks.  Later task
+# catalogs may extend TASK_DEFINITIONS, but must not silently expand this
+# historical manifest or change its preregistered 240 pair rows.
+REPEATED_V1_TASK_IDS = (0, 1, 4, 8)
 DEFAULT_POLICY_BUDGET = 220
 DEFAULT_HIGH_LEVEL_BUDGET = 4
 DEFAULT_INFORMATION_BUDGET = {
@@ -266,7 +270,7 @@ def generate_manifest_rows(
     interruption_counts: Iterable[int] = DEFAULT_INTERRUPTION_COUNTS,
 ) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
-    definitions = [TASK_DEFINITIONS[key] for key in sorted(TASK_DEFINITIONS)]
+    definitions = [TASK_DEFINITIONS[("libero_10", task_id)] for task_id in REPEATED_V1_TASK_IDS]
     for definition in definitions:
         for state_id in states:
             state_digest = str(initial_state_digests.get((definition.task_id, int(state_id)), ""))
