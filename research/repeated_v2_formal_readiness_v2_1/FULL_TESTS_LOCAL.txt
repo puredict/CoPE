@@ -1,0 +1,11 @@
+Experiment 1 v2.1 full repository test, local macOS
+Date: 2026-09-10 America/Chicago
+Command:
+  /Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/.venv/bin/python -m pytest -q
+Result:
+  1 failed, 1576 passed, 1 skipped, 100 subtests passed in 118.12s (0:01:58)
+Only failure:
+  tests/test_semantic_oracle_pilot.py::test_repository_authorization_is_narrow_and_bound_to_x04
+  ValueError: semantic config artifact verification failed for bddl_path
+Classification:
+  HOST_ASSET_PATH_UNAVAILABLE. The retained old semantic-oracle manifest pins a Linux-only absolute BDDL path. The test and manifest were not changed. A full Linux asset-host result is recorded separately when complete.
