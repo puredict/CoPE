@@ -5,9 +5,9 @@ import pytest
 
 from cope_benchmark.repeated_v2.canonical import canonical_json
 from cope_benchmark.repeated_v2.config import load_config
-from cope_benchmark.repeated_v2.preflight import run_preflight
-from cope_benchmark.repeated_v2.task_catalog import load_task_catalog
-from tests.repeated_v2.catalog_fixtures import synthetic_catalog
+from cope_benchmark.repeated_v2.preflight import run_pilot_preflight, run_preflight
+from cope_benchmark.repeated_v2.task_catalog import TaskCatalog, load_task_catalog
+from tests.repeated_v2.catalog_fixtures import synthetic_catalog, synthetic_catalog_v2_1
 
 ROOT = Path(__file__).resolve().parents[2]
 SHA = "84e1e742579899adb67efee92cef16efca063b31"
@@ -49,3 +49,21 @@ def test_synthetic_catalog_cannot_pass_formal_preflight():
     assert not report["passed"]
     assert report["manifest_sha256"] is None
     assert any("synthetic" in error for error in report["errors"])
+
+
+def test_pilot_preflight_requires_two_tasks_but_preserves_formal_eight_task_gate():
+    config = load_config(ROOT / "configs/repeated_interruptions_v2_1_pilot.yaml")
+    raw = synthetic_catalog_v2_1(task_count=7).to_dict()
+    raw["provenance_kind"] = "source_backed"
+    catalog = TaskCatalog.from_dict(raw)
+
+    pilot = run_pilot_preflight(config, catalog, source_commit=SHA)
+    formal = run_preflight(config, catalog, source_commit=SHA)
+
+    assert pilot["status"] == "PILOT_PREFLIGHT_PASSED"
+    assert pilot["pilot_task_ids"] == [1, 4]
+    assert pilot["eligible_task_ids"] == list(range(7))
+    assert pilot["formal_minimum_met"] is False
+    assert pilot["expected_counts"]["primary_non_oracle_trajectories"] == 32
+    assert formal["status"] == "BLOCKED_INSUFFICIENT_ELIGIBLE_TASKS"
+    assert formal["passed"] is False

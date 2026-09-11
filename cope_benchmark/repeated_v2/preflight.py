@@ -7,7 +7,13 @@ from typing import Any
 from .canonical import canonical_json, canonical_sha256
 from .config import validate_config
 from .manifest import build_manifest, event_cell_keys, expected_counts, validate_manifest
-from .task_catalog import CatalogBlockedError, select_eligible_tasks, task_catalog_gaps
+from .task_catalog import (
+    CatalogBlockedError,
+    eligible_task_candidates,
+    select_eligible_tasks,
+    select_pilot_tasks,
+    task_catalog_gaps,
+)
 from .scheduler import MasterSchedule
 from .enums import EventFamily
 from .task_calibration import validate_calibration_split
@@ -100,5 +106,76 @@ def run_preflight(config: Mapping[str, Any], catalog: Any, *, source_commit: str
             "phase3_durable_journal_and_resume",
             "phase3_formal_provider_and_learned_VLA_adapters",
             "phase4_statistics_claims_and_formal_freeze",
+        ],
+    }
+
+
+def run_pilot_preflight(config: Mapping[str, Any], catalog: Any, *, source_commit: str,
+                        allow_synthetic: bool = False) -> dict[str, Any]:
+    """Validate the registered two-task qualification boundary without formal gates.
+
+    The pilot is pipeline evidence and requires two fully evidenced eligible
+    tasks.  The eight-task minimum remains exclusively in ``run_preflight`` and
+    the formal launcher.  This function performs no provider discovery, imports,
+    inference, simulator construction, or manifest publication.
+    """
+    from .events import phase1_contract_self_check
+
+    checks = phase1_contract_self_check()
+    validate_calibration_split()
+    checks["calibration_formal_seeds_disjoint"] = True
+    config_errors = validate_config(config)
+    checks["frozen_config"] = not config_errors
+    errors = list(config_errors)
+    gaps = task_catalog_gaps(catalog, allow_synthetic=allow_synthetic)
+    checks["catalog_complete"] = not gaps
+    errors.extend(gaps)
+    candidates = ()
+    pilot_tasks = ()
+    selection_status = None
+    if not gaps:
+        try:
+            candidates = eligible_task_candidates(catalog, allow_synthetic=allow_synthetic)
+            pilot_tasks = select_pilot_tasks(catalog, allow_synthetic=allow_synthetic)
+        except CatalogBlockedError as exc:
+            selection_status = exc.status
+            errors.extend(exc.reasons)
+    checks["at_least_two_pilot_eligible_tasks"] = len(pilot_tasks) == 2
+    for name, passed in checks.items():
+        if not passed:
+            errors.append(f"check failed: {name}")
+    ready = not errors and all(checks.values())
+    status = "PILOT_PREFLIGHT_PASSED" if ready else (
+        "INVALID_PROTOCOL_CONFIG" if config_errors else selection_status or "BLOCKED_PILOT_PREFLIGHT")
+    if allow_synthetic and ready:
+        status = "SYNTHETIC_PILOT_CHECKS_PASSED_NOT_EXPERIMENT_EVIDENCE"
+    formal_minimum_met = len(candidates) >= 8
+    return {
+        "schema_version": "cope-repeated-v2.1/pilot-preflight-1",
+        "scope": "pilot_contracts_catalog_and_two_task_selection",
+        "status": status,
+        "passed": ready,
+        "formal_execution_authorized": False,
+        "provider_calls": 0,
+        "vla_calls": 0,
+        "source_commit": source_commit,
+        "config_sha256": canonical_sha256(config),
+        "task_catalog_sha256": canonical_sha256(catalog.to_dict()),
+        "manifest_sha256": None,
+        "eligible_task_ids": [task.task_id for task in candidates],
+        "pilot_task_ids": [task.task_id for task in pilot_tasks],
+        "catalog_gap_count": len(gaps),
+        "formal_minimum_met": formal_minimum_met,
+        "checks": dict(sorted(checks.items())),
+        "errors": sorted(set(errors)),
+        "expected_counts": {
+            "unique_master_sessions": 4,
+            "primary_non_oracle_trajectories": 32,
+        } if ready else None,
+        "deferred_gates": [
+            "production_runtime_dependencies",
+            "deterministic_pilot_manifest",
+            "pilot_cell_integrity",
+            "formal_eight_task_minimum",
         ],
     }

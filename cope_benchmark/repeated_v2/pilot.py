@@ -619,7 +619,7 @@ def run_experiment(*, config_path: str | Path, output_dir: str | Path, phase: st
     """Production entry point. A blocked dependency never invokes a runtime factory."""
     from .config import load_config
     from .manifest import build_manifest, read_manifest
-    from .preflight import run_preflight
+    from .preflight import run_pilot_preflight, run_preflight
     from .task_catalog import load_task_catalog
     env = dict(os.environ if environ is None else environ)
     if frozen_bundle_path is not None:
@@ -647,8 +647,11 @@ def run_experiment(*, config_path: str | Path, output_dir: str | Path, phase: st
             if len(revisions) != 1:
                 raise RuntimeBlocked("INVALID_MANIFEST", "manifest contains different producer commits")
             manifest_commit = next(iter(revisions))
-        preflight = run_preflight(config, catalog, source_commit=manifest_commit,
-                                  manifest=loaded_manifest if phase == "formal" else None)
+        if phase == "pilot":
+            preflight = run_pilot_preflight(config, catalog, source_commit=manifest_commit)
+        else:
+            preflight = run_preflight(config, catalog, source_commit=manifest_commit,
+                                      manifest=loaded_manifest if phase == "formal" else None)
         blockers = list(dependencies["blockers"])
         if not preflight["passed"]:
             blockers.insert(0, {"status": preflight["status"], "detail": "authentic catalog/calibration preflight failed"})

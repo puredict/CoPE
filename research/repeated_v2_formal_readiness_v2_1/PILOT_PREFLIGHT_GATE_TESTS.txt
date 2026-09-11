@@ -1,0 +1,13 @@
+Experiment 1 v2.1 pilot/formal minimum separation
+Date: 2026-09-10 America/Chicago
+Source commit before change: 3748e32b321f6733d1772a8dad955cdb352c52a0
+Focused command:
+  /Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/.venv/bin/python -m pytest -q tests/repeated_v2/test_preflight.py tests/repeated_v2/test_phase3_pilot.py tests/repeated_v2/test_task_catalog.py
+Focused result:
+  56 passed in 13.53s
+Full repeated-v2 command:
+  /Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/.venv/bin/python -m pytest -q tests/repeated_v2
+Full repeated-v2 result:
+  930 passed, 1 skipped, 100 subtests passed in 95.19s (0:01:35)
+
+The pilot gate requires two complete task certificates. The unchanged formal gate requires at least eight eligible tasks.
