@@ -819,7 +819,13 @@ def execute_assembly(*, assembly: RuntimeAssembly | None, config: Mapping, manif
             stop = {"status": getattr(exc, "status", "BLOCKED_RUNTIME_DEPENDENCY"),
                     "phase": phase, "protocol": protocol, "exception_type": type(exc).__name__,
                     "detail": "Execution stopped; journal retains exact attempted cells. No result cells were imputed."}
-            _publish(root / "13_INFRASTRUCTURE_STOP.json", _encoded(stop), resume=True)
+            # A resume may fail for a different transient dependency after an
+            # earlier stop receipt was sealed.  Preserve that receipt and the
+            # original exception instead of masking the useful failure with an
+            # artifact-overwrite error.
+            stop_path = root / "13_INFRASTRUCTURE_STOP.json"
+            if not stop_path.exists():
+                _publish(stop_path, _encoded(stop), resume=True)
             raise
 
 

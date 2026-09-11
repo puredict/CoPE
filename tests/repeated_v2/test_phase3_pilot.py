@@ -134,6 +134,23 @@ def test_completed_resume_preserves_export_bytes_and_calls(tmp_path):
                       if path.is_file() and path.name != ".journal-owner.lock"}
 
 
+def test_resume_preserves_first_stop_receipt_without_masking_current_failure(tmp_path):
+    class FailingEnvironment(MockEnvironment):
+        def reset(self, **kwargs):
+            raise RuntimeBlocked("BLOCKED_TEST_DEPENDENCY", "test dependency is unavailable")
+
+    runtime = assembly(environment_factory=FailingEnvironment)
+    with pytest.raises(RuntimeBlocked) as first:
+        execute(tmp_path, runtime=runtime)
+    assert first.value.status == "BLOCKED_TEST_DEPENDENCY"
+    receipt = (tmp_path / "13_INFRASTRUCTURE_STOP.json").read_bytes()
+
+    with pytest.raises(RuntimeBlocked) as resumed:
+        execute(tmp_path, runtime=runtime, resume=True)
+    assert resumed.value.status == "BLOCKED_TEST_DEPENDENCY"
+    assert (tmp_path / "13_INFRASTRUCTURE_STOP.json").read_bytes() == receipt
+
+
 def test_changed_config_or_identity_on_resume_is_durably_rejected(tmp_path):
     execute(tmp_path)
     other = assembly()
