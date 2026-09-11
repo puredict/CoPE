@@ -1,0 +1,11 @@
+protocol_version,task_id,nominal_trajectories,unique_trajectories,successful_unique_trajectories_by_collection_ceiling,completion_times,q95_nearest_rank,horizon,horizon_gate,successful_unique_trajectories_at_horizon,clean_success_rate,eligible_success_rate,success_interval,semantic_catalog_gate,final_eligibility_reason
+repeated_v2_1_horizon_and_independence_v1,0,10,10,6,"[256,264,270,275,297,465]",465,520,HORIZON_ESTIMATED,6,0.6,True,"[0.4,0.95]",PENDING_PHASE5,PENDING_SEMANTIC_AND_FEASIBILITY_GATES
+repeated_v2_1_horizon_and_independence_v1,1,10,10,8,"[238,242,246,250,269,273,276,323]",323,388,HORIZON_ESTIMATED,8,0.8,True,"[0.4,0.95]",PENDING_PHASE5,PENDING_SEMANTIC_AND_FEASIBILITY_GATES
+repeated_v2_1_horizon_and_independence_v1,2,10,10,7,"[256,272,274,280,296,300,323]",323,388,HORIZON_ESTIMATED,7,0.7,True,"[0.4,0.95]",PENDING_PHASE5,PENDING_SEMANTIC_AND_FEASIBILITY_GATES
+repeated_v2_1_horizon_and_independence_v1,3,10,10,3,"[245,295,312]",312,375,HORIZON_ESTIMATED,3,0.3,False,"[0.4,0.95]",PENDING_PHASE5,CLEAN_SUCCESS_RATE_OUTSIDE_FROZEN_INTERVAL
+repeated_v2_1_horizon_and_independence_v1,4,10,10,7,"[208,228,230,264,267,270,284]",284,341,HORIZON_ESTIMATED,7,0.7,True,"[0.4,0.95]",PENDING_PHASE5,PENDING_SEMANTIC_AND_FEASIBILITY_GATES
+repeated_v2_1_horizon_and_independence_v1,5,10,10,9,"[165,166,183,193,213,216,228,418,482]",482,520,HORIZON_ESTIMATED,9,0.9,True,"[0.4,0.95]",PENDING_PHASE5,PENDING_SEMANTIC_AND_FEASIBILITY_GATES
+repeated_v2_1_horizon_and_independence_v1,6,10,10,4,"[201,249,253,436]",436,520,HORIZON_ESTIMATED,4,0.4,True,"[0.4,0.95]",PENDING_PHASE5,PENDING_SEMANTIC_AND_FEASIBILITY_GATES
+repeated_v2_1_horizon_and_independence_v1,7,10,10,5,"[246,256,282,286,287]",287,345,HORIZON_ESTIMATED,5,0.5,True,"[0.4,0.95]",PENDING_PHASE5,PENDING_SEMANTIC_AND_FEASIBILITY_GATES
+repeated_v2_1_horizon_and_independence_v1,8,10,10,1,[378],,,HORIZON_UNESTIMABLE,,,False,"[0.4,0.95]",PENDING_PHASE5,HORIZON_UNESTIMABLE
+repeated_v2_1_horizon_and_independence_v1,9,10,10,3,"[249,388,462]",462,520,HORIZON_ESTIMATED,3,0.3,False,"[0.4,0.95]",PENDING_PHASE5,CLEAN_SUCCESS_RATE_OUTSIDE_FROZEN_INTERVAL
