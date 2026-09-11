@@ -34,6 +34,12 @@ EVENT_FAMILIES = (
     "USER_CANCELS_ACTIVE_GOAL", "USER_REISSUES_RETIRED_GOAL",
 )
 PHYSICAL_EVENT_FAMILIES = EVENT_FAMILIES[:4] + EVENT_FAMILIES[5:7]
+_GROUNDING_EVENT_FAMILIES = set(EVENT_FAMILIES[:2])
+_RETIREMENT_EVENT_FAMILIES = set(EVENT_FAMILIES[7:9])
+_REGISTERED_SCHEDULE_REQUIRED_FAMILIES = {
+    *EVENT_FAMILIES[2:7],
+    EVENT_FAMILIES[9],
+}
 _SHA256 = re.compile(r"^[a-f0-9]{64}$")
 
 
@@ -299,23 +305,18 @@ def _task_gaps(task: TaskRecord, *, allow_synthetic: bool,
             if (not isinstance(declared_unsupported, tuple)
                     or tuple(sorted(declared_unsupported)) != tuple(sorted(expected_unsupported))):
                 errors.append("unsupported event declarations do not equal the supported-family complement")
-        categories = {
-            "grounding shift": bool(supported & set(EVENT_FAMILIES[:2])),
-            "persistent preference": EVENT_FAMILIES[4] in supported,
-            "goal retirement": bool(supported & set(EVENT_FAMILIES[7:9])),
-            "fresh goal reissue": EVENT_FAMILIES[9] in supported,
-        }
-        if schema_version == CATALOG_SCHEMA_VERSION_V2_1:
-            categories.update({
-                "temporary no-go lifecycle": set(EVENT_FAMILIES[2:4]) <= supported,
-                "temporary availability lifecycle": set(EVENT_FAMILIES[5:7]) <= supported,
-            })
-        else:
+        if schema_version == CATALOG_SCHEMA_VERSION:
+            categories = {
+                "grounding shift": bool(supported & _GROUNDING_EVENT_FAMILIES),
+                "persistent preference": EVENT_FAMILIES[4] in supported,
+                "goal retirement": bool(supported & _RETIREMENT_EVENT_FAMILIES),
+                "fresh goal reissue": EVENT_FAMILIES[9] in supported,
+            }
             categories["temporary lifecycle"] = any(set(pair) <= supported for pair in (
                 EVENT_FAMILIES[2:4], EVENT_FAMILIES[5:7]))
-        for category, covered in categories.items():
-            if not covered:
-                errors.append(f"supported event families lack scientific category: {category}")
+            for category, covered in categories.items():
+                if not covered:
+                    errors.append(f"supported event families lack scientific category: {category}")
     for family in audited_families:
         check = task.event_feasibility.get(family, {})
         covered_ids = tuple(range(15, 20)) if schema_version == CATALOG_SCHEMA_VERSION_V2_1 else tuple(range(5))
@@ -369,7 +370,31 @@ def task_catalog_gaps(catalog: TaskCatalog, *, allow_synthetic: bool = False) ->
     for task in catalog.tasks:
         errors.extend(f"task {task.task_id}: {reason}" for reason in _task_gaps(
             task, allow_synthetic=allow_synthetic, schema_version=catalog.schema_version))
+    if catalog.schema_version == CATALOG_SCHEMA_VERSION_V2_1:
+        covered = {family for task in catalog.tasks for family in task.supported_event_families}
+        missing = sorted(set(EVENT_FAMILIES) - covered)
+        if missing:
+            errors.append(f"benchmark event-family coverage missing: {missing}")
     return tuple(errors)
+
+
+def task_schedule_eligibility_reasons(task: TaskRecord) -> tuple[str, ...]:
+    """Report task-local coverage needed by the frozen eight-event schedule.
+
+    An explicit unsupported declaration closes the catalog field, while a task
+    that cannot instantiate the preregistered schedule remains scientifically
+    ineligible. Benchmark-wide family coverage is checked separately above.
+    """
+    supported = set(task.supported_event_families)
+    reasons = []
+    missing = sorted(_REGISTERED_SCHEDULE_REQUIRED_FAMILIES - supported)
+    if missing:
+        reasons.append(f"registered schedule required families unsupported: {missing}")
+    if not supported & _GROUNDING_EVENT_FAMILIES:
+        reasons.append("registered schedule has no supported grounding event")
+    if not supported & _RETIREMENT_EVENT_FAMILIES:
+        reasons.append("registered schedule has no supported retirement event")
+    return tuple(reasons)
 
 
 def eligible_task_candidates(catalog: TaskCatalog, *, allow_synthetic: bool = False) -> tuple[TaskRecord, ...]:
@@ -419,6 +444,7 @@ def eligible_task_candidates(catalog: TaskCatalog, *, allow_synthetic: bool = Fa
         task for task in catalog.tasks
         if all(task.structural_checks[key]["passed"] for key in STRUCTURAL_CHECKS)
         and all(task.event_feasibility[family]["passed"] for family in task.supported_event_families)
+        and not task_schedule_eligibility_reasons(task)
         and calibration_eligible(task)
     )
 

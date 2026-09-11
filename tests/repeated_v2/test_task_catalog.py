@@ -7,8 +7,9 @@ import pytest
 
 from cope_benchmark.repeated_v2.canonical import canonical_sha256
 from cope_benchmark.repeated_v2.task_catalog import (
-    CatalogBlockedError, DEFAULT_CATALOG_PATH, TaskCatalog, load_task_catalog,
-    select_eligible_tasks, select_pilot_tasks, task_catalog_gaps,
+    CatalogBlockedError, DEFAULT_CATALOG_PATH, EVENT_FAMILIES, TaskCatalog,
+    eligible_task_candidates, load_task_catalog, select_eligible_tasks,
+    select_pilot_tasks, task_catalog_gaps,
 )
 from tests.repeated_v2.catalog_fixtures import synthetic_catalog, synthetic_catalog_v2_1
 
@@ -61,6 +62,36 @@ def test_v2_1_pilot_selects_two_preferred_tasks_without_relaxing_formal_minimum(
     assert [task.task_id for task in select_pilot_tasks(catalog, allow_synthetic=True)] == [1, 4]
     with pytest.raises(CatalogBlockedError, match="BLOCKED_INSUFFICIENT_ELIGIBLE_TASKS"):
         select_eligible_tasks(catalog, allow_synthetic=True)
+
+
+def _remove_supported_families(raw, task_ids, families):
+    for task_id in task_ids:
+        task = raw["tasks"][task_id]
+        task["supported_event_families"] = [
+            family for family in task["supported_event_families"] if family not in families
+        ]
+        for field in ("event_feasibility", "semantic_triggers", "safe_event_injection_poses"):
+            for family in families:
+                task[field].pop(family, None)
+        task["planner_compiler_metadata"]["unsupported_event_families"] = sorted(families)
+
+
+def test_v2_1_declared_unsupported_events_close_catalog_but_exclude_task_from_schedule():
+    raw = synthetic_catalog_v2_1().to_dict()
+    unsupported = set(EVENT_FAMILIES[2:4])
+    _remove_supported_families(raw, [9], unsupported)
+    catalog = TaskCatalog.from_dict(raw)
+    assert task_catalog_gaps(catalog, allow_synthetic=True) == ()
+    assert [task.task_id for task in eligible_task_candidates(catalog, allow_synthetic=True)] == list(range(9))
+
+
+def test_v2_1_requires_benchmark_wide_event_family_coverage():
+    raw = synthetic_catalog_v2_1().to_dict()
+    unsupported = set(EVENT_FAMILIES[2:4])
+    _remove_supported_families(raw, range(10), unsupported)
+    catalog = TaskCatalog.from_dict(raw)
+    assert any("benchmark event-family coverage missing" in gap
+               for gap in task_catalog_gaps(catalog, allow_synthetic=True))
 
 
 def test_formal_selection_rejects_synthetic_catalog():

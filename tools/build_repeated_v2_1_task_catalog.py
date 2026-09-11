@@ -30,6 +30,7 @@ from cope_benchmark.repeated_v2.task_catalog import (  # noqa: E402
     STRUCTURAL_CHECKS,
     TaskCatalog,
     select_eligible_tasks,
+    task_schedule_eligibility_reasons,
     task_catalog_gaps,
 )
 from cope_benchmark.task_progress import get_task_definition  # noqa: E402
@@ -405,6 +406,8 @@ def _build(args: argparse.Namespace) -> tuple[dict[str, Any], list[dict[str, Any
 
 def _gaps(catalog: Mapping[str, Any]) -> list[dict[str, Any]]:
     rows = []
+    validated = TaskCatalog.from_dict(catalog)
+    records = {task.task_id: task for task in validated.tasks}
     for task in catalog["tasks"]:
         task_id = task["task_id"]
         summary = summarize_task_calibration(task_id, task["calibration_records"])
@@ -427,6 +430,11 @@ def _gaps(catalog: Mapping[str, Any]) -> list[dict[str, Any]]:
                 reasons.append(("semantic_feasibility", family,
                                 "passing reserve-frozen audit on every dev state 15-19",
                                 "semantic_feasibility;task_eligibility"))
+        if task_schedule_eligibility_reasons(records[task_id]):
+            reasons.append(("schedule_coverage", "UNSUPPORTED_REGISTERED_EIGHT_EVENT_TEMPLATE",
+                            "task-local support for both temporary lifecycles, preference, reissue, "
+                            "one grounding event, and one retirement event",
+                            "task_eligibility;manifest_schedule"))
         for index, (category, root, evidence, gate) in enumerate(reasons, 1):
             rows.append({
                 "gap_id": f"V21-T{task_id:02d}-{index:02d}", "task_id": task_id,
