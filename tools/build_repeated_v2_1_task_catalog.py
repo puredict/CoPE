@@ -476,7 +476,65 @@ def main(argv: Sequence[str] | None = None) -> int:
               "blocking_gate", "cascade_class")
     matrix_bytes = _csv_bytes(after, fields)
     _write_new(args.research_dir / "GAP_MATRIX_V2_1.csv", matrix_bytes)
-    _write_new(args.research_dir / "GAP_MATRIX.csv", matrix_bytes)
+    # The user-facing unsuffixed matrix is a root-cause closure audit of every
+    # retained v2 gap.  It intentionally has one row per upstream unit instead
+    # of repeating all 794 validator symptoms.  Newly measured eligibility
+    # failures are appended as distinct outcomes; they are not mislabeled as
+    # missing catalog evidence.
+    old_by_unit: dict[str, list[dict[str, str]]] = {}
+    for row in old_rows:
+        old_by_unit.setdefault(row["root_cause_unit_id"], []).append(row)
+    remaining_by_unit = {row["root_cause_unit_id"]: row for row in after}
+    closure_rows = []
+    for unit_id, unit_rows in sorted(old_by_unit.items()):
+        first = unit_rows[0]
+        remaining = remaining_by_unit.get(unit_id)
+        closure_rows.append({
+            "root_cause_unit_id": unit_id,
+            "task_id": first["task_id"],
+            "task_name": first["task_name"],
+            "category": first["category"],
+            "root_cause": first["root_cause"],
+            "derived_gap_rows_before": len(unit_rows),
+            "status_after": "REMAINS" if remaining else "CLOSED_BY_AUDITED_UPSTREAM_ARTIFACT",
+            "automatic_fixability": (remaining["automatic_fixability"] if remaining else
+                                       "CLOSED_FROM_AUDITED_MEASURED_OR_SOURCE_DERIVED_EVIDENCE"),
+            "required_evidence": (remaining["required_evidence"] if remaining else
+                                    first["required_evidence"]),
+            "blocking_gate": remaining["blocking_gate"] if remaining else "",
+            "cascade_classes": ";".join(sorted({row["cascade_class"] for row in unit_rows})),
+            "event_families": ";".join(sorted({row["event_family"] for row in unit_rows
+                                                  if row["event_family"]})),
+            "artifact_unit_ids": ";".join(sorted({value for row in unit_rows
+                                                     for value in row["artifact_unit_ids"].split(";")
+                                                     if value})),
+            "global_prerequisite_ids": ";".join(sorted({value for row in unit_rows
+                                                           for value in row["global_prerequisite_ids"].split(";")
+                                                           if value})),
+        })
+    for row in after:
+        if row["root_cause_unit_id"] in old_by_unit:
+            continue
+        closure_rows.append({
+            "root_cause_unit_id": row["root_cause_unit_id"],
+            "task_id": row["task_id"], "task_name": row["task_name"],
+            "category": row["category"], "root_cause": row["root_cause"],
+            "derived_gap_rows_before": 0,
+            "status_after": "NEW_MEASURED_ELIGIBILITY_OUTCOME",
+            "automatic_fixability": row["automatic_fixability"],
+            "required_evidence": row["required_evidence"],
+            "blocking_gate": row["blocking_gate"],
+            "cascade_classes": row["cascade_class"],
+            "event_families": "", "artifact_unit_ids": "",
+            "global_prerequisite_ids": "",
+        })
+    closure_fields = (
+        "root_cause_unit_id", "task_id", "task_name", "category", "root_cause",
+        "derived_gap_rows_before", "status_after", "automatic_fixability",
+        "required_evidence", "blocking_gate", "cascade_classes", "event_families",
+        "artifact_unit_ids", "global_prerequisite_ids",
+    )
+    _write_new(args.research_dir / "GAP_MATRIX.csv", _csv_bytes(closure_rows, closure_fields))
     category_counts: dict[str, int] = {}
     for row in after:
         category_counts[row["category"]] = category_counts.get(row["category"], 0) + 1
@@ -499,7 +557,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
 The retained v2 preflight expanded **{len(old_rows)} derived rows** from **{old_units} root-cause units**. This rebuild operates on the root causes and never treats cascade rows as separate manual tasks.
 
-The v2.1 source-backed catalog has **{len(after)} remaining task-level root causes**. Its mandatory schema/evidence completeness gap count is zero. Remaining rows are measured scientific eligibility failures, grouped by task, category, required evidence, and blocking gate in `GAP_MATRIX_V2_1.csv`.
+The v2.1 source-backed catalog has **zero mandatory schema/evidence completeness gaps**. All **{old_units} prior root-cause units** are accounted for in `GAP_MATRIX.csv`, including their **{len(old_rows)} derived symptoms** and closure status. There are **{len(after)} measured task-level scientific eligibility failures** after catalog closure; these are grouped by task, category, required evidence, and blocking gate in `GAP_MATRIX_V2_1.csv`.
 
 ## Remaining root causes by category
 
@@ -524,11 +582,15 @@ State-digest, trigger-field, feasibility, calibration-identity, and collection-m
     _write_new(args.research_dir / "GAP_SUMMARY_V2_1.md", summary_bytes)
     _write_new(args.research_dir / "GAP_SUMMARY.md", summary_bytes)
     counts = [
-        {"stage": "before_v2_1", "derived_gap_rows": len(old_rows), "root_cause_units": old_units},
-        {"stage": "after_v2_1", "derived_gap_rows": len(after),
-         "root_cause_units": len({row["root_cause_unit_id"] for row in after})},
+        {"stage": "before_v2_1", "catalog_derived_gap_rows": len(old_rows),
+         "catalog_root_cause_units": old_units, "scientific_eligibility_root_cause_units": 0},
+        {"stage": "after_v2_1", "catalog_derived_gap_rows": 0,
+         "catalog_root_cause_units": 0,
+         "scientific_eligibility_root_cause_units": len({row["root_cause_unit_id"] for row in after})},
     ]
-    counts_bytes = _csv_bytes(counts, ("stage", "derived_gap_rows", "root_cause_units"))
+    counts_bytes = _csv_bytes(counts, ("stage", "catalog_derived_gap_rows",
+                                      "catalog_root_cause_units",
+                                      "scientific_eligibility_root_cause_units"))
     _write_new(args.research_dir / "GAP_ROOT_CAUSE_COUNTS_V2_1.csv", counts_bytes)
     _write_new(args.research_dir / "TASK_CATALOG_ROOT_CAUSES_BEFORE_AFTER.csv", counts_bytes)
     metadata["catalog_file_sha256"] = _sha(catalog_dir / "catalog.json")
