@@ -23,6 +23,22 @@ def test_reserve_parameter_selection_requires_all_five_states():
     assert MODULE._select(rows, "delta", MODULE.TARGET_DELTAS) == (-0.06, 0.0)
 
 
+def test_unsupported_physical_family_is_declared_without_blocking_other_families():
+    result = MODULE._classify_task_parameters(8, (0.06, 0.0), (0.04, 0.0), None)
+    assert result["parameter_discovery_complete"]
+    assert "TARGET_OBJECT_DISPLACED" in result["supported_event_families"]
+    assert "TOOL_OR_TARGET_TEMPORARILY_UNAVAILABLE" in result["supported_event_families"]
+    assert "TEMPORARY_NO_GO_APPEARS" in result["unsupported_event_families"]
+    assert result["parameter_family_status"]["temporary_no_go"] == "UNSUPPORTED_BY_RESERVE_AUDIT"
+
+
+def test_contact_guard_rejects_only_new_penetration():
+    assert MODULE._contact_count_nonincreasing(
+        {"penetrating_contact_count": 116}, {"penetrating_contact_count": 116})
+    assert not MODULE._contact_count_nonincreasing(
+        {"penetrating_contact_count": 116}, {"penetrating_contact_count": 117})
+
+
 def test_lifecycle_audit_cancels_and_reissues_without_restoring_old_id():
     result = MODULE._lifecycle_audit(1, 15)
     cancelled = result["USER_CANCELS_ACTIVE_GOAL"]
@@ -50,4 +66,3 @@ def test_semantic_trigger_is_reachable_without_fixed_step_fallback():
     assert result["semantic_trigger_reached"]
     assert result["inside_registered_window"]
     assert result["semantic_trigger"]["predicate"] == "user_instruction_targets_active_occurrence"
-
