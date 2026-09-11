@@ -139,12 +139,18 @@ class PublicEventEvidenceBuilder:
               observation_ref: str, timestamp: int) -> tuple[PublicEventPayload, tuple[EvidenceRecord, ...]]:
         # Recursive scanners cover both poisoned nested values and textual labels.
         from .evidence import assert_public_safe
-        assert_public_safe({"previous": previous_public_observation,
-                            "current": current_public_observation,
-                            "proprioception": list(public_proprioception),
-                            "user_message": public_user_message,
-                            "catalog": public_task_catalog,
-                            "previous_evidence": list(previously_committed_public_evidence)})
+        from .runner import json_value
+        # Live public sensor observations contain NumPy arrays. Convert them to
+        # ordinary arrays before scanning, preserving every key so a poisoned
+        # nested hidden-state field cannot disappear at this boundary.
+        assert_public_safe(json_value({
+            "previous": previous_public_observation,
+            "current": current_public_observation,
+            "proprioception": public_proprioception,
+            "user_message": public_user_message,
+            "catalog": public_task_catalog,
+            "previous_evidence": previously_committed_public_evidence,
+        }))
         before, after = _poses(previous_public_observation), _poses(current_public_observation)
         catalog_names = set(public_task_catalog.get("objects", ()))
         catalog_names.update(public_task_catalog.get("entities", ()))

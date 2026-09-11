@@ -40,6 +40,28 @@ def test_event_builder_rejects_recursively_poisoned_hidden_state():
         )
 
 
+def test_event_builder_accepts_live_numpy_public_sensor_arrays():
+    builder = PublicEventEvidenceBuilder()
+    previous = {**_observation(),
+                "full_image": np.zeros((2, 2, 3), dtype=np.uint8),
+                "state": np.zeros(8, dtype=np.float32)}
+    current = {**_observation(source=(0.1, 0.0, 0.1)),
+               "full_image": np.ones((2, 2, 3), dtype=np.uint8),
+               "state": np.zeros(8, dtype=np.float32)}
+
+    payload, records = builder.build(
+        event_id="event-1", event_index=1,
+        previous_public_observation=previous,
+        current_public_observation=current,
+        public_proprioception=current["state"], public_user_message=None,
+        public_task_catalog={"objects": ["object"], "entities": ["basket"]},
+        previously_committed_public_evidence=[], observation_ref="obs-1", timestamp=1,
+    )
+
+    assert "Pose estimates changed for object" in payload.hypothesis
+    assert records[0].evidence_id == payload.evidence_ids[0]
+
+
 def test_public_verifier_preserves_supplied_binding_and_fails_closed():
     verifier = PublicRuntimeVerifier()
     result = verifier.evaluate_goal(
