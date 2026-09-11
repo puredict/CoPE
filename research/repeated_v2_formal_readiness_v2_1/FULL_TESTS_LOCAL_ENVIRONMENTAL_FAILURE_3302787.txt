@@ -1,0 +1,100 @@
+........................................................................ [  4%]
+........................................................................ [  9%]
+........................................................................ [ 13%]
+........................................................................ [ 18%]
+........................................................................ [ 22%]
+........................................................................ [ 27%]
+........................................................................ [ 31%]
+........................................................................ [ 36%]
+........................................................................ [ 40%]
+........................................................................ [ 45%]
+........................................................................ [ 50%]
+........................................................................ [ 54%]
+...........s............ [ 56%]
+.............................................................. [ 60%]
+.............................. [ 61%]
+........................................................................ [ 66%]
+........................................................................ [ 71%]
+........................................................................ [ 75%]
+........................................................................ [ 80%]
+........................................................................ [ 84%]
+........................................................................ [ 89%]
+...........................F............................................ [ 93%]
+........................................................................ [ 98%]
+.........................                                                [100%]
+=================================== FAILURES ===================================
+___________ test_repository_authorization_is_narrow_and_bound_to_x04 ___________
+
+    def test_repository_authorization_is_narrow_and_bound_to_x04() -> None:
+>       authorization = load_authorization(
+            ROOT / "research/semantic_oracle_pilot_2026-08-02/01_AUTHORIZATION.csv",
+            repo_root=ROOT,
+        )
+
+tests/test_semantic_oracle_pilot.py:20: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+experiments/semantic_oracle_pilot.py:229: in load_authorization
+    semantic_config = load_semantic_config(semantic_config_path, repo_root=repo_root)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/manifests/semantic_task1_config_v1.csv')
+repo_root = PosixPath('/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1')
+
+    def load_semantic_config(path: Path, *, repo_root: Path) -> LoadedSemanticConfig:
+        with path.open(newline="", encoding="utf-8") as handle:
+            rows = list(csv.DictReader(handle))
+        if len(rows) != 1:
+            raise ValueError("semantic config must contain exactly one row")
+        row = dict(rows[0])
+        schema_version = row.get("schema_version")
+        if schema_version not in {SEMANTIC_CONFIG_SCHEMA, FORMAL_SEMANTIC_CONFIG_SCHEMA}:
+            raise ValueError("unsupported semantic config schema")
+        if (row.get("task_suite"), row.get("task_id")) != ("libero_10", "1"):
+            raise ValueError("live semantic runner is locked to LIBERO-10 task 1")
+        observation_fields = tuple(item for item in row["observation_fields"].split(";") if item)
+        if "predicate_snapshot" not in observation_fields:
+            raise ValueError("semantic config omits predicate_snapshot from the information budget")
+        event_types = frozenset(item for item in row["event_types"].split(";") if item)
+        if event_types != EVENT_TYPES:
+            raise ValueError("semantic config event families differ from the frozen runner contract")
+        reserved_state_ids = frozenset(int(item) for item in row["reserved_state_ids"].split(";") if item)
+        if schema_version == SEMANTIC_CONFIG_SCHEMA:
+            expected_reserved_state_ids = frozenset({25, 26})
+            expected_rollout_authorized = "false"
+            expected_status_by_state = {
+                state_id: "reserved_uninspected" for state_id in expected_reserved_state_ids
+            }
+        else:
+            expected_reserved_state_ids = FORMAL_STATE_IDS | PERMANENT_RESERVE_STATE_IDS
+            expected_rollout_authorized = "true"
+            expected_status_by_state = {
+                **{state_id: "formal_authorized_preregistered" for state_id in FORMAL_STATE_IDS},
+                **{
+                    state_id: "permanent_reserve"
+                    for state_id in PERMANENT_RESERVE_STATE_IDS
+                },
+            }
+        if reserved_state_ids != expected_reserved_state_ids:
+            raise ValueError("semantic config reserve identity differs from the frozen manifest")
+        if row.get("rollout_authorized", "").lower() != expected_rollout_authorized:
+            raise ValueError("semantic config rollout authorization differs from its schema")
+        if row.get("predicate_snapshot_schema") != "cope-libero-predicate-snapshot-v1":
+            raise ValueError("semantic config predicate packet schema is not pinned")
+        if row.get("predicate_factory") != (
+            "cope.libero_predicate_validator:create_libero_predicate_validator"
+        ):
+            raise ValueError("semantic config predicate factory is not the production validator")
+        for path_key, digest_key in (
+            ("bddl_path", "bddl_sha256"),
+            ("init_states_path", "init_states_sha256"),
+        ):
+            artifact = Path(row[path_key])
+            if not artifact.is_file() or sha256_file(artifact) != row[digest_key]:
+>               raise ValueError(f"semantic config artifact verification failed for {path_key}")
+E               ValueError: semantic config artifact verification failed for bddl_path
+
+cope/semantic_live_runner.py:231: ValueError
+=========================== short test summary info ============================
+FAILED tests/test_semantic_oracle_pilot.py::test_repository_authorization_is_narrow_and_bound_to_x04
+1 failed, 1579 passed, 1 skipped, 100 subtests passed in 123.08s (0:02:03)

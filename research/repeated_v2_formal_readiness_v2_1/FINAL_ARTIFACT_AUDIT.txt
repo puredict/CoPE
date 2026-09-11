@@ -1,0 +1,7 @@
+PASS final artifact audit
+old_gap_rows=794 old_root_units=127 closure_rows=127 remaining_catalog_gaps=0
+scientific_eligibility_roots=12 eligible_task_ids=[1, 4, 6, 7] pilot_task_ids=[1, 4]
+calibration_nominal=100 calibration_unique=100 structural_replays=100
+complete_feasibility_certificates=9 feasibility_cells=420 passing_feasibility_cells=417
+pilot_expected=32 pilot_completed=0 pilot_missing=32 duplicate=0 unexpected=0
+pilot_provider_calls=0 pilot_vla_calls=0 formal_provider_calls=0 formal_trajectories=0

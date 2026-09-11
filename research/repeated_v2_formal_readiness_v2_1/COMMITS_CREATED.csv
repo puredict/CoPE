@@ -1,0 +1,33 @@
+commit,subject
+1237de979fad501b2e1c730111160959a246bf96,Freeze Experiment-1 trace contract v1
+b328c18f00c465b9cbdab2e9173515adc21c8543,Record v2.1 formal-readiness repository baseline
+77cd0df4c8bbf9662278ef2194aa04ff678ec5be,Freeze Experiment 1 trace contract v1
+d82051368e7779a5c0037974b9dec770144eca0f,Integrate frozen Experiment 1 trace interface
+a2a408535e4e911b321ff7c09fb588b2dcdf0e48,Bind repeated-v2 traces to frozen Experiment 1 contract
+6b5f4aadfba567e11dbd2019d981f8d187aa72e9,Freeze v2.1 horizon and independence amendment
+a3f8fbcd6699e412037abb2ac795cf0806a00ad0,Prepare all-task v2.1 OpenVLA calibration
+4dda29c648ab1be9f660dcc7fd9b7098ed652be4,Close v2.1 calibration and catalog interfaces
+261d1470790df1365412a793d5abeeda2796aa68,Add fixed template semantics diagnostic
+7dfe618c6917afbaa5b5e30696fecc1a328b3048,Classify task-specific feasible event families
+91e25d5a60d85ab8bd3118bdbc025a04810b849d,Bind Qwen reasoner to strict JSON responses
+b195456ff97170a05d342556fce1fc493f353930,Audit task-specific grounding changes
+b1e73a0966c867f5e75d105ff6d23a2a91dac099,Expand v2.1 root-cause gap reports
+9118617af197a948371e0a7a9a3879ab3e49c725,Record v2.1 test and simulator smoke evidence
+9878f22dbdb2e7b8daa0c7323c6890125f7908f1,Archive production adapter qualification receipts
+fa810c6605e471a9d56c9fa8519fae2042abdbe0,Record production reasoner and backend binding audit
+0195c163cf17926e6e8c191ff932ce3c8df9d726,Complete v2.1 reporting artifact names
+b2918f2877d6cab1901c67b331b07b0d645d76dd,Record full local test environment failure
+65eccfb8c7da79be43cd87f90486df9660950ffe,Archive zero-call pre-catalog preflight
+f163522448cb485cf557d76bb54917ccc9cbac8e,Record fixed-template diagnostic matrix
+5bb4a239a2b5cccc0a6bf27f065ba16a4eadbbd2,Document production runtime binding gap
+e41de33130e5ad773b3a4aecc3ef23cc24e1b18c,Record exact revision full test pass
+8cf28bd5bb9bdb7cbdd82850ca2336439ebbc058,Separate catalog closure from eligibility outcomes
+3748e32b321f6733d1772a8dad955cdb352c52a0,Record current v2.1 suite pass
+c01700cab7c38264ac414fe72de7d0c4ecb5b136,Separate pilot and formal task-count gates
+f1fd3665f7258aaacb8e5655b4cf41fceba5a2ab,Report formal eligible candidates when below minimum
+e8b725a357ad9c9b49cd72d3a085de6a2f235511,Separate catalog completeness from schedule eligibility
+ed882f2704401890740ac45d4547ba1b2c512f06,Report only schedule-eligible catalog tasks
+53009d1d19f1cae6fd334365733e61771bea2830,Parallelize sealed structural witness replay
+35014277c24c41bb59ec22c143b4cc4fa6275d75,Archive all-task calibration and feasibility discovery
+33027879e230fc76ebf66efc5ccb7494290d889b,Archive dev-state semantic feasibility audit
+74c1e7b24bfec55398d8dc2f5be38b2f78691c00,Build audited v2.1 task catalog certificates
