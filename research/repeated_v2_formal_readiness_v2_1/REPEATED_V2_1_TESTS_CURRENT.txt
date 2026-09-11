@@ -1,0 +1,9 @@
+Experiment 1 repeated-interruptions v2.1 current-branch test
+Date: 2026-09-10 America/Chicago
+Source commit tested: 8cf28bd5bb9bdb7cbdd82850ca2336439ebbc058
+Command:
+  /Users/lijingsu/Documents/cope_repeated_v2_phase4_worktree/.venv/bin/python -m pytest -q tests/repeated_v2
+Result:
+  929 passed, 1 skipped, 100 subtests passed in 90.82s (0:01:30)
+
+The skipped item is the opt-in real LIBERO smoke; the asset-host smoke is retained in SIMULATOR_SMOKE_TESTS.txt.
