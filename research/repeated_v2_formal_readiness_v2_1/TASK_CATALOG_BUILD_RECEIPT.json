@@ -1,0 +1,33 @@
+{
+  "catalog_file_sha256": "0ae74801bdac48304e55c2391b1e0dca684620a31c678d517391fe3c05652f0d",
+  "catalog_sha256": "9c9ed1fb717971c49411b72ac8d995f5e1fc873309761c7f42aa44bdae346d64",
+  "eligible_task_count": 4,
+  "eligible_task_ids": [
+    1,
+    4,
+    6,
+    7
+  ],
+  "formal_trajectories": 0,
+  "provider_calls": 0,
+  "remaining_root_causes": 12,
+  "schema_version": "repeated_v2_1_catalog_build_receipt_v1",
+  "selection_status": "BLOCKED_INSUFFICIENT_ELIGIBLE_TASKS",
+  "source_sha256": {
+    "calibration": "4cd50f28c0e5df61ad811bcf5d27430919102c31939f9aa59fd12485c28d2e83",
+    "calibration_admission": "5fe73b12e0db18432d9652f699dab91214af554f3818497830588ccde5c3a25e",
+    "calibration_milestones": "f5efafbe60313e6b0960e38e84f911d231c88db74e8333f7ce71a3cbbd9bfc39",
+    "calibration_protocol": "2a7e48b5641264a8693c127e470883148e4902fa53a477e2b8241deb2fbe386a",
+    "calibration_structural": "e02a8c48048a1308fb2fb027123d206e7200f0b511051934ae3fef562cb92ecc",
+    "compiler": "a8a56f303907eeedf7fc46506e22834ae4ecb7254823a4fbcd3979b39865b2cc",
+    "continuation_backend": "4f11183dd30c87c2f38da4fb8e6f383038dfd799f717f6d0478ceaf564b05187",
+    "dynamic_evaluator": "6272566e7c1db7d3ba9f2be826b11e5d5030f137d7f47c6fd303a33ca8fcab07",
+    "feasibility": "b91a130e1c6269aa6bbb8ebf0ea180bba73018f6b3d31a0b8e61f58e7b06b106",
+    "feasibility_summary": "ab4a789a5a86cc12511e7940708a80badb5bf5e05dbdf428f147eaf8d3b7a09e",
+    "inventory": "a1c7b97d9f0aea18ec9bebde4ff62c224b39be152bd7293a9608e38c54c6bc09",
+    "parameters": "1981351adf93d1f0eb6ac8bb4e5ce5d49b965107f3da0c8d50df02655f0e5b07",
+    "protocol": "3c602e402855461ed20ddb1cdcbb470b5e1e059d6b3fc25db0e0d2665100ae22",
+    "task_progress": "de59d0f4fa6612cfd56c29b8e59870e409325c97b5817cd02f0aecdc660858cb"
+  },
+  "vla_calls": 0
+}

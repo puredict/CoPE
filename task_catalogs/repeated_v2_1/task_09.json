@@ -1,0 +1,886 @@
+{
+  "alternative_valid_goals": [
+    {
+      "arguments": [
+        "porcelain_mug_1",
+        "microwave_1_heating_region"
+      ],
+      "derivation": "existing LIBERO object/target inventory plus actual predicate-availability audit",
+      "family_key": "goal:in:porcelain_mug_1:microwave_1_heating_region",
+      "predicate": "in",
+      "source_ref": "/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/research/repeated_v2_formal_readiness_v2_1/feasibility_audit_b195456_01/SEMANTIC_FEASIBILITY_RESULTS.jsonl#task=9&family=USER_REPLACES_ACTIVE_GOAL"
+    }
+  ],
+  "calibration_records": [
+    {
+      "action_trajectory_sha256": "f437999806eda10343f67c188d70381ff22d9b711fdfba750fa8b18f087b46d5",
+      "adapter_source_sha256": "86b6eec20c29a6bec670311702235b2d33e1e35826cea57cc07902a9d66863cd",
+      "all_action_validations_pass": true,
+      "checkpoint_sha256": "d36eaa2a334cd52f4a3a94558cf90d82584743ea772fabf76f9e4372e7076076",
+      "clean_episode": true,
+      "collection_ceiling_policy_steps": 520,
+      "completion_policy_steps": null,
+      "environment_policy_action_sequence_sha256": "f437999806eda10343f67c188d70381ff22d9b711fdfba750fa8b18f087b46d5",
+      "evidence_ref": "/mnt/data_new/lijingsu/cope_vla_runtime/outputs/repeated_v2_readiness_v2_1/clean_calibration_tasks_1_9_gpu1_a3f8fbc_01/task_9_state_0_seed_101/TERMINAL.txt",
+      "evidence_sha256": "452d530b384ec4eb52ecc177f8fa610669950ddf658e35dbcf3d5d669fcd9909",
+      "full_trace_sha256": "f0b5cc7f6783250b8528b0a3a990ac229440a7d21eaa877db42f853e7885bd59",
+      "inference_seconds": 372.6194911915809,
+      "initial_state_id": 0,
+      "initial_state_sha256": "ea7db2b727794199cfa1e42f8d924c5841e4af18716a392adf30d5517114c87f",
+      "learned_policy": true,
+      "manual_intervention": false,
+      "policy_model_id": "openvla-7b-finetuned-libero-10",
+      "policy_seed": 101,
+      "policy_steps_consumed": 520,
+      "protocol_sha256": "99b96001fe758a6c5b78b812ca9f2680e770cdca937328f1aa7f4f40be4542d0",
+      "provider_id": "openvla_native",
+      "raw_policy_action_sequence_sha256": "dfaf5fcf63578b3841414ed978ecfbcabad088e251910ceb8e1bf690518e9e0c",
+      "runtime_client_sha256": "d513c071fb8eaade42a5bc591a48022c11b63bfd58380d0cf319dcc3bdabb976",
+      "runtime_inference_sha256": "539687fa13e8fc69b79289cbb2be1b7e1076dcaae4dc0cbfb5e76c6739a38e61",
+      "schema_version": "repeated_v2_1_clean_calibration_episode_v1",
+      "status": "timeout",
+      "success": false,
+      "task_id": 9,
+      "termination_reason": "policy_budget_exhausted",
+      "uses_privileged_state": false,
+      "wall_seconds": 535.8724446538836
+    },
+    {
+      "action_trajectory_sha256": "491e72609a90ef5e47479da4fe88b24254e8daa74d63c983c68737f3137acff0",
+      "adapter_source_sha256": "86b6eec20c29a6bec670311702235b2d33e1e35826cea57cc07902a9d66863cd",
+      "all_action_validations_pass": true,
+      "checkpoint_sha256": "d36eaa2a334cd52f4a3a94558cf90d82584743ea772fabf76f9e4372e7076076",
+      "clean_episode": true,
+      "collection_ceiling_policy_steps": 520,
+      "completion_policy_steps": null,
+      "environment_policy_action_sequence_sha256": "491e72609a90ef5e47479da4fe88b24254e8daa74d63c983c68737f3137acff0",
+      "evidence_ref": "/mnt/data_new/lijingsu/cope_vla_runtime/outputs/repeated_v2_readiness_v2_1/clean_calibration_tasks_1_9_gpu1_a3f8fbc_01/task_9_state_1_seed_101/TERMINAL.txt",
+      "evidence_sha256": "872e4d0b41ff11ca0cfb3f45478e0bf49572866b7c362b9b5fd8e6b560b1c3bf",
+      "full_trace_sha256": "b75a3742b2fb208365e4f89ed4cd26b99d6c0fcd9f6266ec525c3377bcffa5a4",
+      "inference_seconds": 326.86642981506884,
+      "initial_state_id": 1,
+      "initial_state_sha256": "8a1664e433521b5f995c9840cd9d41bf796b38742e57ad57786d67076de8b0cd",
+      "learned_policy": true,
+      "manual_intervention": false,
+      "policy_model_id": "openvla-7b-finetuned-libero-10",
+      "policy_seed": 101,
+      "policy_steps_consumed": 520,
+      "protocol_sha256": "99b96001fe758a6c5b78b812ca9f2680e770cdca937328f1aa7f4f40be4542d0",
+      "provider_id": "openvla_native",
+      "raw_policy_action_sequence_sha256": "c33bdaaa1cd77d1fb9127d08412f6f5b71dc5f17a13bc10f53079d881e7dd681",
+      "runtime_client_sha256": "d513c071fb8eaade42a5bc591a48022c11b63bfd58380d0cf319dcc3bdabb976",
+      "runtime_inference_sha256": "539687fa13e8fc69b79289cbb2be1b7e1076dcaae4dc0cbfb5e76c6739a38e61",
+      "schema_version": "repeated_v2_1_clean_calibration_episode_v1",
+      "status": "timeout",
+      "success": false,
+      "task_id": 9,
+      "termination_reason": "policy_budget_exhausted",
+      "uses_privileged_state": false,
+      "wall_seconds": 479.4708174280822
+    },
+    {
+      "action_trajectory_sha256": "f90a50effbfe8c6e41bdd7d3705409de6e351f1d37a9f425837308557cf8e901",
+      "adapter_source_sha256": "86b6eec20c29a6bec670311702235b2d33e1e35826cea57cc07902a9d66863cd",
+      "all_action_validations_pass": true,
+      "checkpoint_sha256": "d36eaa2a334cd52f4a3a94558cf90d82584743ea772fabf76f9e4372e7076076",
+      "clean_episode": true,
+      "collection_ceiling_policy_steps": 520,
+      "completion_policy_steps": 249,
+      "environment_policy_action_sequence_sha256": "f90a50effbfe8c6e41bdd7d3705409de6e351f1d37a9f425837308557cf8e901",
+      "evidence_ref": "/mnt/data_new/lijingsu/cope_vla_runtime/outputs/repeated_v2_readiness_v2_1/clean_calibration_tasks_1_9_gpu1_a3f8fbc_01/task_9_state_2_seed_101/TERMINAL.txt",
+      "evidence_sha256": "d92426130f63000621aa52dae59a854146d62e14f4352b40c13edcd311940c54",
+      "full_trace_sha256": "56ea692418a20f692d95acdb9e9a81a9a589e8b2610b37cb01bf09f3fe905a38",
+      "inference_seconds": 141.84100704826415,
+      "initial_state_id": 2,
+      "initial_state_sha256": "1cc5eefc998751de4d0e86462742176ed71a470e4846013c1a92ac47cefb9b67",
+      "learned_policy": true,
+      "manual_intervention": false,
+      "policy_model_id": "openvla-7b-finetuned-libero-10",
+      "policy_seed": 101,
+      "policy_steps_consumed": 249,
+      "protocol_sha256": "99b96001fe758a6c5b78b812ca9f2680e770cdca937328f1aa7f4f40be4542d0",
+      "provider_id": "openvla_native",
+      "raw_policy_action_sequence_sha256": "ca95f08c7051123c62aa5d7fedc83da651e2b9c7b6f519b4a0f7932b69a91c60",
+      "runtime_client_sha256": "d513c071fb8eaade42a5bc591a48022c11b63bfd58380d0cf319dcc3bdabb976",
+      "runtime_inference_sha256": "539687fa13e8fc69b79289cbb2be1b7e1076dcaae4dc0cbfb5e76c6739a38e61",
+      "schema_version": "repeated_v2_1_clean_calibration_episode_v1",
+      "status": "success",
+      "success": true,
+      "task_id": 9,
+      "termination_reason": "exact_libero_goal",
+      "uses_privileged_state": false,
+      "wall_seconds": 220.0092031620443
+    },
+    {
+      "action_trajectory_sha256": "f4075b5a415a59afd23ce7ed41a29bbae7019798ddf71a83955c6050efc699bf",
+      "adapter_source_sha256": "86b6eec20c29a6bec670311702235b2d33e1e35826cea57cc07902a9d66863cd",
+      "all_action_validations_pass": true,
+      "checkpoint_sha256": "d36eaa2a334cd52f4a3a94558cf90d82584743ea772fabf76f9e4372e7076076",
+      "clean_episode": true,
+      "collection_ceiling_policy_steps": 520,
+      "completion_policy_steps": null,
+      "environment_policy_action_sequence_sha256": "f4075b5a415a59afd23ce7ed41a29bbae7019798ddf71a83955c6050efc699bf",
+      "evidence_ref": "/mnt/data_new/lijingsu/cope_vla_runtime/outputs/repeated_v2_readiness_v2_1/clean_calibration_tasks_1_9_gpu1_a3f8fbc_01/task_9_state_3_seed_101/TERMINAL.txt",
+      "evidence_sha256": "c60ab8f0b1af778c01d60b208101255efa2d80b15c6d1fb36720a93abcc515d0",
+      "full_trace_sha256": "68068832390a56537386f1cbe2a9374c85e28e0e5252966269a1e4e055b9f662",
+      "inference_seconds": 267.4373774714768,
+      "initial_state_id": 3,
+      "initial_state_sha256": "ac150060868f6d48b6b53f5d8f07e71e04d3ca8883ff52edae6b0f543c05659a",
+      "learned_policy": true,
+      "manual_intervention": false,
+      "policy_model_id": "openvla-7b-finetuned-libero-10",
+      "policy_seed": 101,
+      "policy_steps_consumed": 520,
+      "protocol_sha256": "99b96001fe758a6c5b78b812ca9f2680e770cdca937328f1aa7f4f40be4542d0",
+      "provider_id": "openvla_native",
+      "raw_policy_action_sequence_sha256": "3e3216af793f7b145167991c54fa10dc72d5e6070af3ff85f68de9bda40a9974",
+      "runtime_client_sha256": "d513c071fb8eaade42a5bc591a48022c11b63bfd58380d0cf319dcc3bdabb976",
+      "runtime_inference_sha256": "539687fa13e8fc69b79289cbb2be1b7e1076dcaae4dc0cbfb5e76c6739a38e61",
+      "schema_version": "repeated_v2_1_clean_calibration_episode_v1",
+      "status": "timeout",
+      "success": false,
+      "task_id": 9,
+      "termination_reason": "policy_budget_exhausted",
+      "uses_privileged_state": false,
+      "wall_seconds": 427.42061613313854
+    },
+    {
+      "action_trajectory_sha256": "f8b173e608a292f08fa9c0a04b101428d63d065948e651fca22e6f8868c0777d",
+      "adapter_source_sha256": "86b6eec20c29a6bec670311702235b2d33e1e35826cea57cc07902a9d66863cd",
+      "all_action_validations_pass": true,
+      "checkpoint_sha256": "d36eaa2a334cd52f4a3a94558cf90d82584743ea772fabf76f9e4372e7076076",
+      "clean_episode": true,
+      "collection_ceiling_policy_steps": 520,
+      "completion_policy_steps": 388,
+      "environment_policy_action_sequence_sha256": "f8b173e608a292f08fa9c0a04b101428d63d065948e651fca22e6f8868c0777d",
+      "evidence_ref": "/mnt/data_new/lijingsu/cope_vla_runtime/outputs/repeated_v2_readiness_v2_1/clean_calibration_tasks_1_9_gpu1_a3f8fbc_01/task_9_state_4_seed_101/TERMINAL.txt",
+      "evidence_sha256": "bcdb0fef55cd4c444a6d8fef91886e0906177f8b9fab598917b7da069965f033",
+      "full_trace_sha256": "ef565142ecd789e4f2a6343fd8c4f91b1d91890d55deff1d336c97b48bc18f73",
+      "inference_seconds": 211.52190739288926,
+      "initial_state_id": 4,
+      "initial_state_sha256": "e3ba923c504addfab7f0ef464e30c4de9e70f02106fdd714ce793dda722233f7",
+      "learned_policy": true,
+      "manual_intervention": false,
+      "policy_model_id": "openvla-7b-finetuned-libero-10",
+      "policy_seed": 101,
+      "policy_steps_consumed": 388,
+      "protocol_sha256": "99b96001fe758a6c5b78b812ca9f2680e770cdca937328f1aa7f4f40be4542d0",
+      "provider_id": "openvla_native",
+      "raw_policy_action_sequence_sha256": "0b5cb3e3595587d66e6cfa49087d6cbb5232f072e279ec05bf9ee6d83f9ea97e",
+      "runtime_client_sha256": "d513c071fb8eaade42a5bc591a48022c11b63bfd58380d0cf319dcc3bdabb976",
+      "runtime_inference_sha256": "539687fa13e8fc69b79289cbb2be1b7e1076dcaae4dc0cbfb5e76c6739a38e61",
+      "schema_version": "repeated_v2_1_clean_calibration_episode_v1",
+      "status": "success",
+      "success": true,
+      "task_id": 9,
+      "termination_reason": "exact_libero_goal",
+      "uses_privileged_state": false,
+      "wall_seconds": 334.02922811359167
+    },
+    {
+      "action_trajectory_sha256": "2131c4499e7133fc45308d88a38e804b43c0c36b015560c1806de23493ec48d3",
+      "adapter_source_sha256": "86b6eec20c29a6bec670311702235b2d33e1e35826cea57cc07902a9d66863cd",
+      "all_action_validations_pass": true,
+      "checkpoint_sha256": "d36eaa2a334cd52f4a3a94558cf90d82584743ea772fabf76f9e4372e7076076",
+      "clean_episode": true,
+      "collection_ceiling_policy_steps": 520,
+      "completion_policy_steps": null,
+      "environment_policy_action_sequence_sha256": "2131c4499e7133fc45308d88a38e804b43c0c36b015560c1806de23493ec48d3",
+      "evidence_ref": "/mnt/data_new/lijingsu/cope_vla_runtime/outputs/repeated_v2_readiness_v2_1/clean_calibration_tasks_1_9_gpu1_a3f8fbc_01/task_9_state_5_seed_101/TERMINAL.txt",
+      "evidence_sha256": "2e269edceb73e3872f07d3707e4e8675d3e44ac9b91212a06a6b728cf95c3d9b",
+      "full_trace_sha256": "b4f9b0c80992c055b95dabaabfc59cc64a02873abd9b2c727cf68951c49001fd",
+      "inference_seconds": 272.9883052203804,
+      "initial_state_id": 5,
+      "initial_state_sha256": "3f69e06f62cab10c9c43e3dd278e7d0cd4590b88740f7ae57b5852d1ee96f43e",
+      "learned_policy": true,
+      "manual_intervention": false,
+      "policy_model_id": "openvla-7b-finetuned-libero-10",
+      "policy_seed": 101,
+      "policy_steps_consumed": 520,
+      "protocol_sha256": "99b96001fe758a6c5b78b812ca9f2680e770cdca937328f1aa7f4f40be4542d0",
+      "provider_id": "openvla_native",
+      "raw_policy_action_sequence_sha256": "0267f7c0f82a4c6b886923fca2268d667eab093873acb2c4e5ea98ae80e3dc97",
+      "runtime_client_sha256": "d513c071fb8eaade42a5bc591a48022c11b63bfd58380d0cf319dcc3bdabb976",
+      "runtime_inference_sha256": "539687fa13e8fc69b79289cbb2be1b7e1076dcaae4dc0cbfb5e76c6739a38e61",
+      "schema_version": "repeated_v2_1_clean_calibration_episode_v1",
+      "status": "timeout",
+      "success": false,
+      "task_id": 9,
+      "termination_reason": "policy_budget_exhausted",
+      "uses_privileged_state": false,
+      "wall_seconds": 431.6160217784345
+    },
+    {
+      "action_trajectory_sha256": "24d7c95e394101abd00200932ba5a66cf2d6d547126b4366f4b7372caf1cca79",
+      "adapter_source_sha256": "86b6eec20c29a6bec670311702235b2d33e1e35826cea57cc07902a9d66863cd",
+      "all_action_validations_pass": true,
+      "checkpoint_sha256": "d36eaa2a334cd52f4a3a94558cf90d82584743ea772fabf76f9e4372e7076076",
+      "clean_episode": true,
+      "collection_ceiling_policy_steps": 520,
+      "completion_policy_steps": null,
+      "environment_policy_action_sequence_sha256": "24d7c95e394101abd00200932ba5a66cf2d6d547126b4366f4b7372caf1cca79",
+      "evidence_ref": "/mnt/data_new/lijingsu/cope_vla_runtime/outputs/repeated_v2_readiness_v2_1/clean_calibration_tasks_1_9_gpu1_a3f8fbc_01/task_9_state_6_seed_101/TERMINAL.txt",
+      "evidence_sha256": "2e1c367b7ea76b746436bb4108aba8f381523fcdc18c5341bca6b1726d1f906d",
+      "full_trace_sha256": "bb35e3fffa0e3f93d8695b50e99fb18298d2e467c118ed186c21a32e1f6d4b4c",
+      "inference_seconds": 268.5657185688615,
+      "initial_state_id": 6,
+      "initial_state_sha256": "7112c1d02864ebb60d6d405764cddab8bd527ca36b9377275859d8b9db93470c",
+      "learned_policy": true,
+      "manual_intervention": false,
+      "policy_model_id": "openvla-7b-finetuned-libero-10",
+      "policy_seed": 101,
+      "policy_steps_consumed": 520,
+      "protocol_sha256": "99b96001fe758a6c5b78b812ca9f2680e770cdca937328f1aa7f4f40be4542d0",
+      "provider_id": "openvla_native",
+      "raw_policy_action_sequence_sha256": "cbcda4a4c0bd3dd16f9e34961668a0bf748cf981a6cc3a2cbf10b139e6938a6f",
+      "runtime_client_sha256": "d513c071fb8eaade42a5bc591a48022c11b63bfd58380d0cf319dcc3bdabb976",
+      "runtime_inference_sha256": "539687fa13e8fc69b79289cbb2be1b7e1076dcaae4dc0cbfb5e76c6739a38e61",
+      "schema_version": "repeated_v2_1_clean_calibration_episode_v1",
+      "status": "timeout",
+      "success": false,
+      "task_id": 9,
+      "termination_reason": "policy_budget_exhausted",
+      "uses_privileged_state": false,
+      "wall_seconds": 425.37357442453504
+    },
+    {
+      "action_trajectory_sha256": "9c379cb8cff33a6625963df29bd68286179057e51560ee742d26254f60dcf9d3",
+      "adapter_source_sha256": "86b6eec20c29a6bec670311702235b2d33e1e35826cea57cc07902a9d66863cd",
+      "all_action_validations_pass": true,
+      "checkpoint_sha256": "d36eaa2a334cd52f4a3a94558cf90d82584743ea772fabf76f9e4372e7076076",
+      "clean_episode": true,
+      "collection_ceiling_policy_steps": 520,
+      "completion_policy_steps": null,
+      "environment_policy_action_sequence_sha256": "9c379cb8cff33a6625963df29bd68286179057e51560ee742d26254f60dcf9d3",
+      "evidence_ref": "/mnt/data_new/lijingsu/cope_vla_runtime/outputs/repeated_v2_readiness_v2_1/clean_calibration_tasks_1_9_gpu1_a3f8fbc_01/task_9_state_7_seed_101/TERMINAL.txt",
+      "evidence_sha256": "f47dac4aba0b13eaa9c0747c8e94e63997953cf0e084d697a411b32a900de675",
+      "full_trace_sha256": "606b007496a3f84ef7d6304e424f507fc9ef54ef5f036adc1f2484c52e4179c9",
+      "inference_seconds": 269.00503687001765,
+      "initial_state_id": 7,
+      "initial_state_sha256": "5952d59cf718abd407c8c685c213a8de1b81e8c0ced22f15f4800fbcf72d52d0",
+      "learned_policy": true,
+      "manual_intervention": false,
+      "policy_model_id": "openvla-7b-finetuned-libero-10",
+      "policy_seed": 101,
+      "policy_steps_consumed": 520,
+      "protocol_sha256": "99b96001fe758a6c5b78b812ca9f2680e770cdca937328f1aa7f4f40be4542d0",
+      "provider_id": "openvla_native",
+      "raw_policy_action_sequence_sha256": "cae114c012e6295ed3c12b29b130790d47020c14d51e4634985437ad32d53df3",
+      "runtime_client_sha256": "d513c071fb8eaade42a5bc591a48022c11b63bfd58380d0cf319dcc3bdabb976",
+      "runtime_inference_sha256": "539687fa13e8fc69b79289cbb2be1b7e1076dcaae4dc0cbfb5e76c6739a38e61",
+      "schema_version": "repeated_v2_1_clean_calibration_episode_v1",
+      "status": "timeout",
+      "success": false,
+      "task_id": 9,
+      "termination_reason": "policy_budget_exhausted",
+      "uses_privileged_state": false,
+      "wall_seconds": 434.8803273085505
+    },
+    {
+      "action_trajectory_sha256": "9a95d50c85dd3398bdf9c305e52dcbe23481e3e5f12bcd7adb58f9bdcb306eb9",
+      "adapter_source_sha256": "86b6eec20c29a6bec670311702235b2d33e1e35826cea57cc07902a9d66863cd",
+      "all_action_validations_pass": true,
+      "checkpoint_sha256": "d36eaa2a334cd52f4a3a94558cf90d82584743ea772fabf76f9e4372e7076076",
+      "clean_episode": true,
+      "collection_ceiling_policy_steps": 520,
+      "completion_policy_steps": null,
+      "environment_policy_action_sequence_sha256": "9a95d50c85dd3398bdf9c305e52dcbe23481e3e5f12bcd7adb58f9bdcb306eb9",
+      "evidence_ref": "/mnt/data_new/lijingsu/cope_vla_runtime/outputs/repeated_v2_readiness_v2_1/clean_calibration_tasks_1_9_gpu1_a3f8fbc_01/task_9_state_8_seed_101/TERMINAL.txt",
+      "evidence_sha256": "1fa55409bd5b6ce27e11d8240bfc271d1ea8080f72c3eb94c3459c635a41068f",
+      "full_trace_sha256": "c90f81d68d630d2638ed34a6e226e0207e304d92796863bd9776f92bf3655785",
+      "inference_seconds": 267.0952628403902,
+      "initial_state_id": 8,
+      "initial_state_sha256": "0660777678d8c06056f77ba9d1f89dae13d3e6eb6b73a91e656be16e3d1a763a",
+      "learned_policy": true,
+      "manual_intervention": false,
+      "policy_model_id": "openvla-7b-finetuned-libero-10",
+      "policy_seed": 101,
+      "policy_steps_consumed": 520,
+      "protocol_sha256": "99b96001fe758a6c5b78b812ca9f2680e770cdca937328f1aa7f4f40be4542d0",
+      "provider_id": "openvla_native",
+      "raw_policy_action_sequence_sha256": "0b3e27752143ec9e865730da97a2bba076377b71bb6b389ddf8f9dd02bf1b192",
+      "runtime_client_sha256": "d513c071fb8eaade42a5bc591a48022c11b63bfd58380d0cf319dcc3bdabb976",
+      "runtime_inference_sha256": "539687fa13e8fc69b79289cbb2be1b7e1076dcaae4dc0cbfb5e76c6739a38e61",
+      "schema_version": "repeated_v2_1_clean_calibration_episode_v1",
+      "status": "timeout",
+      "success": false,
+      "task_id": 9,
+      "termination_reason": "policy_budget_exhausted",
+      "uses_privileged_state": false,
+      "wall_seconds": 420.97821547836065
+    },
+    {
+      "action_trajectory_sha256": "c44062ffe1f5bfb3fd2691722e30d01947cc4dd31f026f21c260c0009e489942",
+      "adapter_source_sha256": "86b6eec20c29a6bec670311702235b2d33e1e35826cea57cc07902a9d66863cd",
+      "all_action_validations_pass": true,
+      "checkpoint_sha256": "d36eaa2a334cd52f4a3a94558cf90d82584743ea772fabf76f9e4372e7076076",
+      "clean_episode": true,
+      "collection_ceiling_policy_steps": 520,
+      "completion_policy_steps": 462,
+      "environment_policy_action_sequence_sha256": "c44062ffe1f5bfb3fd2691722e30d01947cc4dd31f026f21c260c0009e489942",
+      "evidence_ref": "/mnt/data_new/lijingsu/cope_vla_runtime/outputs/repeated_v2_readiness_v2_1/clean_calibration_tasks_1_9_gpu1_a3f8fbc_01/task_9_state_9_seed_101/TERMINAL.txt",
+      "evidence_sha256": "06b215b055a9cae486703c10ef8d7f7ed46fdb52c7473315fabfacaffa5c3ee7",
+      "full_trace_sha256": "895d24682d98f07e9b8f10f91d3fdbff01922fb8b5b732a7bedf8a35278a38da",
+      "inference_seconds": 240.0555408447981,
+      "initial_state_id": 9,
+      "initial_state_sha256": "b15e6a13c7a8ef65ea60b458e3f318adf4c99e9945c2be1431e76639ec2a9f2d",
+      "learned_policy": true,
+      "manual_intervention": false,
+      "policy_model_id": "openvla-7b-finetuned-libero-10",
+      "policy_seed": 101,
+      "policy_steps_consumed": 462,
+      "protocol_sha256": "99b96001fe758a6c5b78b812ca9f2680e770cdca937328f1aa7f4f40be4542d0",
+      "provider_id": "openvla_native",
+      "raw_policy_action_sequence_sha256": "65d5c641e82e82637b31274e57c7ea5a544620f8b3151faaa094943a7cc3767a",
+      "runtime_client_sha256": "d513c071fb8eaade42a5bc591a48022c11b63bfd58380d0cf319dcc3bdabb976",
+      "runtime_inference_sha256": "539687fa13e8fc69b79289cbb2be1b7e1076dcaae4dc0cbfb5e76c6739a38e61",
+      "schema_version": "repeated_v2_1_clean_calibration_episode_v1",
+      "status": "success",
+      "success": true,
+      "task_id": 9,
+      "termination_reason": "exact_libero_goal",
+      "uses_privileged_state": false,
+      "wall_seconds": 384.3677972573787
+    }
+  ],
+  "dynamic_evaluator_predicates": [
+    {
+      "arguments": [
+        "white_yellow_mug_1",
+        "microwave_1_heating_region"
+      ],
+      "family_key": "goal:in:white_yellow_mug_1:microwave_1_heating_region",
+      "predicate": "in",
+      "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE6_put_the_yellow_and_white_mug_in_the_microwave_and_close_it.bddl#:goal"
+    },
+    {
+      "arguments": [
+        "microwave_1"
+      ],
+      "family_key": "goal:close:microwave_1",
+      "predicate": "close",
+      "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE6_put_the_yellow_and_white_mug_in_the_microwave_and_close_it.bddl#:goal"
+    },
+    {
+      "arguments": [
+        "porcelain_mug_1",
+        "microwave_1_heating_region"
+      ],
+      "family_key": "goal:in:porcelain_mug_1:microwave_1_heating_region",
+      "predicate": "in",
+      "source_ref": "/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/research/repeated_v2_formal_readiness_v2_1/feasibility_audit_b195456_01/SEMANTIC_FEASIBILITY_RESULTS.jsonl#task=9&family=USER_REPLACES_ACTIVE_GOAL"
+    }
+  ],
+  "event_feasibility": {
+    "TARGET_OBJECT_DISPLACED": {
+      "covered_state_ids": [
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "event_state_cells": 5,
+      "evidence_refs": [
+        "/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/research/repeated_v2_formal_readiness_v2_1/feasibility_audit_b195456_01/SEMANTIC_FEASIBILITY_RESULTS.jsonl#task=9&family=TARGET_OBJECT_DISPLACED"
+      ],
+      "passed": true,
+      "passing_event_state_cells": 5
+    },
+    "TOOL_OR_TARGET_AVAILABLE_AGAIN": {
+      "covered_state_ids": [
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "event_state_cells": 5,
+      "evidence_refs": [
+        "/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/research/repeated_v2_formal_readiness_v2_1/feasibility_audit_b195456_01/SEMANTIC_FEASIBILITY_RESULTS.jsonl#task=9&family=TOOL_OR_TARGET_AVAILABLE_AGAIN"
+      ],
+      "passed": true,
+      "passing_event_state_cells": 5
+    },
+    "TOOL_OR_TARGET_TEMPORARILY_UNAVAILABLE": {
+      "covered_state_ids": [
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "event_state_cells": 5,
+      "evidence_refs": [
+        "/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/research/repeated_v2_formal_readiness_v2_1/feasibility_audit_b195456_01/SEMANTIC_FEASIBILITY_RESULTS.jsonl#task=9&family=TOOL_OR_TARGET_TEMPORARILY_UNAVAILABLE"
+      ],
+      "passed": true,
+      "passing_event_state_cells": 5
+    },
+    "USER_ADDS_PERSISTENT_PREFERENCE": {
+      "covered_state_ids": [
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "event_state_cells": 5,
+      "evidence_refs": [
+        "/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/research/repeated_v2_formal_readiness_v2_1/feasibility_audit_b195456_01/SEMANTIC_FEASIBILITY_RESULTS.jsonl#task=9&family=USER_ADDS_PERSISTENT_PREFERENCE"
+      ],
+      "passed": true,
+      "passing_event_state_cells": 5
+    },
+    "USER_CANCELS_ACTIVE_GOAL": {
+      "covered_state_ids": [
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "event_state_cells": 5,
+      "evidence_refs": [
+        "/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/research/repeated_v2_formal_readiness_v2_1/feasibility_audit_b195456_01/SEMANTIC_FEASIBILITY_RESULTS.jsonl#task=9&family=USER_CANCELS_ACTIVE_GOAL"
+      ],
+      "passed": true,
+      "passing_event_state_cells": 5
+    },
+    "USER_REISSUES_RETIRED_GOAL": {
+      "covered_state_ids": [
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "event_state_cells": 5,
+      "evidence_refs": [
+        "/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/research/repeated_v2_formal_readiness_v2_1/feasibility_audit_b195456_01/SEMANTIC_FEASIBILITY_RESULTS.jsonl#task=9&family=USER_REISSUES_RETIRED_GOAL"
+      ],
+      "passed": true,
+      "passing_event_state_cells": 5
+    },
+    "USER_REPLACES_ACTIVE_GOAL": {
+      "covered_state_ids": [
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "event_state_cells": 5,
+      "evidence_refs": [
+        "/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/research/repeated_v2_formal_readiness_v2_1/feasibility_audit_b195456_01/SEMANTIC_FEASIBILITY_RESULTS.jsonl#task=9&family=USER_REPLACES_ACTIVE_GOAL"
+      ],
+      "passed": true,
+      "passing_event_state_cells": 5
+    }
+  },
+  "hard_safety_constraints": [
+    {
+      "arguments": [],
+      "key": "active_no_go_zones_respected",
+      "predicate": "no_go_zone_respected",
+      "source_ref": "/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/docs/repeated_v2/PROTOCOL_AMENDMENT_V2_1_HORIZON_AND_INDEPENDENCE.md",
+      "verifier": "shared_runtime_constraint_monitor"
+    },
+    {
+      "arguments": [],
+      "key": "retired_occurrences_not_intentionally_executed",
+      "predicate": "target_occurrence_is_active",
+      "source_ref": "/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/docs/repeated_v2/PROTOCOL_AMENDMENT_V2_1_HORIZON_AND_INDEPENDENCE.md",
+      "verifier": "SealedDynamicEvaluator"
+    }
+  ],
+  "initial_achievement_goals": [
+    {
+      "arguments": [
+        "white_yellow_mug_1",
+        "microwave_1_heating_region"
+      ],
+      "family_key": "goal:in:white_yellow_mug_1:microwave_1_heating_region",
+      "predicate": "in",
+      "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE6_put_the_yellow_and_white_mug_in_the_microwave_and_close_it.bddl#:goal"
+    },
+    {
+      "arguments": [
+        "microwave_1"
+      ],
+      "family_key": "goal:close:microwave_1",
+      "predicate": "close",
+      "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE6_put_the_yellow_and_white_mug_in_the_microwave_and_close_it.bddl#:goal"
+    }
+  ],
+  "initial_state_digests": {
+    "0": "ea7db2b727794199cfa1e42f8d924c5841e4af18716a392adf30d5517114c87f",
+    "1": "8a1664e433521b5f995c9840cd9d41bf796b38742e57ad57786d67076de8b0cd",
+    "10": "c9bcb378e751faef595e7c5f2fadddb734dcf966958b899d483ce60e65005bd8",
+    "11": "3e3e1b5c2487269fa2404dfe87ad17f3d2ea66c1fe47c165fcf98c49a699ee60",
+    "12": "0449641ea1810c2c7f48f2d9d5cd992cb4022e35bb1c400bf167f13004decae3",
+    "13": "c116575c40aebc30dd05d0c986072d54c6463a4436eb3edb1b15695dc4f4a230",
+    "14": "20365011999da99f8dae3761dd475aec07f9a927a6a64d4aba4b18787f80518a",
+    "15": "71f5da9b9b727811f31b0878fa0037c5d54a233cc16662bea3fbaf554c2888c6",
+    "16": "fcaede80ee19d1d5be4fecf8cfb2229c4ef98566fdb5c1d7248738dbaae20b01",
+    "17": "7b0c0e1375704995df0a3cd7a3ddb84cea1c35725ffbd92dc761953302c7ba26",
+    "18": "ca9c8948227c7fc9b0a5e15ec2be8324c29542ed617eebb38b496e7d717aa904",
+    "19": "50deae41902e1e7b21212c732d9d617c78ad9fad8ee3735f97d6918bbc785d47",
+    "2": "1cc5eefc998751de4d0e86462742176ed71a470e4846013c1a92ac47cefb9b67",
+    "20": "07c1d0f78d645f621670c4de2bb8e95be0c57311808ca399b89e92407878b522",
+    "21": "f564897bb0bdf4d1d07ff7745fc235e24ef2e372afa393c6c848c414e0533d07",
+    "22": "111b367bc268be780035b3baceba410ed851cc6124afd67cf835c32f698bda09",
+    "23": "494b392a78e0744efa6dce54534c95a91db93ea0d1bd05c4214502728bebb4ba",
+    "24": "49c31dd71ed95ab2b09b472a8e5e9ab94b05edae5f26e12f5dbd77387e2948c6",
+    "25": "f670468d2cadd307dae287f34ad755c1bbdebb715cc39c6a33d8b284410bdba6",
+    "26": "bcf0429b523f15f268f27d898a0f7ec2b117b8257fd3f11b7eceb6f548c9db7c",
+    "27": "16bcb4feecc1610c73eef3a33a1b9c2d7d5bfd683d8bafce9cd4fac02870e024",
+    "28": "f1a7b263883fcf367e08ad5b77880b3c51ecd31334b7acb7fc8ee5433c394c06",
+    "29": "a150030bf0568bd21227c1ea0486c4abd8fa1436ca1b68d65858f77f2bdeaeb1",
+    "3": "ac150060868f6d48b6b53f5d8f07e71e04d3ca8883ff52edae6b0f543c05659a",
+    "30": "8e6369bf45909192beb67028f1024ab99d6adf693ce6e86d0f9555ef95fd3122",
+    "31": "37d518b5cd4219622dd8fa9e81aff69c08e3e668c651af181c7fa5f3f197eb77",
+    "32": "0dd395b5c2aede7e424a17feb3db52ccd431f2b897f47cc9a8d479bac8b990f5",
+    "33": "7fa0dd64a47038338fc0661ea6fc68cf6070146c1610aca176363486bf940f88",
+    "34": "e18cf2b88da7122c73de63525b5a887a3f2ccd999644f717632dc19b4636f335",
+    "35": "5d05dca0a8ebb400b779b4152289f5a5f9c6acdd42d4e87dd278948781d884b6",
+    "36": "c6b5d8ffd15cae9c71508226e0ae8eb0bdea5f26aaeb67776827e7db03b61546",
+    "37": "14b7ce304678ccdeb9520e3091a1ff6865bb117ca633cb2d7aadad2e9597ebd4",
+    "38": "71a1562fc8f23c49cd52a882ade7f0c66ab5611267932e2863dd4dbabee7819a",
+    "39": "5202d9ddef49988fa29f02aaa1f4cda4a11877ae0300fc0fc835ffe86ef1b87b",
+    "4": "e3ba923c504addfab7f0ef464e30c4de9e70f02106fdd714ce793dda722233f7",
+    "40": "4071ba8f538690a843dee000f6fa8728ce515fd7f73aa603660392042086b8f0",
+    "41": "7313b89f917417b7ba041e0bbda16e3af59c4e2f78d61a37ad294aa342e7ad7f",
+    "42": "99b59bae7e64be3fa25f49a4b11e88af111280314d38a437072feee6c918a1a9",
+    "43": "9d1df6194a0422a3690804ec95bce5ac438c109fdfc6b9c51eec387ced49eae2",
+    "44": "261ef237b3cecd1334d6cde43be08ff1de0811d71c4bd85f3d53ddcfb34faf93",
+    "45": "603099bdec6c226d4c72abcec7008005eec345a69a9c20c067b30417e108dd68",
+    "46": "2451da222ffec10a5559168fc1a499e1b71e424386eb82406b2ab74ea671d8d6",
+    "47": "969020ba2cd616f63d10de2c6074da2d65c8314b8b0d88c61b64ca5212398d61",
+    "48": "0d0f84e5e2821d6a167a652586e0313d5d6df3c6ae51a6fc7f63136916af209b",
+    "49": "34ac43543ccba0822ade0333e2be4a828f05fbd3ad98cd9643ea5ea1ed0b741d",
+    "5": "3f69e06f62cab10c9c43e3dd278e7d0cd4590b88740f7ae57b5852d1ee96f43e",
+    "6": "7112c1d02864ebb60d6d405764cddab8bd527ca36b9377275859d8b9db93470c",
+    "7": "5952d59cf718abd407c8c685c213a8de1b81e8c0ced22f15f4800fbcf72d52d0",
+    "8": "0660777678d8c06056f77ba9d1f89dae13d3e6eb6b73a91e656be16e3d1a763a",
+    "9": "b15e6a13c7a8ef65ea60b458e3f318adf4c99e9945c2be1431e76639ec2a9f2d"
+  },
+  "maintenance_invariants": [
+    {
+      "arguments": [
+        "white_yellow_mug_1",
+        "microwave_1_heating_region"
+      ],
+      "authority": "Experiment-1 frozen success definition",
+      "family_key": "goal:in:white_yellow_mug_1:microwave_1_heating_region",
+      "kind": "preserve_verified_progress_unless_directly_invalidated",
+      "predicate": "in",
+      "source_ref": "/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/docs/repeated_v2/PROTOCOL_AMENDMENT_V2_1_HORIZON_AND_INDEPENDENCE.md"
+    },
+    {
+      "arguments": [
+        "microwave_1"
+      ],
+      "authority": "Experiment-1 frozen success definition",
+      "family_key": "goal:close:microwave_1",
+      "kind": "preserve_verified_progress_unless_directly_invalidated",
+      "predicate": "close",
+      "source_ref": "/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/docs/repeated_v2/PROTOCOL_AMENDMENT_V2_1_HORIZON_AND_INDEPENDENCE.md"
+    }
+  ],
+  "milestone_predicates": [
+    {
+      "arguments": [
+        "white_yellow_mug_1",
+        "microwave_1_heating_region"
+      ],
+      "can_remain_valid": true,
+      "evidence_refs": [
+        "/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/research/repeated_v2_formal_readiness_v2_1/structural_replay_53009d1_parallel_01/REPLAY_MILESTONE_WITNESSES.csv",
+        "/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/research/repeated_v2_formal_readiness_v2_1/structural_replay_53009d1_parallel_01/REPLAY_STRUCTURAL_WITNESS_SUMMARY.csv"
+      ],
+      "independent": true,
+      "milestone_id": "milestone:0",
+      "predicate": "in",
+      "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE6_put_the_yellow_and_white_mug_in_the_microwave_and_close_it.bddl#:goal",
+      "verifier": "LIBERO._eval_predicate"
+    },
+    {
+      "arguments": [
+        "microwave_1"
+      ],
+      "can_remain_valid": false,
+      "evidence_refs": [
+        "/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/research/repeated_v2_formal_readiness_v2_1/structural_replay_53009d1_parallel_01/REPLAY_MILESTONE_WITNESSES.csv",
+        "/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/research/repeated_v2_formal_readiness_v2_1/structural_replay_53009d1_parallel_01/REPLAY_STRUCTURAL_WITNESS_SUMMARY.csv"
+      ],
+      "independent": true,
+      "milestone_id": "milestone:1",
+      "predicate": "close",
+      "source_ref": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE6_put_the_yellow_and_white_mug_in_the_microwave_and_close_it.bddl#:goal",
+      "verifier": "LIBERO._eval_predicate"
+    }
+  ],
+  "object_aliases": {
+    "porcelain_mug_1": "porcelain_mug_1",
+    "white_yellow_mug_1": "white_yellow_mug_1"
+  },
+  "original_instruction": "put the yellow and white mug in the microwave and close it",
+  "planner_compiler_metadata": {
+    "calibration_protocol_projection_sha256": "2df5b2536abcb9cfa5550c09ac65bbdecc840aa25d268c7746b79858772164b0",
+    "compiler": "compile_ledger",
+    "compiler_pure_projection": true,
+    "compiler_source_sha256": "a8a56f303907eeedf7fc46506e22834ae4ecb7254823a4fbcd3979b39865b2cc",
+    "continuation_backend": "continuation_carrying_repair_v2",
+    "continuation_backend_representation_neutral": true,
+    "continuation_backend_source_sha256": "4f11183dd30c87c2f38da4fb8e6f383038dfd799f717f6d0478ceaf564b05187",
+    "dynamic_evaluator": "sealed_dynamic_v2.1",
+    "dynamic_evaluator_source_sha256": "6272566e7c1db7d3ba9f2be826b11e5d5030f137d7f47c6fd303a33ca8fcab07",
+    "unsupported_event_families": [
+      "GOAL_RECEPTACLE_OR_GROUNDING_CHANGED",
+      "TEMPORARY_NO_GO_APPEARS",
+      "TEMPORARY_NO_GO_CLEARS"
+    ]
+  },
+  "receptacle_region_aliases": {
+    "kitchen_table": "kitchen_table",
+    "kitchen_table_microwave_init_region": "kitchen_table_microwave_init_region",
+    "kitchen_table_porcelain_mug_front_region": "kitchen_table_porcelain_mug_front_region",
+    "kitchen_table_porcelain_mug_init_region": "kitchen_table_porcelain_mug_init_region",
+    "kitchen_table_white_yellow_mug_init_region": "kitchen_table_white_yellow_mug_init_region",
+    "microwave_1": "microwave_1",
+    "microwave_1_heating_region": "microwave_1_heating_region",
+    "microwave_1_top_side": "microwave_1_top_side"
+  },
+  "replaceable_goal_families": [
+    "goal:in:white_yellow_mug_1:microwave_1_heating_region"
+  ],
+  "safe_event_injection_poses": {
+    "TARGET_OBJECT_DISPLACED": {
+      "entity": "white_yellow_mug_1",
+      "evidence_refs": [
+        "/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/research/repeated_v2_formal_readiness_v2_1/feasibility_discovery_b195456_01/EVENT_PARAMETERS.json",
+        "/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/research/repeated_v2_formal_readiness_v2_1/feasibility_audit_b195456_01/SEMANTIC_FEASIBILITY_RESULTS.jsonl#task=9&family=TARGET_OBJECT_DISPLACED"
+      ],
+      "region": {
+        "delta_xy": [
+          0.06,
+          0.0
+        ],
+        "frame": "pre_event_entity"
+      }
+    },
+    "TOOL_OR_TARGET_AVAILABLE_AGAIN": {
+      "entity": "white_yellow_mug_1",
+      "evidence_refs": [
+        "/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/research/repeated_v2_formal_readiness_v2_1/feasibility_discovery_b195456_01/EVENT_PARAMETERS.json",
+        "/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/research/repeated_v2_formal_readiness_v2_1/feasibility_audit_b195456_01/SEMANTIC_FEASIBILITY_RESULTS.jsonl#task=9&family=TOOL_OR_TARGET_AVAILABLE_AGAIN"
+      ],
+      "region": {
+        "accessible_xyz_bounds": [
+          [
+            -0.35,
+            0.35
+          ],
+          [
+            -0.36,
+            0.36
+          ],
+          [
+            0.3,
+            1.2
+          ]
+        ],
+        "release_delta_xy": [
+          0.04,
+          0.0
+        ],
+        "unavailable_rule": "x=accessible_max_x+0.10,y=pre_event_y,z=pre_event_z"
+      }
+    },
+    "TOOL_OR_TARGET_TEMPORARILY_UNAVAILABLE": {
+      "entity": "white_yellow_mug_1",
+      "evidence_refs": [
+        "/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/research/repeated_v2_formal_readiness_v2_1/feasibility_discovery_b195456_01/EVENT_PARAMETERS.json",
+        "/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/research/repeated_v2_formal_readiness_v2_1/feasibility_audit_b195456_01/SEMANTIC_FEASIBILITY_RESULTS.jsonl#task=9&family=TOOL_OR_TARGET_TEMPORARILY_UNAVAILABLE"
+      ],
+      "region": {
+        "accessible_xyz_bounds": [
+          [
+            -0.35,
+            0.35
+          ],
+          [
+            -0.36,
+            0.36
+          ],
+          [
+            0.3,
+            1.2
+          ]
+        ],
+        "release_delta_xy": [
+          0.04,
+          0.0
+        ],
+        "unavailable_rule": "x=accessible_max_x+0.10,y=pre_event_y,z=pre_event_z"
+      }
+    }
+  },
+  "semantic_triggers": {
+    "TARGET_OBJECT_DISPLACED": {
+      "earliest_policy_step": 0,
+      "forced_external_displacement": false,
+      "intervention_entity": "white_yellow_mug_1",
+      "latest_policy_step": 520,
+      "min_steps_since_previous_event": 10,
+      "moves_object": true,
+      "physical_feasibility_guard": "catalog_target_displacement_guard",
+      "predicate": "goal_pending_and_target_publicly_localized"
+    },
+    "TOOL_OR_TARGET_AVAILABLE_AGAIN": {
+      "earliest_policy_step": 0,
+      "forced_external_displacement": false,
+      "intervention_entity": "white_yellow_mug_1",
+      "latest_policy_step": 520,
+      "min_steps_since_previous_event": 10,
+      "moves_object": true,
+      "physical_feasibility_guard": "catalog_release_and_revalidation_guard",
+      "predicate": "target_availability_restoration_observed"
+    },
+    "TOOL_OR_TARGET_TEMPORARILY_UNAVAILABLE": {
+      "earliest_policy_step": 0,
+      "forced_external_displacement": false,
+      "intervention_entity": "white_yellow_mug_1",
+      "latest_policy_step": 520,
+      "min_steps_since_previous_event": 10,
+      "moves_object": true,
+      "physical_feasibility_guard": "catalog_ungrasped_availability_guard",
+      "predicate": "goal_pending_and_target_publicly_localized"
+    },
+    "USER_ADDS_PERSISTENT_PREFERENCE": {
+      "earliest_policy_step": 0,
+      "forced_external_displacement": false,
+      "intervention_entity": null,
+      "latest_policy_step": 520,
+      "min_steps_since_previous_event": 10,
+      "moves_object": false,
+      "physical_feasibility_guard": "positive_preference_limits_guard",
+      "predicate": "active_goal_exists"
+    },
+    "USER_CANCELS_ACTIVE_GOAL": {
+      "earliest_policy_step": 0,
+      "forced_external_displacement": false,
+      "intervention_entity": null,
+      "latest_policy_step": 520,
+      "min_steps_since_previous_event": 10,
+      "moves_object": false,
+      "physical_feasibility_guard": "active_occurrence_not_retired_guard",
+      "predicate": "user_instruction_targets_active_occurrence"
+    },
+    "USER_REISSUES_RETIRED_GOAL": {
+      "earliest_policy_step": 0,
+      "forced_external_displacement": false,
+      "intervention_entity": null,
+      "latest_policy_step": 520,
+      "min_steps_since_previous_event": 10,
+      "moves_object": false,
+      "physical_feasibility_guard": "retired_family_fresh_id_guard",
+      "predicate": "user_instruction_reissues_retired_goal_family"
+    },
+    "USER_REPLACES_ACTIVE_GOAL": {
+      "earliest_policy_step": 0,
+      "forced_external_displacement": false,
+      "intervention_entity": null,
+      "latest_policy_step": 520,
+      "min_steps_since_previous_event": 10,
+      "moves_object": false,
+      "physical_feasibility_guard": "source_grounded_alternative_goal_guard",
+      "predicate": "user_instruction_targets_active_occurrence"
+    }
+  },
+  "soft_preference_templates": [
+    {
+      "contact_impulse_proxy_ceiling": 0.12,
+      "eef_speed_ceiling": 0.22,
+      "predicate": "gentle_action_limits",
+      "scope": "persistent_until_explicitly_retired",
+      "source_ref": "/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/docs/repeated_v2/PROTOCOL_AMENDMENT_V2_1_HORIZON_AND_INDEPENDENCE.md",
+      "template_id": "handle_gently_v1",
+      "translation_ceiling": 0.035,
+      "verifier": "shared_runtime_constraint_monitor"
+    }
+  ],
+  "source_refs": [
+    {
+      "description": "Official LIBERO-10 order at pinned upstream commit 8f1084e3132a39270c3a13ebe37270a43ece2a01",
+      "sha256": "0c950df0a785aa55de968bb38ccd865d2017f71ddbe6f48cfd05ac0742b6d62d",
+      "uri": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/benchmark/libero_suite_task_map.py"
+    },
+    {
+      "description": "Official BDDL source; original goals and simulator identifiers only; initial placement regions are not certified safe intervention poses.",
+      "sha256": "456d145f92be049f445fc77673dc583d9d17ea7afe92f6ffcb2fd1fa5565d420",
+      "uri": "https://raw.githubusercontent.com/Lifelong-Robot-Learning/LIBERO/8f1084e3132a39270c3a13ebe37270a43ece2a01/libero/libero/bddl_files/libero_10/KITCHEN_SCENE6_put_the_yellow_and_white_mug_in_the_microwave_and_close_it.bddl"
+    },
+    {
+      "description": "All 50 installed LIBERO initialization-state hashes.",
+      "sha256": "a1c7b97d9f0aea18ec9bebde4ff62c224b39be152bd7293a9608e38c54c6bc09",
+      "uri": "/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/research/repeated_v2_formal_readiness_v2_1/LIBERO_INIT_STATE_INVENTORY.csv"
+    },
+    {
+      "description": "Hash-admitted production OpenVLA clean calibration.",
+      "sha256": "5fe73b12e0db18432d9652f699dab91214af554f3818497830588ccde5c3a25e",
+      "uri": "/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/research/repeated_v2_formal_readiness_v2_1/calibration_audit_b195456_01/CALIBRATION_ADMISSION_RECORDS.jsonl"
+    },
+    {
+      "description": "Zero-provider reserve-frozen dev-state semantic feasibility sweep.",
+      "sha256": "b91a130e1c6269aa6bbb8ebf0ea180bba73018f6b3d31a0b8e61f58e7b06b106",
+      "uri": "/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/research/repeated_v2_formal_readiness_v2_1/feasibility_audit_b195456_01/SEMANTIC_FEASIBILITY_RESULTS.jsonl"
+    },
+    {
+      "description": "Exact task-progress predicate bindings.",
+      "sha256": "de59d0f4fa6612cfd56c29b8e59870e409325c97b5817cd02f0aecdc660858cb",
+      "uri": "/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/cope_benchmark/task_progress.py"
+    }
+  ],
+  "structural_checks": {
+    "completed_milestone_preservable": {
+      "evidence_refs": [
+        "/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/research/repeated_v2_formal_readiness_v2_1/structural_replay_53009d1_parallel_01/REPLAY_MILESTONE_WITNESSES.csv"
+      ],
+      "passed": true
+    },
+    "cross_skill_requirement_or_persistent_preference": {
+      "evidence_refs": [
+        "/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/docs/repeated_v2/PROTOCOL_AMENDMENT_V2_1_HORIZON_AND_INDEPENDENCE.md",
+        "/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/research/repeated_v2_formal_readiness_v2_1/feasibility_audit_b195456_01/SEMANTIC_FEASIBILITY_RESULTS.jsonl#task=9&family=USER_ADDS_PERSISTENT_PREFERENCE"
+      ],
+      "passed": true
+    },
+    "safe_changeable_grounding": {
+      "evidence_refs": [
+        "/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/research/repeated_v2_formal_readiness_v2_1/feasibility_audit_b195456_01/SEMANTIC_FEASIBILITY_RESULTS.jsonl#task=9&family=TARGET_OBJECT_DISPLACED"
+      ],
+      "passed": true
+    },
+    "two_independently_verifiable_milestones": {
+      "evidence_refs": [
+        "/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/research/repeated_v2_formal_readiness_v2_1/structural_replay_53009d1_parallel_01/REPLAY_STRUCTURAL_WITNESS_SUMMARY.csv",
+        "/Users/lijingsu/Documents/cope_repeated_v2_formal_readiness_v2_1/cope_benchmark/task_progress.py"
+      ],
+      "passed": true
+    }
+  },
+  "supported_event_families": [
+    "TARGET_OBJECT_DISPLACED",
+    "USER_ADDS_PERSISTENT_PREFERENCE",
+    "TOOL_OR_TARGET_TEMPORARILY_UNAVAILABLE",
+    "TOOL_OR_TARGET_AVAILABLE_AGAIN",
+    "USER_REPLACES_ACTIVE_GOAL",
+    "USER_CANCELS_ACTIVE_GOAL",
+    "USER_REISSUES_RETIRED_GOAL"
+  ],
+  "task_id": 9,
+  "task_name": "KITCHEN_SCENE6_put_the_yellow_and_white_mug_in_the_microwave_and_close_it",
+  "unresolved_fields": []
+}

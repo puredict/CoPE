@@ -1,0 +1,585 @@
+/home/lijingsu/vla/src/LIBERO/libero/libero/benchmark/__init__.py:164: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  init_states = torch.load(init_states_path)
+/home/lijingsu/vla/src/LIBERO/libero/libero/benchmark/__init__.py:164: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  init_states = torch.load(init_states_path)
+/home/lijingsu/vla/src/LIBERO/libero/libero/benchmark/__init__.py:164: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  init_states = torch.load(init_states_path)
+/home/lijingsu/vla/src/LIBERO/libero/libero/benchmark/__init__.py:164: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  init_states = torch.load(init_states_path)
+/home/lijingsu/vla/src/LIBERO/libero/libero/benchmark/__init__.py:164: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  init_states = torch.load(init_states_path)
+/home/lijingsu/vla/src/LIBERO/libero/libero/benchmark/__init__.py:164: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  init_states = torch.load(init_states_path)
+/home/lijingsu/vla/src/LIBERO/libero/libero/benchmark/__init__.py:164: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  init_states = torch.load(init_states_path)
+/home/lijingsu/vla/src/LIBERO/libero/libero/benchmark/__init__.py:164: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  init_states = torch.load(init_states_path)
+2026-09-11 09:37:17.435142: I tensorflow/core/util/port.cc:113] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-09-11 09:37:17.435141: I tensorflow/core/util/port.cc:113] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-09-11 09:37:17.450411: I tensorflow/core/util/port.cc:113] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-09-11 09:37:17.470903: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:9261] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+2026-09-11 09:37:17.470905: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:9261] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+2026-09-11 09:37:17.470949: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:607] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2026-09-11 09:37:17.470958: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:607] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2026-09-11 09:37:17.472210: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:1515] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2026-09-11 09:37:17.472211: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:1515] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2026-09-11 09:37:17.473249: I tensorflow/core/util/port.cc:113] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-09-11 09:37:17.473249: I tensorflow/core/util/port.cc:113] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-09-11 09:37:17.473247: I tensorflow/core/util/port.cc:113] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-09-11 09:37:17.473251: I tensorflow/core/util/port.cc:113] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-09-11 09:37:17.473251: I tensorflow/core/util/port.cc:113] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2026-09-11 09:37:17.478312: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2026-09-11 09:37:17.478312: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2026-09-11 09:37:17.485845: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:9261] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+2026-09-11 09:37:17.485890: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:607] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2026-09-11 09:37:17.486917: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:1515] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2026-09-11 09:37:17.492397: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2026-09-11 09:37:17.509469: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:9261] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+2026-09-11 09:37:17.509467: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:9261] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+2026-09-11 09:37:17.509468: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:9261] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+2026-09-11 09:37:17.509467: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:9261] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+2026-09-11 09:37:17.509470: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:9261] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+2026-09-11 09:37:17.509505: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:607] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2026-09-11 09:37:17.509511: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:607] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2026-09-11 09:37:17.509517: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:607] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2026-09-11 09:37:17.509523: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:607] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2026-09-11 09:37:17.509529: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:607] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2026-09-11 09:37:17.510558: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:1515] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2026-09-11 09:37:17.510559: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:1515] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2026-09-11 09:37:17.510560: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:1515] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2026-09-11 09:37:17.510565: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:1515] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2026-09-11 09:37:17.510567: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:1515] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2026-09-11 09:37:17.516054: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2026-09-11 09:37:17.516054: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2026-09-11 09:37:17.516054: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2026-09-11 09:37:17.516055: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2026-09-11 09:37:17.516055: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2026-09-11 09:37:18.177188: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2026-09-11 09:37:18.178662: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2026-09-11 09:37:18.218804: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2026-09-11 09:37:18.242510: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2026-09-11 09:37:18.242510: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2026-09-11 09:37:18.242510: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2026-09-11 09:37:18.290856: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2026-09-11 09:37:18.390095: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2026-09-11 09:37:22.185405: E external/local_xla/xla/stream_executor/cuda/cuda_driver.cc:274] failed call to cuInit: CUDA_ERROR_NO_DEVICE: no CUDA-capable device is detected
+2026-09-11 09:37:22.185510: I external/local_xla/xla/stream_executor/cuda/cuda_diagnostics.cc:129] retrieving CUDA diagnostic information for host: fvl11
+2026-09-11 09:37:22.185530: I external/local_xla/xla/stream_executor/cuda/cuda_diagnostics.cc:136] hostname: fvl11
+2026-09-11 09:37:22.185621: I external/local_xla/xla/stream_executor/cuda/cuda_diagnostics.cc:159] libcuda reported version is: 575.57.8
+2026-09-11 09:37:22.185682: I external/local_xla/xla/stream_executor/cuda/cuda_diagnostics.cc:163] kernel reported version is: NOT_FOUND: could not find kernel module information in driver version file contents: "NVRM version: NVIDIA UNIX Open Kernel Module for x86_64  575.57.08  Release Build  (dvs-builder@U22-I3-H04-01-5)  Sat May 24 07:03:13 UTC 2025
+GCC version:  gcc version 11.4.0 (Ubuntu 11.4.0-1ubuntu1~22.04) 
+"
+2026-09-11 09:37:22.462061: E external/local_xla/xla/stream_executor/cuda/cuda_driver.cc:274] failed call to cuInit: CUDA_ERROR_NO_DEVICE: no CUDA-capable device is detected
+2026-09-11 09:37:22.462160: I external/local_xla/xla/stream_executor/cuda/cuda_diagnostics.cc:129] retrieving CUDA diagnostic information for host: fvl11
+2026-09-11 09:37:22.462180: I external/local_xla/xla/stream_executor/cuda/cuda_diagnostics.cc:136] hostname: fvl11
+2026-09-11 09:37:22.462269: I external/local_xla/xla/stream_executor/cuda/cuda_diagnostics.cc:159] libcuda reported version is: 575.57.8
+2026-09-11 09:37:22.462350: I external/local_xla/xla/stream_executor/cuda/cuda_diagnostics.cc:163] kernel reported version is: NOT_FOUND: could not find kernel module information in driver version file contents: "NVRM version: NVIDIA UNIX Open Kernel Module for x86_64  575.57.08  Release Build  (dvs-builder@U22-I3-H04-01-5)  Sat May 24 07:03:13 UTC 2025
+GCC version:  gcc version 11.4.0 (Ubuntu 11.4.0-1ubuntu1~22.04) 
+"
+2026-09-11 09:37:22.530723: E external/local_xla/xla/stream_executor/cuda/cuda_driver.cc:274] failed call to cuInit: CUDA_ERROR_NO_DEVICE: no CUDA-capable device is detected
+2026-09-11 09:37:22.530806: I external/local_xla/xla/stream_executor/cuda/cuda_diagnostics.cc:129] retrieving CUDA diagnostic information for host: fvl11
+2026-09-11 09:37:22.530825: I external/local_xla/xla/stream_executor/cuda/cuda_diagnostics.cc:136] hostname: fvl11
+2026-09-11 09:37:22.530923: I external/local_xla/xla/stream_executor/cuda/cuda_diagnostics.cc:159] libcuda reported version is: 575.57.8
+2026-09-11 09:37:22.530982: I external/local_xla/xla/stream_executor/cuda/cuda_diagnostics.cc:163] kernel reported version is: NOT_FOUND: could not find kernel module information in driver version file contents: "NVRM version: NVIDIA UNIX Open Kernel Module for x86_64  575.57.08  Release Build  (dvs-builder@U22-I3-H04-01-5)  Sat May 24 07:03:13 UTC 2025
+GCC version:  gcc version 11.4.0 (Ubuntu 11.4.0-1ubuntu1~22.04) 
+"
+2026-09-11 09:37:22.539903: E external/local_xla/xla/stream_executor/cuda/cuda_driver.cc:274] failed call to cuInit: CUDA_ERROR_NO_DEVICE: no CUDA-capable device is detected
+2026-09-11 09:37:22.539987: I external/local_xla/xla/stream_executor/cuda/cuda_diagnostics.cc:129] retrieving CUDA diagnostic information for host: fvl11
+2026-09-11 09:37:22.540007: I external/local_xla/xla/stream_executor/cuda/cuda_diagnostics.cc:136] hostname: fvl11
+2026-09-11 09:37:22.540091: I external/local_xla/xla/stream_executor/cuda/cuda_diagnostics.cc:159] libcuda reported version is: 575.57.8
+2026-09-11 09:37:22.540151: I external/local_xla/xla/stream_executor/cuda/cuda_diagnostics.cc:163] kernel reported version is: NOT_FOUND: could not find kernel module information in driver version file contents: "NVRM version: NVIDIA UNIX Open Kernel Module for x86_64  575.57.08  Release Build  (dvs-builder@U22-I3-H04-01-5)  Sat May 24 07:03:13 UTC 2025
+GCC version:  gcc version 11.4.0 (Ubuntu 11.4.0-1ubuntu1~22.04) 
+"
+2026-09-11 09:37:22.570999: E external/local_xla/xla/stream_executor/cuda/cuda_driver.cc:274] failed call to cuInit: CUDA_ERROR_NO_DEVICE: no CUDA-capable device is detected
+2026-09-11 09:37:22.571102: I external/local_xla/xla/stream_executor/cuda/cuda_diagnostics.cc:129] retrieving CUDA diagnostic information for host: fvl11
+2026-09-11 09:37:22.571123: I external/local_xla/xla/stream_executor/cuda/cuda_diagnostics.cc:136] hostname: fvl11
+2026-09-11 09:37:22.571210: I external/local_xla/xla/stream_executor/cuda/cuda_diagnostics.cc:159] libcuda reported version is: 575.57.8
+2026-09-11 09:37:22.571269: I external/local_xla/xla/stream_executor/cuda/cuda_diagnostics.cc:163] kernel reported version is: NOT_FOUND: could not find kernel module information in driver version file contents: "NVRM version: NVIDIA UNIX Open Kernel Module for x86_64  575.57.08  Release Build  (dvs-builder@U22-I3-H04-01-5)  Sat May 24 07:03:13 UTC 2025
+GCC version:  gcc version 11.4.0 (Ubuntu 11.4.0-1ubuntu1~22.04) 
+"
+2026-09-11 09:37:22.623331: E external/local_xla/xla/stream_executor/cuda/cuda_driver.cc:274] failed call to cuInit: CUDA_ERROR_NO_DEVICE: no CUDA-capable device is detected
+2026-09-11 09:37:22.623432: I external/local_xla/xla/stream_executor/cuda/cuda_diagnostics.cc:129] retrieving CUDA diagnostic information for host: fvl11
+2026-09-11 09:37:22.623452: I external/local_xla/xla/stream_executor/cuda/cuda_diagnostics.cc:136] hostname: fvl11
+2026-09-11 09:37:22.623546: I external/local_xla/xla/stream_executor/cuda/cuda_diagnostics.cc:159] libcuda reported version is: 575.57.8
+2026-09-11 09:37:22.623621: I external/local_xla/xla/stream_executor/cuda/cuda_diagnostics.cc:163] kernel reported version is: NOT_FOUND: could not find kernel module information in driver version file contents: "NVRM version: NVIDIA UNIX Open Kernel Module for x86_64  575.57.08  Release Build  (dvs-builder@U22-I3-H04-01-5)  Sat May 24 07:03:13 UTC 2025
+GCC version:  gcc version 11.4.0 (Ubuntu 11.4.0-1ubuntu1~22.04) 
+"
+2026-09-11 09:37:22.676901: E external/local_xla/xla/stream_executor/cuda/cuda_driver.cc:274] failed call to cuInit: CUDA_ERROR_NO_DEVICE: no CUDA-capable device is detected
+2026-09-11 09:37:22.676999: I external/local_xla/xla/stream_executor/cuda/cuda_diagnostics.cc:129] retrieving CUDA diagnostic information for host: fvl11
+2026-09-11 09:37:22.677019: I external/local_xla/xla/stream_executor/cuda/cuda_diagnostics.cc:136] hostname: fvl11
+2026-09-11 09:37:22.677099: I external/local_xla/xla/stream_executor/cuda/cuda_diagnostics.cc:159] libcuda reported version is: 575.57.8
+2026-09-11 09:37:22.677127: E external/local_xla/xla/stream_executor/cuda/cuda_driver.cc:274] failed call to cuInit: CUDA_ERROR_NO_DEVICE: no CUDA-capable device is detected
+2026-09-11 09:37:22.677163: I external/local_xla/xla/stream_executor/cuda/cuda_diagnostics.cc:163] kernel reported version is: NOT_FOUND: could not find kernel module information in driver version file contents: "NVRM version: NVIDIA UNIX Open Kernel Module for x86_64  575.57.08  Release Build  (dvs-builder@U22-I3-H04-01-5)  Sat May 24 07:03:13 UTC 2025
+GCC version:  gcc version 11.4.0 (Ubuntu 11.4.0-1ubuntu1~22.04) 
+"
+2026-09-11 09:37:22.677237: I external/local_xla/xla/stream_executor/cuda/cuda_diagnostics.cc:129] retrieving CUDA diagnostic information for host: fvl11
+2026-09-11 09:37:22.677257: I external/local_xla/xla/stream_executor/cuda/cuda_diagnostics.cc:136] hostname: fvl11
+2026-09-11 09:37:22.677352: I external/local_xla/xla/stream_executor/cuda/cuda_diagnostics.cc:159] libcuda reported version is: 575.57.8
+2026-09-11 09:37:22.677427: I external/local_xla/xla/stream_executor/cuda/cuda_diagnostics.cc:163] kernel reported version is: NOT_FOUND: could not find kernel module information in driver version file contents: "NVRM version: NVIDIA UNIX Open Kernel Module for x86_64  575.57.08  Release Build  (dvs-builder@U22-I3-H04-01-5)  Sat May 24 07:03:13 UTC 2025
+GCC version:  gcc version 11.4.0 (Ubuntu 11.4.0-1ubuntu1~22.04) 
+"
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+09/11 [09:37:33] WARNING  | >> No private macro file found!         macros.py:53
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+                 WARNING  | >> It is recommended to use a private   macros.py:54
+                          macro file                                            
+[robosuite WARNING] To setup, run: python /home/lijingsu/vla/.venv/lib/python3.10/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+                 WARNING  | >> To setup, run: python                macros.py:55
+                          /home/lijingsu/vla/.venv/lib/python3.10/s             
+                          ite-packages/robosuite/scripts/setup_macr             
+                          os.py                                                 
+                 INFO     | >> No OpenGL_accelerate      acceleratesupport.py:24
+                          module loaded: No module named                        
+                          'OpenGL_accelerate'                                   
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+09/11 [09:37:33] WARNING  | >> No private macro file found!         macros.py:53
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+                 WARNING  | >> It is recommended to use a private   macros.py:54
+                          macro file                                            
+[robosuite WARNING] To setup, run: python /home/lijingsu/vla/.venv/lib/python3.10/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+                 WARNING  | >> To setup, run: python                macros.py:55
+                          /home/lijingsu/vla/.venv/lib/python3.10/s             
+                          ite-packages/robosuite/scripts/setup_macr             
+                          os.py                                                 
+                 INFO     | >> No OpenGL_accelerate      acceleratesupport.py:24
+                          module loaded: No module named                        
+                          'OpenGL_accelerate'                                   
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+09/11 [09:37:34] WARNING  | >> No private macro file found!         macros.py:53
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+                 WARNING  | >> It is recommended to use a private   macros.py:54
+                          macro file                                            
+[robosuite WARNING] To setup, run: python /home/lijingsu/vla/.venv/lib/python3.10/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+                 WARNING  | >> To setup, run: python                macros.py:55
+                          /home/lijingsu/vla/.venv/lib/python3.10/s             
+                          ite-packages/robosuite/scripts/setup_macr             
+                          os.py                                                 
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+                 INFO     | >> No OpenGL_accelerate      acceleratesupport.py:24
+                          module loaded: No module named                        
+                          'OpenGL_accelerate'                                   
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+09/11 [09:37:36] WARNING  | >> No private macro file found!         macros.py:53
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+                 WARNING  | >> It is recommended to use a private   macros.py:54
+                          macro file                                            
+[robosuite WARNING] To setup, run: python /home/lijingsu/vla/.venv/lib/python3.10/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+                 WARNING  | >> To setup, run: python                macros.py:55
+                          /home/lijingsu/vla/.venv/lib/python3.10/s             
+                          ite-packages/robosuite/scripts/setup_macr             
+                          os.py                                                 
+                 INFO     | >> No OpenGL_accelerate      acceleratesupport.py:24
+                          module loaded: No module named                        
+                          'OpenGL_accelerate'                                   
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+09/11 [09:37:36] WARNING  | >> No private macro file found!         macros.py:53
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+                 WARNING  | >> It is recommended to use a private   macros.py:54
+                          macro file                                            
+[robosuite WARNING] To setup, run: python /home/lijingsu/vla/.venv/lib/python3.10/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+                 WARNING  | >> To setup, run: python                macros.py:55
+                          /home/lijingsu/vla/.venv/lib/python3.10/s             
+                          ite-packages/robosuite/scripts/setup_macr             
+                          os.py                                                 
+                 INFO     | >> No OpenGL_accelerate      acceleratesupport.py:24
+                          module loaded: No module named                        
+                          'OpenGL_accelerate'                                   
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+09/11 [09:37:36] WARNING  | >> No private macro file found!         macros.py:53
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+                 WARNING  | >> It is recommended to use a private   macros.py:54
+                          macro file                                            
+[robosuite WARNING] To setup, run: python /home/lijingsu/vla/.venv/lib/python3.10/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+                 WARNING  | >> To setup, run: python                macros.py:55
+                          /home/lijingsu/vla/.venv/lib/python3.10/s             
+                          ite-packages/robosuite/scripts/setup_macr             
+                          os.py                                                 
+09/11 [09:37:37] INFO     | >> No OpenGL_accelerate      acceleratesupport.py:24
+                          module loaded: No module named                        
+                          'OpenGL_accelerate'                                   
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+09/11 [09:37:37] WARNING  | >> No private macro file found!         macros.py:53
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+                 WARNING  | >> It is recommended to use a private   macros.py:54
+                          macro file                                            
+[robosuite WARNING] To setup, run: python /home/lijingsu/vla/.venv/lib/python3.10/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+                 WARNING  | >> To setup, run: python                macros.py:55
+                          /home/lijingsu/vla/.venv/lib/python3.10/s             
+                          ite-packages/robosuite/scripts/setup_macr             
+                          os.py                                                 
+                 INFO     | >> No OpenGL_accelerate      acceleratesupport.py:24
+                          module loaded: No module named                        
+                          'OpenGL_accelerate'                                   
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+09/11 [09:37:37] WARNING  | >> No private macro file found!         macros.py:53
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+                 WARNING  | >> It is recommended to use a private   macros.py:54
+                          macro file                                            
+[robosuite WARNING] To setup, run: python /home/lijingsu/vla/.venv/lib/python3.10/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+                 WARNING  | >> To setup, run: python                macros.py:55
+                          /home/lijingsu/vla/.venv/lib/python3.10/s             
+                          ite-packages/robosuite/scripts/setup_macr             
+                          os.py                                                 
+                 INFO     | >> No OpenGL_accelerate      acceleratesupport.py:24
+                          module loaded: No module named                        
+                          'OpenGL_accelerate'                                   
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+{"replayed": [0, 0], "success": false}
+{"replayed": [0, 1], "success": true}
+{"replayed": [0, 2], "success": false}
+{"replayed": [0, 3], "success": true}
+{"replayed": [0, 4], "success": false}
+{"replayed": [0, 5], "success": false}
+{"replayed": [0, 6], "success": true}
+{"replayed": [0, 7], "success": true}
+{"replayed": [0, 8], "success": true}
+{"replayed": [0, 9], "success": true}
+{"replayed": [8, 0], "success": false}
+{"replayed": [8, 1], "success": false}
+{"replayed": [8, 2], "success": true}
+{"replayed": [8, 3], "success": false}
+{"replayed": [8, 4], "success": false}
+{"replayed": [8, 5], "success": false}
+{"replayed": [8, 6], "success": false}
+{"replayed": [8, 7], "success": false}
+{"replayed": [8, 8], "success": false}
+{"replayed": [8, 9], "success": false}
+{"replayed": [1, 0], "success": true}
+{"replayed": [1, 1], "success": true}
+{"replayed": [1, 2], "success": true}
+{"replayed": [1, 3], "success": true}
+{"replayed": [1, 4], "success": true}
+{"replayed": [1, 5], "success": false}
+{"replayed": [1, 6], "success": false}
+{"replayed": [1, 7], "success": true}
+{"replayed": [1, 8], "success": true}
+{"replayed": [1, 9], "success": true}
+{"replayed": [9, 0], "success": false}
+{"replayed": [9, 1], "success": false}
+{"replayed": [9, 2], "success": true}
+{"replayed": [9, 3], "success": false}
+{"replayed": [9, 4], "success": true}
+{"replayed": [9, 5], "success": false}
+{"replayed": [9, 6], "success": false}
+{"replayed": [9, 7], "success": false}
+{"replayed": [9, 8], "success": false}
+{"replayed": [9, 9], "success": true}
+{"replayed": [2, 0], "success": false}
+{"replayed": [2, 1], "success": true}
+{"replayed": [2, 2], "success": false}
+{"replayed": [2, 3], "success": true}
+{"replayed": [2, 4], "success": true}
+{"replayed": [2, 5], "success": true}
+{"replayed": [2, 6], "success": true}
+{"replayed": [2, 7], "success": true}
+{"replayed": [2, 8], "success": false}
+{"replayed": [2, 9], "success": true}
+{"replayed": [3, 0], "success": true}
+{"replayed": [3, 1], "success": false}
+{"replayed": [3, 2], "success": false}
+{"replayed": [3, 3], "success": false}
+{"replayed": [3, 4], "success": false}
+{"replayed": [3, 5], "success": false}
+{"replayed": [3, 6], "success": false}
+{"replayed": [3, 7], "success": true}
+{"replayed": [3, 8], "success": true}
+{"replayed": [3, 9], "success": false}
+{"replayed": [4, 0], "success": true}
+{"replayed": [4, 1], "success": false}
+{"replayed": [4, 2], "success": true}
+{"replayed": [4, 3], "success": true}
+{"replayed": [4, 4], "success": true}
+{"replayed": [4, 5], "success": false}
+{"replayed": [4, 6], "success": true}
+{"replayed": [4, 7], "success": false}
+{"replayed": [4, 8], "success": true}
+{"replayed": [4, 9], "success": true}
+{"replayed": [5, 0], "success": true}
+{"replayed": [5, 1], "success": false}
+{"replayed": [5, 2], "success": true}
+{"replayed": [5, 3], "success": true}
+{"replayed": [5, 4], "success": true}
+{"replayed": [5, 5], "success": true}
+{"replayed": [5, 6], "success": true}
+{"replayed": [5, 7], "success": true}
+{"replayed": [5, 8], "success": true}
+{"replayed": [5, 9], "success": true}
+{"replayed": [6, 0], "success": false}
+{"replayed": [6, 1], "success": false}
+{"replayed": [6, 2], "success": false}
+{"replayed": [6, 3], "success": false}
+{"replayed": [6, 4], "success": true}
+{"replayed": [6, 5], "success": false}
+{"replayed": [6, 6], "success": true}
+{"replayed": [6, 7], "success": true}
+{"replayed": [6, 8], "success": true}
+{"replayed": [6, 9], "success": false}
+{"replayed": [7, 0], "success": true}
+{"replayed": [7, 1], "success": true}
+{"replayed": [7, 2], "success": false}
+{"replayed": [7, 3], "success": false}
+{"replayed": [7, 4], "success": false}
+{"replayed": [7, 5], "success": false}
+{"replayed": [7, 6], "success": true}
+{"replayed": [7, 7], "success": true}
+{"replayed": [7, 8], "success": true}
+{"replayed": [7, 9], "success": false}
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+[Warning]: datasets path /home/lijingsu/vla/libero_data/datasets does not exist!
+{
+  "all_sealed_outcomes_reproduced": true,
+  "artifact_sha256": {
+    "REPLAY_EPISODE_ADMISSION.csv": "73ceac372173a911400ca0d01235ba951ed201295bb6d90966c3c2eae19d47f5",
+    "REPLAY_MILESTONE_WITNESSES.csv": "f5efafbe60313e6b0960e38e84f911d231c88db74e8333f7ce71a3cbbd9bfc39",
+    "REPLAY_STRUCTURAL_WITNESS_SUMMARY.csv": "e02a8c48048a1308fb2fb027123d206e7200f0b511051934ae3fef562cb92ecc"
+  },
+  "episodes_replayed": 100,
+  "formal_trajectories": 0,
+  "provider_calls": 0,
+  "schema_version": "repeated_v2_1_structural_replay_receipt_v1",
+  "vla_calls": 0
+}
