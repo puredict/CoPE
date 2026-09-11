@@ -887,6 +887,11 @@ class ProductionLiberoEnvironment:
         return tuple(projections)
 
     def snapshot(self) -> Mapping:
+        # Public sensor payloads are NumPy arrays at the live LIBERO boundary.
+        # Use the runtime serializer here so snapshots contain ordinary JSON
+        # arrays; the stricter canonical serializer intentionally rejects
+        # third-party array objects.
+        from .runner import json_value
         state = self._env.get_sim_state()
         return {
             "version": self.version, "sim_state": state.tolist(),
@@ -894,7 +899,7 @@ class ProductionLiberoEnvironment:
             "observation_version": self._version, "initial_state_id": self._initial_state_id,
             "seed": self._seed, "task": self._task, "canonical_ledger": self._canonical.to_dict(),
             "constraint_state": self._interruption.constraint_state.snapshot(),
-            "receipt": to_primitive(self._receipt), "runtime_verifications": self._runtime_verifications,
+            "receipt": json_value(self._receipt), "runtime_verifications": self._runtime_verifications,
             "public_evidence": self._public_evidence, "last_affected": list(self._last_affected),
             "last_public_context": to_primitive(self._last_public_context),
             "availability_release": {key: list(value) for key, value in self._availability_release.items()},
@@ -921,7 +926,8 @@ class ProductionLiberoEnvironment:
         self._interruption.fallback_observation = raw
         actual = self._make_receipt(raw, increment=False)
         expected = snapshot["receipt"]
-        if to_primitive(actual) != expected:
+        from .runner import json_value
+        if json_value(actual) != expected:
             raise ValueError("restored public observation differs from saved boundary")
 
     def close(self) -> None:

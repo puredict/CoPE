@@ -1,18 +1,21 @@
 from __future__ import annotations
 
 from dataclasses import replace
+from types import SimpleNamespace
+import numpy as np
 import pytest
 
 from cope_benchmark.repeated_v2.config import load_config
 from cope_benchmark.repeated_v2.evidence import EventLeakageError
 from cope_benchmark.repeated_v2.enums import MethodName
 from cope_benchmark.repeated_v2.production_runtime import (
-    NominalPlanner, PublicEventEvidenceBuilder, PublicRuntimeVerifier,
+    NominalPlanner, ProductionLiberoEnvironment, PublicEventEvidenceBuilder, PublicRuntimeVerifier,
     create_runtime_assembly,
 )
 from cope_benchmark.repeated_v2.pilot import validate_runtime_assembly
+from cope_benchmark.repeated_v2.runner import ObservationReceipt
 from cope_benchmark.repeated_v2.schema import (
-    ContinuationState, ExecutionContext, PlanningProblem,
+    ContinuationState, ExecutionContext, PersistentLedger, PlanningProblem,
 )
 
 
@@ -84,6 +87,36 @@ def test_runtime_verifier_identity_is_public_and_separate_from_sealed_evaluator(
     assert identity["uses_hidden_canonical_state"] is False
     assert identity["uses_privileged_simulator_state"] is False
     assert identity["provider_id"] != "sealed_dynamic_v2.1"
+
+
+def test_production_snapshot_serializes_live_numpy_sensor_arrays():
+    environment = ProductionLiberoEnvironment(
+        catalog={}, evidence_builder=PublicEventEvidenceBuilder(),
+        verifier=PublicRuntimeVerifier(), checkpoint_path="unused",
+    )
+    environment._env = SimpleNamespace(get_sim_state=lambda: np.asarray([1.0, 2.0]))
+    environment._task = {"episode_id": "episode"}
+    environment._canonical = PersistentLedger(0, (), (), ())
+    environment._interruption = SimpleNamespace(
+        constraint_state=SimpleNamespace(snapshot=lambda: {"active_no_go_zones": {}}),
+    )
+    environment._receipt = ObservationReceipt(
+        {"full_image": np.zeros((2, 2, 3), dtype=np.uint8),
+         "state": np.asarray([0.1, 0.2], dtype=np.float32)},
+        "obs:episode:0:0", 0, 0,
+    )
+    environment._policy_step = environment._version = environment._initial_state_id = 0
+    environment._seed = 11
+    environment._runtime_verifications = []
+    environment._public_evidence = []
+    environment._last_affected = ()
+    environment._last_public_context = None
+    environment._availability_release = {}
+
+    receipt = environment.snapshot()["receipt"]
+    assert receipt["payload"]["full_image"] == [[[0, 0, 0], [0, 0, 0]],
+                                                  [[0, 0, 0], [0, 0, 0]]]
+    assert receipt["payload"]["state"] == pytest.approx([0.1, 0.2])
 
 
 def test_production_runtime_assembly_passes_complete_zero_call_gate():
