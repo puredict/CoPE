@@ -127,6 +127,10 @@ def test_production_snapshot_serializes_live_numpy_sensor_arrays():
          "state": np.asarray([0.1, 0.2], dtype=np.float32)},
         "obs:episode:0:0", 0, 0,
     )
+    environment._raw_observation = {
+        "agentview_image": np.zeros((2, 2, 3), dtype=np.uint8),
+        "robot0_eef_pos": np.asarray([0.1, 0.2, 0.3]),
+    }
     environment._policy_step = environment._version = environment._initial_state_id = 0
     environment._seed = 11
     environment._runtime_verifications = []
@@ -135,10 +139,12 @@ def test_production_snapshot_serializes_live_numpy_sensor_arrays():
     environment._last_public_context = None
     environment._availability_release = {}
 
-    receipt = environment.snapshot()["receipt"]
+    snapshot = environment.snapshot()
+    receipt = snapshot["receipt"]
     assert receipt["payload"]["full_image"] == [[[0, 0, 0], [0, 0, 0]],
                                                   [[0, 0, 0], [0, 0, 0]]]
     assert receipt["payload"]["state"] == pytest.approx([0.1, 0.2])
+    assert snapshot["raw_observation"]["robot0_eef_pos"] == [0.1, 0.2, 0.3]
 
 
 def test_production_runtime_assembly_passes_complete_zero_call_gate():

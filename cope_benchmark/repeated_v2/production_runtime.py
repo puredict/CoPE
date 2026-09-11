@@ -905,6 +905,11 @@ class ProductionLiberoEnvironment:
             "observation_version": self._version, "initial_state_id": self._initial_state_id,
             "seed": self._seed, "task": self._task, "canonical_ledger": self._canonical.to_dict(),
             "constraint_state": self._interruption.constraint_state.snapshot(),
+            # The complete native observation is trusted harness state. It is
+            # never exposed to a method or policy, but is needed to reproduce
+            # an event injected immediately after a restored boundary without
+            # asking stochastic observables to sample again.
+            "raw_observation": json_value(self._raw_observation),
             "receipt": json_value(self._receipt), "runtime_verifications": self._runtime_verifications,
             "public_evidence": self._public_evidence, "last_affected": list(self._last_affected),
             "last_public_context": to_primitive(self._last_public_context),
@@ -915,7 +920,16 @@ class ProductionLiberoEnvironment:
         import numpy as np
         if snapshot["version"] != self.version or snapshot["task"] != self._task:
             raise ValueError("environment snapshot identity mismatch")
-        raw = self._env.set_init_state(np.asarray(snapshot["sim_state"], dtype=snapshot["sim_state_dtype"]))
+        saved_state = np.asarray(snapshot["sim_state"], dtype=snapshot["sim_state_dtype"])
+        self._env.set_init_state(saved_state)
+        restored_state = self._env.get_sim_state()
+        if (restored_state.dtype != saved_state.dtype or restored_state.shape != saved_state.shape
+                or not np.array_equal(restored_state, saved_state)):
+            raise ValueError("restored simulator state differs from saved boundary")
+        raw = {
+            str(key): np.asarray(value) if isinstance(value, list) else deepcopy(value)
+            for key, value in snapshot["raw_observation"].items()
+        }
         self._policy_step = int(snapshot["policy_step"])
         self._version = int(snapshot["observation_version"])
         self._canonical = PersistentLedger.from_dict(snapshot["canonical_ledger"])
@@ -929,12 +943,14 @@ class ProductionLiberoEnvironment:
             str(key): tuple(float(item) for item in value)
             for key, value in snapshot.get("availability_release", {}).items()
         }
-        self._interruption.fallback_observation = raw
-        actual = self._make_receipt(raw, increment=False)
+        from .runner import ObservationReceipt
         expected = snapshot["receipt"]
-        from .runner import json_value
-        if json_value(actual) != expected:
-            raise ValueError("restored public observation differs from saved boundary")
+        self._receipt = ObservationReceipt(
+            deepcopy(expected["payload"]), str(expected["observation_ref"]),
+            int(expected["version"]), int(expected["policy_step"]),
+        )
+        self._raw_observation = raw
+        self._interruption.fallback_observation = raw
 
     def close(self) -> None:
         if self._env is not None:
