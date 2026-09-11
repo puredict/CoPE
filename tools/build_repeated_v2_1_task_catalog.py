@@ -474,10 +474,27 @@ def main(argv: Sequence[str] | None = None) -> int:
     fields = ("gap_id", "task_id", "task_name", "category", "root_cause",
               "root_cause_unit_id", "automatic_fixability", "required_evidence",
               "blocking_gate", "cascade_class")
-    _write_new(args.research_dir / "GAP_MATRIX_V2_1.csv", _csv_bytes(after, fields))
+    matrix_bytes = _csv_bytes(after, fields)
+    _write_new(args.research_dir / "GAP_MATRIX_V2_1.csv", matrix_bytes)
+    _write_new(args.research_dir / "GAP_MATRIX.csv", matrix_bytes)
     category_counts: dict[str, int] = {}
     for row in after:
         category_counts[row["category"]] = category_counts.get(row["category"], 0) + 1
+    task_sections = []
+    for task_id in range(10):
+        task_rows = [row for row in after if row["task_id"] == task_id]
+        if task_rows:
+            body = "\n".join(
+                "| {category} | `{root_cause}` | {automatic_fixability} | {required_evidence} | `{blocking_gate}` |".format(**row)
+                for row in task_rows
+            )
+        else:
+            body = "| None | None | None | All mandatory source-backed evidence is present. | None |"
+        task_sections.append(
+            f"### Task {task_id}\n\n"
+            "| Category | Root cause | Automatic fixability | Required evidence | Blocking gate |\n"
+            "| --- | --- | --- | --- | --- |\n" + body
+        )
     summary = f"""# v2.1 gap summary
 
 The retained v2 preflight expanded **{len(old_rows)} derived rows** from **{old_units} root-cause units**. This rebuild operates on the root causes and never treats cascade rows as separate manual tasks.
@@ -492,6 +509,10 @@ The v2.1 source-backed catalog has **{len(after)} remaining task-level root caus
 
 State-digest, trigger-field, feasibility, calibration-identity, and collection-marker cascades were regenerated from one upstream artifact per category. A missing or failed upstream certificate remains one root cause even when it affects several derived task/event/state cells. No task-catalog entry was invented to erase a failed measurement.
 
+## Root causes grouped by task
+
+{chr(10).join(task_sections)}
+
 ## Eligibility
 
 - Eligible task IDs: {metadata['eligible_task_ids']}
@@ -499,7 +520,9 @@ State-digest, trigger-field, feasibility, calibration-identity, and collection-m
 - Selection status: `{metadata['selection_status']}`
 - Formal launch minimum: 8 tasks
 """
-    _write_new(args.research_dir / "GAP_SUMMARY_V2_1.md", summary.encode())
+    summary_bytes = summary.encode()
+    _write_new(args.research_dir / "GAP_SUMMARY_V2_1.md", summary_bytes)
+    _write_new(args.research_dir / "GAP_SUMMARY.md", summary_bytes)
     counts = [
         {"stage": "before_v2_1", "derived_gap_rows": len(old_rows), "root_cause_units": old_units},
         {"stage": "after_v2_1", "derived_gap_rows": len(after),
