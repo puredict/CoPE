@@ -528,8 +528,9 @@ State-digest, trigger-field, feasibility, calibration-identity, and collection-m
         {"stage": "after_v2_1", "derived_gap_rows": len(after),
          "root_cause_units": len({row["root_cause_unit_id"] for row in after})},
     ]
-    _write_new(args.research_dir / "GAP_ROOT_CAUSE_COUNTS_V2_1.csv",
-               _csv_bytes(counts, ("stage", "derived_gap_rows", "root_cause_units")))
+    counts_bytes = _csv_bytes(counts, ("stage", "derived_gap_rows", "root_cause_units"))
+    _write_new(args.research_dir / "GAP_ROOT_CAUSE_COUNTS_V2_1.csv", counts_bytes)
+    _write_new(args.research_dir / "TASK_CATALOG_ROOT_CAUSES_BEFORE_AFTER.csv", counts_bytes)
     metadata["catalog_file_sha256"] = _sha(catalog_dir / "catalog.json")
     metadata["remaining_root_causes"] = len(after)
     _write_new(args.research_dir / "TASK_CATALOG_BUILD_RECEIPT.json", _encoded(metadata, pretty=True))
