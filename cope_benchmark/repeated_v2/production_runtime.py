@@ -414,11 +414,35 @@ def _restore_constraint_state(value: Mapping[str, Any]):
     )
 
 
+def _equivalent_mujoco_state(saved: Any, restored: Any) -> bool:
+    """Accept only the one-ULP normalization performed by ``sim.forward``.
+
+    MuJoCo normalizes free-joint quaternions when a flattened state is
+    forwarded.  A state copied immediately before that forward can therefore
+    differ by one machine epsilon afterwards even though qpos, qvel, time and
+    actuator state were restored.  Public observations remain the immutable
+    journaled values; this check is only for the trusted simulator boundary.
+    """
+    import numpy as np
+    saved_array = np.asarray(saved)
+    restored_array = np.asarray(restored)
+    if (saved_array.dtype != restored_array.dtype or
+            saved_array.shape != restored_array.shape or
+            not np.issubdtype(saved_array.dtype, np.floating) or
+            not np.isfinite(saved_array).all() or
+            not np.isfinite(restored_array).all()):
+        return False
+    return bool(np.allclose(
+        restored_array, saved_array, rtol=0.0,
+        atol=np.finfo(saved_array.dtype).eps, equal_nan=False,
+    ))
+
+
 class ProductionLiberoEnvironment:
     """Trusted harness bridge.  Public components receive projected data only."""
 
     provider_id = "libero_10_native_runtime"
-    version = "production_libero_runtime_v1"
+    version = "production_libero_runtime_v1.1"
 
     def __init__(self, *, catalog: Mapping[int, Mapping[str, Any]],
                  evidence_builder: PublicEventEvidenceBuilder,
@@ -436,6 +460,10 @@ class ProductionLiberoEnvironment:
             "public_evidence_builder": deepcopy(evidence_builder.identity),
             "public_verifier": deepcopy(verifier.identity),
             "public_observation_source_keys": list(PUBLIC_OBSERVATION_SOURCE_KEYS),
+            "simulator_restore_equivalence": {
+                "rule": "finite_same_dtype_shape_absolute_tolerance",
+                "rtol": 0.0, "atol": "dtype_machine_epsilon",
+            },
         }
         self._env = None
         self._suite = None
@@ -923,8 +951,7 @@ class ProductionLiberoEnvironment:
         saved_state = np.asarray(snapshot["sim_state"], dtype=snapshot["sim_state_dtype"])
         self._env.set_init_state(saved_state)
         restored_state = self._env.get_sim_state()
-        if (restored_state.dtype != saved_state.dtype or restored_state.shape != saved_state.shape
-                or not np.array_equal(restored_state, saved_state)):
+        if not _equivalent_mujoco_state(saved_state, restored_state):
             raise ValueError("restored simulator state differs from saved boundary")
         raw = {
             str(key): np.asarray(value) if isinstance(value, list) else deepcopy(value)

@@ -10,7 +10,7 @@ from cope_benchmark.repeated_v2.evidence import EventLeakageError
 from cope_benchmark.repeated_v2.enums import MethodName
 from cope_benchmark.repeated_v2.production_runtime import (
     NominalPlanner, ProductionLiberoEnvironment, PublicEventEvidenceBuilder, PublicRuntimeVerifier,
-    create_runtime_assembly,
+    _equivalent_mujoco_state, create_runtime_assembly,
 )
 from cope_benchmark.repeated_v2.pilot import validate_runtime_assembly
 from cope_benchmark.repeated_v2.runner import ObservationReceipt
@@ -145,6 +145,19 @@ def test_production_snapshot_serializes_live_numpy_sensor_arrays():
                                                   [[0, 0, 0], [0, 0, 0]]]
     assert receipt["payload"]["state"] == pytest.approx([0.1, 0.2])
     assert snapshot["raw_observation"]["robot0_eef_pos"] == [0.1, 0.2, 0.3]
+
+
+def test_mujoco_restore_accepts_only_finite_machine_epsilon_normalization():
+    saved = np.asarray([0.5, -0.5, 0.0], dtype=np.float64)
+    normalized = saved.copy()
+    normalized[0] = np.nextafter(normalized[0], np.inf)
+    assert _equivalent_mujoco_state(saved, normalized)
+
+    outside_tolerance = saved.copy()
+    outside_tolerance[0] += 2 * np.finfo(np.float64).eps
+    assert not _equivalent_mujoco_state(saved, outside_tolerance)
+    assert not _equivalent_mujoco_state(saved, np.asarray([0.5, -0.5, np.nan]))
+    assert not _equivalent_mujoco_state(saved, saved.astype(np.float32))
 
 
 def test_production_runtime_assembly_passes_complete_zero_call_gate():
