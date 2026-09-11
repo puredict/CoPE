@@ -1,0 +1,17 @@
+Experiment 1 repeated-interruptions v2.1 real simulator smoke
+Date: 2026-09-10 America/Chicago
+Host: fvl12 (SSH alias fudan-26575)
+Git/source overlay: b195456ff97170a05d342556fce1fc493f353930
+Provider calls: 0
+VLA calls: 0
+Formal trajectories: 0
+Command:
+  COPE_RUN_LIBERO_SMOKE=1 MUJOCO_GL=osmesa PYOPENGL_PLATFORM=osmesa CUDA_VISIBLE_DEVICES= PYTHONPATH=/tmp/cope_v21_test_b195456:/home/lijingsu/vla:/home/lijingsu/vla/src/LIBERO:/home/lijingsu/vla/src/openvla /home/lijingsu/vla/.venv/bin/python -m pytest -q -s tests/repeated_v2/test_phase3_simulator_smoke.py
+Output:
+  task=LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket
+  reset_ok initial_states=50
+  step_ok reward=0.0 done=False
+  restore_exact=True
+  fresh_observation_without_step=True
+  PASS_CPU_LIBERO_PHYSICS_SMOKE
+  4 passed in 7.27s

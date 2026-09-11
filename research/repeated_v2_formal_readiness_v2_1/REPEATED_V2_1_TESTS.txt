@@ -1,0 +1,8 @@
+Experiment 1 repeated-interruptions v2.1 implementation tests
+Date: 2026-09-10 America/Chicago
+Command:
+  pytest -q tests/repeated_v2
+Output:
+  929 passed, 1 skipped, 100 subtests passed in 106.70s (0:01:46)
+
+The single skipped item is the opt-in real LIBERO smoke on the local macOS interpreter. The same smoke was separately executed with installed LIBERO/MuJoCo assets on fvl12; see SIMULATOR_SMOKE_TESTS.txt.
