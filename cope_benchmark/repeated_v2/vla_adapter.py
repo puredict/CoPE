@@ -10,6 +10,7 @@ from __future__ import annotations
 import copy
 import hashlib
 import importlib
+import json
 import math
 import numbers
 import os
@@ -19,7 +20,7 @@ import stat
 import subprocess
 import sys
 from dataclasses import dataclass
-from typing import Any, Mapping, Protocol, runtime_checkable
+from typing import Any, Mapping, Protocol, Sequence, runtime_checkable
 
 
 BLOCKED_VLA_ADAPTER_UNAVAILABLE = "BLOCKED_VLA_ADAPTER_UNAVAILABLE"
@@ -66,9 +67,20 @@ class VLAAdapter(Protocol):
 PUBLIC_OBSERVATION_KEYS = frozenset({
     "full_image", "wrist_image", "state", "rgb", "rgb_wrist", "proprio",
     "observation_ref", "observation_step", "step", "timestamp",
+    # This field is copied from named pose observables in the ordinary LIBERO
+    # observation dictionary.  It is available to the public evidence and
+    # verifier components, but is deliberately removed by public_observation
+    # before a VLA client receives its sensor mapping.
+    "agent_visible_named_poses",
 })
 _FORBIDDEN_IDENTIFIERS = re.compile(r"oracle|mock|scripted|fake|heuristic|dummy|stub|placeholder", re.I)
 ACTION_SPACES = frozenset({"libero_environment", "openvla_raw_normalize_binarize_then_invert_gripper"})
+_CHECKPOINT_HASH_CACHE: dict[str, tuple[Any, str]] = {}
+
+
+def _contract_hash(fields: Sequence[str]) -> str:
+    return hashlib.sha256(json.dumps({"fields": list(fields)}, sort_keys=True,
+        separators=(",", ":")).encode()).hexdigest()
 
 
 def _sensor_values(value: Any, name: str) -> None:
@@ -93,6 +105,18 @@ def public_observation(observation: Mapping[str, Any]) -> dict[str, Any]:
     if unexpected:
         raise VLAContractError(f"non-public observation keys: {sorted(map(str, unexpected))}")
     result = copy.deepcopy(dict(observation))
+    named_poses = result.pop("agent_visible_named_poses", None)
+    if named_poses is not None:
+        if not isinstance(named_poses, Mapping) or any(
+                not isinstance(name, str) or not isinstance(pose, Mapping)
+                or set(pose) != {"position", "quaternion"}
+                for name, pose in named_poses.items()):
+            raise VLAContractError("agent-visible named poses have an invalid schema")
+        for name, pose in named_poses.items():
+            _sensor_values(pose["position"], name + ".position")
+            _sensor_values(pose["quaternion"], name + ".quaternion")
+            if len(pose["position"]) != 3 or len(pose["quaternion"]) != 4:
+                raise VLAContractError("agent-visible named poses require position[3] and quaternion[4]")
     for alias, canonical in (("rgb", "full_image"), ("rgb_wrist", "wrist_image"), ("proprio", "state")):
         if alias in result:
             if canonical in result:
@@ -180,7 +204,14 @@ def checkpoint_sha256(path: str | Path) -> str:
             raise VLAContractError("checkpoint file or symlink target changed while hashing")
         return value.digest()
     if source.is_file() or source.is_symlink():
-        return file_digest(source).hex()
+        before = file_snapshot(source)
+        cache_key = str(source.resolve())
+        cached = _CHECKPOINT_HASH_CACHE.get(cache_key)
+        if cached is not None and cached[0] == before:
+            return cached[1]
+        result = file_digest(source).hex()
+        _CHECKPOINT_HASH_CACHE[cache_key] = (before, result)
+        return result
     if not source.is_dir():
         raise VLAAdapterUnavailable(f"checkpoint is neither a file nor directory: {source}")
     files = sorted(source.rglob("*"))
@@ -190,6 +221,12 @@ def checkpoint_sha256(path: str | Path) -> str:
     files = [file for file in files if file.is_file() or file.is_symlink()]
     if not files:
         raise VLAAdapterUnavailable(f"checkpoint directory is empty: {source}")
+    before_manifest = tuple((file.relative_to(source).as_posix(), file_snapshot(file))
+                            for file in files)
+    cache_key = str(source.resolve())
+    cached = _CHECKPOINT_HASH_CACHE.get(cache_key)
+    if cached is not None and cached[0] == before_manifest:
+        return cached[1]
     digest = hashlib.sha256()
     for file in files:
         digest.update(file.relative_to(source).as_posix().encode("utf-8") + b"\0")
@@ -197,7 +234,9 @@ def checkpoint_sha256(path: str | Path) -> str:
     after_files = sorted(file for file in source.rglob("*") if file.is_file() or file.is_symlink())
     if after_files != files or any(file_snapshot(file) != before for file, before in snapshots.items()):
         raise VLAContractError("checkpoint manifest or symlink targets changed while hashing")
-    return digest.hexdigest()
+    result = digest.hexdigest()
+    _CHECKPOINT_HASH_CACHE[cache_key] = (before_manifest, result)
+    return result
 
 
 def to_environment_action(adapter: Any, row: Any) -> tuple[float, ...]:
@@ -328,8 +367,11 @@ class NativeOpenVLAAdapter:
     """
 
     provider_id = "openvla_native"
+    version = "native_openvla_observation_client_v1"
     learned_policy = True
     uses_privileged_state = False
+    uses_hidden_canonical_state = False
+    uses_privileged_simulator_state = False
     stateless = True
 
     def __init__(self, *, model: Any, processor: Any, model_config: Any,
@@ -453,13 +495,8 @@ class NativeOpenVLAAdapter:
         self._processor = None
 
 
-def create_native_openvla(config: Mapping[str, Any]) -> NativeOpenVLAAdapter:
-    """Factory for ``...vla_adapter:create_native_openvla``; no downloads.
-
-    Required: checkpoint_path, checkpoint_sha256, runtime_path. GPU selection
-    checks nvidia-smi and rejects active processes or >5% utilization. The
-    default check allows up to 256 MiB of idle driver memory.
-    """
+def validate_native_openvla_assets(config: Mapping[str, Any]) -> Mapping[str, Any]:
+    """Verify checkpoint/runtime bytes without importing Torch or touching a GPU."""
     checkpoint = Path(str(config.get("checkpoint_path", ""))).expanduser()
     runtime = Path(str(config.get("runtime_path", "/home/lijingsu/vla/src/openvla"))).expanduser()
     if not checkpoint.is_dir() or not (checkpoint / "config.json").is_file():
@@ -472,6 +509,36 @@ def create_native_openvla(config: Mapping[str, Any]) -> NativeOpenVLAAdapter:
     actual = checkpoint_sha256(checkpoint)
     if actual != expected:
         raise VLAContractError("native checkpoint content hash mismatch")
+    return {
+        "provider_id": NativeOpenVLAAdapter.provider_id,
+        "version": NativeOpenVLAAdapter.version,
+        "uses_hidden_canonical_state": False,
+        "uses_privileged_simulator_state": False,
+        "input_schema_hash": _contract_hash(("rgb", "instruction")),
+        "output_schema_hash": _contract_hash(("finite_action_chunk_1x7",)),
+        "policy_model_id": str(config.get("policy_model_id", "openvla-7b-finetuned-libero-10")),
+        "adapter_type": "native_openvla_observation_client",
+        "checkpoint_sha256": actual, "checkpoint_path": str(checkpoint.resolve()),
+        "runtime_path": str(runtime.resolve()),
+        "runtime_client_sha256": checkpoint_sha256(runtime / "experiments/robot/robot_utils.py"),
+        "runtime_inference_sha256": checkpoint_sha256(runtime / "experiments/robot/openvla_utils.py"),
+        "action_dim": 7, "max_chunk_horizon": 1,
+        "action_space": "openvla_raw_normalize_binarize_then_invert_gripper",
+        "model_consumes_proprio": False, "deterministic_decoding": True,
+        "learned_policy": True, "uses_privileged_state": False,
+    }
+
+
+def create_native_openvla(config: Mapping[str, Any]) -> NativeOpenVLAAdapter:
+    """Factory for ``...vla_adapter:create_native_openvla``; no downloads.
+
+    Required: checkpoint_path, checkpoint_sha256, runtime_path. GPU selection
+    checks nvidia-smi and rejects active processes or >5% utilization. The
+    default check allows up to 256 MiB of idle driver memory.
+    """
+    assets = dict(validate_native_openvla_assets(config))
+    checkpoint = Path(assets["checkpoint_path"])
+    runtime = Path(assets["runtime_path"])
     # Checking metadata and deps above never starts inference or touches a GPU.
     gpu = str(config.get("gpu", "0"))
     try:
@@ -513,15 +580,5 @@ def create_native_openvla(config: Mapping[str, Any]) -> NativeOpenVLAAdapter:
         raise VLAAdapterUnavailable(f"production OpenVLA dependencies unavailable: {exc}") from exc
     return NativeOpenVLAAdapter(model=model, processor=processor, model_config=model_config,
                                get_action=get_action, identity={
-        "provider_id": NativeOpenVLAAdapter.provider_id,
-        "policy_model_id": str(config.get("policy_model_id", "openvla-7b-finetuned-libero-10")),
-        "adapter_type": "native_openvla_observation_client",
-        "checkpoint_sha256": actual, "checkpoint_path": str(checkpoint.resolve()),
-        "runtime_path": runtime_text, "unnorm_key": resolved_key,
-        "runtime_client_sha256": checkpoint_sha256(runtime / "experiments/robot/robot_utils.py"),
-        "runtime_inference_sha256": checkpoint_sha256(runtime / "experiments/robot/openvla_utils.py"),
-        "action_dim": 7, "max_chunk_horizon": 1,
-        "action_space": "openvla_raw_normalize_binarize_then_invert_gripper",
-        "model_consumes_proprio": False,
-        "deterministic_decoding": True,
+        **assets, "runtime_path": runtime_text, "unnorm_key": resolved_key,
     })

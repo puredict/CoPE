@@ -217,6 +217,8 @@ class OpenAICompatibleReasoner:
 
     provider_id = "openai_compatible_http"
     version = "repeated_v2_openai_compatible_reasoner_v1"
+    uses_hidden_canonical_state = False
+    uses_privileged_simulator_state = False
 
     def __init__(self, *, endpoint: str, model: str, api_key: str | None,
                  timeout_seconds: float = 180.0, disable_thinking: bool = True,
@@ -240,6 +242,11 @@ class OpenAICompatibleReasoner:
         self.calls = 0
         self.identity = {
             "provider_id": self.provider_id,
+            "version": self.version,
+            "uses_hidden_canonical_state": False,
+            "uses_privileged_simulator_state": False,
+            "input_schema_hash": hashlib.sha256(b'{"fields":["public_prompt"]}').hexdigest(),
+            "output_schema_hash": hashlib.sha256(b'{"fields":["method_proposal"]}').hexdigest(),
             "model_id": self.model_id,
             "endpoint_sha256": hashlib.sha256(self.endpoint.encode()).hexdigest(),
             "transport_version": self.version,

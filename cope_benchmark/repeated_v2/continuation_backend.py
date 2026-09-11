@@ -22,7 +22,7 @@ from typing import Any, Protocol
 
 
 class PlannerBackendUnavailable(RuntimeError):
-    pass
+    status = 'BLOCKED_CONTINUATION_BACKEND_UNAVAILABLE'
 
 
 class UnsupportedPlanningSemantics(ValueError):
@@ -208,7 +208,10 @@ checkpoint. Model identity is recorded alongside the frozen package digest.
 """
 
     provider_id = 'continuation_carrying_repair_v2'
+    version = 'continuation_backend_v2'
     uses_hidden_truth = False
+    uses_hidden_canonical_state = False
+    uses_privileged_simulator_state = False
 
     def __init__(self, *, nominal_backend: Any, verifier: PublicRecoveryVerifier,
                  config: ContinuationBackendConfig | None = None) -> None:
@@ -219,6 +222,18 @@ checkpoint. Model identity is recorded alongside the frozen package digest.
         self.config = config or ContinuationBackendConfig()
         self.nominal_backend, self.verifier = nominal_backend, verifier
         self._engine = _load_engine(self.config)
+        self.identity = {
+            'provider_id': self.provider_id,
+            'version': self.version,
+            'uses_hidden_canonical_state': False,
+            'uses_privileged_simulator_state': False,
+            'input_schema_hash': _digest({'fields': ['PlanningProblem', 'ExecutionContext']}),
+            'output_schema_hash': _digest({'fields': ['ExecutionPlan']}),
+            'package_sha256': self._engine.package_sha256,
+            'nominal_planner_identity': _plain(getattr(nominal_backend, 'identity', {})),
+            'public_verifier_identity': _plain(getattr(verifier, 'identity', {})),
+            'config_sha256': _digest(self.config),
+        }
         self._flag_names = frozenset(f.name for f in fields(self._engine.AbstractState))
         self._program = None
         self._continuation = None

@@ -11,10 +11,12 @@ from dataclasses import dataclass
 import gzip
 import hashlib
 import importlib
+import inspect
 import json
 import os
 from pathlib import Path
 import subprocess
+import tempfile
 from typing import Any, Callable, Mapping, Sequence
 import uuid
 import weakref
@@ -56,6 +58,12 @@ class RuntimeAssembly:
     frozen_bundle: Mapping[str, Any] | None = None
     fixture: bool = False
     version: str = "runtime_assembly_v2.1"
+    public_evidence_builder_factory: Callable[[], Any] | None = None
+    public_verifier_factory: Callable[[], Any] | None = None
+    nominal_planner_factory: Callable[[], Any] | None = None
+    continuation_backend_factory: Callable[[], Any] | None = None
+    vla_asset_preflight: Callable[[], Mapping[str, Any]] | None = None
+    sealed_evaluator_provider_id: str | None = None
 
 
 def _encoded(value: Any) -> bytes:
@@ -301,6 +309,198 @@ def _production_components(method: Any, planner: Any, environment: Any) -> None:
         values = (type(gateway.reasoner).__name__, gateway.config.provider, gateway.config.model)
         if any(marker in str(value).lower() for marker in markers for value in values):
             raise RuntimeBlocked("INVALID_PRODUCTION_REASONER", "fixture or privileged reasoner cannot run a pilot")
+        _strict_public_identity(gateway.reasoner, "reasoner")
+
+
+_STRICT_PUBLIC_IDENTITY_FIELDS = frozenset({
+    "provider_id", "version", "uses_hidden_canonical_state",
+    "uses_privileged_simulator_state", "input_schema_hash", "output_schema_hash",
+})
+_NON_PRODUCTION_MARKERS = ("oracle", "fixture", "fake", "mock", "scripted", "dummy", "noop")
+
+
+def _strict_public_identity(component: Any, label: str) -> dict[str, Any]:
+    identity = json_value(getattr(component, "identity", {}))
+    missing = sorted(_STRICT_PUBLIC_IDENTITY_FIELDS - set(identity))
+    if missing:
+        raise RuntimeBlocked("INVALID_RUNTIME_COMPONENT_IDENTITY",
+                             f"{label} identity is missing {missing}")
+    if identity["provider_id"] != getattr(component, "provider_id", None):
+        raise RuntimeBlocked("INVALID_RUNTIME_COMPONENT_IDENTITY",
+                             f"{label} provider identity differs from its implementation")
+    if identity["version"] != getattr(component, "version", None):
+        raise RuntimeBlocked("INVALID_RUNTIME_COMPONENT_IDENTITY",
+                             f"{label} version differs from its implementation")
+    for field in ("uses_hidden_canonical_state", "uses_privileged_simulator_state"):
+        if identity[field] is not False or getattr(component, field, None) is not False:
+            raise RuntimeBlocked("INVALID_PRIVILEGED_RUNTIME_COMPONENT",
+                                 f"{label} must declare {field}=false")
+    for field in ("input_schema_hash", "output_schema_hash"):
+        value = identity[field]
+        if not isinstance(value, str) or len(value) != 64 or any(c not in "0123456789abcdef" for c in value):
+            raise RuntimeBlocked("INVALID_RUNTIME_COMPONENT_IDENTITY",
+                                 f"{label} has an invalid {field}")
+    names = (type(component).__module__, type(component).__qualname__, identity["provider_id"], identity["version"])
+    if any(marker in str(value).lower() for marker in _NON_PRODUCTION_MARKERS for value in names):
+        raise RuntimeBlocked("INVALID_PRODUCTION_RUNTIME", f"{label} is not a production component")
+    return identity
+
+
+def _journal_resume_self_check() -> dict[str, Any]:
+    """Exercise durable intent/response/result replay without an external call."""
+    invocations = 0
+    key = ("end_to_end", "runtime-gate", "journal-contract", 1)
+    metadata = {"schema": "runtime_gate_journal_v1", "external_calls": 0}
+
+    def invoke(_request):
+        nonlocal invocations
+        invocations += 1
+        return {"ok": True}
+
+    with tempfile.TemporaryDirectory(prefix="cope-runtime-gate-") as directory:
+        root = Path(directory) / "journal"
+        with DurableJournal(root) as journal:
+            journal.freeze_metadata(metadata)
+            first = journal.call_once(key, {"probe": 1}, invoke)
+            journal.save_snapshot(key, {"boundary": 1}, label="completed")
+            journal.record_result(key, {"status": "COMPLETED", "provider_called": True})
+        with DurableJournal(root, frozen_metadata=metadata) as journal:
+            second = journal.call_once(key, {"probe": 1},
+                                       lambda _: (_ for _ in ()).throw(AssertionError("duplicate invocation")))
+            report = journal.inspect_integrity([key], snapshot_label="completed")
+        if first != second or invocations != 1 or not report.valid:
+            raise RuntimeBlocked("INVALID_DURABLE_JOURNAL", "at-most-once resume self-check failed")
+    return {"status": "PASS", "logical_calls": 2, "actual_invocations": invocations,
+            "duplicate_provider_calls": 0, "integrity_status": report.status}
+
+
+def validate_runtime_assembly(assembly: RuntimeAssembly) -> dict[str, Any]:
+    """Zero-call formal gate for the complete public runtime graph.
+
+    This runs before output publication, provider construction, model loading,
+    simulator reset, or learned-policy inference.  Factories inspected here may
+    load the local CPU continuation package, but may not own runtime state.
+    """
+    factories = {
+        "public_evidence_builder": assembly.public_evidence_builder_factory,
+        "public_runtime_verifier": assembly.public_verifier_factory,
+        "nominal_planner": assembly.nominal_planner_factory,
+        "continuation_backend": assembly.continuation_backend_factory,
+    }
+    missing = sorted(name for name, factory in factories.items() if not callable(factory))
+    if missing:
+        raise RuntimeBlocked("INVALID_RUNTIME_ASSEMBLY", f"missing public component factories: {missing}")
+    if not callable(assembly.policy_factory) or not callable(assembly.vla_asset_preflight):
+        raise RuntimeBlocked("BLOCKED_VLA_ADAPTER_UNAVAILABLE",
+                             "production assembly requires learned-policy and asset-preflight factories")
+    try:
+        vla_assets = json_value(assembly.vla_asset_preflight())
+    except Exception as exc:
+        status = getattr(exc, "status", "BLOCKED_VLA_ADAPTER_UNAVAILABLE")
+        raise RuntimeBlocked(status, "VLA asset verification failed during zero-call gate") from exc
+    declared_vla = json_value(assembly.identity.get("vla", {}))
+    missing_vla_identity = sorted(_STRICT_PUBLIC_IDENTITY_FIELDS - set(declared_vla))
+    if (vla_assets.get("provider_id") != declared_vla.get("provider_id") or
+            vla_assets.get("checkpoint_sha256") != declared_vla.get("checkpoint_sha256") or
+            vla_assets.get("learned_policy") is not True or
+            vla_assets.get("uses_privileged_state") is not False or
+            vla_assets.get("action_dim") != 7 or
+            not 1 <= vla_assets.get("max_chunk_horizon", 0) <= 8 or
+            missing_vla_identity or
+            declared_vla.get("uses_hidden_canonical_state") is not False or
+            declared_vla.get("uses_privileged_simulator_state") is not False or
+            any(vla_assets.get(field) != declared_vla.get(field)
+                for field in _STRICT_PUBLIC_IDENTITY_FIELDS)):
+        raise RuntimeBlocked("INVALID_VLA_CONTRACT", "verified VLA assets differ from assembly identity")
+    components = {}
+    for name, factory in factories.items():
+        try:
+            components[name] = factory()
+        except Exception as exc:
+            status = getattr(exc, "status", "BLOCKED_RUNTIME_COMPONENT_UNAVAILABLE")
+            raise RuntimeBlocked(status, f"{name} construction failed during zero-call gate") from exc
+    identities = {name: _strict_public_identity(component, name)
+                  for name, component in components.items()}
+    if not isinstance(assembly.sealed_evaluator_provider_id, str) or not assembly.sealed_evaluator_provider_id:
+        raise RuntimeBlocked("INVALID_RUNTIME_ASSEMBLY", "sealed evaluator identity is required")
+    verifier = components["public_runtime_verifier"]
+    if (assembly.sealed_evaluator_provider_id == verifier.provider_id or
+            assembly.sealed_evaluator_provider_id in {
+                type(verifier).__name__, type(verifier).__module__ + "." + type(verifier).__qualname__}):
+        raise RuntimeBlocked("INVALID_EVALUATOR_ALIAS", "public verifier aliases the sealed evaluator")
+    nominal = components["nominal_planner"]
+    signature = inspect.signature(nominal.solve)
+    if tuple(signature.parameters) != ("problem", "context") or any(
+            parameter.kind is not inspect.Parameter.KEYWORD_ONLY
+            for parameter in signature.parameters.values()):
+        raise RuntimeBlocked("INVALID_PRIVILEGED_PLANNER",
+                             "nominal planner must consume only keyword-only problem and context")
+    backend = components["continuation_backend"]
+    if getattr(backend, "nominal_backend", None) is None or getattr(backend, "verifier", None) is None:
+        raise RuntimeBlocked("INVALID_COMMON_BACKEND", "continuation backend lacks public dependencies")
+    if (json_value(backend.nominal_backend.identity) != identities["nominal_planner"] or
+            json_value(backend.verifier.identity) != identities["public_runtime_verifier"]):
+        raise RuntimeBlocked("INVALID_COMMON_BACKEND",
+                             "continuation backend dependencies differ from common public identities")
+    exposed = vars(backend)
+    if any(name in exposed for name in ("environment", "env", "sim", "canonical", "canonical_state",
+                                        "sealed_evaluator", "hidden_effect")):
+        raise RuntimeBlocked("INVALID_PUBLIC_INPUT_LEAKAGE",
+                             "continuation backend retains privileged runtime state")
+    # Repeat every factory once.  Identity equality is the zero-call proof that
+    # all method arms are wired to the same implementation/configuration.
+    repeated = {}
+    for name, factory in factories.items():
+        try:
+            repeated[name] = _strict_public_identity(factory(), name)
+        except RuntimeBlocked:
+            raise
+        except Exception as exc:
+            status = getattr(exc, "status", "BLOCKED_RUNTIME_COMPONENT_UNAVAILABLE")
+            raise RuntimeBlocked(status, f"{name} repeat construction failed during zero-call gate") from exc
+    if repeated != identities:
+        raise RuntimeBlocked("INVALID_COMMON_BACKEND", "public component identity is not factory-stable")
+    declared = json_value(assembly.identity.get("components", {}))
+    expected_declared = {
+        "public_evidence_builder": identities["public_evidence_builder"],
+        "public_runtime_verifier": identities["public_runtime_verifier"],
+        "nominal_planner": identities["nominal_planner"],
+        "continuation_backend": identities["continuation_backend"],
+    }
+    for name, identity in expected_declared.items():
+        declared_identity = declared.get(name, {})
+        for field in _STRICT_PUBLIC_IDENTITY_FIELDS:
+            if declared_identity.get(field) != identity[field]:
+                raise RuntimeBlocked("INVALID_RUNTIME_COMPONENT_IDENTITY",
+                                     f"declared {name} identity differs from constructed component")
+    backend_declared = declared["continuation_backend"]
+    for field in ("package_sha256", "config_sha256", "nominal_planner_identity",
+                  "public_verifier_identity"):
+        if backend_declared.get(field) != identities["continuation_backend"].get(field):
+            raise RuntimeBlocked("INVALID_COMMON_BACKEND",
+                                 f"declared continuation backend {field} differs from the loaded package")
+    compiler = declared.get("compiler", {})
+    missing_compiler = sorted(_STRICT_PUBLIC_IDENTITY_FIELDS - set(compiler))
+    if missing_compiler or compiler.get("uses_hidden_canonical_state") is not False or \
+            compiler.get("uses_privileged_simulator_state") is not False:
+        raise RuntimeBlocked("INVALID_PRIVILEGED_COMPILER", "pure compiler identity is incomplete or privileged")
+    from .compiler import compile_ledger
+    compiler_signature = inspect.signature(compile_ledger)
+    forbidden_parameters = {"task_id", "catalog", "canonical_state", "environment", "simulator",
+                            "hidden_effect", "sealed_evaluator"}
+    if forbidden_parameters & set(compiler_signature.parameters):
+        raise RuntimeBlocked("INVALID_PRIVILEGED_COMPILER", "compiler accepts a privileged reconstruction input")
+    source_path = Path(inspect.getsourcefile(compile_ledger) or "")
+    if not source_path.is_file() or hashlib.sha256(source_path.read_bytes()).hexdigest() != compiler.get("source_sha256"):
+        raise RuntimeBlocked("INVALID_RUNTIME_COMPONENT_IDENTITY", "compiler source hash differs from assembly")
+    journal_gate = _journal_resume_self_check()
+    return {
+        "status": "PASS", "provider_calls": 0, "vla_calls": 0,
+        "simulator_resets": 0, "components": identities,
+        "compiler": compiler, "vla_assets": vla_assets, "durable_journal": journal_gate,
+        "sealed_evaluator_provider_id": assembly.sealed_evaluator_provider_id,
+        "public_sealed_separation": True, "same_components_across_methods": True,
+    }
 
 
 def export_journal(journal: DurableJournal, *, output_dir: Path, expected_cells: Sequence,
@@ -369,6 +569,9 @@ def execute_assembly(*, assembly: RuntimeAssembly | None, config: Mapping, manif
         raise RuntimeBlocked("INVALID_FIXTURE_RUN", "mock qualification must be explicitly identified")
     if not manifest and not empty_formal:
         raise RuntimeBlocked("BLOCKED_EMPTY_MANIFEST", "no episodes are available")
+    runtime_gate = None
+    if assembly is not None and not qualification:
+        runtime_gate = validate_runtime_assembly(assembly)
     if assembly is not None and assembly.frozen_bundle is not None:
         if frozen_bundle is not None and stable_hash(assembly.frozen_bundle) != stable_hash(frozen_bundle):
             raise RuntimeBlocked("INVALID_PROTOCOL_DRIFT", "CLI and assembly freeze bundles differ")
@@ -411,6 +614,8 @@ def execute_assembly(*, assembly: RuntimeAssembly | None, config: Mapping, manif
                 "information_condition": information_condition,
                 "shard_id": shard_index, "shard_count": num_shards if phase == "formal" else 1,
                 "evidence_admissibility": "mock_qualification" if qualification else phase}
+    if runtime_gate is not None:
+        metadata["zero_call_runtime_gate"] = runtime_gate
     if empty_formal:
         metadata.update(empty_shard=True, full_manifest_sha256=stable_hash(full_manifest),
                         live_identity_check="not_required_no_external_calls")
@@ -455,6 +660,12 @@ def execute_assembly(*, assembly: RuntimeAssembly | None, config: Mapping, manif
                                 if (reasoner_identity.get("provider_id") != gateway.config.provider or
                                         reasoner_identity.get("model_id") != gateway.config.model):
                                     raise RuntimeBlocked("INVALID_REASONER_IDENTITY", "actual reasoner differs from assembly provenance")
+                                actual_reasoner_identity = _strict_public_identity(
+                                    gateway.reasoner, "reasoner")
+                                if any(reasoner_identity.get(field) != actual_reasoner_identity.get(field)
+                                       for field in _STRICT_PUBLIC_IDENTITY_FIELDS):
+                                    raise RuntimeBlocked("INVALID_REASONER_IDENTITY",
+                                                         "reasoner component contract differs from assembly provenance")
                                 expected_tokens = config["reasoner"]["max_input_tokens_" + condition]
                                 if (gateway.config.max_input_tokens != expected_tokens or
                                         gateway.config.max_output_tokens != config["reasoner"]["max_output_tokens"]):
@@ -522,6 +733,8 @@ def execute_assembly(*, assembly: RuntimeAssembly | None, config: Mapping, manif
                                         raise RuntimeBlocked("BLOCKED_VLA_ADAPTER_UNAVAILABLE", "assembly has no learned VLA factory")
                                     policy = assembly.policy_factory()
                                     _retain_unique(policy, live_instances)
+                                    if not qualification:
+                                        _strict_public_identity(policy, "learned_vla")
                                     identity = _component_identity(policy)
                                     if "policy" in common and common["policy"] != identity:
                                         raise RuntimeBlocked("INVALID_COMMON_EXECUTOR", "VLA identity differs across methods")

@@ -5,7 +5,9 @@ This is a zero-provider feasibility tool.  Simulator truth is confined to the
 sealed feasibility record; it is never emitted as method input.  ``discover``
 chooses one member of a frozen intervention grid using states 20--24.  ``audit``
 refuses any other parameter source and applies the chosen rules unchanged to
-states 15--19.  Neither mode runs a learned policy or a formal comparison.
+states 15--19.  ``audit-subset`` applies those same frozen rules to explicit
+task/state IDs for a zero-provider eligibility audit.  No mode runs a learned
+policy or a method comparison.
 """
 
 from __future__ import annotations
@@ -755,7 +757,10 @@ def _trigger_audit(family: str, entity: str | None) -> dict[str, Any]:
     }
 
 
-def audit(parameters_path: Path, output: Path) -> dict[str, Any]:
+def audit(parameters_path: Path, output: Path, *,
+          task_ids: Sequence[int] = tuple(range(10)),
+          state_ids: Sequence[int] = DEV_STATE_IDS,
+          mode: str = "dev_audit") -> dict[str, Any]:
     from libero_experiment_core import get_benchmark_suite
     parameters_bytes = parameters_path.read_bytes()
     parameters = json.loads(parameters_bytes)
@@ -763,7 +768,15 @@ def audit(parameters_path: Path, output: Path) -> dict[str, Any]:
         raise ValueError("audit requires the reserve-state v2.1 parameter artifact")
     suite = get_benchmark_suite("libero_10")
     rows = []
-    for task_id in range(10):
+    if (not task_ids or len(set(task_ids)) != len(task_ids) or
+            any(type(value) is not int or not 0 <= value < 10 for value in task_ids)):
+        raise ValueError("audit task IDs must be unique integers in 0..9")
+    if (not state_ids or len(set(state_ids)) != len(state_ids) or
+            any(type(value) is not int or not 0 <= value < 500 for value in state_ids)):
+        raise ValueError("audit state IDs must be unique integers in 0..499")
+    if mode not in {"dev_audit", "formal_state_feasibility_audit"}:
+        raise ValueError("unsupported zero-provider audit mode")
+    for task_id in task_ids:
         task_parameters = parameters["task_parameters"][str(task_id)]
         if not task_parameters.get("parameter_discovery_complete"):
             raise ValueError(f"task {task_id} has no complete reserve-state parameter classification")
@@ -774,7 +787,7 @@ def audit(parameters_path: Path, output: Path) -> dict[str, Any]:
         for family, field in PHYSICAL_FAMILY_PARAMETERS.items():
             if family in supported and task_parameters.get(field) is None:
                 raise ValueError(f"task {task_id} supports {family} without {field}")
-        for state_id in DEV_STATE_IDS:
+        for state_id in state_ids:
             env, observation, state = _task_env(suite, task_id, state_id)
             try:
                 physical = {}
@@ -856,7 +869,7 @@ def audit(parameters_path: Path, output: Path) -> dict[str, Any]:
                         checks["fresh_revalidation_before_restore"] = bool(detail.get("fresh_observation_both"))
                         checks["restore_target_not_expired"] = True
                     rows.append({
-                        "schema_version": SCHEMA, "mode": "dev_audit",
+                        "schema_version": SCHEMA, "mode": mode,
                         "task_id": task_id, "initial_state_id": state_id, "event_family": family,
                         "passed": all(checks.values()), "checks": checks,
                         "trigger": trigger["semantic_trigger"], "evidence": detail,
@@ -868,11 +881,11 @@ def audit(parameters_path: Path, output: Path) -> dict[str, Any]:
     output.mkdir(parents=True, exist_ok=False)
     _write_new(output / "SEMANTIC_FEASIBILITY_RESULTS.jsonl", _jsonl(rows))
     summary = []
-    for task_id in range(10):
+    for task_id in task_ids:
         task_rows = [row for row in rows if row["task_id"] == task_id]
         families = sorted({row["event_family"] for row in task_rows})
         summary.append({
-            "task_id": task_id, "covered_state_ids": json.dumps(DEV_STATE_IDS),
+            "task_id": task_id, "covered_state_ids": json.dumps(list(state_ids)),
             "registered_event_families": len(families), "event_state_cells": len(task_rows),
             "passing_event_state_cells": sum(row["passed"] for row in task_rows),
             "complete_feasibility_certificate": all(row["passed"] for row in task_rows),
@@ -910,7 +923,8 @@ def audit(parameters_path: Path, output: Path) -> dict[str, Any]:
         "this feasibility/scoring process. Provider calls, learned-VLA calls, and formal trajectories were zero.\n"
     ).encode())
     result = {
-        "schema_version": SCHEMA, "mode": "dev_audit", "state_ids": list(DEV_STATE_IDS),
+        "schema_version": SCHEMA, "mode": mode, "task_ids": list(task_ids),
+        "state_ids": list(state_ids),
         "parameter_artifact": str(parameters_path.resolve()),
         "parameter_artifact_sha256": hashlib.sha256(parameters_bytes).hexdigest(),
         "result_sha256": _sha(output / "SEMANTIC_FEASIBILITY_RESULTS.jsonl"),
@@ -931,9 +945,11 @@ def _git_head() -> str:
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("mode", choices=("discover", "audit"))
+    parser.add_argument("mode", choices=("discover", "audit", "audit-subset"))
     parser.add_argument("--output-dir", required=True, type=Path)
     parser.add_argument("--parameters", type=Path)
+    parser.add_argument("--task-ids", nargs="+", type=int)
+    parser.add_argument("--state-ids", nargs="+", type=int)
     args = parser.parse_args(argv)
     if os.environ.get("COPE_ALLOW_FORMAL_RUN"):
         raise ValueError("feasibility audit must run with formal launch authorization absent")
@@ -942,10 +958,16 @@ def main(argv: Sequence[str] | None = None) -> int:
         if args.parameters:
             parser.error("discover does not accept --parameters")
         result = discover(args.output_dir.resolve())
-    else:
+    elif args.mode == "audit":
         if not args.parameters:
             parser.error("audit requires --parameters")
         result = audit(args.parameters.resolve(), args.output_dir.resolve())
+    else:
+        if not args.parameters or not args.task_ids or not args.state_ids:
+            parser.error("audit-subset requires --parameters, --task-ids, and --state-ids")
+        result = audit(args.parameters.resolve(), args.output_dir.resolve(),
+                       task_ids=tuple(args.task_ids), state_ids=tuple(args.state_ids),
+                       mode="formal_state_feasibility_audit")
     result = {**result, "wall_seconds": time.monotonic() - started}
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0 if result.get("all_registered_cells_pass", result.get("all_tasks_classified", False)) else 2
