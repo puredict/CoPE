@@ -54,11 +54,15 @@ def test_openai_compatible_adapter_preserves_request_and_provider_usage() -> Non
     assert captured["request"] == {
         "model": "production-model", "messages": messages, "temperature": 0.0,
         "top_p": 1.0, "max_tokens": 100, "seed": 0,
+        "chat_template_kwargs": {"enable_thinking": False},
+        "response_format": {"type": "json_object"},
     }
     assert captured["timeout"] == 12
     assert (response.input_tokens, response.output_tokens, response.fixture) == (17, 5, False)
     assert response.token_count_kind == "provider_usage"
     assert "test-only-secret" not in json.dumps(reasoner.identity)
+    assert reasoner.identity["response_format"] == "json_object"
+    assert reasoner.identity["thinking_enabled"] is False
 
 
 def test_production_adapter_rejects_missing_exact_usage() -> None:

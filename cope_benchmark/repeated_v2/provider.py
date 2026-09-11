@@ -219,7 +219,8 @@ class OpenAICompatibleReasoner:
     version = "repeated_v2_openai_compatible_reasoner_v1"
 
     def __init__(self, *, endpoint: str, model: str, api_key: str | None,
-                 timeout_seconds: float = 180.0, opener=None) -> None:
+                 timeout_seconds: float = 180.0, disable_thinking: bool = True,
+                 opener=None) -> None:
         endpoint = str(endpoint).strip().rstrip("/")
         model = str(model).strip()
         if not model:
@@ -228,10 +229,13 @@ class OpenAICompatibleReasoner:
             raise ReasonerUnavailable("configured reasoner endpoint is invalid")
         if type(timeout_seconds) not in (int, float) or not 0 < timeout_seconds <= 600:
             raise ReasonerUnavailable("configured reasoner timeout is invalid")
+        if type(disable_thinking) is not bool:
+            raise ReasonerUnavailable("configured reasoner thinking mode is invalid")
         self.endpoint = endpoint if endpoint.endswith("/chat/completions") else endpoint + "/chat/completions"
         self.model_id = model
         self._api_key = None if api_key is None else str(api_key)
         self.timeout_seconds = float(timeout_seconds)
+        self.disable_thinking = disable_thinking
         self._opener = opener or urllib.request.urlopen
         self.calls = 0
         self.identity = {
@@ -243,6 +247,8 @@ class OpenAICompatibleReasoner:
             "top_p": 1.0,
             "semantic_retries": 0,
             "timeout_seconds": self.timeout_seconds,
+            "response_format": "json_object",
+            "thinking_enabled": not self.disable_thinking,
         }
 
     def count_tokens(self, messages: Sequence[Mapping[str, str]]) -> int:
@@ -263,6 +269,11 @@ class OpenAICompatibleReasoner:
             "top_p": 1.0,
             "max_tokens": config.max_output_tokens,
             "seed": config.seed,
+            # Strict proposal parsers intentionally reject prose, Markdown and
+            # chain-of-thought wrappers.  vLLM forwards the chat-template flag
+            # to Qwen3 and implements the OpenAI JSON response-format contract.
+            "chat_template_kwargs": {"enable_thinking": not self.disable_thinking},
+            "response_format": {"type": "json_object"},
         }
         body = json.dumps(payload, ensure_ascii=False, separators=(",", ":"),
                           allow_nan=False).encode("utf-8")
@@ -294,6 +305,7 @@ def create_openai_compatible_reasoner(*, config: Mapping[str, object]):
         endpoint=str(config.get("endpoint", "")), model=str(config.get("model", "")),
         api_key=None if config.get("api_key") is None else str(config["api_key"]),
         timeout_seconds=float(config.get("timeout_seconds", 180)),
+        disable_thinking=bool(config.get("disable_thinking", True)),
     )
 
 
