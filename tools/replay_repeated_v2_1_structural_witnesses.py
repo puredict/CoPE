@@ -10,6 +10,7 @@ terminal success fails closed; no trajectory is retried or reclassified.
 from __future__ import annotations
 
 import argparse
+from concurrent.futures import ProcessPoolExecutor
 import csv
 import hashlib
 import io
@@ -30,6 +31,9 @@ from cope_benchmark.task_progress import (  # noqa: E402
     ProgressTracker,
     get_task_definition,
 )
+
+
+_WORKER_SUITE: Any | None = None
 
 
 def _sha(path: Path) -> str:
@@ -140,6 +144,15 @@ def _replay_episode(suite: Any, episode: Path) -> tuple[dict[str, Any], list[dic
         env.close()
 
 
+def _replay_episode_worker(episode: str) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    """Load one process-local benchmark suite and replay an isolated episode."""
+    global _WORKER_SUITE
+    if _WORKER_SUITE is None:
+        from libero_experiment_core import get_benchmark_suite
+        _WORKER_SUITE = get_benchmark_suite("libero_10")
+    return _replay_episode(_WORKER_SUITE, Path(episode))
+
+
 def _witnesses(meta: Mapping[str, Any], samples: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]:
     definition = get_task_definition("libero_10", int(meta["task_id"]))
     commitments = [predicate.name for predicate in definition.predicates if predicate.commitment]
@@ -180,20 +193,33 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input", action="append", required=True, type=Path)
     parser.add_argument("--output-dir", required=True, type=Path)
+    parser.add_argument("--workers", type=int, default=1)
     args = parser.parse_args(argv)
     if os.environ.get("COPE_ALLOW_FORMAL_RUN"):
         raise ValueError("structural replay requires formal launch authorization absent")
+    if not 1 <= args.workers <= 16:
+        raise ValueError("workers must be in 1..16")
     output = args.output_dir.resolve()
     output.mkdir(parents=True, exist_ok=False)
-    from libero_experiment_core import get_benchmark_suite
-    suite = get_benchmark_suite("libero_10")
+    episodes = _episode_dirs([path.resolve() for path in args.input])
     episode_rows, witness_rows = [], []
-    for episode in _episode_dirs([path.resolve() for path in args.input]):
-        meta, samples = _replay_episode(suite, episode)
-        episode_rows.append(meta)
-        witness_rows.extend(_witnesses(meta, samples))
-        print(json.dumps({"replayed": [meta["task_id"], meta["initial_state_id"]],
-                          "success": meta["replay_success"]}), flush=True)
+    if args.workers == 1:
+        from libero_experiment_core import get_benchmark_suite
+        suite = get_benchmark_suite("libero_10")
+        results = (_replay_episode(suite, episode) for episode in episodes)
+        executor = None
+    else:
+        executor = ProcessPoolExecutor(max_workers=args.workers)
+        results = executor.map(_replay_episode_worker, map(str, episodes), chunksize=1)
+    try:
+        for meta, samples in results:
+            episode_rows.append(meta)
+            witness_rows.extend(_witnesses(meta, samples))
+            print(json.dumps({"replayed": [meta["task_id"], meta["initial_state_id"]],
+                              "success": meta["replay_success"]}), flush=True)
+    finally:
+        if executor is not None:
+            executor.shutdown(wait=True, cancel_futures=True)
     episode_rows.sort(key=lambda row: (row["task_id"], row["initial_state_id"]))
     witness_rows.sort(key=lambda row: (row["task_id"], row["initial_state_id"], row["milestone"]))
     summaries = []
