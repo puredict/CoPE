@@ -438,18 +438,32 @@ def _equivalent_mujoco_state(saved: Any, restored: Any) -> bool:
     ))
 
 
+def _bind_runner_owned_horizon(environment: Any, max_policy_steps: int) -> Any:
+    """Make the durable runner, rather than robosuite's default 1000, authoritative."""
+    inner = getattr(environment, "env", None)
+    if (inner is None or not hasattr(inner, "horizon") or
+            not hasattr(inner, "ignore_done") or
+            not hasattr(inner, "timestep") or not hasattr(inner, "done")):
+        raise RuntimeError("LIBERO environment does not expose episode horizon state")
+    inner.horizon = int(max_policy_steps)
+    inner.ignore_done = True
+    return inner
+
+
 class ProductionLiberoEnvironment:
     """Trusted harness bridge.  Public components receive projected data only."""
 
     provider_id = "libero_10_native_runtime"
-    version = "production_libero_runtime_v1.1"
+    version = "production_libero_runtime_v1.2"
 
     def __init__(self, *, catalog: Mapping[int, Mapping[str, Any]],
                  evidence_builder: PublicEventEvidenceBuilder,
-                 verifier: PublicRuntimeVerifier, checkpoint_path: str):
+                 verifier: PublicRuntimeVerifier, checkpoint_path: str,
+                 max_policy_steps: int):
         self.catalog = deepcopy(dict(catalog))
         self.evidence_builder, self.verifier = evidence_builder, verifier
         self.checkpoint_path = checkpoint_path
+        self.max_policy_steps = int(max_policy_steps)
         self.identity = {
             "provider_id": self.provider_id, "version": self.version,
             "uses_hidden_canonical_state": True,
@@ -463,6 +477,10 @@ class ProductionLiberoEnvironment:
             "simulator_restore_equivalence": {
                 "rule": "finite_same_dtype_shape_absolute_tolerance",
                 "rtol": 0.0, "atol": "dtype_machine_epsilon",
+            },
+            "runner_owned_policy_horizon": {
+                "max_policy_steps": self.max_policy_steps,
+                "robosuite_ignore_done": True,
             },
         }
         self._env = None
@@ -536,9 +554,10 @@ class ProductionLiberoEnvironment:
             raise ValueError("initial state bytes differ from the task catalog")
         cfg = ExperimentConfig(checkpoint=self.checkpoint_path, task_suite="libero_10",
                                unnorm_key="libero_10", task_id=task_id, trial_id=initial_state_id,
-                               mode="clean", max_steps=1040, num_steps_wait=0, seed=seed,
+                               mode="clean", max_steps=self.max_policy_steps, num_steps_wait=0, seed=seed,
                                resolution=256, enable_auto_disturbance=False)
         self._env, prompt = create_libero_env(runtime_task, cfg)
+        _bind_runner_owned_horizon(self._env, self.max_policy_steps)
         if prompt != task["language"]:
             raise ValueError("runtime task instruction changed")
         self._env.reset()
@@ -927,11 +946,14 @@ class ProductionLiberoEnvironment:
         # third-party array objects.
         from .runner import json_value
         state = self._env.get_sim_state()
+        inner = _bind_runner_owned_horizon(self._env, self.max_policy_steps)
         return {
             "version": self.version, "sim_state": state.tolist(),
             "sim_state_dtype": str(state.dtype), "policy_step": self._policy_step,
             "observation_version": self._version, "initial_state_id": self._initial_state_id,
             "seed": self._seed, "task": self._task, "canonical_ledger": self._canonical.to_dict(),
+            "simulator_episode_timestep": int(inner.timestep),
+            "simulator_episode_done": bool(inner.done),
             "constraint_state": self._interruption.constraint_state.snapshot(),
             # The complete native observation is trusted harness state. It is
             # never exposed to a method or policy, but is needed to reproduce
@@ -950,6 +972,9 @@ class ProductionLiberoEnvironment:
             raise ValueError("environment snapshot identity mismatch")
         saved_state = np.asarray(snapshot["sim_state"], dtype=snapshot["sim_state_dtype"])
         self._env.set_init_state(saved_state)
+        inner = _bind_runner_owned_horizon(self._env, self.max_policy_steps)
+        inner.timestep = int(snapshot["simulator_episode_timestep"])
+        inner.done = bool(snapshot["simulator_episode_done"])
         restored_state = self._env.get_sim_state()
         if not _equivalent_mujoco_state(saved_state, restored_state):
             raise ValueError("restored simulator state differs from saved boundary")
@@ -1046,7 +1071,8 @@ def create_runtime_assembly(config: Mapping[str, Any]):
     def environment_factory():
         return ProductionLiberoEnvironment(
             catalog=catalog, evidence_builder=PublicEventEvidenceBuilder(),
-            verifier=PublicRuntimeVerifier(), checkpoint_path=checkpoint_path)
+            verifier=PublicRuntimeVerifier(), checkpoint_path=checkpoint_path,
+            max_policy_steps=int(config["vla"]["max_policy_steps"]))
 
     def nominal_planner_factory():
         return NominalPlanner()

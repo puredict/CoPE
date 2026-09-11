@@ -10,7 +10,7 @@ from cope_benchmark.repeated_v2.evidence import EventLeakageError
 from cope_benchmark.repeated_v2.enums import MethodName
 from cope_benchmark.repeated_v2.production_runtime import (
     NominalPlanner, ProductionLiberoEnvironment, PublicEventEvidenceBuilder, PublicRuntimeVerifier,
-    _equivalent_mujoco_state, create_runtime_assembly,
+    _bind_runner_owned_horizon, _equivalent_mujoco_state, create_runtime_assembly,
 )
 from cope_benchmark.repeated_v2.pilot import validate_runtime_assembly
 from cope_benchmark.repeated_v2.runner import ObservationReceipt
@@ -114,9 +114,12 @@ def test_runtime_verifier_identity_is_public_and_separate_from_sealed_evaluator(
 def test_production_snapshot_serializes_live_numpy_sensor_arrays():
     environment = ProductionLiberoEnvironment(
         catalog={}, evidence_builder=PublicEventEvidenceBuilder(),
-        verifier=PublicRuntimeVerifier(), checkpoint_path="unused",
+        verifier=PublicRuntimeVerifier(), checkpoint_path="unused", max_policy_steps=1040,
     )
-    environment._env = SimpleNamespace(get_sim_state=lambda: np.asarray([1.0, 2.0]))
+    environment._env = SimpleNamespace(
+        get_sim_state=lambda: np.asarray([1.0, 2.0]),
+        env=SimpleNamespace(horizon=1000, ignore_done=False, timestep=17, done=False),
+    )
     environment._task = {"episode_id": "episode"}
     environment._canonical = PersistentLedger(0, (), (), ())
     environment._interruption = SimpleNamespace(
@@ -145,6 +148,9 @@ def test_production_snapshot_serializes_live_numpy_sensor_arrays():
                                                   [[0, 0, 0], [0, 0, 0]]]
     assert receipt["payload"]["state"] == pytest.approx([0.1, 0.2])
     assert snapshot["raw_observation"]["robot0_eef_pos"] == [0.1, 0.2, 0.3]
+    assert snapshot["simulator_episode_timestep"] == 17
+    assert environment._env.env.horizon == 1040
+    assert environment._env.env.ignore_done is True
 
 
 def test_mujoco_restore_accepts_only_finite_machine_epsilon_normalization():
@@ -158,6 +164,15 @@ def test_mujoco_restore_accepts_only_finite_machine_epsilon_normalization():
     assert not _equivalent_mujoco_state(saved, outside_tolerance)
     assert not _equivalent_mujoco_state(saved, np.asarray([0.5, -0.5, np.nan]))
     assert not _equivalent_mujoco_state(saved, saved.astype(np.float32))
+
+
+def test_runner_owned_horizon_disables_robosuite_early_termination():
+    inner = SimpleNamespace(horizon=1000, ignore_done=False, timestep=30, done=False)
+    wrapper = SimpleNamespace(env=inner)
+    assert _bind_runner_owned_horizon(wrapper, 1040) is inner
+    assert (inner.horizon, inner.ignore_done, inner.timestep, inner.done) == (1040, True, 30, False)
+    with pytest.raises(RuntimeError, match="episode horizon state"):
+        _bind_runner_owned_horizon(SimpleNamespace(), 1040)
 
 
 def test_production_runtime_assembly_passes_complete_zero_call_gate():
