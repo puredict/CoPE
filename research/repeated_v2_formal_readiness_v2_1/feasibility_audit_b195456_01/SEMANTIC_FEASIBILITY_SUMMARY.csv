@@ -1,0 +1,11 @@
+task_id,covered_state_ids,registered_event_families,event_state_cells,passing_event_state_cells,complete_feasibility_certificate,provider_calls,vla_calls,status
+0,"[15, 16, 17, 18, 19]",10,50,47,False,0,0,BLOCKED_SEMANTIC_FEASIBILITY
+1,"[15, 16, 17, 18, 19]",10,50,50,True,0,0,PASS
+2,"[15, 16, 17, 18, 19]",7,35,35,True,0,0,PASS
+3,"[15, 16, 17, 18, 19]",7,35,35,True,0,0,PASS
+4,"[15, 16, 17, 18, 19]",10,50,50,True,0,0,PASS
+5,"[15, 16, 17, 18, 19]",7,35,35,True,0,0,PASS
+6,"[15, 16, 17, 18, 19]",10,50,50,True,0,0,PASS
+7,"[15, 16, 17, 18, 19]",10,50,50,True,0,0,PASS
+8,"[15, 16, 17, 18, 19]",6,30,30,True,0,0,PASS
+9,"[15, 16, 17, 18, 19]",7,35,35,True,0,0,PASS
