@@ -391,6 +391,7 @@ def _build(args: argparse.Namespace) -> tuple[dict[str, Any], list[dict[str, Any
             summary = summarize_task_calibration(task.task_id, task.calibration_records)
             if (all(task.structural_checks[name]["passed"] for name in STRUCTURAL_CHECKS)
                     and all(task.event_feasibility[name]["passed"] for name in task.supported_event_families)
+                    and not task_schedule_eligibility_reasons(task)
                     and summary["eligible_success_rate"]):
                 selected.append(task.task_id)
     selected = sorted(set(selected))
